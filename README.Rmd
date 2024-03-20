@@ -26,26 +26,6 @@ The Northwestern Great Plains lies within the [West-central Semi-arid Prairie Le
 
 "The regional hydrology consists of mostly ephemeral and intermittent streams, with a few larger perennial rivers that cross the region from the western mountains. Many small impoundments occur, and there are some large reservoirs on the Missouri River."(http://www.cec.org/files/documents/publications/10415-north-american-terrestrial-ecoregionslevel-iii-en.pdf)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
-
-You can also embed plots, for example:
-
 ```{r map-of-study-area, eval=FALSE}
 
 # Make a map

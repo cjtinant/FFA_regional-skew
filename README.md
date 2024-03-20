@@ -42,11 +42,6 @@ the western mountains. Many small impoundments occur, and there are some
 large reservoirs on the Missouri
 River.”(<http://www.cec.org/files/documents/publications/10415-north-american-terrestrial-ecoregionslevel-iii-en.pdf>)
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date.
-
-You can also embed plots, for example:
-
 ``` r
 
 # Make a map
