@@ -1,0 +1,57 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# FFA_regional-skew
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+## Purpose
+The goal of FFA_regional-skew is to estimate a regional skew coefficient for the [Northwestern Great Plains Level III Ecoregion](https://www.epa.gov/eco-research/level-iii-and-iv-ecoregions-continental-united-states). A regional skew coefficient is necessary to determine flood frequency following [Bulletin 17C](https://pubs.usgs.gov/publication/tm4B5) guidelines.
+
+The specific purpose of this project is to apply a spatial join to select gages within the Northwestern Great Plains ecoregion. Level III Ecoregion membership was shown to be are the key predictor of hydrologic similarity in south-central South Dakota (Tinant, PhD dissertation). 
+
+## Study Area
+The Northwestern Great Plains lies within the [West-central Semi-arid Prairie Level II Ecoregion](https://www.epa.gov/eco-research/ecoregions-north-america) and the [Great Plains Level I Ecoregion](http://www.cec.org/files/documents/publications/1701-ecological-regions-north-america-toward-common-perspective-en.pdf). "The Northwestern Great Plains encompasses the Missouri Plateau section of the Great Plains in southeastern Montana, northeastern Wyoming, and the western portion of the Dakotas. The ecoregion has a dry mid-latitude steppe climate. It is marked by hot summers and cold winters with a mean annual temperature of approximately 5C in some northern areas rising to 8.5C in the south. The frost-free period ranges from 90 days to 155 days. The mean annual precipitation is 393 mm, ranging from 250 to 510 mm."(http://www.cec.org/files/documents/publications/10415-north-american-terrestrial-ecoregionslevel-iii-en.pdf)
+
+"The regional hydrology consists of mostly ephemeral and intermittent streams, with a few larger perennial rivers that cross the region from the western mountains. Many small impoundments occur, and there are some large reservoirs on the Missouri River."(http://www.cec.org/files/documents/publications/10415-north-american-terrestrial-ecoregionslevel-iii-en.pdf)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
+
+You can also embed plots, for example:
+
+```{r map-of-study-area, eval=FALSE}
+
+# Make a map
+# Here is some example code:
+# https://www.r4wrds.com/intro/m_intro_mapmaking
+
+```
+
+
