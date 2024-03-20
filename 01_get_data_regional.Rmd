@@ -16,7 +16,7 @@ library(dataRetrieval)    # Retrieval functions for USGS and EPA hydrology and
 
 ```
 
-```{r 01_find_sites_get_peak discharge}
+```{r 01_find_sites}
 
 # watermapper for visualization
 # https://maps.waterdata.usgs.gov/mapper/index.html
@@ -60,7 +60,17 @@ sites_peak_gt_20 <- sites_peak %>%
   filter(count_nu > 20)
 
 # download peak data
-peakData <- readNWISpeak(siteNumbers)
+#peakData <- readNWISpeak(siteNumbers)
 
 ```
+
+```{r 02_export_peak_sites}
+
+write_csv(sites_peak, "data/sites_peak_all.csv")
+write_csv(sites_peak_gt_20, "data/sites_peak_gt_20.csv")
+
+```
+
+
+
 
