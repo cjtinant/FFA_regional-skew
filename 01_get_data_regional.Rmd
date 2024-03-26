@@ -59,6 +59,7 @@ sites_peak <-  whatNWISdata(
 sites_peak_gt_20 <- sites_peak %>%
   filter(count_nu > 20)
 
+<<<<<<< HEAD
 ```
 
 ```{r 02_export_peak_sites}
@@ -68,6 +69,20 @@ write_csv(sites_peak_gt_20, "data/sites_peak_gt_20.csv")
 
 ```
 
+=======
+# download peak data
+#peakData <- readNWISpeak(siteNumbers)
+
+```
+
+```{r 02_export_peak_sites}
+
+write_csv(sites_peak, "data/sites_peak_all.csv")
+write_csv(sites_peak_gt_20, "data/sites_peak_gt_20.csv")
+
+```
+
+>>>>>>> 1fd9b9acb76b4517cbe784479145b382eaa0ce4f
 
 
 
