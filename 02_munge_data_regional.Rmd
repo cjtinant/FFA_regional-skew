@@ -20,61 +20,6 @@ library(dataRetrieval)    # Retrieval functions for USGS and EPA hydrology and
 library(sf)               # Simple features for R
 ```
 
-```{r 01_find_sites}
-
-# watermapper for visualization
-# https://maps.waterdata.usgs.gov/mapper/index.html
-
-#  west  south  east  north
-# -111.5, 42.0, -99.5, 48.5
-
-# get a list of sites for the Northwestern Great Plains ecoregion bounding box
-sites_nw <- whatNWISsites(                       #  west  south  east  north
-  bBox = c(-111.5, 45.0, -105.5, 48.5)           # -111.5, 45.0, -105.5, 48.5
-  )
-
-sites_sw <- whatNWISsites(                       #  west  south  east  north
-  bBox = c(-111.5, 42.0, -105.5, 45.0)           # -111.5, 42.0, -105.5, 45.0
-  )
-
-sites_ne <- whatNWISsites(                       #  west  south  east  north
-  bBox = c(-105.5, 45.0, -99.5, 48.5)            # -105.5, 45.0, -99.5, 48.5
-  )
-
-sites_se <- whatNWISsites(                       #  west  south  east  north
-  bBox = c(-105.5, 42.0, -99.5, 45.0)            # -105.5, 42.0, -99.5, 45.0
-  )
-
-sites_st <- bind_rows(sites_nw, sites_sw, sites_ne, sites_se) 
-
-# filter stream gages
-sites_st <- sites_st %>%
-  filter(site_tp_cd == "ST")
-
-sites <- sites_st %>%
-  select(site_no) 
-  
-# get a list of peak flow data greater than 20-years
-sites_peak <-  whatNWISdata(
-  siteNumber = sites$site_no,
-  service = "pk"
-  )
-  
-sites_peak_gt_20 <- sites_peak %>%
-  filter(count_nu > 20)
-
-```
-
-```{r 02_export_peak_sites}
-
-write_csv(sites_peak, "data/sites_peak_all.csv")
-write_csv(sites_peak_gt_20, "data/sites_peak_gt_20.csv")
-
-```
-
-
-
-
 ```{r 02b_import_peak_sites, eval=FALSE}
 
 sites_peak <- read_csv("data/sites_peak_all.csv")
