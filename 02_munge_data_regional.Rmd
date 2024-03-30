@@ -8,6 +8,7 @@ output: html_document
 <!--
 helpful website -- https://dangitgit.com/
 START HERE -- https://www.r4wrds.com/intro/m_intro_mapmaking
+[Overview of Coordinate Reference Systems (CRS) in R](https://www.nceas.ucsb.edu/sites/default/files/2020-04/OverviewCoordinateReferenceSystems.pdf)
 --> 
 ```{r 00_setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -18,16 +19,32 @@ library(tidyverse)        # Load the 'Tidyverse' packages: ggplot2, dplyr,
 library(dataRetrieval)    # Retrieval functions for USGS and EPA hydrology and
                           #   water quality data
 library(sf)               # Simple features for R
+
 ```
 
-```{r 02b_import_peak_sites, eval=FALSE}
+```{r 01_import_peak_sites, eval=FALSE}
 
 sites_peak <- read_csv("data/sites_peak_all.csv")
 sites_peak_gt_20 <- read_csv("data/sites_peak_gt_20.csv")
 
 ```
 
-```{r 03_make_shapefile_sites_peak_gt_20}
+```{r 02_convert_df_to_spatial_format}
+
+# get datum
+datum_sites <- sites_peak_gt_20 %>%
+  select(dec_coord_datum_cd) %>%
+  distinct()
+
+datum_sites <- datum_sites$dec_coord_datum_cd
+
+# create a geometry column
+
+
+```
+
+
+<!--
 
 # Converting a dataframe to sf
 # 
@@ -57,8 +74,5 @@ sites_peak_gt_20 <- read_csv("data/sites_peak_gt_20.csv")
 # 
 # # check the class of the new object
 # class(stations)
-
-
-
-```
+-->
 
