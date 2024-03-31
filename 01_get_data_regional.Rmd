@@ -6,8 +6,10 @@ output: html_document
 ---
 
 <!--
-helpful websites
 
+Purpose: get data to identify peak-flow sites in the Northern Great Plains ecoregion with greater than 20-years of record
+
+Helpful websites:
 [USEPA level-3 and level-4 ecoregions](https://www.epa.gov/eco-research/level-iii-and-iv-ecoregions-continental-united-states)
 [GIT issues](https://dangitgit.com/)
 [GIT ignore](https://carpentries-incubator.github.io/git-Rstudio-course/02-ignore/index.html)
@@ -79,8 +81,6 @@ write_csv(sites_peak_gt_20, "data/sites_peak_gt_20.csv")
 
 ```
 
-
-
 ```{r 03_dl_shapefiles}
 
 # download level-3 and level-4 ecoregions shapefiles by calling the
@@ -103,5 +103,4 @@ file_name <- "us_eco_l4.zip"
 download.file(url, paste(file_path, file_name, sep = ""))
 
 ```
-https://gaftp.epa.gov/EPADataCommons/ORD/Ecoregions/us/us_eco_l4.zip
-https://gaftp.epa.gov/EPADataCommons/ORD/Ecoregions/us/us_eco_l4.zip
+
