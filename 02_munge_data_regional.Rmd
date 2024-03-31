@@ -6,8 +6,9 @@ output: html_document
 ---
 
 <!--
-helpful website -- https://dangitgit.com/
-START HERE -- https://www.r4wrds.com/intro/m_intro_mapmaking
+Helpful references
+[GIT issues](https://dangitgit.com/)
+[intro to spatial data in R](https://www.r4wrds.com/intro/m_intro_mapmaking)
 [Overview of Coordinate Reference Systems (CRS) in R](https://www.nceas.ucsb.edu/sites/default/files/2020-04/OverviewCoordinateReferenceSystems.pdf)
 --> 
 ```{r 00_setup, include=FALSE}
@@ -31,48 +32,22 @@ sites_peak_gt_20 <- read_csv("data/sites_peak_gt_20.csv")
 
 ```{r 02_convert_df_to_spatial_format}
 
-# get datum
+# get datum 
 datum_sites <- sites_peak_gt_20 %>%
   select(dec_coord_datum_cd) %>%
   distinct()
 
 datum_sites <- datum_sites$dec_coord_datum_cd
 
-# create a geometry column
+# convert stations into a spatial format (sf) object
+sites_peak_gt_20 <- st_as_sf(sites_peak_gt_20,
+                    coords = c("dec_long_va",        # note x goes first
+                                "dec_lat_va"),
+                    crs = 4269,                     # projection, this is NAD83
+                    remove = FALSE)                 # don't remove lat/lon cols
 
+# quick plot of the geometry
+plot(sites_peak_gt_20)
 
 ```
-
-
-<!--
-
-# Converting a dataframe to sf
-# 
-# At other times, you may need to convert tabular data to a spatial format. To make an {sf} object, we are 
-
-# create a geometry column. This contains all the geospatial information we need, and it lives within the dataframe. Importantly, this geometry column is “sticky”, meaning whatever we do to our data (tidy, filter, mutate etc) the associated geometry column will stick with the data. What’s awesome is this column can contain anything from information for a point to a line to a complex polygon – all in one column. To make an {sf} object, we need to know two important pieces of information…
-# 
-#     coords: The columns that contain the geospatial coordinates (either name or column number)
-#     crs: The projection or EPSG (CRS, SRID, etc) that the data inCoordinate reference systems are an entire lesson unto themselves. For a good overview, check out this .
-# 
-# To practice, let’s read all groundwater level monitoring stations in Sacramento County, stations_sac.csv, and convert this tabular data to an sf object with the function st_as_sf(). We will specify which columns contain the coordinates (coords), and what the projection, or coordinate reference system (crs) the data is in. In this case, we know the data is in NAD83, or EPSG 4269.
-# Notice that all functions in {sf} begin with an “st_” prefix. This makes it easy to type “st_” and use tab-completion to find {sf} functions, and it also makes it easier to read code and spot spatial transformations.
-# 
-# # read groundwater level stations in Sacramento county as dataframe
-# stations <- read_csv("data/gwl/stations_sac.csv")
-# 
-# # check object class
-# class(stations)
-# 
-# [1] "spec_tbl_df" "tbl_df"      "tbl"         "data.frame" 
-# 
-# # convert stations into an sf object by specifying coordinates and crs
-# stations <- st_as_sf(stations, 
-#                      coords = c("LONGITUDE", "LATITUDE"), # note x goes first
-#                      crs = 4269, # projection, this is NAD83
-#                      remove = FALSE) # don't remove lat/lon cols from dataframe
-# 
-# # check the class of the new object
-# class(stations)
--->
 
