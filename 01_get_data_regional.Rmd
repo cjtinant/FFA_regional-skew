@@ -6,7 +6,12 @@ output: html_document
 ---
 
 <!--
-helpful website -- https://dangitgit.com/
+helpful websites
+
+[USEPA level-3 and level-4 ecoregions](https://www.epa.gov/eco-research/level-iii-and-iv-ecoregions-continental-united-states)
+[GIT issues](https://dangitgit.com/)
+[GIT ignore](https://carpentries-incubator.github.io/git-Rstudio-course/02-ignore/index.html)
+
 --> 
 
 ```{r 00_setup, include=FALSE}
@@ -18,6 +23,8 @@ library(tidyverse)        # Load the 'Tidyverse' packages: ggplot2, dplyr,
 library(dataRetrieval)    # Retrieval functions for USGS and EPA hydrology and
                           #   water quality data
 library(sf)               # Simple features for R
+library(here)             # A simpler way to find files
+
 ```
 
 ```{r 01_find_sites}
@@ -71,3 +78,30 @@ write_csv(sites_peak, "data/sites_peak_all.csv")
 write_csv(sites_peak_gt_20, "data/sites_peak_gt_20.csv")
 
 ```
+
+
+
+```{r 03_dl_shapefiles}
+
+# download level-3 and level-4 ecoregions shapefiles by calling the
+# download.file() function, passing in the URL and file name/location as arguments
+
+# level-3 ecoregion download--
+#  URL of the file to download 
+url <- "https://gaftp.epa.gov/EPADataCommons/ORD/Ecoregions/us/us_eco_l3.zip"
+
+# file name and location where you want to save the file on your computer
+file_path <- "data_sp"
+file_name <- "us_eco_l3.zip"
+
+download.file(url, paste(file_path, file_name, sep = ""))
+
+# level-4 ecoregion download
+url <- "https://gaftp.epa.gov/EPADataCommons/ORD/Ecoregions/us/us_eco_l4.zip"
+file_name <- "us_eco_l4.zip"
+
+download.file(url, paste(file_path, file_name, sep = ""))
+
+```
+https://gaftp.epa.gov/EPADataCommons/ORD/Ecoregions/us/us_eco_l4.zip
+https://gaftp.epa.gov/EPADataCommons/ORD/Ecoregions/us/us_eco_l4.zip
