@@ -91,7 +91,7 @@ write_csv(sites_peak_gt_20, "data/sites_peak_gt_20.csv")
 url <- "https://gaftp.epa.gov/EPADataCommons/ORD/Ecoregions/us/us_eco_l3.zip"
 
 # file name and location where you want to save the file on your computer
-file_path <- "data_sp"
+file_path <- "data_spatial"
 file_name <- "us_eco_l3.zip"
 
 download.file(url, paste(file_path, file_name, sep = ""))
