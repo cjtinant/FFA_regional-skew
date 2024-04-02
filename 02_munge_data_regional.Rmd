@@ -6,12 +6,24 @@ output: html_document
 ---
 
 <!--
-Helpful references
+
+## Next steps
+* shapefile to sp class for level 3 ecoregion
+* intersect level 3 ecoregion with station data
+
+## Helpful references:
+GIT issues--
 [GIT issues](https://dangitgit.com/)
-[intro to spatial data in R](https://www.r4wrds.com/intro/m_intro_mapmaking)
+
+Spatial data issues--
+[Intro to spatial data in R](https://www.r4wrds.com/intro/m_intro_mapmaking)
 [Overview of Coordinate Reference Systems (CRS) in R](https://www.nceas.ucsb.edu/sites/default/files/2020-04/OverviewCoordinateReferenceSystems.pdf)
+[Geocomputation with R](https://r.geocompx.org/)
+
 --> 
+
 ```{r 00_setup, include=FALSE}
+
 knitr::opts_chunk$set(echo = TRUE)
 
 # library
