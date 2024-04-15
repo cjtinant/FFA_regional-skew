@@ -58,18 +58,14 @@ sites_se <- whatNWISsites(
 sites_ngp <- bind_rows(sites_nw, sites_sw, sites_ne, sites_se) %>%
   filter(site_tp_cd == "ST")
 
-# get a list of all peak flow data in bounding box
+# get a list of all peak flow data in bounding box -- add ecoreg
 peak_ngp <-  whatNWISdata(
   siteNumber = sites_ngp$site_no,
   service = "pk"
-  )
+  ) %>%
+  mutate(ecoreg = "ngp")
 
-# get a list of peak flow data greater than 20-years in bounding box
-peak_ngp_gt20 <- peak_ngp %>%
-  filter(count_nu > 20)
 
-# clean up Global Environment
-rm(list = ls(pattern = "sites"))
 
 ```
 
@@ -102,22 +98,24 @@ sites_se <- whatNWISsites(
 sites_hp <- bind_rows(sites_nw, sites_sw, sites_ne, sites_se) %>%
   filter(site_tp_cd == "ST")
 
-# get a list of all peak flow data in bounding box
+# get a list of all peak flow data in bounding box -- add ecoreg
 peak_hp <-  whatNWISdata(
   siteNumber = sites_hp$site_no,
   service = "pk"
-  )
+  ) %>%
+  mutate(ecoreg = "hp")
 
-# get a list of peak flow data greater than 20-years in bounding box
-peak_hp_gt20 <- peak_hp %>%
-  filter(count_nu > 20)
+# clean up Global Environment
+rm(list = ls(pattern = "sites"))
 
 ```
 
 ```{r 03_export_peak_sites}
 
-write_csv(sites_peak, "data/sites_peak_all.csv")
-write_csv(sites_peak_gt_20, "data/sites_peak_gt_20.csv")
+# bind cols and export
+sites_peak <- bind_rows(peak_ngp, peak_hp)
+
+write_csv(sites_peak, "data/sites_peak.csv")
 
 ```
 
