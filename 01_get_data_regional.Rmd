@@ -7,7 +7,7 @@ output: html_document
 
 <!--
 
-Purpose: get data to identify peak-flow sites in the Northern Great Plains ecoregion with greater than 20-years of record
+Purpose: get data to identify peak-flow sites in the Northern Great Plains and High Plains level-3 ecoregions with greater than 20-years of record
 
 Helpful websites:
 [USEPA level-3 and level-4 ecoregions](https://www.epa.gov/eco-research/level-iii-and-iv-ecoregions-continental-united-states)
@@ -29,7 +29,7 @@ library(here)             # A simpler way to find files
 
 ```
 
-```{r 01_find_sites}
+```{r 01_find_sites_north-GP}
 
 # watermapper for visualization
 # https://maps.waterdata.usgs.gov/mapper/index.html
@@ -74,14 +74,61 @@ sites_peak_gt_20 <- sites_peak %>%
 
 ```
 
-```{r 02_export_peak_sites}
+```{r 02_find_sites_high-plains}
+
+# need to update the areas
+
+# watermapper for visualization
+# https://maps.waterdata.usgs.gov/mapper/index.html
+
+#  west  south  east  north
+# -111.5, 42.0, -99.5, 48.5
+
+# get a list of sites for the Northwestern Great Plains ecoregion bounding box
+sites_nw <- whatNWISsites(                       #  west  south  east  north
+  bBox = c(-111.5, 45.0, -105.5, 48.5)           # -111.5, 45.0, -105.5, 48.5
+  )
+
+sites_sw <- whatNWISsites(                       #  west  south  east  north
+  bBox = c(-111.5, 42.0, -105.5, 45.0)           # -111.5, 42.0, -105.5, 45.0
+  )
+
+sites_ne <- whatNWISsites(                       #  west  south  east  north
+  bBox = c(-105.5, 45.0, -99.5, 48.5)            # -105.5, 45.0, -99.5, 48.5
+  )
+
+sites_se <- whatNWISsites(                       #  west  south  east  north
+  bBox = c(-105.5, 42.0, -99.5, 45.0)            # -105.5, 42.0, -99.5, 45.0
+  )
+
+sites_st <- bind_rows(sites_nw, sites_sw, sites_ne, sites_se) 
+
+# filter stream gages
+sites_st <- sites_st %>%
+  filter(site_tp_cd == "ST")
+
+sites <- sites_st %>%
+  select(site_no) 
+  
+# get a list of peak flow data greater than 20-years
+sites_peak <-  whatNWISdata(
+  siteNumber = sites$site_no,
+  service = "pk"
+  )
+  
+sites_peak_gt_20 <- sites_peak %>%
+  filter(count_nu > 20)
+
+```
+
+```{r 03_export_peak_sites}
 
 write_csv(sites_peak, "data/sites_peak_all.csv")
 write_csv(sites_peak_gt_20, "data/sites_peak_gt_20.csv")
 
 ```
 
-```{r 03_dl_shapefiles}
+```{r 04_dl_shapefiles}
 
 # download level-3 and level-4 ecoregions shapefiles by calling the
 # download.file() function, passing in the URL and file name/location as arguments
