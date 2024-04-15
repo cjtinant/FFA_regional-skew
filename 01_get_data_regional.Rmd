@@ -30,6 +30,7 @@ library(here)             # A simpler way to find files
 ```
 
 ```{r 01_find_sites_north-GP}
+
 # watermapper for visualization
 # https://maps.waterdata.usgs.gov/mapper/index.html
 
@@ -37,33 +38,33 @@ library(here)             # A simpler way to find files
 # -111.5, 42.0, -99.5, 48.5
 
 # get a list of sites for the Northwestern Great Plains ecoregion bounding box
-sites_nw <- whatNWISsites(                       #  west  south  east  north
-  bBox = c(-111.5, 45.0, -105.5, 48.5)           # -111.5, 45.0, -105.5, 48.5
+sites_nw <- whatNWISsites(                       
+  bBox = c(-111.5, 45.0, -105.5, 48.5)           #  west  south  east  north
   )
 
-sites_sw <- whatNWISsites(                       #  west  south  east  north
-  bBox = c(-111.5, 42.0, -105.5, 45.0)           # -111.5, 42.0, -105.5, 45.0
+sites_sw <- whatNWISsites(                       
+  bBox = c(-111.5, 42.0, -105.5, 45.0)           #  west  south  east  north
   )
 
-sites_ne <- whatNWISsites(                       #  west  south  east  north
-  bBox = c(-105.5, 45.0, -99.5, 48.5)            # -105.5, 45.0, -99.5, 48.5
+sites_ne <- whatNWISsites(                       
+  bBox = c(-105.5, 45.0, -99.5, 48.5)            #  west  south  east  north
   )
 
-sites_se <- whatNWISsites(                       #  west  south  east  north
-  bBox = c(-105.5, 42.0, -99.5, 45.0)            # -105.5, 42.0, -99.5, 45.0
+sites_se <- whatNWISsites(                       
+  bBox = c(-105.5, 42.0, -99.5, 45.0)            #  west  south  east  north
   )
 
 # bind rows -- filter stream gages
 sites_ngp <- bind_rows(sites_nw, sites_sw, sites_ne, sites_se) %>%
   filter(site_tp_cd == "ST")
 
-# get a list of all peak flow data 
+# get a list of all peak flow data in bounding box
 peak_ngp <-  whatNWISdata(
   siteNumber = sites_ngp$site_no,
   service = "pk"
   )
 
-# get a list of peak flow data greater than 20-years
+# get a list of peak flow data greater than 20-years in bounding box
 peak_ngp_gt20 <- peak_ngp %>%
   filter(count_nu > 20)
 
@@ -74,8 +75,6 @@ rm(list = ls(pattern = "sites"))
 
 ```{r 02_find_sites_high-plains}
 
-# need to update the areas
-
 # watermapper for visualization
 # https://maps.waterdata.usgs.gov/mapper/index.html
 
@@ -83,38 +82,34 @@ rm(list = ls(pattern = "sites"))
 # -105.6, 31.0, -100, 42.0
 
 # get a list of sites for the High Plains ecoregion bounding box
-sites_nw <- whatNWISsites(                       #  west  south  east  north
-  bBox = c(-105.6, 37.5, -102.8, 42.0)           # -111.5, 45.0, -105.5, 48.5
+sites_nw <- whatNWISsites(                       
+  bBox = c(-105.6, 37.5, -102.8, 42.0)           #  west  south  east  north
   )
 
-sites_sw <- whatNWISsites(                       #  west  south  east  north
-  bBox = c(-105.6, 31.0, -102.8, 37.5)           # -111.5, 42.0, -105.5, 45.0
+sites_sw <- whatNWISsites(                       
+  bBox = c(-105.6, 31.0, -102.8, 37.5)           #  west  south  east  north
   )
 
-sites_ne <- whatNWISsites(                       #  west  south  east  north
-  bBox = c(-105.6, 37.5, -100, 42.0)            # -105.5, 45.0, -99.5, 48.5
+sites_ne <- whatNWISsites(                       
+  bBox = c(-102.8, 37.5, -100, 42.0)             #  west  south  east  north
   )
 
-sites_se <- whatNWISsites(                       #  west  south  east  north
-  bBox = c(-105.6, 31.0, -100, 37.5)            # -105.5, 42.0, -99.5, 45.0
+sites_se <- whatNWISsites(                       
+  bBox = c(-102.8, 31.0, -100, 37.5)             #  west  south  east  north
   )
 
-sites_st <- bind_rows(sites_nw, sites_sw, sites_ne, sites_se) 
-
-# filter stream gages
-sites_st <- sites_st %>%
+# bind rows -- filter stream gages
+sites_hp <- bind_rows(sites_nw, sites_sw, sites_ne, sites_se) %>%
   filter(site_tp_cd == "ST")
 
-sites <- sites_st %>%
-  select(site_no) 
-  
-# get a list of peak flow data greater than 20-years
-sites_peak <-  whatNWISdata(
-  siteNumber = sites$site_no,
+# get a list of all peak flow data in bounding box
+peak_hp <-  whatNWISdata(
+  siteNumber = sites_hp$site_no,
   service = "pk"
   )
-  
-sites_peak_gt_20 <- sites_peak %>%
+
+# get a list of peak flow data greater than 20-years in bounding box
+peak_hp_gt20 <- peak_hp %>%
   filter(count_nu > 20)
 
 ```
