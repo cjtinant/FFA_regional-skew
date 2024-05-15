@@ -7,13 +7,6 @@ output: html_document
 
 <!--
 
-Purpose: get data to identify peak-flow sites in the Northern Great Plains and High Plains level-3 ecoregions with greater than 20-years of record
-
-Helpful websites:
-[USEPA level-3 and level-4 ecoregions](https://www.epa.gov/eco-research/level-iii-and-iv-ecoregions-continental-united-states)
-[GIT issues](https://dangitgit.com/)
-[GIT ignore](https://carpentries-incubator.github.io/git-Rstudio-course/02-ignore/index.html)
-
 --> 
 
 ```{r 00_setup, include=FALSE}
@@ -34,6 +27,7 @@ library(here)             # A simpler way to find files
 # watermapper for visualization
 # https://maps.waterdata.usgs.gov/mapper/index.html
 
+# Northern Great Plains--
 #  west  south  east  north
 # -111.5, 42.0, -99.5, 48.5
 
@@ -65,14 +59,7 @@ peak_ngp <-  whatNWISdata(
   ) %>%
   mutate(ecoreg = "ngp")
 
-
-
-```
-
-```{r 02_find_sites_high-plains}
-
-# watermapper for visualization
-# https://maps.waterdata.usgs.gov/mapper/index.html
+# High Plains
 
 #  west  south  east  north
 # -105.6, 31.0, -100, 42.0
@@ -105,40 +92,55 @@ peak_hp <-  whatNWISdata(
   ) %>%
   mutate(ecoreg = "hp")
 
-# clean up Global Environment
-rm(list = ls(pattern = "sites"))
-
-```
-
-```{r 03_export_peak_sites}
-
 # bind cols and export
 sites_peak <- bind_rows(peak_ngp, peak_hp)
 
 write_csv(sites_peak, "data/sites_peak.csv")
 
+# clean up Global Environment
+rm(list = ls(pattern = "sites"))
+
 ```
 
-```{r 04_dl_shapefiles}
+```{r 02_dl_shapefiles}
 
-# download level-3 and level-4 ecoregions shapefiles by calling the
-# download.file() function, passing in the URL and file name/location as arguments
+# download shapefiles by calling the download.file() function, and passing 
+#   in the URL and file name/location as arguments
+
+# location where you want to save the file on your computer after here()
+file_path <- "data_spatial"
 
 # level-3 ecoregion download--
-#  URL of the file to download 
-url <- "https://gaftp.epa.gov/EPADataCommons/ORD/Ecoregions/us/us_eco_l3.zip"
-
-# file name and location where you want to save the file on your computer
-file_path <- "data_spatial"
+# URL of the file to download and file name save on your computer
+url       <- "https://gaftp.epa.gov/EPADataCommons/ORD/Ecoregions/us/us_eco_l3.zip"
 file_name <- "us_eco_l3.zip"
 
 download.file(url, paste(file_path, file_name, sep = ""))
 
 # level-4 ecoregion download
+# URL of the file to download and file name save on your computer
 url <- "https://gaftp.epa.gov/EPADataCommons/ORD/Ecoregions/us/us_eco_l4.zip"
 file_name <- "us_eco_l4.zip"
 
 download.file(url, paste(file_path, file_name, sep = ""))
 
+# 2023 USDA Plant Hardiness Zone GIS Datasets
+#   https://prism.oregonstate.edu/projects/plant_hardiness_zones.php
+
+# shapefile
+url <- "https://prism.oregonstate.edu/projects/phm_data/phzm_us_zones_shp_2023.zip"
+file_name <- "phzm_us_zones_shp_2023.zip"
+
+# GRID data
+url <- "https://prism.oregonstate.edu/projects/phm_data/phzm_us_grid_2023.zip"
+file_name <- "phzm_us_grid_2023.zip"
+
+# State boundary download
+#   https://www.sciencebase.gov/catalog/item/52c78623e4b060b9ebca5be5
+url <- "http://www2.census.gov/geo/tiger/TIGER2012/STATE/tl_2012_us_state.zip"
+file_name <- "tl_2012_us_state.zip"
+
 ```
+
+
 
