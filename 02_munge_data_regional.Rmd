@@ -7,9 +7,18 @@ output: html_document
 
 <!--
 
+
+
+
+
+
 ## Next steps
 * shapefile to sp class for level 3 ecoregion
 * intersect level 3 ecoregion with station data
+* sync personal and group Zotero library for FFA
+https://guides.library.oregonstate.edu/c.php?g=359201&p=2426111
+https://www.zotero.org/groups/5473862/olc_flood-frequency
+
 
 ## Helpful references:
 GIT issues--
@@ -35,31 +44,231 @@ library(sf)               # Simple features for R
 
 ```
 
-```{r 01_import_peak_sites, eval=FALSE}
+```{r 01_import_munge_peak_sites, eval=FALSE}
+# get site data
+sites_peak <- read_csv("data/sites_peak.csv")
 
-sites_peak <- read_csv("data/sites_peak_all.csv")
-sites_peak_gt_20 <- read_csv("data/sites_peak_gt_20.csv")
 
-```
+# subset sites gt 20
+sites_gt_20 <- sites_peak %>%
+  filter(count_nu >= 20)
 
-```{r 02_convert_df_to_spatial_format}
-
+# convert_df_to_spatial_format--
 # get datum 
-datum_sites <- sites_peak_gt_20 %>%
+datum <- sites_gt_20 %>%
   select(dec_coord_datum_cd) %>%
   distinct()
 
-datum_sites <- datum_sites$dec_coord_datum_cd
+datum_sites <- datum$dec_coord_datum_cd
 
 # convert stations into a spatial format (sf) object
-sites_peak_gt_20 <- st_as_sf(sites_peak_gt_20,
+sites_gt_20 <- st_as_sf(sites_gt_20,
                     coords = c("dec_long_va",        # note x goes first
                                 "dec_lat_va"),
                     crs = 4269,                     # projection, this is NAD83
                     remove = FALSE)                 # don't remove lat/lon cols
 
-# quick plot of the geometry
-plot(sites_peak_gt_20)
+# clean up Global Environment
+rm(datum)
 
 ```
+
+sites_peak
+    
+
+```{r}
+
+site_criteria_cde <- tribble(
+  ~code, "",
+  ~description, "",
+  ~agency_cd, "The agency that is reporting the data. Agency codes are fixed values assigned by the National Water Information System (NWIS).",
+  ~site_no, "Each site in the USGS data base has a unique 8- to 15-digit identification number.",
+  ~station_nm, "This is the official name of the site in the database. For well information this can be a district-assigned local number.",
+ ~site_tp_cd, "A list of primary and secondary site types that can be associated with data collection sites. A site type is a generalized location in the hydrologic cycle, or a man-made feature thought to affect the hydrologic conditions measured at a site. All sites are associated with a primary site type, and may additionally be associated with a secondary site type that further describes the location.",
+ ~dec_lat_va, "Latitude in decimal degrees",
+ ~dec_long_va, "Longitude in decimal degrees",
+ ~coord_acy_cd, "Lat/Long coordinate accuracy codes indicating the accuracy of the latitude longitude values.",
+ ~dec_coord_datum_cd, "Lat/Long coordinate datum.",
+ ~alt_va, "Altitude of the site referenced to the specified Vertical Datum",
+ ~alt_acy_va, "Altitude accuracy value. Many altitudes are interpolated from the contours on topographic maps; accuracies determined in this way are generally entered as one-half of the contour interval.",
+ ~alt_datum_cd, "Altitude coordinate datum.",
+ ~huc_cd, "Hydrologic unit codes. The United States is divided and sub-divided into successively smaller hydrologic units which are classified into four levels: regions, sub-regions, accounting units, and cataloging units. The hydrologic units are arranged within each other, from the smallest (cataloging units) to the largest (regions). Each hydrologic unit is identified by a unique hydrologic unit code (HUC) consisting of two to eight digits based on the four levels of classification in the hydrologic unit system.",
+ ~data_type_cd, "All USGS data falls into one of: Current Conditions, Daily Data, Surface Water, Water Quality, Groundwater. Current condition data is any data down to the 15 minute interval that has been transmitted in the last 120 days. Daily Data is the average daily value for a site. Surface Water is water flow and levels in streams, lakes and springs. Water Quality is chemical and physical data for streams, lakes, springs, and wells. Groundwater is water levels in wells.",
+ ~parm_cd, "Parameter code",
+ ~stat_cd, "Statistics code",
+ ~ts_id, "",
+ ~loc_web_ds, "",
+ ~medium_grp_cd, "Medium type refers to the specific environmental medium that was sampled and analyzed. Medium type differs from site type because one site type, such as surface water, could have data for several media, such as water, bottom sediment, fish tissue, and others.",
+ ~parm_grp_cd, "Parameter group code",
+ ~srs_id, "USEPA SRS.http://www.epa.gov/srs/",
+ ~access_cd, "",
+ ~begin_date, "Begin date of the period of record for the data",
+ ~end_date, "End date of the period of record for the data",
+ ~count_nu, "Number of records",
+ ~ecoreg, ""
+)
+
+
+```
+
+
+
+
+    Drainage area
+
+    The area enclosed by a topographic divide from which direct surface runoff from precipitation normally drains by gravity into the stream above that point.
+
+    File of site numbers
+
+    A previously saved file of USGS site identification numbers, in the format:
+
+    USGS 11447650
+    USGS 394523084582301
+
+    The file may be prefixed by the agency code.
+
+    The path length and file name should be as short as possible in order to keep query lengths under the users' browser imposed limitation.
+
+
+
+    Hydrologic region
+
+    The contiguous United States is broken into 18 different major watersheds. Alaska, Hawaii, and Puerto Rico each have a separate watershed. Additional information is available.
+
+    Hydrologic unit code (HUC)
+
+    Hydrologic units are geographic areas representing part or all of a surface drainage basin or distinct hydrologic feature and are delineated on the State Hydrologic Unit Maps. Each hydrologic unit is identified by a unique number (HUC), and a name. Additional information is available.
+    Note: Not all groundwater sites have been associated with a Hydrologic Unit. Such sites will not be retrieved using this search criteria.
+
+    (Internal) Site list
+
+    A previously saved file of USGS site identification numbers. This option should only appear on displays if the user is inside the USGS network.
+
+    Latitude-Longitude (Lat-Long) box
+
+    When looking at a map, consider a rectangle that encloses the area of interest to you. The maximum latitude and longitude define the upper-left corner, and the minimum latitude and longitude define the lower-right corner of that box. To find the approximate latitude and longitude try the USGS Earth Explorer. For the best results define the smallest practical latitude-longitude box that includes the area of interest; retrievals from unnecessarily large latitude-longitude boxes (1x1 degree, for example) may yield many undesired sites.
+    Examples Degrees-
+    Minutes-
+    Seconds	Decimal
+    Degrees
+    100 59 01 	100.91
+    45 09 34 	45.11
+
+
+
+    Number of observations
+
+    Number of records found meeting a given criteria.
+
+    Parameter code/name
+
+    5-digit number used in the US Geological Survey computerized data system, National Water Information System (NWIS), to uniquely identify a specific constituent. List of parameter code names, and help finding a code.
+
+    Parameter groupings
+
+    Parameters are grouped into major categories of water-quality data. Each parameter belongs to one group only. Parameter codes associated with each group.
+
+    
+
+
+
+    Site name/Local number
+
+     Do NOT include "river", "lake", "creek" or other hydrological term. Search for "trinity" not "trinity river", or a complete or partial local number. All name searches are NOT case sensitive.
+    Note: Site name searches are the slowest way to find sites, and take 5 to 10 times longer than searches using the site number. The fastest site name search is matching from the beginning. Searches that match any part of the name are much slower.
+
+    Site number
+
+    
+
+    Site number search on graphs
+
+    Each site in the USGS data base has a unique 8- to 15-digit identification number. Site numbers are assigned based on this logic.
+
+    Site type
+
+    The hydrologic setting of the site. This is not equivalent to the type of data collected at the site.
+    [ Tab-separated -- saved to file || Tab-separated -- display to screen || HTML ]
+
+    State/Territory
+
+    The name of the state or territory in which the site is located.
+
+
+
+    Update time
+
+    The Update time option provides the ability to select sites that have been updated or have received new/updated data within the specified interval. The available intervals for selection are dependent on the data type being queried. Note: While current-condition sites normally record data onsite every 15 minutes, the stored data are only transmitted to the web hourly.
+
+    Water quality method codes
+
+    Water Quality method codes are associated with one or many parameter codes. The method codes and associated parameters used in NWIS are available. [ Tab-separated -- saved to file || Tab-separated -- display to screen || HTML ] 
+
+    Well depth
+
+    The depth of the finished well, in feet below land surface datum.
+    Note: Not all groundwater sites have information on Well Depth. Such sites will not be retrieved using this search criteria.
+
+Site Inventory Codes
+
+These codes document attributes of sites in the system.
+
+agency_cd
+
+The agency that is reporting the data. Agency codes are fixed values assigned by the National Water Information System (NWIS). [ Tab-separated -- saved to file || HTML ]
+    Altitude datum codes (alt_datum_cd) When Altitude is entered, the code is mandatory. [ Tab-separated -- saved to file || Tab-separated -- display to screen || HTML ]
+    Altitude method codes (alt_meth_cd) When Altitude is entered, the code is mandatory. [ Tab-separated -- saved to file || Tab-separated -- display to screen || HTML ]
+    Aquifer type code (aqfr_type_cd) - Describes the type of aquifer(s) encountered by a site type of well (groundwater). [ Tab-separated -- saved to file || Tab-separated -- display to screen || HTML ]
+    District code - The Water Science Centers (WSCs) across the United States use the FIPS state code as the district code. In some case, sites and samples may be managed by a water science center that is adjacent to the state in which the site actually resides. For example a site may have a district code of 30 which translates to Montana, but the state code could be 56 for Wyoming because that is where the site actually is located.
+    Drainage Basin codes (basin_cd) - The Basin Code or "drainage basin code" is a two-digit code that further subdivides the 8-digit hydrologic-unit code. The drainage basin code is defined by the USGS State Office where the site is located.
+    Hydrologic unit codes (huc_cd) - The United States is divided and sub-divided into successively smaller hydrologic units which are classified into four levels: regions, sub-regions, accounting units, and cataloging units. The hydrologic units are arranged within each other, from the smallest (cataloging units) to the largest (regions). Each hydrologic unit is identified by a unique hydrologic unit code (HUC) consisting of two to eight digits based on the four levels of classification in the hydrologic unit system. [ Tab-separated -- saved to file || Tab-separated -- display to screen || HTML ]
+    Land net - The Public Land Survey System (PLSS) is the surveying method used historically over the largest fraction of the United States to survey and spatially identify land parcels before designation of eventual ownership.
+    Lat/Long coordinate accuracy codes (coord_acy_cd) - Indicates the accuracy of the latitude longitude values. [ Tab-separated -- saved to file || Tab-separated -- display to screen || HTML ]
+    Lat/Long coordinate method codes (coord_meth_cd) - Indicates the method used to determine latitude longitude values. [ Tab-separated -- saved to file || Tab-separated -- display to screen || HTML ]
+    Lat/Long in DMS coordinate datum code (coord_datum_cd) - Latitude/longitude (horizontal) coordinate datum. [ Tab-separated -- saved to file || Tab-separated -- display to screen || HTML ]
+    Local aquifer codes (aqfr) - The eight-character string identifying an aquifer. Codes are defined by the "Catalog of Aquifer Names and Geologic Unit Codes used by the Water Resources Division."
+    Local standard time flag (local_time_fg) - Y for yes or an N for no to indicate whether the site is in an area that switches to Local Standard Time (Daylight Savings Time) for a part of the year.
+    National aquifer codes - National aquifers are the principal aquifers or aquifer systems in the United States, defined as regionally extensive aquifers or aquifer systems that have the potential to be used as a source of potable water. [ Tab-separated -- saved to file||Tab-separated to screen sorted by state|| || HTML to screen sorted by state ]
+    Map scale - the map scale is given as a ratio (1:24000, 1:62500, etc) omitting figure "1" and colon.  The remaining number is the scale. A 7 1/2-minute quadrangle (1:24000) would be entered as 24000; a county or other map of 2 inches to the mile would be entered as 31680.
+    Reliability codes (reliability_cd) - Data reliability code is mandatory for spring, groundwater, and aggregate groundwater sites. Enter the code indicating the reliability of the data available for the site. Data will not be stored for the site if this field is blank. The code that best represents the reliability of the site's inventory data according to the reporting agency is what is entered. When in doubt, the data entry person always select the code that portrays the lesser confidence. [ Tab-separated -- saved to file || Tab-separated -- display to screen || HTML ]
+    
+    State and county Codes (state_cd, county_cd) - State code. A two-digit ANSI code (formerly FIPS code) as defined by the American National Standards Institute, to define States and equivalents. A three-digit ANSI code is used to define counties and county equivalents. A lookup table is available. The only countries with political subdivisions other than the US are Mexico and Canada. The Mexican states have US state codes ranging from 81-86 and Canadian provinces have state codes ranging from 90-98.
+    Time zone codes (tz) - Time zone offset from GMT. An ANSI SQL/92 time zone offset string. Some examples are '-05:00' (Eastern), '+02:00' (Eastern Europe), and '+03:30' (India). [ Tab-separated -- saved to file || Tab-separated -- display to screen || HTML ]
+    Topographic setting code (topo_cd) - Refers to the geomorphic features in the vicinity of the site. [ Tab-separated -- saved to file || Tab-separated -- display to screen || HTML ]
+    Type of data collected (data_types_cd) - This is a legacy field from the old WATSTORE days therefore the national consistency of the information/values stored in this field will vary. This field is actually a 30-POSITION ARRAY of characters.
+
+
+
+
+
+```{r 02_site_EDA, eval=FALSE}
+
+# remove not-needed data
+
+sites_gt_20 <- sites_gt_20 %>%
+  select(-c(agency_cd,                 # all = USGS
+            site_tp_cd,                # all = ST
+            data_type_cd,              # all = pk
+            parm_cd,                   # all = NA
+            stat_cd,                   # all = NA
+            ts_id,                     # all = 0
+            loc_web_ds,                # all = NA
+            medium_grp_cd,             # all = wat
+            parm_grp_cd,               # all = ST
+            srs_id,                    # all = 0
+            access_cd                  # all = 0
+            )) 
+
+# quick plot of the geometry
+plot(sites_gt_20,
+     max.plot = 14)
+
+```
+
+
+
+```{r}
+
+```
+
 
