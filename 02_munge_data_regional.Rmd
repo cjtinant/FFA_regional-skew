@@ -1,5 +1,5 @@
 ---
-title: "Get peak flow data for Northwestern Great Plains ecoregion gages"
+title: "Peak flow locs for Northwestern Great Plains and High Plains ecoregion"
 author: "CJ Tinant"
 date: "`r Sys.Date()`"
 output: html_document
@@ -11,7 +11,11 @@ output: html_document
 Northwestern Great Plains and High Plains region of the SOUTH CENTRAL SEMI-ARID PRAIRIES of the GREAT PLAINS ecoregion
 
 ## Next steps
-* shapefile to sp class for level 3 ecoregion
+create an inline unzip
+unzip /path/to/your/file.zip -d /path/to/destination/folder
+
+-- need to add ecoreg when joining
+
 * intersect level 3 ecoregion with station data
 * sync personal and group Zotero library for FFA
 https://guides.library.oregonstate.edu/c.php?g=359201&p=2426111
@@ -69,6 +73,9 @@ eco_l3_na_names <- eco_l3 %>%
          na_l2name == "SOUTH CENTRAL SEMI-ARID PRAIRIES") %>%
   select(na_l3name) %>%
   distinct()
+```
+
+```{r 02_reproject_eco_shapefile}
 
 # check geometry
 crs_eco_l3 <- eco_l3 %>%
@@ -94,7 +101,9 @@ bb_study_area_unproj <- study_area_unproj %>%
   pivot_longer(-rowname) %>%
   pivot_wider(names_from = rowname,
               values_from = value) %>%
-  select(-name)
+  select(-name) %>%
+  mutate(delta_x = xmax - xmin) %>%
+  mutate(delta_y = ymax - ymin)
 
 # clean up Global Environment
 rm(list = ls(pattern = "names"))
@@ -103,156 +112,149 @@ rm(eco_l3)
 
 ```
 
-# update list of sites
+```{r 03_search_sites}
 
-# check -- delete below
+# Get peak flow sites in the Northern Great Plains and High Plains bb
+sites_nw <- whatNWISsites(                     #  xmin   ymin  xmax  ymax
+  bBox = c(-112, 43.8, -105, 48.6)             #  west  south  east  north
+  )
 
-```{r xx_check_eco_shapefile, eval=FALSE}
+sites_ne <- whatNWISsites(
+  bBox = c(-105, 43.8, -98.9, 48.6)
+  )
 
+sites_ncw <- whatNWISsites(                     #  xmin   ymin  xmax  ymax
+  bBox = c(-112, 39.2, -105, 43.8)              #  west  south  east  north
+  )
 
+sites_nce <- whatNWISsites(
+  bBox = c(-105, 39.2, -98.9, 43.8)
+  )
 
+sites_scw <- whatNWISsites(                     #  xmin   ymin  xmax  ymax
+  bBox = c(-112, 35.6, -105, 39.2)              #  west  south  east  north
+  )
 
+sites_sce <- whatNWISsites(
+  bBox = c(-105, 35.6, -98.9, 39.2)
+  )
 
+sites_sw <- whatNWISsites(                     #  xmin   ymin  xmax  ymax
+  bBox = c(-112, 31.6, -105, 35.6)              #  west  south  east  north
+  )
 
+sites_se <- whatNWISsites(
+  bBox = c(-105, 31.6, -98.9, 35.6)
+  )
 
+sites_sa <- whatNWISsites(
+  bBox = c(-112, 31.2, -98.9, 31.6)
+  )
 
+# bind rows -all sites
+sites_all_n <- bind_rows(sites_nw, sites_ne,
+                       sites_ncw, sites_nce)
 
-# project geometry into NAD83
-study_area <- st_transform(study_area,
-                     crs = 4269)
+sites_all_s <- bind_rows(sites_scw, sites_sce,
+                       sites_sw, sites_se,
+                       sites_sa)
 
-study_area$geometry
-
-# clean up global environment
-rm(list = ls(pattern = "eco"))
+# clean up Global Environment
+rm(list = ls(pattern = "sites_n"))
+rm(list = ls(pattern = "sites_s"))
 
 ```
 
+```{r 04_filter_peak-flow_sites}
 
+sites_st_n <-sites_all_n %>%
+  filter(site_tp_cd == "ST")
 
-```{r things, eval=FALSE}
+sites_st_s <-sites_all_s %>%
+  filter(site_tp_cd == "ST")
 
+# get a list of all peak flow data in bounding box
+sites_pk_n <-  whatNWISdata(
+  siteNumber = sites_st_n$site_no,
+  service = "pk"
+  )
 
+sites_pk_s <-  whatNWISdata(
+  siteNumber = sites_st_s$site_no,
+  service = "pk"
+  )
 
-test <- st_join(sites_gt_20, study_area)
-
-```
-
-
-```{r 03_imake_peak_sites_spatial}
-
-# convert_df_to_spatial_format--
-# get datum 
-datum <- sites_gt_20 %>%
-  select(dec_coord_datum_cd) %>%
-  distinct()
-
-datum_sites <- datum$dec_coord_datum_cd
+sites_peak_all <- bind_rows(sites_pk_n, sites_pk_s)
 
 # convert stations into a spatial format (sf) object
-sites_gt_20 <- st_as_sf(sites_gt_20,
+sites_peak_all <- st_as_sf(sites_peak_all,
                     coords = c("dec_long_va",        # note x goes first
                                 "dec_lat_va"),
                     crs = 4269,                     # projection, this is NAD83
                     remove = FALSE)                 # don't remove lat/lon cols
 
 # clean up Global Environment
-rm(list = ls(pattern = "datum"))
-
-# quick plot of the geometry
-plot(sites_gt_20,
-     max.plot = 14)
+rm(list = ls(pattern = "_n"))
+rm(list = ls(pattern = "_s"))
 
 ```
 
-```{r}
+```{r 05_intersect_sites_study_area}
 
-# subset sites gt 20
-sites_gt_20 <- sites_peak %>%
-  filter(count_nu >= 20)
+#out <- st_intersection(points, poly)
+sites_peak <- st_intersection(sites_peak_all, study_area_unproj)
 
-# remove not-needed data
-sites_gt_20 <- sites_gt_20 %>%
+# plot results
+ggplot() +
+  geom_sf(data = study_area_unproj) +
+  geom_sf(data = sites_peak,
+          size = 0.5)
+```
+
+```{r 06_drop_cols_export_result}
+
+sites_peak <- sites_peak %>%
   select(
     # no variance among station values
-    -c(agency_cd,                 # all = USGS
-       site_tp_cd,                # all = ST
-       data_type_cd,              # all = pk
-       parm_cd,                   # all = NA
-       stat_cd,                   # all = NA
-       ts_id,                     # all = 0
-       loc_web_ds,                # all = NA
-       medium_grp_cd,             # all = wat
-       parm_grp_cd,               # all = ST
-       srs_id,                    # all = 0
-       access_cd,                 # all = 0
-    # non-important vars
-       alt_acy_va,
-       coord_acy_cd
-    )) 
+    -c(
+      agency_cd,        # all = USGS
+      site_tp_cd,       # all = ST
+      data_type_cd,     # all = pk
+      parm_cd,          # all = NA
+      stat_cd,          # all = NA
+      ts_id,            # all = 0
+      loc_web_ds,       # all = NA
+      medium_grp_cd,    # all = wat
+      parm_grp_cd,      # all = ST
+      srs_id,           # all = 0
+      access_cd,        # all = 0
+      # non-important vars
+      alt_acy_va,
+      coord_acy_cd,
+      # not-needed ecoreg names
+      na_l3code,
+      na_l3name,
+      na_l2code,
+      na_l2name,
+      na_l1code,
+      na_l1name,
+      l3_key,
+      l2_key,
+      l1_key,
+      shape_leng,
+      shape_area
+    ))
 
-```
-
-```{r 02_import_munge_peak_sites}
-
-# get site data
-sites <- read_csv("data/sites_peak.csv")
-
-# convert_df_to_spatial_format--
-# get datum 
-datum <- sites %>%
-  select(dec_coord_datum_cd) %>%
-  distinct()
-
-datum_sites <- datum$dec_coord_datum_cd
-
-# convert stations into a spatial format (sf) object
-sites <- st_as_sf(sites,
-                    coords = c("dec_long_va",        # note x goes first
-                                "dec_lat_va"),
-                    crs = 4269,                     # projection, this is NAD83
-                    remove = FALSE)                 # don't remove lat/lon cols
+# save as a csv
+write_csv(sites_peak, "data/sites_peak.csv")
 
 # clean up Global Environment
-rm(list = ls(pattern = "datum"))
+rm(list = ls(pattern = "sites"))
+rm(list = ls(pattern = "study"))
 
 ```
 
-```{r 01_make_site_criteria_code}
-
-# quick plot of the geometry
-#plot(sites,
-#     max.plot = 14)
 
 
-site_criteria_cde <- tribble(
-    ~code, ~description,
-    "agency_cd", "The agency that is reporting the data. Agency codes are fixed values assigned by the National Water Information System (NWIS).",
-  "site_no", "Each site in the USGS data base has a unique 8- to 15-digit identification number.",
-  "station_nm", "This is the official name of the site in the database. For well information this can be a district-assigned local number.",
- "site_tp_cd", "A list of primary and secondary site types that can be associated with data collection sites. A site type is a generalized location in the hydrologic cycle, or a man-made feature thought to affect the hydrologic conditions measured at a site. All sites are associated with a primary site type, and may additionally be associated with a secondary site type that further describes the location.",
- "dec_lat_va", "Latitude in decimal degrees",
- "dec_long_va", "Longitude in decimal degrees",
- "coord_acy_cd", "Lat/Long coordinate accuracy codes indicating the accuracy of the latitude longitude values.",
- "dec_coord_datum_cd", "Lat/Long coordinate datum.",
- "alt_va", "Altitude of the site referenced to the specified Vertical Datum",
- "alt_acy_va", "Altitude accuracy value. Many altitudes are interpolated from the contours on topographic maps; accuracies determined in this way are generally entered as one-half of the contour interval.",
- "alt_datum_cd", "Altitude coordinate datum.",
- "huc_cd", "Hydrologic unit codes. The United States is divided and sub-divided into successively smaller hydrologic units which are classified into four levels: regions, sub-regions, accounting units, and cataloging units. The hydrologic units are arranged within each other, from the smallest (cataloging units) to the largest (regions). Each hydrologic unit is identified by a unique hydrologic unit code (HUC) consisting of two to eight digits based on the four levels of classification in the hydrologic unit system.",
- "data_type_cd", "All USGS data falls into one of: Current Conditions, Daily Data, Surface Water, Water Quality, Groundwater. Current condition data is any data down to the 15 minute interval that has been transmitted in the last 120 days. Daily Data is the average daily value for a site. Surface Water is water flow and levels in streams, lakes and springs. Water Quality is chemical and physical data for streams, lakes, springs, and wells. Groundwater is water levels in wells.",
- "parm_cd", "Parameter code",
- "stat_cd", "Statistics code",
- "ts_id", "",
- "loc_web_ds", "",
- "medium_grp_cd", "Medium type refers to the specific environmental medium that was sampled and analyzed. Medium type differs from site type because one site type, such as surface water, could have data for several media, such as water, bottom sediment, fish tissue, and others.",
- "parm_grp_cd", "Parameter group code",
- "srs_id", "USEPA SRS.http://www.epa.gov/srs/",
- "access_cd", "",
- "begin_date", "Begin date of the period of record for the data",
- "end_date", "End date of the period of record for the data",
- "count_nu", "Number of records",
- "ecoreg", ""
- )
 
-```
 
