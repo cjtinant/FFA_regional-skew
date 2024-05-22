@@ -6,12 +6,8 @@ output: html_document
 ---
 
 <!--
-
-References:
-[dataRetrieval tutorial](https://waterdata.usgs.gov/blog/dataretrieval/)
-
-[USGS watermapper](https://maps.waterdata.usgs.gov/mapper/index.html)
-
+Make criteria code metadata
+Download ecoregion shapefiles
 --> 
 
 ```{r 00_setup, include=FALSE}
@@ -60,108 +56,15 @@ site_criteria_cde <- tribble(
  "na_l3_cde", "User-generated code for level-3 ecoregion names, where 'ngp' = 'Northern Great Plains' and 'hp' = High Plains"
  )
 
-# update sites_peak variable names -- to fit with l3 ecoregion names
-sites_peak <- sites_peak %>%
-  rename(na_l3_cde = ecoreg)
-
-# check site codes -- zero obs in site_peak_vars_ck means all vars are described
-sites_peak_vars <- tibble(code = names(sites_peak))
-
-sites_peak_vars <- left_join(sites_peak_vars, site_criteria_cde,
-                             by = join_by(code)) 
-
-sites_peak_vars_ck <- sites_peak_vars %>%
-  filter(is.na(description))
-
 # write metadata file
 write_csv(sites_peak_vars, "data_output/sites_peak_vars")
 
 # clean Global Environment
-rm(list = ls(pattern = "_vars"))
 rm(list = ls(pattern = "_cde"))
 
 ```
 
-```{r 02_initial-search_peak-flow_sites, eval=FALSE}
-
-# Initial search of peak flow sites in the Northern Great Plains and 
-
-# Northern Great Plains--
-#  west  south  east  north
-# -111.5, 42.0, -99.5, 48.5
-
-# get a list of sites for the Northwestern Great Plains ecoregion bounding box
-sites_nw <- whatNWISsites(                       
-  bBox = c(-111.5, 45.0, -105.5, 48.5)           #  west  south  east  north
-  )
-
-sites_sw <- whatNWISsites(                       
-  bBox = c(-111.5, 42.0, -105.5, 45.0)           #  west  south  east  north
-  )
-
-sites_ne <- whatNWISsites(                       
-  bBox = c(-105.5, 45.0, -99.5, 48.5)            #  west  south  east  north
-  )
-
-sites_se <- whatNWISsites(                       
-  bBox = c(-105.5, 42.0, -99.5, 45.0)            #  west  south  east  north
-  )
-
-# bind rows -- filter stream gages
-sites_ngp <- bind_rows(sites_nw, sites_sw, sites_ne, sites_se) %>%
-  filter(site_tp_cd == "ST")
-
-# get a list of all peak flow data in bounding box -- add ecoreg
-peak_ngp <-  whatNWISdata(
-  siteNumber = sites_ngp$site_no,
-  service = "pk"
-  ) %>%
-  mutate(ecoreg = "ngp")
-
-# High Plains
-
-#  west  south  east  north
-# -105.6, 31.0, -100, 42.0
-
-# get a list of sites for the High Plains ecoregion bounding box
-sites_nw <- whatNWISsites(                       
-  bBox = c(-105.6, 37.5, -102.8, 42.0)           #  west  south  east  north
-  )
-
-sites_sw <- whatNWISsites(                       
-  bBox = c(-105.6, 31.0, -102.8, 37.5)           #  west  south  east  north
-  )
-
-sites_ne <- whatNWISsites(                       
-  bBox = c(-102.8, 37.5, -100, 42.0)             #  west  south  east  north
-  )
-
-sites_se <- whatNWISsites(                       
-  bBox = c(-102.8, 31.0, -100, 37.5)             #  west  south  east  north
-  )
-
-# bind rows -- filter stream gages
-sites_hp <- bind_rows(sites_nw, sites_sw, sites_ne, sites_se) %>%
-  filter(site_tp_cd == "ST")
-
-# get a list of all peak flow data in bounding box -- add ecoreg
-peak_hp <-  whatNWISdata(
-  siteNumber = sites_hp$site_no,
-  service = "pk"
-  ) %>%
-  mutate(ecoreg = "hp")
-
-# bind cols and export
-sites_peak <- bind_rows(peak_ngp, peak_hp)
-
-write_csv(sites_peak, "data/sites_peak.csv")
-
-# clean up Global Environment
-rm(list = ls(pattern = "sites"))
-
-```
-
-```{r 03_dl_shapefiles, eval=FALSE}
+```{r 02_dl_shapefiles, eval=FALSE}
 
 # download shapefiles by calling the download.file() function, and passing 
 #   in the URL and file name/location as arguments
