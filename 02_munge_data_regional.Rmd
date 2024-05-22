@@ -7,7 +7,8 @@ output: html_document
 
 <!--
 
-
+# Ecoregion hierarchy
+Northwestern Great Plains and High Plains region of the SOUTH CENTRAL SEMI-ARID PRAIRIES of the GREAT PLAINS ecoregion
 
 ## Next steps
 * shapefile to sp class for level 3 ecoregion
@@ -41,9 +42,9 @@ library(sf)               # Simple features for R
 
 ```
 
-```{r 01_import_sites_meta_eco_shapefile, eval=FALSE}
+```{r 01_import_peak-flow-station-metadata_eco_shapefile}
 # load sites peak metadata
-sites_peak <- read_csv("data/sites_peak.csv")
+sites <- read_csv("data/sites_peak.csv")
 
 # load ecoregion shapefile
 eco_l3 <- st_read("data_spatial/data_spus_eco_l3/us_eco_l3.shp") %>%
@@ -68,16 +69,53 @@ eco_l3_na_names <- eco_l3 %>%
          na_l2name == "SOUTH CENTRAL SEMI-ARID PRAIRIES") %>%
   select(na_l3name) %>%
   distinct()
-```
-
-```{r 02_check_eco_shapefile, eval=FALSE}
-# subset study area
-study_area <- eco_l3 %>%
-  filter(na_l3name == "High Plains" |
-         na_l3name == "Northwestern Great Plains") 
 
 # check geometry
-study_area$geometry
+crs_eco_l3 <- eco_l3 %>%
+  st_crs()
+
+# subset study area -- Albers refers to Albers Equal Area Conic projection
+study_area_albers <- eco_l3 %>%
+  filter(na_l3name == "High Plains" |
+         na_l3name == "Northwestern Great Plains")
+
+# project study area to NAD83 Geographic (ESPG:4269)
+study_area_unproj <- study_area_albers %>%
+  st_transform(crs = 4269)
+
+crs_study_area_unproj <- study_area_unproj %>%
+  st_crs()
+
+# make bounding box
+bb_study_area_unproj <- study_area_unproj %>%
+  st_bbox() %>%
+  as.data.frame() %>%
+  rownames_to_column() %>%
+  pivot_longer(-rowname) %>%
+  pivot_wider(names_from = rowname,
+              values_from = value) %>%
+  select(-name)
+
+# clean up Global Environment
+rm(list = ls(pattern = "names"))
+rm(list = ls(pattern = "crs"))
+rm(eco_l3)
+
+```
+
+# update list of sites
+
+# check -- delete below
+
+```{r xx_check_eco_shapefile, eval=FALSE}
+
+
+
+
+
+
+
+
 
 # project geometry into NAD83
 study_area <- st_transform(study_area,
