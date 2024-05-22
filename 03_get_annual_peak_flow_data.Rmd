@@ -1,0 +1,69 @@
+---
+title: "Peak flow locs for Northwestern Great Plains and High Plains ecoregion"
+author: "CJ Tinant"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+<!--
+# Ecoregion hierarchy
+Northwestern Great Plains and High Plains region of the SOUTH CENTRAL SEMI-ARID PRAIRIES of the GREAT PLAINS ecoregion
+
+## Next steps
+create an inline unzip
+unzip /path/to/your/file.zip -d /path/to/destination/folder
+
+-- need to add ecoreg when joining
+
+* intersect level 3 ecoregion with station data
+* sync personal and group Zotero library for FFA
+https://guides.library.oregonstate.edu/c.php?g=359201&p=2426111
+https://www.zotero.org/groups/5473862/olc_flood-frequency
+
+
+## Helpful references:
+GIT issues--
+[GIT issues](https://dangitgit.com/)
+
+Spatial data issues--
+[Intro to spatial data in R](https://www.r4wrds.com/intro/m_intro_mapmaking)
+[Overview of Coordinate Reference Systems (CRS) in R](https://www.nceas.ucsb.edu/sites/default/files/2020-04/OverviewCoordinateReferenceSystems.pdf)
+[Geocomputation with R](https://r.geocompx.org/)
+
+References:
+[dataRetrieval tutorial](https://waterdata.usgs.gov/blog/dataretrieval/)
+
+[USGS watermapper](https://maps.waterdata.usgs.gov/mapper/index.html)
+-->
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# update sites_peak variable names -- to fit with l3 ecoregion names
+sites_peak <- sites_peak %>%
+  rename(na_l3_cde = ecoreg)
+
+# check site codes -- zero obs in site_peak_vars_ck means all vars are described
+sites_peak_vars <- tibble(code = names(sites_peak))
+
+sites_peak_vars <- left_join(sites_peak_vars, site_criteria_cde,
+                             by = join_by(code)) 
+
+sites_peak_vars_ck <- sites_peak_vars %>%
+  filter(is.na(description))
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
