@@ -39,31 +39,73 @@ References:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+# library
+library(tidyverse)        # Load the 'Tidyverse' packages: ggplot2, dplyr, 
+                          #   tidyr, readr, purrr, tibble, stringr, and forcats
+library(dataRetrieval)    # Retrieval functions for USGS and EPA hydrology and
+                          #   water quality data
+library(sf)               # Simple features for R
+
 ```
 
-# update sites_peak variable names -- to fit with l3 ecoregion names
-sites_peak <- sites_peak %>%
-  rename(na_l3_cde = ecoreg)
 
-# check site codes -- zero obs in site_peak_vars_ck means all vars are described
-sites_peak_vars <- tibble(code = names(sites_peak))
+```{r 00_import_peak-flow_metadata}
 
-sites_peak_vars <- left_join(sites_peak_vars, site_criteria_cde,
-                             by = join_by(code)) 
+# get peakflow metadata
+sites_peak <- read_csv("data/sites_peak.csv")
 
-sites_peak_vars_ck <- sites_peak_vars %>%
-  filter(is.na(description))
+# filter sites greater than 20 years
+sites_gt_20 <- sites_peak %>%
+  filter(count_nu > 20)
 
-```{r cars}
-summary(cars)
+# get peak data
+site_ids <- sites_gt_20$site_no
+
+peak_data <- readNWISpeak(site_ids)
+
+peak_data_ck <- peak_data %>%
+  group_by(site_no) %>%
+  summarise(count = n())
+
 ```
 
-## Including Plots
+```{r 01_remove_years_without_peak_va}
 
-You can also embed plots, for example:
+peak_data_na <- peak_data %>%
+  filter(is.na(peak_va))
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+peak_data <- anti_join(peak_data, peak_data_na)
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Next Steps
+
+* Keep
+site_no,
+peak_dt,
+peak_va,
+peak_cd
+
+* Drop
+agency_cd,
+peak_tm,
+gage_ht,
+gage_ht_cd,
+ag_tm,
+ag_gage_ht,
+ag_gage_ht_cd,
+peak_dateTime,
+ag_dateTime
+
+
+* Check
+year_last_pk,
+ag_dt
+
+
+
+
+
+
+
