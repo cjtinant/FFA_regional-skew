@@ -24,7 +24,22 @@ library(here)
 
 ```
 
-```{r 02_filter_peak-flow_sites}
+```{r 01_get_peak-flow_site_data_ecoreg_data}
+
+sites_pk <- read_csv("~/FFA_regional-skew/data/sites_pk")
+
+# load ecoregion shapefile -- path for Cyverse 
+eco_l3 <- st_read("~/data-store/home/cjtinant/data_spatial/us_eco_l3.shp") %>%
+  janitor::clean_names()
+
+# load ecoregion shapefile -- local path
+eco_l3 <- st_read("data_spatial/data_spus_eco_l3/us_eco_l3.shp") %>%
+  janitor::clean_names()
+
+```
+
+```{r 02_convert_peak-flow_sites_to_spatial}
+
 # convert stations into a spatial format (sf) object
 sites_peak <- st_as_sf(sites_pk,
                     coords = c("dec_long_va",        # note x goes first
@@ -34,14 +49,7 @@ sites_peak <- st_as_sf(sites_pk,
 
 ```
 
-```{r 03_import_eco_shapefile}
-
-# load sites peak metadata
-#sites <- read_csv("data/sites_peak.csv")
-
-# load ecoregion shapefile
-eco_l3 <- st_read("data_spatial/data_spus_eco_l3/us_eco_l3.shp") %>%
-  janitor::clean_names()
+```{r 03_explore_eco_shapefile_names}
 
 # explore names
 eco_l1_names <- eco_l3 %>%
