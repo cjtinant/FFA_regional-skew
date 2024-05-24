@@ -43,6 +43,7 @@ library(tidyverse)        # Load the 'Tidyverse' packages: ggplot2, dplyr,
 library(dataRetrieval)    # Retrieval functions for USGS and EPA hydrology and
                           #   water quality data
 library(sf)               # Simple features for R
+library(here)
 
 ```
 
