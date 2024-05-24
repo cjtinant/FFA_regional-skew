@@ -103,3 +103,80 @@ url <- "http://www2.census.gov/geo/tiger/TIGER2012/STATE/tl_2012_us_state.zip"
 file_name <- "tl_2012_us_state.zip"
 
 ```
+
+```{r 03_get_peak_flow_site_info}
+
+# Get peak flow sites in the Northern Great Plains and High Plains bb
+sites_nw <- whatNWISsites(                     #  xmin   ymin  xmax  ymax
+  bBox = c(-112, 43.8, -105, 48.6)             #  west  south  east  north
+  )
+
+sites_ne <- whatNWISsites(
+  bBox = c(-105, 43.8, -98.9, 48.6)
+  )
+
+sites_ncw <- whatNWISsites(                     #  xmin   ymin  xmax  ymax
+  bBox = c(-112, 39.2, -105, 43.8)              #  west  south  east  north
+  )
+
+sites_nce <- whatNWISsites(
+  bBox = c(-105, 39.2, -98.9, 43.8)
+  )
+
+sites_scw <- whatNWISsites(                     #  xmin   ymin  xmax  ymax
+  bBox = c(-112, 35.6, -105, 39.2)              #  west  south  east  north
+  )
+
+sites_sce <- whatNWISsites(
+  bBox = c(-105, 35.6, -98.9, 39.2)
+  )
+
+sites_sw <- whatNWISsites(                     #  xmin   ymin  xmax  ymax
+  bBox = c(-112, 31.6, -105, 35.6)              #  west  south  east  north
+  )
+
+sites_se <- whatNWISsites(
+  bBox = c(-105, 31.6, -98.9, 35.6)
+  )
+
+sites_sa <- whatNWISsites(
+  bBox = c(-112, 31.2, -98.9, 31.6)
+  )
+
+# bind rows -all sites
+sites_all <- bind_rows(sites_nw, sites_ne,
+                       sites_ncw, sites_nce,
+                       sites_scw, sites_sce,
+                       sites_sw, sites_se,
+                       sites_sa)
+
+# clean up Global Environment
+rm(list = ls(pattern = "sites_n"))
+rm(list = ls(pattern = "sites_s"))
+
+```
+
+```{r 04_get_peak-flow_sites}
+
+# get a list of all streamflow flow data in bounding box
+sites_st <-sites_all %>%
+  filter(site_tp_cd == "ST")
+
+# get all peak flow data in bounding box
+sites_pk <-  whatNWISdata(
+  siteNumber = sites_st$site_no,
+  service = "pk"
+  )
+
+# write csv
+write_csv(sites_pk, "~/FFA_regional-skew/data/sites_pk")
+
+```
+
+
+
+
+
+
+
+
