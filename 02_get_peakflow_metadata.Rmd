@@ -41,7 +41,7 @@ eco_l3 <- st_read("data_spatial/data_spus_eco_l3/us_eco_l3.shp") %>%
 ```{r 02_convert_peak-flow_sites_to_spatial}
 
 # convert stations into a spatial format (sf) object
-sites_peak <- st_as_sf(sites_pk,
+sites_pk_spatial <- st_as_sf(sites_pk,
                     coords = c("dec_long_va",        # note x goes first
                                 "dec_lat_va"),
                     crs = 4269,                     # projection, this is NAD83
@@ -112,7 +112,7 @@ rm(eco_l3)
 ```{r 05_intersect_sites_study_area}
 
 #out <- st_intersection(points, poly)
-sites_peak <- st_intersection(sites_peak_all, study_area_unproj)
+sites_peak <- st_intersection(sites_pk_spatial, study_area_unproj)
 
 # plot results
 ggplot() +
