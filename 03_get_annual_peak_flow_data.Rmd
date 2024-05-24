@@ -46,6 +46,8 @@ library(tidyverse)        # Load the 'Tidyverse' packages: ggplot2, dplyr,
 library(dataRetrieval)    # Retrieval functions for USGS and EPA hydrology and
                           #   water quality data
 library(sf)               # Simple features for R
+library(Lmoments)         # L-moments and trimmed L-moments from the data
+library(lmom)
 
 ```
 
@@ -77,31 +79,41 @@ peak_data_na <- peak_data %>%
 
 peak_data <- anti_join(peak_data, peak_data_na)
 
+write_csv(peak_data, "data/data_peak.csv")
+
 ```
 
-## Next Steps
+```{r 02_drop_vars}
 
-* Keep
-site_no,
-peak_dt,
-peak_va,
-peak_cd
+peak_data <- peak_data %>%
+  select(-c(
+    agency_cd,
+    peak_tm,
+    gage_ht,
+    gage_ht_cd,
+    ag_tm,
+    ag_gage_ht,
+    ag_gage_ht_cd,
+    peak_dateTime,
+    ag_dateTime,
+    ag_dt,
+    year_last_pk
+  ))
 
-* Drop
-agency_cd,
-peak_tm,
-gage_ht,
-gage_ht_cd,
-ag_tm,
-ag_gage_ht,
-ag_gage_ht_cd,
-peak_dateTime,
-ag_dateTime
+```
+
+```{r}
+
+moments <- peak_data %>%
+  group_by(site_no) %>%
+  samlmu(peak_data$peak_va, 4)
+
+  summarise(moments = Lmoments(peak_data$peak_va))
 
 
-* Check
-year_last_pk,
-ag_dt
+```
+
+
 
 
 
