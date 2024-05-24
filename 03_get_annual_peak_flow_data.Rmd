@@ -5,39 +5,7 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
-<!--
-# Ecoregion hierarchy
-Northwestern Great Plains and High Plains region of the SOUTH CENTRAL SEMI-ARID PRAIRIES of the GREAT PLAINS ecoregion
-
-## Next steps
-create an inline unzip
-unzip /path/to/your/file.zip -d /path/to/destination/folder
-
--- need to add ecoreg when joining
-
-* intersect level 3 ecoregion with station data
-* sync personal and group Zotero library for FFA
-https://guides.library.oregonstate.edu/c.php?g=359201&p=2426111
-https://www.zotero.org/groups/5473862/olc_flood-frequency
-
-
-## Helpful references:
-GIT issues--
-[GIT issues](https://dangitgit.com/)
-
-Spatial data issues--
-[Intro to spatial data in R](https://www.r4wrds.com/intro/m_intro_mapmaking)
-[Overview of Coordinate Reference Systems (CRS) in R](https://www.nceas.ucsb.edu/sites/default/files/2020-04/OverviewCoordinateReferenceSystems.pdf)
-[Geocomputation with R](https://r.geocompx.org/)
-
-References:
-[dataRetrieval tutorial](https://waterdata.usgs.gov/blog/dataretrieval/)
-
-[USGS watermapper](https://maps.waterdata.usgs.gov/mapper/index.html)
--->
-
-
-```{r setup, include=FALSE}
+```{r 00_setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 # library
@@ -51,8 +19,7 @@ library(lmom)
 
 ```
 
-
-```{r 00_import_peak-flow_metadata}
+```{r 01_import_munge_peak-flow_metadata}
 
 # get peakflow metadata
 sites_peak <- read_csv("data/sites_peak.csv")
@@ -60,6 +27,16 @@ sites_peak <- read_csv("data/sites_peak.csv")
 # filter sites greater than 20 years
 sites_gt_20 <- sites_peak %>%
   filter(count_nu > 20)
+
+# Identify missing data
+sites_gt_20_missing_data <- sites_peak %>%
+  summarize(across(everything(), ~sum(is.na(.)))
+            ) %>%
+  pivot_longer(cols = everything())
+
+```
+
+```{r 02_get_peak-flow_data}
 
 # get peak data
 site_ids <- sites_gt_20$site_no
@@ -114,7 +91,36 @@ moments <- peak_data %>%
 ```
 
 
+<!--
+# Ecoregion hierarchy
+Northwestern Great Plains and High Plains region of the SOUTH CENTRAL SEMI-ARID PRAIRIES of the GREAT PLAINS ecoregion
 
+## Next steps
+create an inline unzip
+unzip /path/to/your/file.zip -d /path/to/destination/folder
+
+-- need to add ecoreg when joining
+
+* intersect level 3 ecoregion with station data
+* sync personal and group Zotero library for FFA
+https://guides.library.oregonstate.edu/c.php?g=359201&p=2426111
+https://www.zotero.org/groups/5473862/olc_flood-frequency
+
+
+## Helpful references:
+GIT issues--
+[GIT issues](https://dangitgit.com/)
+
+Spatial data issues--
+[Intro to spatial data in R](https://www.r4wrds.com/intro/m_intro_mapmaking)
+[Overview of Coordinate Reference Systems (CRS) in R](https://www.nceas.ucsb.edu/sites/default/files/2020-04/OverviewCoordinateReferenceSystems.pdf)
+[Geocomputation with R](https://r.geocompx.org/)
+
+References:
+[dataRetrieval tutorial](https://waterdata.usgs.gov/blog/dataretrieval/)
+
+[USGS watermapper](https://maps.waterdata.usgs.gov/mapper/index.html)
+-->
 
 
 
