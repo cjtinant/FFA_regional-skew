@@ -1,0 +1,72 @@
+---
+title: "Untitled"
+output: html_document
+date: "2024-05-24"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r 02_drop_vars}
+
+peak_data <- peak_data %>%
+  select(-c(
+    agency_cd,
+    peak_tm,
+    gage_ht,
+    gage_ht_cd,
+    ag_tm,
+    ag_gage_ht,
+    ag_gage_ht_cd,
+    peak_dateTime,
+    ag_dateTime,
+    ag_dt,
+    year_last_pk
+  ))
+
+```
+
+```{r}
+
+moments <- peak_data %>%
+  group_by(site_no) %>%
+  samlmu(peak_data$peak_va, 4)
+
+  summarise(moments = Lmoments(peak_data$peak_va))
+
+
+```
+
+
+<!--
+# Ecoregion hierarchy
+Northwestern Great Plains and High Plains region of the SOUTH CENTRAL SEMI-ARID PRAIRIES of the GREAT PLAINS ecoregion
+
+## Next steps
+create an inline unzip
+unzip /path/to/your/file.zip -d /path/to/destination/folder
+
+-- need to add ecoreg when joining
+
+* intersect level 3 ecoregion with station data
+* sync personal and group Zotero library for FFA
+https://guides.library.oregonstate.edu/c.php?g=359201&p=2426111
+https://www.zotero.org/groups/5473862/olc_flood-frequency
+
+
+## Helpful references:
+GIT issues--
+[GIT issues](https://dangitgit.com/)
+
+Spatial data issues--
+[Intro to spatial data in R](https://www.r4wrds.com/intro/m_intro_mapmaking)
+[Overview of Coordinate Reference Systems (CRS) in R](https://www.nceas.ucsb.edu/sites/default/files/2020-04/OverviewCoordinateReferenceSystems.pdf)
+[Geocomputation with R](https://r.geocompx.org/)
+
+References:
+[dataRetrieval tutorial](https://waterdata.usgs.gov/blog/dataretrieval/)
+
+[USGS watermapper](https://maps.waterdata.usgs.gov/mapper/index.html)
+-->
