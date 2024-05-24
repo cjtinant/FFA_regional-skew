@@ -57,14 +57,14 @@ site_criteria_cde <- tribble(
  )
 
 # write metadata file
-write_csv(sites_peak_vars, "data_output/sites_peak_vars")
+write_csv(site_criteria_cde, "data_output/sites_site_criteria_cde.csv")
 
 # clean Global Environment
 rm(list = ls(pattern = "_cde"))
 
 ```
 
-```{r 02_dl_shapefiles, eval=FALSE}
+```{r 02_dl_shapefiles_DOES-NOT-WORK-FROM-CYVERSE, eval=FALSE}
 
 # download shapefiles by calling the download.file() function, and passing 
 #   in the URL and file name/location as arguments
