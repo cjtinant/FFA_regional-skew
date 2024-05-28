@@ -6,10 +6,32 @@ output: html_document
 ---
 
 <!--
-PURPOSE: prepare peak flow data for analysis.
+PURPOSE: Prepare peak flow data for analysis 
 
 METHODS:
-This code chunk cleans peak flow data and metadata
+1. Check peak flow record flags.
+
+2. Omit records with:
+* "3" -- "Discharge affected by Dam Failure",
+* "5" -- "Discharge affected to unknown degree by Regulation or Diversion",
+* "6" -- "Discharge affected by Regulation or Diversion",
+* "C" -- "All or part of the record affected by Urbanization, Mining, Agricultural changes, Channelization, or other",
+
+3. Check records with:
+* "4" -- "Discharge less than indicated value which is Minimum Recordable Discharge at this site",
+* "A" -- "Year of occurrence is unknown or not exact",
+* "Bd" -- "Day of occurrence is unknown or not exact",
+* "Bm" -- "Month of occurrence is unknown or not exact",
+* "O", "Opportunistic value not from systematic data collection",
+
+4. Keep records with
+* "1" -- "Discharge is a Maximum Daily Average",
+* "2" -- "Discharge is an Estimate",
+* "7" -- "Discharge is an Historic Peak",
+* "8" -- "Discharge actually greater than indicated value",
+* "9" -- "Discharge due to Snowmelt, Hurricane, Ice-Jam or Debris Dam breakup",
+* "F", "Peak supplied by another agency",
+* "R", "Revised"
 
 DATA DICTIONARY
 peak_data_orig -- original peak flow records
@@ -47,7 +69,7 @@ peak_data_orig <- read_csv("data/data_peak.csv")
 
 ```{r 02_make_pf-flag-descriptions}
 
-pead_flag_desc <- tribble(
+peak_flag_desc <- tribble(
   ~peak_cd, ~peak_cd_descr,
   "1", "Discharge is a Maximum Daily Average",
   "2", "Discharge is an Estimate",
@@ -70,7 +92,6 @@ pead_flag_desc <- tribble(
 ```
 
 ```{r 03_pf_data_check_flags}
-
 # tidy data flags
 #   peak_flags    
 peak_flags <- peak_data_orig %>%
@@ -90,16 +111,75 @@ peak_flags <- peak_data_orig %>%
   select(-c(peak_cd, name)) %>%
   rename(peak_cd = value) %>%
   distinct() %>%
-  filter(!is.na(peak_cd))
+  filter(!is.na(peak_cd)) %>%
+  select(site_no, peak_dt, peak_cd)
+```
 
-peak_flag_summ <- peak_flags %>%
-  select(peak_cd) %>%
-  distinct() %>%
-  arrange(peak_cd)
+```{r 04_pf_data_omit_records}
+# pull records with dam fail, regulation, or discharge otherwise affected
+omit_flag_dam_fail <- peak_data_orig %>%
+  filter(peak_cd == "3")
+
+omit_flag_regulated_unkn_degr <- peak_data_orig %>%
+  filter(peak_cd == "5")
+
+omit_flag_regulated <- peak_data_orig %>%
+  filter(peak_cd == "6")
+
+omit_flag_affected <- peak_data_orig %>%
+  filter(peak_cd == "C")
+
+# join omitted records and remove from working df
+omit_flag <- bind_rows(omit_flag_dam_fail,
+                       omit_flag_regulated_unkn_degr,
+                       omit_flag_regulated,
+                       omit_flag_affected
+                       )
+
+peak_data <- anti_join(peak_data_orig, omit_flag)
+
+# clean up Global Environment
+rm(list = ls(pattern = "omit_flag_"))
 
 ```
 
-```{r 04_pf_data_check_dates}
+```{r 05_pf_data_drop_sites}
+
+# update list of sites
+sites_unreg_all <- peak_data %>%
+  group_by(site_no) %>%
+  summarise(pk_count = n())
+
+sites_unreg_lt_20 <- sites_unreg_all %>%
+  filter(pk_count < 20)
+
+sites_unreg <- anti_join(sites_unreg_all, sites_unreg_lt_20,
+                         by = join_by(site_no))
+
+```
+
+# NEXT STEP -- VISUALIZE THE ORIGINAL AND REMOVED SITES
+
+```{r 06_pf_data_check_records}
+
+check_flag_disch_lt_recorded <- peak_data_orig %>%
+  filter(peak_cd == "4")
+
+check_flag_unkn_yr <- peak_data_orig %>%
+  filter(peak_cd == "A")
+
+check_flag_unkn_mo <- peak_data_orig %>%
+  filter(peak_cd == "Bm")
+
+check_flag_unkn_dy <- peak_data_orig %>%
+  filter(peak_cd == "Bd")
+
+check_flag_opportunistic <- peak_data_orig %>%
+  filter(peak_cd == "O")
+
+```
+
+```{r 07_pf_data_check_dates}
 
 # separate missing dates for recheck
 
