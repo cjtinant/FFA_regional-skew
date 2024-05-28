@@ -5,6 +5,22 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
+<!--
+PURPOSE: prepare peak flow data for analysis.
+
+METHODS:
+This code chunk cleans peak flow data and metadata
+
+DATA DICTIONARY
+peak_data_orig -- original peak flow records
+peak_date_miss -- peak flow records missing dates
+peak_data      -- working peak flow records
+peak_flag_summ -- USGS codes for data flags
+peak_flags     -- peak flow records with flags
+sites_peak     -- peak flow station metadata
+
+-->
+
 ```{r 00_setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
@@ -19,17 +35,108 @@ library(lmom)
 
 ```
 
-```{r 01_import_peak-flow_data_metadata}
+```{r 01_import_peak-flow_pf-data_pf-station-metadata}
 
 # get peakflow metadata
 sites_peak <- read_csv("data/sites_peak.csv")
 
 # get peakflow data
-peak_data <- read_csv("data/data_peak.csv")
+peak_data_orig <- read_csv("data/data_peak.csv")
 
 ```
 
-```{r 02_munge_pf_data_drop_vars}
+```{r 02_make_pf-flag-descriptions}
+
+pead_flag_desc <- tribble(
+  ~peak_cd, ~peak_cd_descr,
+  "1", "Discharge is a Maximum Daily Average",
+  "2", "Discharge is an Estimate",
+  "3", "Discharge affected by Dam Failure",
+  "4", "Discharge less than indicated value which is Minimum Recordable Discharge at this site",
+  "5", "Discharge affected to unknown degree by Regulation or Diversion",
+  "6", "Discharge affected by Regulation or Diversion",
+  "7", "Discharge is an Historic Peak",
+  "8", "Discharge actually greater than indicated value",
+  "9", "Discharge due to Snowmelt, Hurricane, Ice-Jam or Debris Dam breakup",
+  "A", "Year of occurrence is unknown or not exact",
+  "Bd", "Day of occurrence is unknown or not exact",
+  "Bm", "Month of occurrence is unknown or not exact",
+  "C", "All or part of the record affected by Urbanization, Mining, Agricultural changes, Channelization, or other",
+  "F", "Peak supplied by another agency",
+  "O", "Opportunistic value not from systematic data collection",
+  "R", "Revised"
+  )
+
+```
+
+```{r 03_pf_data_check_flags}
+
+# tidy data flags
+#   peak_flags    
+peak_flags <- peak_data_orig %>%
+  select(-peak_va) %>%
+  distinct() %>%
+  filter(!is.na(peak_cd)) %>%
+  separate(peak_cd, into = c("scratch_1",
+                             "scratch_2",
+                             "scratch_3",
+                             "scratch_4",
+                             "scratch_5"
+                             ),
+           sep = ",",
+           remove = FALSE,
+           extra = "merge") %>%
+  pivot_longer(cols = starts_with("scratch")) %>%
+  select(-c(peak_cd, name)) %>%
+  rename(peak_cd = value) %>%
+  distinct() %>%
+  filter(!is.na(peak_cd))
+
+peak_flag_summ <- peak_flags %>%
+  select(peak_cd) %>%
+  distinct() %>%
+  arrange(peak_cd)
+
+```
+
+```{r 04_pf_data_check_dates}
+
+# separate missing dates for recheck
+
+# get missing peak flow dates
+peak_date_miss <- peak_data_orig %>%
+  filter(is.na(peak_dt))
+
+peak_data <- anti_join(peak_data_orig, peak_date_miss)
+
+```
+
+
+# revise below
+```{r 04_pf_data_get_peak_months}
+
+peak_months <- peak_data %>%
+  mutate(peak_mon = month(peak_dt)
+         ) %>%
+  select(c(peak_dt, site_no, peak_mon))
+
+peak_mon_ck <- peak_months %>%
+  filter(is.na(peak_mon))
+
+
+
+  group_by(site_no) %>%
+  summarise(mon_mean = mean(peak_mon),
+            mon_median = median(peak_mon),
+            mon_sd = sd(peak_mon)
+             ) %>%
+  ungroup()
+
+```
+
+```{r 02_munge_pf_data_drop_vars, eval=FALSE}
+
+# drop not needed vars
 
 peak_data <- peak_data %>%
   select(-c(
@@ -45,15 +152,6 @@ peak_data <- peak_data %>%
     ag_dt,
     year_last_pk
   ))
-
-```
-
-```{r 03_munge_pf_data_check_codes}
-
-peak_data_codes <- peak_data %>%
-  select(site_no, peak_cd) %>%
-  distinct() %>%
-  filter(!is.na(peak_cd))
 
 ```
 
