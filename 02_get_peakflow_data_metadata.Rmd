@@ -164,6 +164,28 @@ rm(list = ls(pattern = "study"))
 
 ```
 
+```{r 07_get_peak-flow_data}
+
+
+
+# filter sites greater than 20 years
+sites_gt_20 <- sites_peak %>%
+  filter(count_nu > 20)
+
+# get peak flow data
+site_ids <- sites_gt_20$site_no
+
+peak_data <- readNWISpeak(site_ids)
+
+peak_data_ck <- peak_data %>%
+  group_by(site_no) %>%
+  summarise(count = n())
+
+```
+
+
+
+
 
 <!--
 
