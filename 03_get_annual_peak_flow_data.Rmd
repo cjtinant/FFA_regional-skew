@@ -19,48 +19,17 @@ library(lmom)
 
 ```
 
-```{r 01_import_munge_peak-flow_metadata}
+```{r 01_import_peak-flow_data_metadata}
 
 # get peakflow metadata
 sites_peak <- read_csv("data/sites_peak.csv")
 
-# filter sites greater than 20 years
-sites_gt_20 <- sites_peak %>%
-  filter(count_nu > 20)
-
-# Identify missing data
-sites_gt_20_missing_data <- sites_peak %>%
-  summarize(across(everything(), ~sum(is.na(.)))
-            ) %>%
-  pivot_longer(cols = everything())
+# get peakflow data
+peak_data <- read_csv("data/data_peak.csv")
 
 ```
 
-```{r 02_get_peak-flow_data}
-
-# get peak data
-site_ids <- sites_gt_20$site_no
-
-peak_data <- readNWISpeak(site_ids)
-
-peak_data_ck <- peak_data %>%
-  group_by(site_no) %>%
-  summarise(count = n())
-
-```
-
-```{r 01_remove_years_without_peak_va}
-
-peak_data_na <- peak_data %>%
-  filter(is.na(peak_va))
-
-peak_data <- anti_join(peak_data, peak_data_na)
-
-write_csv(peak_data, "data/data_peak.csv")
-
-```
-
-```{r 02_drop_vars}
+```{r 02_munge_pf_data_drop_vars}
 
 peak_data <- peak_data %>%
   select(-c(
@@ -79,7 +48,27 @@ peak_data <- peak_data %>%
 
 ```
 
-```{r}
+```{r 03_munge_pf_data_check_codes}
+
+peak_data_codes <- peak_data %>%
+  select(site_no, peak_cd) %>%
+  distinct() %>%
+  filter(!is.na(peak_cd))
+
+```
+
+```{r 04_munge_pf_metadata}
+
+# Identify missing data
+sites_gt_20_missing_data <- sites_peak %>%
+  summarize(across(everything(), ~sum(is.na(.)))) %>%
+  pivot_longer(cols = everything())
+
+```
+
+
+
+```{r fix_this_how_to_get_Lmoments}
 
 moments <- peak_data %>%
   group_by(site_no) %>%
@@ -101,7 +90,7 @@ unzip /path/to/your/file.zip -d /path/to/destination/folder
 
 -- need to add ecoreg when joining
 
-* intersect level 3 ecoregion with station data
+
 * sync personal and group Zotero library for FFA
 https://guides.library.oregonstate.edu/c.php?g=359201&p=2426111
 https://www.zotero.org/groups/5473862/olc_flood-frequency
