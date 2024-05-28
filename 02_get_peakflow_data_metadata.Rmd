@@ -1,5 +1,5 @@
 ---
-title: "Peak flow locs for Northwestern Great Plains and High Plains ecoregion"
+title: "Peak flow data for Northwestern Great Plains and High Plains ecoregion"
 author: "CJ Tinant"
 date: "`r Sys.Date()`"
 output: html_document
@@ -121,7 +121,7 @@ ggplot() +
           size = 0.5)
 ```
 
-```{r 06_drop_cols_export_result}
+```{r 06_drop_cols}
 
 sites_peak <- sites_peak %>%
   select(
@@ -155,9 +155,6 @@ sites_peak <- sites_peak %>%
       shape_area
     ))
 
-# save as a csv
-write_csv(sites_peak, "data/sites_peak.csv")
-
 # clean up Global Environment
 rm(list = ls(pattern = "sites"))
 rm(list = ls(pattern = "study"))
@@ -166,9 +163,7 @@ rm(list = ls(pattern = "study"))
 
 ```{r 07_get_peak-flow_data}
 
-
-
-# filter sites greater than 20 years
+# filter sites with greater than 20 years of data
 sites_gt_20 <- sites_peak %>%
   filter(count_nu > 20)
 
@@ -181,38 +176,24 @@ peak_data_ck <- peak_data %>%
   group_by(site_no) %>%
   summarise(count = n())
 
+peak_data_na <- peak_data %>%
+  filter(is.na(peak_va))
+
+peak_data <- anti_join(peak_data, peak_data_na)
+
+```
+
+```{r 08_export_results}
+
+# save site-data as a csv
+write_csv(sites_peak, "data/sites_peak.csv")
+
+# save annual-data as a csv
+write_csv(peak_data, "data/data_peak.csv")
+
 ```
 
 
 
-
-
-<!--
-
-# Ecoregion hierarchy
-Northwestern Great Plains and High Plains region of the SOUTH CENTRAL SEMI-ARID PRAIRIES of the GREAT PLAINS ecoregion
-
-## Next steps
-create an inline unzip
-unzip /path/to/your/file.zip -d /path/to/destination/folder
-
--- need to add ecoreg when joining
-
-* intersect level 3 ecoregion with station data
-* sync personal and group Zotero library for FFA
-https://guides.library.oregonstate.edu/c.php?g=359201&p=2426111
-https://www.zotero.org/groups/5473862/olc_flood-frequency
-
-
-## Helpful references:
-GIT issues--
-[GIT issues](https://dangitgit.com/)
-
-Spatial data issues--
-[Intro to spatial data in R](https://www.r4wrds.com/intro/m_intro_mapmaking)
-[Overview of Coordinate Reference Systems (CRS) in R](https://www.nceas.ucsb.edu/sites/default/files/2020-04/OverviewCoordinateReferenceSystems.pdf)
-[Geocomputation with R](https://r.geocompx.org/)
-
---> 
 
 
