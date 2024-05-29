@@ -24,13 +24,19 @@ library(here)
 
 ```
 
-```{r 01_get_peak-flow_site_data_ecoreg_data}
+```{r 01a_get_peak-flow_site_ecoreg_data_Cyverse, eval=FALSE}
 
 sites_pk <- read_csv("~/FFA_regional-skew/data/sites_pk")
 
 # load ecoregion shapefile -- path for Cyverse 
 eco_l3 <- st_read("~/data-store/home/cjtinant/data_spatial/us_eco_l3.shp") %>%
   janitor::clean_names()
+
+```
+
+```{r 01b_get_peak-flow_site_ecoreg_data_local, eval=FALSE}
+
+sites_pk <- read_csv("data/sites_pk.csv")
 
 # load ecoregion shapefile -- local path
 eco_l3 <- st_read("data_spatial/data_spus_eco_l3/us_eco_l3.shp") %>%
@@ -111,14 +117,19 @@ rm(eco_l3)
 
 ```{r 05_intersect_sites_study_area}
 
-#out <- st_intersection(points, poly)
+# drop sites outside of ecoreg
 sites_peak <- st_intersection(sites_pk_spatial, study_area_unproj)
 
 # plot results
 ggplot() +
   geom_sf(data = study_area_unproj) +
+  geom_sf(data = sites_pk_spatial,
+          size = .1,
+          alpha = 0.2) +
   geom_sf(data = sites_peak,
-          size = 0.5)
+          size = 0.5) +
+  theme_bw()
+
 ```
 
 ```{r 06_drop_cols}
@@ -156,7 +167,7 @@ sites_peak <- sites_peak %>%
     ))
 
 # clean up Global Environment
-rm(list = ls(pattern = "sites"))
+rm(list = ls(pattern = "sites_pk"))
 rm(list = ls(pattern = "study"))
 
 ```
@@ -186,7 +197,9 @@ peak_data <- anti_join(peak_data, peak_data_na)
 ```{r 08_export_results}
 
 # save site-data as a csv
-write_csv(sites_peak, "data/sites_peak.csv")
+write_csv(sites_gt_20, "data/sites_peak.csv")
+
+write_csv(sites_peak, "data/sites_peak_all.csv")
 
 # save annual-data as a csv
 write_csv(peak_data, "data/data_peak.csv")
