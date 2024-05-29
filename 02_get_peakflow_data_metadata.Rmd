@@ -36,7 +36,7 @@ eco_l3 <- st_read("~/data-store/home/cjtinant/data_spatial/us_eco_l3.shp") %>%
 
 ```{r 01b_get_peak-flow_site_ecoreg_data_local, eval=FALSE}
 
-sites_pk <- read_csv("data/sites_pk.csv")
+sites_pk_bb <- read_csv("data/sites_pk.csv")
 
 # load ecoregion shapefile -- local path
 eco_l3 <- st_read("data_spatial/data_spus_eco_l3/us_eco_l3.shp") %>%
@@ -122,13 +122,15 @@ sites_peak <- st_intersection(sites_pk_spatial, study_area_unproj)
 
 # plot results
 ggplot() +
-  geom_sf(data = study_area_unproj) +
+  geom_sf(data = study_area_unproj,
+          alpha = 0.3) +
   geom_sf(data = sites_pk_spatial,
           size = .1,
           alpha = 0.2) +
   geom_sf(data = sites_peak,
           size = 0.5) +
-  theme_bw()
+  theme_bw() +
+  ggtitle("")
 
 ```
 
@@ -176,7 +178,7 @@ rm(list = ls(pattern = "study"))
 
 # filter sites with greater than 20 years of data
 sites_gt_20 <- sites_peak %>%
-  filter(count_nu > 20)
+  filter(count_nu >= 20)
 
 # get peak flow data
 site_ids <- sites_gt_20$site_no
