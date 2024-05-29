@@ -169,7 +169,7 @@ sites_pk <-  whatNWISdata(
   )
 
 # write csv
-write_csv(sites_pk, "~/FFA_regional-skew/data/sites_pk")
+write_csv(sites_pk, "~/FFA_regional-skew/data/sites_pk_bb")
 
 ```
 
