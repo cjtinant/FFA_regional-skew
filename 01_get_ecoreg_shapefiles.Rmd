@@ -163,13 +163,13 @@ sites_st <-sites_all %>%
   filter(site_tp_cd == "ST")
 
 # get all peak flow data in bounding box
-sites_pk <-  whatNWISdata(
+sites_pk_bb <-  whatNWISdata(
   siteNumber = sites_st$site_no,
   service = "pk"
   )
 
 # write csv
-write_csv(sites_pk, "~/FFA_regional-skew/data/sites_pk_bb")
+write_csv(sites_pk_bb, "~/FFA_regional-skew/data/sites_pk_bb")
 
 ```
 
