@@ -26,7 +26,7 @@ library(here)
 
 ```{r 01a_get_peak-flow_site_ecoreg_data_Cyverse, eval=FALSE}
 
-sites_pk <- read_csv("~/FFA_regional-skew/data/sites_pk")
+sites_pk_bb <- read_csv("~/FFA_regional-skew/data/sites_pk_bb.csv")
 
 # load ecoregion shapefile -- path for Cyverse 
 eco_l3 <- st_read("~/data-store/home/cjtinant/data_spatial/us_eco_l3.shp") %>%
@@ -36,7 +36,7 @@ eco_l3 <- st_read("~/data-store/home/cjtinant/data_spatial/us_eco_l3.shp") %>%
 
 ```{r 01b_get_peak-flow_site_ecoreg_data_local, eval=FALSE}
 
-sites_pk_bb <- read_csv("data/sites_pk.csv")
+sites_pk_bb <- read_csv("data/sites_pk_bb.csv")
 
 # load ecoregion shapefile -- local path
 eco_l3 <- st_read("data_spatial/data_spus_eco_l3/us_eco_l3.shp") %>%
@@ -47,7 +47,7 @@ eco_l3 <- st_read("data_spatial/data_spus_eco_l3/us_eco_l3.shp") %>%
 ```{r 02_convert_peak-flow_sites_to_spatial}
 
 # convert stations into a spatial format (sf) object
-sites_pk_spatial <- st_as_sf(sites_pk,
+sites_pk_bb <- st_as_sf(sites_pk_bb,
                     coords = c("dec_long_va",        # note x goes first
                                 "dec_lat_va"),
                     crs = 4269,                     # projection, this is NAD83
@@ -80,7 +80,7 @@ eco_l3_na_names <- eco_l3 %>%
 
 ```{r 04_reproject_eco_shapefile}
 
-# check geometry
+# check geometry of ecoreg
 crs_eco_l3 <- eco_l3 %>%
   st_crs()
 
@@ -96,7 +96,7 @@ study_area_unproj <- study_area_albers %>%
 crs_study_area_unproj <- study_area_unproj %>%
   st_crs()
 
-# make bounding box
+# make bounding box -- done recursively to create a bb in 01_get_ecoreg_shapefiles
 bb_study_area_unproj <- study_area_unproj %>%
   st_bbox() %>%
   as.data.frame() %>%
@@ -118,93 +118,82 @@ rm(eco_l3)
 ```{r 05_intersect_sites_study_area}
 
 # drop sites outside of ecoreg
-sites_peak <- st_intersection(sites_pk_spatial, study_area_unproj)
+sites_pk_in_ecoreg <- st_intersection(sites_pk_bb, study_area_unproj)
+
+# filter sites with greater than 20 years of data
+sites_gt_20 <- sites_pk_in_ecoreg %>%
+  filter(count_nu >= 20)
+
+# clean up Global Environment
+rm(bb_study_area_unproj)
+
+```
+
+```{r 06_get_peak-flow_data_w_min_20_obs}
+
+# get peak flow data for gages with min 20 observations
+site_ids <- sites_gt_20$site_no
+
+peak_data_gt_20 <- readNWISpeak(site_ids)
+
+# check results
+ck_sites_gt_20 <- peak_data_gt_20 %>%
+  group_by(site_no) %>%
+  summarise(count = n())
+
+check_sites_gt_20 <- nrow(sites_gt_20) == nrow(ck_sites_gt_20)
+
+# clean up Global Environment
+rm(site_ids,
+   ck_sites_gt_20
+   )
+
+```
+
+```{r 07_visually_check_results}
 
 # plot results
 ggplot() +
   geom_sf(data = study_area_unproj,
           alpha = 0.3) +
-  geom_sf(data = sites_pk_spatial,
-          size = .1,
-          alpha = 0.2) +
-  geom_sf(data = sites_peak,
-          size = 0.5) +
+  geom_sf(data = sites_pk_bb,
+          size  =  0.1,
+          color = "gray80",
+          alpha = 0.3) +
+  geom_sf(data = sites_pk_in_ecoreg,
+          size = 0.2,
+          color = "red",
+          alpha = 0.4) +
+  geom_sf(data = sites_gt_20,
+          size = 0.4,
+          color = "black"
+          ) +
   theme_bw() +
-  ggtitle("")
-
-```
-
-```{r 06_drop_cols}
-
-sites_peak <- sites_peak %>%
-  select(
-    # no variance among station values
-    -c(
-      agency_cd,        # all = USGS
-      site_tp_cd,       # all = ST
-      data_type_cd,     # all = pk
-      parm_cd,          # all = NA
-      stat_cd,          # all = NA
-      ts_id,            # all = 0
-      loc_web_ds,       # all = NA
-      medium_grp_cd,    # all = wat
-      parm_grp_cd,      # all = ST
-      srs_id,           # all = 0
-      access_cd,        # all = 0
-      # non-important vars
-      alt_acy_va,
-      coord_acy_cd,
-      # not-needed ecoreg names
-      na_l3code,
-      na_l3name,
-      na_l2code,
-      na_l2name,
-      na_l1code,
-      na_l1name,
-      l3_key,
-      l2_key,
-      l1_key,
-      shape_leng,
-      shape_area
-    ))
-
-# clean up Global Environment
-rm(list = ls(pattern = "sites_pk"))
-rm(list = ls(pattern = "study"))
-
-```
-
-```{r 07_get_peak-flow_data}
-
-# filter sites with greater than 20 years of data
-sites_gt_20 <- sites_peak %>%
-  filter(count_nu >= 20)
-
-# get peak flow data
-site_ids <- sites_gt_20$site_no
-
-peak_data <- readNWISpeak(site_ids)
-
-peak_data_ck <- peak_data %>%
-  group_by(site_no) %>%
-  summarise(count = n())
-
-peak_data_na <- peak_data %>%
-  filter(is.na(peak_va))
-
-peak_data <- anti_join(peak_data, peak_data_na)
+labs(
+  title = "Initial gage selection",
+  subtitle = "Peak flow gages with at least 20 years of record"
+)
 
 ```
 
 ```{r 08_export_results}
 
-# save site-data as a csv
-write_csv(sites_gt_20, "data/sites_peak.csv")
+# save plot of gages
+ggsave("figures/gage-selection_initial.png")
 
-write_csv(sites_peak, "data/sites_peak_all.csv")
+# save site-data as a csv
+write_csv(sites_pk_in_ecoreg, "data/sites_pk_in_ecoreg.csv")
+
+write_csv(sites_gt_20, "data/sites_peak_gt_20.csv")
 
 # save annual-data as a csv
-write_csv(peak_data, "data/data_peak.csv")
+write_csv(peak_data_gt_20, "data/data_peak_gt_20.csv")
+
+# Clean up Global Environment
+rm(check_sites_gt_20,
+   sites_pk_bb,
+   sites_pk_in_ecoreg,
+   study_area_albers)
 
 ```
 
