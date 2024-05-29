@@ -33,13 +33,24 @@ METHODS:
 * "F", "Peak supplied by another agency",
 * "R", "Revised"
 
+RESULTS
+sites_peak -- 
+
 DATA DICTIONARY
-peak_data_orig -- original peak flow records
-peak_date_miss -- peak flow records missing dates
-peak_data      -- working peak flow records
+omit_flag               -- records omitted (n = 9,939)
+omit_flag_affected      -- records omitted because of affected discharge (n = 473)
+omit_flag_dam_fail      -- records omitted because of dam failure (n = 1)
+omit_flag_regulated     -- records omitted discharge regulation (n = 5,898)
+omit_flag_unkn_degr_reg -- records omitted unkn degr of regulation
+
+peak_data_orig -- peak flow records for sites with gt 20 yrs data (n = 24,480)
+peak_data      -- peak flow records for unreg sites (n = 14,922)
+
 peak_flag_summ -- USGS codes for data flags
 peak_flags     -- peak flow records with flags
-sites_peak     -- peak flow station metadata
+
+sites_peak        -- sites in study area with gt 20 yrs data (n = 518)
+sites_peak_unreg  -- unregulated sites in study area w gt 20 yrs data (n = 331)
 
 -->
 
@@ -60,7 +71,7 @@ library(lmom)
 ```{r 01_import_peak-flow_pf-data_pf-station-metadata}
 
 # get peakflow metadata
-sites_peak <- read_csv("data/sites_peak.csv")
+sites_peak_orig <- read_csv("data/sites_peak.csv")
 
 # get peakflow data
 peak_data_orig <- read_csv("data/data_peak.csv")
@@ -116,11 +127,12 @@ peak_flags <- peak_data_orig %>%
 ```
 
 ```{r 04_pf_data_omit_records}
+
 # pull records with dam fail, regulation, or discharge otherwise affected
 omit_flag_dam_fail <- peak_data_orig %>%
   filter(peak_cd == "3")
 
-omit_flag_regulated_unkn_degr <- peak_data_orig %>%
+omit_flag_unkn_degr_reg <- peak_data_orig %>%
   filter(peak_cd == "5")
 
 omit_flag_regulated <- peak_data_orig %>%
@@ -129,14 +141,12 @@ omit_flag_regulated <- peak_data_orig %>%
 omit_flag_affected <- peak_data_orig %>%
   filter(peak_cd == "C")
 
-# join omitted records and remove from working df
+# remove omitted records from working df
 omit_flag <- bind_rows(omit_flag_dam_fail,
-                       omit_flag_regulated_unkn_degr,
+                       omit_flag_unkn_degr_reg,
                        omit_flag_regulated,
                        omit_flag_affected
                        )
-
-peak_data <- anti_join(peak_data_orig, omit_flag)
 
 # clean up Global Environment
 rm(list = ls(pattern = "omit_flag_"))
@@ -145,16 +155,28 @@ rm(list = ls(pattern = "omit_flag_"))
 
 ```{r 05_pf_data_drop_sites}
 
-# update list of sites
-sites_unreg_all <- peak_data %>%
+# remove omitted data from orig data
+scratch <- anti_join(peak_data_orig, omit_flag)
+
+# subset regulated and unregulated sites
+sites_unreg_all <- scratch %>%
   group_by(site_no) %>%
   summarise(pk_count = n())
 
 sites_unreg_lt_20 <- sites_unreg_all %>%
   filter(pk_count < 20)
 
-sites_unreg <- anti_join(sites_unreg_all, sites_unreg_lt_20,
+sites_peak_unreg <- anti_join(sites_unreg_all, sites_unreg_lt_20,
                          by = join_by(site_no))
+
+# update working df for only unregulated sites
+peak_data <- peak_data_orig %>%
+  filter(site_no %in% sites_peak_unreg$site_no)
+
+rm(scratch)
+rm(omit_flag)
+rm(list = ls(pattern = "_flag"))
+rm(list = ls(pattern = "sites_unreg"))
 
 ```
 
