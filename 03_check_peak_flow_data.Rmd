@@ -223,6 +223,50 @@ rm(peak_data_reg)
 
 ```
 
+```{r 07_visually_check_results}
+
+# load ecoregion shapefile -- local path
+study_area_unproj <- st_read("data_spatial/data_spus_eco_l3/us_eco_l3.shp") %>%
+  janitor::clean_names() %>%
+  filter(na_l3name == "High Plains" |
+         na_l3name == "Northwestern Great Plains") %>%
+  st_transform(crs = 4269)
+
+# convert stations into a spatial format (sf) objects
+sites_gt_20 <- st_as_sf(sites_gt_20,
+                    coords = c("dec_long_va",        # note x goes first
+                                "dec_lat_va"),
+                    crs = 4269,                     # crs for unprojected NAD83
+                    remove = FALSE)                 # don't remove lat/lon cols
+
+sites_unreg <- st_as_sf(sites_unreg,
+                    coords = c("dec_long_va",        # note x goes first
+                                "dec_lat_va"),
+                    crs = 4269,                     # crs for unprojected NAD83
+                    remove = FALSE)                 # don't remove lat/lon cols
+
+# plot results
+ggplot() +
+  geom_sf(data = study_area_unproj,
+          alpha = 0.3) +
+  geom_sf(data = sites_gt_20,
+          size = 0.2,
+          color = "red",
+          alpha = 0.4) +
+  geom_sf(data = sites_unreg,
+          size = 0.4,
+          color = "black"
+          ) +
+  theme_bw() +
+labs(
+  title = "Final gage selection",
+  subtitle = "Peak flow gages with at least 20 years of unregulated record"
+)
+
+# save plot of gages
+ggsave("figures/gage-selection_final.png")
+
+```
 
 # revise below
 peak_data_na <- peak_data_gt_20 %>%
