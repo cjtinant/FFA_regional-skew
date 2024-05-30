@@ -220,6 +220,7 @@ count_data_unreg <- nrow(peak_data_gt_20) - nrow(peak_data_reg)
 # clean up Global Environment
 rm(list = ls(pattern = "omit"))
 rm(peak_data_reg)
+rm(peak_data_gt_20)
 
 ```
 
@@ -266,15 +267,45 @@ labs(
 # save plot of gages
 ggsave("figures/gage-selection_final.png")
 
+# clean up Global Environment
+rm(sites_gt_20)
+rm(study_area_unproj)
+
+```
+
+```{r 09_check_drop_NA_discharge_data}
+
+peak_data_na <- peak_data_unreg %>%
+  filter(is.na(peak_va))
+
+sites_na <- peak_data_unreg %>%
+  filter(site_no %in% peak_data_na$site_no) %>%
+  arrange(site_no, gage_ht)
+
+# drop observations with NA values
+peak_data <- peak_data_unreg %>%
+  filter(!is.na(peak_va))
+
+# clean up Global Environment
+rm(peak_data_unreg)
+rm(sites_na)
+
 ```
 
 # revise below
-peak_data_na <- peak_data_gt_20 %>%
-  filter(is.na(peak_va))
 
-test <- peak_data_gt_20 %>%
-  filter(site_no %in% peak_data_na$site_no) %>%
-  arrange(site_no, gage_ht)
+```{r 07_pf_data_check_dates}
+
+# separate missing dates for recheck
+
+# get missing peak flow dates
+peak_date_miss <- peak_data_gt_20 %>%
+  filter(is.na(peak_dt))
+
+peak_data <- anti_join(peak_data_gt_20, peak_date_miss)
+
+```
+
 
 ```{r 06_drop_cols, eval=FALSE}
 
@@ -316,38 +347,11 @@ rm(list = ls(pattern = "study"))
 
 ```
 
-# NEXT STEP -- VISUALIZE THE ORIGINAL AND REMOVED SITES
 
-```{r 06_pf_data_check_records}
 
-check_flag_disch_lt_recorded <- peak_data_gt_20 %>%
-  filter(peak_cd == "4")
 
-check_flag_unkn_yr <- peak_data_gt_20 %>%
-  filter(peak_cd == "A")
 
-check_flag_unkn_mo <- peak_data_gt_20 %>%
-  filter(peak_cd == "Bm")
 
-check_flag_unkn_dy <- peak_data_gt_20 %>%
-  filter(peak_cd == "Bd")
-
-check_flag_opportunistic <- peak_data_gt_20 %>%
-  filter(peak_cd == "O")
-
-```
-
-```{r 07_pf_data_check_dates}
-
-# separate missing dates for recheck
-
-# get missing peak flow dates
-peak_date_miss <- peak_data_gt_20 %>%
-  filter(is.na(peak_dt))
-
-peak_data <- anti_join(peak_data_gt_20, peak_date_miss)
-
-```
 
 
 
