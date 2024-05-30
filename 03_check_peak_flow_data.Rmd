@@ -37,19 +37,21 @@ RESULTS
 sites_peak -- 
 
 DATA DICTIONARY
-omit_flag               -- records omitted (n = 9,939)
-omit_flag_affected      -- records omitted because of affected discharge (n = 473)
-omit_flag_dam_fail      -- records omitted because of dam failure (n = 1)
-omit_flag_regulated     -- records omitted discharge regulation (n = 5,898)
-omit_flag_unkn_degr_reg -- records omitted unkn degr of regulation
+desc_peak_flag
 
-peak_data_orig -- peak flow records for sites with gt 20 yrs data (n = 24,480)
-peak_data      -- peak flow records for unreg sites (n = 14,922)
+omit               -- records omitted
+omit_affected      -- records omitted because of affected discharge
+omit_dam_fail      -- records omitted because of dam failure
+omit_regulated     -- records omitted discharge regulation
+omit_unkn_degr_reg -- records omitted unkn degr of regulation
+
+peak_data_gt_20 -- peak flow records for sites with gt 20 yrs data
+peak_data      -- peak flow records for unreg sites
 
 peak_flag_summ -- USGS codes for data flags
 peak_flags     -- peak flow records with flags
 
-sites_peak        -- sites in study area with gt 20 yrs data (n = 518)
+sites_gt_20        -- sites in study area with gt 20 yrs data (n = 518)
 sites_peak_unreg  -- unregulated sites in study area w gt 20 yrs data (n = 331)
 
 -->
@@ -71,16 +73,24 @@ library(lmom)
 ```{r 01_import_peak-flow_pf-data_pf-station-metadata}
 
 # get peakflow metadata
-sites_peak_orig <- read_csv("data/sites_peak.csv")
+sites_gt_20 <- read_csv("data/sites_peak_gt_20.csv")
 
 # get peakflow data
-peak_data_orig <- read_csv("data/data_peak.csv")
+peak_data_gt_20 <- read_csv("data/data_peak_gt_20.csv",
+                            col_types = cols(
+                              .default = "?",
+                              year_last_pk = "i"
+                              ))
+
+# get count of gages and observations
+count_sites_gt_20 <- nrow(sites_gt_20)
+count_peak_data_gt_20 <- nrow(peak_data_gt_20)
 
 ```
 
 ```{r 02_make_pf-flag-descriptions}
 
-peak_flag_desc <- tribble(
+desc_peak_flag <- tribble(
   ~peak_cd, ~peak_cd_descr,
   "1", "Discharge is a Maximum Daily Average",
   "2", "Discharge is an Estimate",
@@ -102,10 +112,10 @@ peak_flag_desc <- tribble(
 
 ```
 
-```{r 03_pf_data_check_flags}
-# tidy data flags
-#   peak_flags    
-peak_flags <- peak_data_orig %>%
+```{r 03_pf_data_check_data_flags}
+
+# tidy then check peak_data flags
+peak_data_flags <- peak_data_gt_20 %>%
   select(-peak_va) %>%
   distinct() %>%
   filter(!is.na(peak_cd)) %>%
@@ -123,60 +133,142 @@ peak_flags <- peak_data_orig %>%
   rename(peak_cd = value) %>%
   distinct() %>%
   filter(!is.na(peak_cd)) %>%
-  select(site_no, peak_dt, peak_cd)
+  select(site_no, peak_dt, peak_cd) %>%
+  group_by(peak_cd) %>%
+  summarise(count = n())
+
+peak_data_flags <- left_join(peak_data_flags, desc_peak_flag,
+                             by = join_by(peak_cd))
+
 ```
 
 ```{r 04_pf_data_omit_records}
 
 # pull records with dam fail, regulation, or discharge otherwise affected
-omit_flag_dam_fail <- peak_data_orig %>%
+omit_dam_fail <- peak_data_gt_20 %>%
   filter(peak_cd == "3")
 
-omit_flag_unkn_degr_reg <- peak_data_orig %>%
+omit_unkn_degr_reg <- peak_data_gt_20 %>%
   filter(peak_cd == "5")
 
-omit_flag_regulated <- peak_data_orig %>%
+omit_regulated <- peak_data_gt_20 %>%
   filter(peak_cd == "6")
 
-omit_flag_affected <- peak_data_orig %>%
+omit_affected <- peak_data_gt_20 %>%
   filter(peak_cd == "C")
 
 # remove omitted records from working df
-omit_flag <- bind_rows(omit_flag_dam_fail,
-                       omit_flag_unkn_degr_reg,
-                       omit_flag_regulated,
-                       omit_flag_affected
+data_omit <- bind_rows(omit_dam_fail,
+                       omit_unkn_degr_reg,
+                       omit_regulated,
+                       omit_affected
                        )
 
+# remove omitted data from orig data
+scratch_data_unreg <- anti_join(peak_data_gt_20, data_omit)
+
+# check that the count is true
+check_count <- nrow(peak_data_gt_20) == nrow(data_omit) + nrow(scratch_data_unreg)
+
 # clean up Global Environment
-rm(list = ls(pattern = "omit_flag_"))
+rm(list = ls(pattern = "omit_"))
 
 ```
 
-```{r 05_pf_data_drop_sites}
-
-# remove omitted data from orig data
-scratch <- anti_join(peak_data_orig, omit_flag)
-
-# subset regulated and unregulated sites
-sites_unreg_all <- scratch %>%
+```{r 05_pf_sites_separate_regulated_unregulated_sites}
+# make an initial list of remaining gages and omitted gages
+scratch_sites <- scratch_data_unreg %>%
   group_by(site_no) %>%
   summarise(pk_count = n())
 
-sites_unreg_lt_20 <- sites_unreg_all %>%
+scratch_sites_omit <- anti_join(sites_gt_20, scratch_sites)
+
+scratch_sites_unreg_lt_20 <- scratch_sites %>%
   filter(pk_count < 20)
 
-sites_peak_unreg <- anti_join(sites_unreg_all, sites_unreg_lt_20,
+sites_omit <- bind_rows(scratch_sites_omit,
+                        scratch_sites_unreg_lt_20)
+
+sites_unreg <- anti_join(sites_gt_20, sites_omit,
                          by = join_by(site_no))
 
-# update working df for only unregulated sites
-peak_data <- peak_data_orig %>%
-  filter(site_no %in% sites_peak_unreg$site_no)
+# check that the count is true
+check_count <- nrow(sites_unreg) == nrow(sites_gt_20) - nrow(sites_omit)
 
-rm(scratch)
-rm(omit_flag)
-rm(list = ls(pattern = "_flag"))
-rm(list = ls(pattern = "sites_unreg"))
+count_sites_unreg <- nrow(sites_unreg)
+
+# clean up Global Environment
+rm(list = ls(pattern = "scratch"))
+
+```
+
+```{r 06_pf_data_separate_data_for_regulated_unregulated_sites}
+
+# update df sites with regulation
+peak_data_reg <- peak_data_gt_20 %>%
+  filter(site_no %in% sites_omit$site_no)
+
+# update working df for only unregulated sites
+peak_data_unreg <- peak_data_gt_20 %>%
+  filter(site_no %in% sites_unreg$site_no)
+
+# check that the count is true
+check_count <- nrow(peak_data_unreg) == nrow(peak_data_gt_20) - nrow(peak_data_reg)
+
+count_data_unreg <- nrow(peak_data_gt_20) - nrow(peak_data_reg)
+
+# clean up Global Environment
+rm(list = ls(pattern = "omit"))
+rm(peak_data_reg)
+
+```
+
+
+# revise below
+peak_data_na <- peak_data_gt_20 %>%
+  filter(is.na(peak_va))
+
+test <- peak_data_gt_20 %>%
+  filter(site_no %in% peak_data_na$site_no) %>%
+  arrange(site_no, gage_ht)
+
+```{r 06_drop_cols, eval=FALSE}
+
+sites_peak <- sites_peak %>%
+  select(
+    # no variance among station values
+    -c(
+      agency_cd,        # all = USGS
+      site_tp_cd,       # all = ST
+      data_type_cd,     # all = pk
+      parm_cd,          # all = NA
+      stat_cd,          # all = NA
+      ts_id,            # all = 0
+      loc_web_ds,       # all = NA
+      medium_grp_cd,    # all = wat
+      parm_grp_cd,      # all = ST
+      srs_id,           # all = 0
+      access_cd,        # all = 0
+      # non-important vars
+      alt_acy_va,
+      coord_acy_cd,
+      # not-needed ecoreg names
+      na_l3code,
+      na_l3name,
+      na_l2code,
+      na_l2name,
+      na_l1code,
+      na_l1name,
+      l3_key,
+      l2_key,
+      l1_key,
+      shape_leng,
+      shape_area
+    ))
+
+# clean up Global Environment
+rm(list = ls(pattern = "sites_pk"))
+rm(list = ls(pattern = "study"))
 
 ```
 
@@ -184,19 +276,19 @@ rm(list = ls(pattern = "sites_unreg"))
 
 ```{r 06_pf_data_check_records}
 
-check_flag_disch_lt_recorded <- peak_data_orig %>%
+check_flag_disch_lt_recorded <- peak_data_gt_20 %>%
   filter(peak_cd == "4")
 
-check_flag_unkn_yr <- peak_data_orig %>%
+check_flag_unkn_yr <- peak_data_gt_20 %>%
   filter(peak_cd == "A")
 
-check_flag_unkn_mo <- peak_data_orig %>%
+check_flag_unkn_mo <- peak_data_gt_20 %>%
   filter(peak_cd == "Bm")
 
-check_flag_unkn_dy <- peak_data_orig %>%
+check_flag_unkn_dy <- peak_data_gt_20 %>%
   filter(peak_cd == "Bd")
 
-check_flag_opportunistic <- peak_data_orig %>%
+check_flag_opportunistic <- peak_data_gt_20 %>%
   filter(peak_cd == "O")
 
 ```
@@ -206,15 +298,15 @@ check_flag_opportunistic <- peak_data_orig %>%
 # separate missing dates for recheck
 
 # get missing peak flow dates
-peak_date_miss <- peak_data_orig %>%
+peak_date_miss <- peak_data_gt_20 %>%
   filter(is.na(peak_dt))
 
-peak_data <- anti_join(peak_data_orig, peak_date_miss)
+peak_data <- anti_join(peak_data_gt_20, peak_date_miss)
 
 ```
 
 
-# revise below
+
 ```{r 04_pf_data_get_peak_months}
 
 peak_months <- peak_data %>%
