@@ -70,9 +70,6 @@ library(lmom)
 
 ```
 
-
-# check duplication issue -- peak_data_gt_20
-
 ```{r 01_import_peak-flow_pf-data_pf-station-metadata}
 
 # get peakflow metadata
@@ -88,7 +85,6 @@ peak_data_gt_20 <- read_csv("data/data_peak_gt_20.csv",
 # check for dups
 ck_sites_gt_20 <- nrow(sites_gt_20) == nrow(sites_gt_20 %>% distinct())
 ck_peak_data_gt_20 <- nrow(peak_data_gt_20) == nrow(peak_data_gt_20 %>% distinct())
-
 
 # get count of gages and observations
 count_sites_gt_20 <- nrow(sites_gt_20)
@@ -210,7 +206,7 @@ sites_omit <- bind_rows(scratch_sites_omit,
 sites_unreg <- anti_join(sites_gt_20, sites_omit,
                          by = join_by(site_no))
 
-count_sites_unreg <- nrow(sites_unreg)
+
 
 # update dt sites with regulation
 peak_data_reg <- peak_data_gt_20 %>%
@@ -220,20 +216,20 @@ peak_data_reg <- peak_data_gt_20 %>%
 peak_data_unreg <- peak_data_gt_20 %>%
   filter(site_no %in% sites_unreg$site_no)
 
-# check that the count is true
+# check that the count is true and get counts
 check_count <- nrow(sites_unreg) == nrow(sites_gt_20) - nrow(sites_omit)
 check_count <- nrow(peak_data_unreg) == nrow(peak_data_gt_20) - nrow(peak_data_reg)
+
+count_sites_unreg <- nrow(sites_unreg)
 count_data_unreg <- nrow(peak_data_gt_20) - nrow(peak_data_reg)
 
 # clean up Global Environment
 rm(list = ls(pattern = "omit"))
 rm(list = ls(pattern = "scratch"))
-rm(peak_data_reg,
-   peak_data_gt_20)
+rm(peak_data_reg)
 
 ```
 
-# CLEAN HERE
 ```{r 06_check_drop_NA_discharge_and_dates}
 
 # check for na values
@@ -254,50 +250,24 @@ na_date <- peak_data_unreg %>%
 na_data <- bind_rows(na_discharge, na_date) %>%
   distinct()
 
-peak_data <- anti_join(peak_data_unreg, na_data,
-                       by = join_by(site_no, peak_dt, peak_va))
+peak_data <- peak_data_unreg %>%
+  filter(!is.na(peak_va)) %>%
+  filter(!is.na(peak_dt))
 
 # check that the count is true
-check_count <- nrow(peak_data_unreg) == nrow(peak_data) - nrow(na_data)
+check_count <- nrow(peak_data_unreg) == nrow(peak_data) + nrow(na_data)
+count_data_no_na <- nrow(peak_data)
+
+# Write output
+write_csv(na_data, "data_output/peak_data_na_vals.csv")
+write_csv(peak_data, "data_output/peak_data.csv")
 
 # clean up Global Environment
-write_csv(peak_data_na, "data_output/peak_data_na_vals.csv")
-rm(peak_data_unreg,
-   peak_data_na,
-   sites_na)
-
-
-
-
-# drop observations with NA values
-peak_data <- peak_data_unreg %>%
-  filter(!is.na(peak_va))
-
-
-
-
-
-
-
-
-
-
-
-# clean up Global Environment
-write_csv(peak_data_na, "data_output/peak_data_na_discharge.csv")
-rm(peak_data_unreg,
-   peak_data_na,
-   sites_na)
+rm(list = ls(pattern = "na_"))
 
 ```
 
-```{r 09_pf_missing_data_check}
-
-
-
-
-```
-
+# start here
 ```{r 07_visually_check_results}
 
 # load ecoregion shapefile -- local path
