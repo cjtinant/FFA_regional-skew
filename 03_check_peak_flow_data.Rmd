@@ -70,6 +70,9 @@ library(lmom)
 
 ```
 
+
+# check duplication issue -- peak_data_gt_20
+
 ```{r 01_import_peak-flow_pf-data_pf-station-metadata}
 
 # get peakflow metadata
@@ -81,6 +84,11 @@ peak_data_gt_20 <- read_csv("data/data_peak_gt_20.csv",
                               .default = "?",
                               year_last_pk = "i"
                               ))
+
+# check for dups
+ck_sites_gt_20 <- nrow(sites_gt_20) == nrow(sites_gt_20 %>% distinct())
+ck_peak_data_gt_20 <- nrow(peak_data_gt_20) == nrow(peak_data_gt_20 %>% distinct())
+
 
 # get count of gages and observations
 count_sites_gt_20 <- nrow(sites_gt_20)
@@ -140,6 +148,10 @@ peak_data_flags <- peak_data_gt_20 %>%
 peak_data_flags <- left_join(peak_data_flags, desc_peak_flag,
                              by = join_by(peak_cd))
 
+# clean up Global Environment -- export
+write_csv(desc_peak_flag, "data_output/peak_flag_code_description.csv")
+rm(desc_peak_flag)
+
 ```
 
 ```{r 04_pf_data_omit_records}
@@ -172,55 +184,117 @@ check_count <- nrow(peak_data_gt_20) == nrow(data_omit) + nrow(scratch_data_unre
 
 # clean up Global Environment
 rm(list = ls(pattern = "omit_"))
+rm(peak_data_flags)
 
 ```
 
-```{r 05_pf_sites_separate_regulated_unregulated_sites}
+```{r 05_pf_separate_regulated_unregulated_sites_data}
+
 # make an initial list of remaining gages and omitted gages
 scratch_sites <- scratch_data_unreg %>%
   group_by(site_no) %>%
   summarise(pk_count = n())
 
-scratch_sites_omit <- anti_join(sites_gt_20, scratch_sites)
+scratch_sites_omit <- anti_join(sites_gt_20, scratch_sites,
+                                by = join_by(site_no)
+                                )
 
+# check count for sites now lt 20 years
 scratch_sites_unreg_lt_20 <- scratch_sites %>%
   filter(pk_count < 20)
 
 sites_omit <- bind_rows(scratch_sites_omit,
                         scratch_sites_unreg_lt_20)
 
+# drop regulated sites
 sites_unreg <- anti_join(sites_gt_20, sites_omit,
                          by = join_by(site_no))
 
-# check that the count is true
-check_count <- nrow(sites_unreg) == nrow(sites_gt_20) - nrow(sites_omit)
-
 count_sites_unreg <- nrow(sites_unreg)
 
-# clean up Global Environment
-rm(list = ls(pattern = "scratch"))
-
-```
-
-```{r 06_pf_data_separate_data_for_regulated_unregulated_sites}
-
-# update df sites with regulation
+# update dt sites with regulation
 peak_data_reg <- peak_data_gt_20 %>%
   filter(site_no %in% sites_omit$site_no)
 
-# update working df for only unregulated sites
+# update working dt for only unregulated sites
 peak_data_unreg <- peak_data_gt_20 %>%
   filter(site_no %in% sites_unreg$site_no)
 
 # check that the count is true
+check_count <- nrow(sites_unreg) == nrow(sites_gt_20) - nrow(sites_omit)
 check_count <- nrow(peak_data_unreg) == nrow(peak_data_gt_20) - nrow(peak_data_reg)
-
 count_data_unreg <- nrow(peak_data_gt_20) - nrow(peak_data_reg)
 
 # clean up Global Environment
 rm(list = ls(pattern = "omit"))
-rm(peak_data_reg)
-rm(peak_data_gt_20)
+rm(list = ls(pattern = "scratch"))
+rm(peak_data_reg,
+   peak_data_gt_20)
+
+```
+
+# CLEAN HERE
+```{r 06_check_drop_NA_discharge_and_dates}
+
+# check for na values
+na_check <- peak_data_unreg %>%
+  summarize(across(everything(),
+                   ~sum(is.na(.))
+                   ))
+
+# get obs with missing peak flow
+na_discharge <- peak_data_unreg %>%
+  filter(is.na(peak_va))
+
+# get obs missing peak flow dates
+na_date <- peak_data_unreg %>%
+  filter(is.na(peak_dt))
+
+# separate sites with missing discharge
+na_data <- bind_rows(na_discharge, na_date) %>%
+  distinct()
+
+peak_data <- anti_join(peak_data_unreg, na_data,
+                       by = join_by(site_no, peak_dt, peak_va))
+
+# check that the count is true
+check_count <- nrow(peak_data_unreg) == nrow(peak_data) - nrow(na_data)
+
+# clean up Global Environment
+write_csv(peak_data_na, "data_output/peak_data_na_vals.csv")
+rm(peak_data_unreg,
+   peak_data_na,
+   sites_na)
+
+
+
+
+# drop observations with NA values
+peak_data <- peak_data_unreg %>%
+  filter(!is.na(peak_va))
+
+
+
+
+
+
+
+
+
+
+
+# clean up Global Environment
+write_csv(peak_data_na, "data_output/peak_data_na_discharge.csv")
+rm(peak_data_unreg,
+   peak_data_na,
+   sites_na)
+
+```
+
+```{r 09_pf_missing_data_check}
+
+
+
 
 ```
 
@@ -273,27 +347,8 @@ rm(study_area_unproj)
 
 ```
 
-```{r 08_check_drop_NA_discharge_data}
-
-peak_data_na <- peak_data_unreg %>%
-  filter(is.na(peak_va))
-
-sites_na <- peak_data_unreg %>%
-  filter(site_no %in% peak_data_na$site_no) %>%
-  arrange(site_no, gage_ht)
-
-# drop observations with NA values
-peak_data <- peak_data_unreg %>%
-  filter(!is.na(peak_va))
-
-# clean up Global Environment
-rm(peak_data_unreg)
-rm(sites_na)
-
-```
 
 # revise below
-
 ```{r 07_pf_data_check_dates}
 
 # separate missing dates for recheck
@@ -302,6 +357,8 @@ rm(sites_na)
 peak_date_miss <- peak_data_gt_20 %>%
   filter(is.na(peak_dt))
 
+# clean up Global Environment
+write_csv(na_date, "data_output/peak_data_na_date.csv")
 peak_data <- anti_join(peak_data_gt_20, peak_date_miss)
 
 ```
