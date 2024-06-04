@@ -44,7 +44,7 @@ eco_l3 <- st_read("data_spatial/data_spus_eco_l3/us_eco_l3.shp") %>%
 
 ```
 
-```{r 02_convert_peak-flow_sites_to_spatial, eval=FALSE}
+```{r 02_convert_peak-flow_sites_to_spatial}
 
 # convert stations into a spatial format (sf) object
 sites_pk_bb <- st_as_sf(sites_pk_bb,
@@ -112,7 +112,7 @@ bb_study_area_unproj <- study_area_unproj %>%
 # clean up Global Environment
 rm(list = ls(pattern = "names"))
 rm(list = ls(pattern = "crs"))
-rm(eco_l3)
+#rm(eco_l3)
 
 ```
 
