@@ -20,6 +20,7 @@ library(dataRetrieval)    # Retrieval functions for USGS and EPA hydrology and
 library(sf)               # Simple features for R
 library(here)             # A simpler way to find files
 library(utils)            # The R utils package
+library(XML)              # Tools for parsing and generating XML
 
 ```
 
@@ -98,11 +99,11 @@ unzip(zipfile = paste(file_path, file_name, sep = ""),
       exdir = paste(file_path, dir_name, sep = ""))
 file.remove(paste(file_path, file_name, sep = ""))
 
-# 2023 USDA Plant Hardiness Zone GIS Datasets
+# 2023 USDA Plant Hardiness Zone GIS datasets
 #   https://prism.oregonstate.edu/projects/plant_hardiness_zones.php
 url <- "https://prism.oregonstate.edu/projects/phm_data/phzm_us_zones_shp_2023.zip"
 file_name <- "phzm_us_zones_shp_2023.zip"
-dir_name <- "us_eco_l4"
+dir_name <- "phzm_us_zones_shp_2023"
 
 download.file(url, paste(file_path, file_name, sep = ""))
 dir.create(paste(file_path, dir_name, sep = ""))
@@ -116,24 +117,31 @@ file_name <- "phzm_us_grid_2023.zip"
 dir_name <- "phzm_us_grid_2023"
 
 download.file(url, paste(file_path, file_name, sep = ""))
+dir.create(paste(file_path, dir_name, sep = ""))
 unzip(zipfile = paste(file_path, file_name, sep = ""),
       exdir = paste(file_path, dir_name, sep = ""))
 file.remove(paste(file_path, file_name, sep = ""))
 
-# State boundary
+# USA State boundary
 # https://www.sciencebase.gov/catalog/item/52c78623e4b060b9ebca5be5
 url <- "http://www2.census.gov/geo/tiger/TIGER2012/STATE/tl_2012_us_state.zip"
 file_name <- "tl_2012_us_state.zip"
 dir_name <- "tl_2012_us_state"
 
 download.file(url, paste(file_path, file_name, sep = ""))
+dir.create(paste(file_path, dir_name, sep = ""))
 unzip(zipfile = paste(file_path, file_name, sep = ""),
       exdir = paste(file_path, dir_name, sep = ""))
 file.remove(paste(file_path, file_name, sep = ""))
 
-```
+# Read XML metadata from a file
+file_path <- "data_spatial/tl_2012_us_state/"
+file_name <- "tl_2012_us_state.shp.xml"
 
-```{r 03_get_metadata}
+xml_data <- xmlTreeParse(paste(file_path, file_name, sep = ""),
+                         useInternalNodes = TRUE)
+
+xml_data
 
 ```
 
