@@ -27,7 +27,7 @@ library(here)
 
 # Functions:
 # process_geometries -- written with ChatGPT 4.0 on 2024-06-06
-#     The function returns the modified sf object with additional columns for
+#     The function returns a modified sf object with additional columns for
 #     the centroid and its coordinates.
 # The function automates the following functions:
 #     Check and make geometries valid
@@ -150,61 +150,40 @@ state_bdy <- st_read("data_spatial/tl_2012_us_state/tl_2012_us_state.shp") %>%
   janitor::clean_names() %>%
   process_geometries()
 
-# get sites
+# get site data
 sites_pk_bb <- read_csv("data/sites_pk_bb.csv")
 
 ```
 
+# Explore data
+```{r 02a_explore_eco_l1_great-plains, eval=FALSE}
 
+# Explore level 1 ecoregion names
+eco_l1_names <- eco_l3 %>%
+  as.data.frame() %>%
+  select(na_l1name) %>%
+  distinct()
 
+# Select the Great Plains Level 1 ecoregion
+eco_l1_great_plains <- eco_l3 %>%
+  filter(na_l1name == "GREAT PLAINS")
 
-
-
-
-
-
-
-
-```{r 02_process_geometries}
-
-eco_l3 <- process_geometries(eco_l3)
-
-```
-
-
-
-```{r 04_visually_check_results}
-
-# Check and make geometries valid
-eco_l3$geometry <- st_make_valid(eco_l3$geometry)
-
-
-# Safely calculate centroids for valid geometries
-eco_l3$centroid <- ifelse(st_is_valid(eco_l3$geometry), st_centroid(eco_l3$geometry), NA)
-
-# Extract coordinates from centroids
-eco_l3$text_x <- ifelse(!is.na(eco_l3$centroid),
-                        st_coordinates(eco_l3$centroid)[, 1],
-                        NA)
-
-eco_l3$text_y <- ifelse(!is.na(eco_l3$centroid),
-                        st_coordinates(eco_l3$centroid)[, 2],
-                        NA)
-
-```
-
-
-```{r 04_visually_check_results}
-
-# Plotting the map with text labels
+# Plot with text labels
 ggplot() +
-  geom_sf(data = eco_l3,
-          aes(fill = na_l2name)
+  geom_sf(data = eco_l1_great_plains,
+          aes(fill = na_l2name),
+          alpha = 0.2,
+          show.legend = FALSE
           ) +
-  geom_text(data = eco_l3,
+  geom_sf(data = eco_l1_great_plains,
+          aes(fill = na_l3name),
+          alpha = 0.2,
+          show.legend = FALSE
+          ) +
+  geom_text(data = eco_l1_great_plains,
             aes(x = text_x,
                 y = text_y,
-                label = na_l2name
+                label = na_l2code
                 ),
             size = 3,
             color = "black",
@@ -213,33 +192,98 @@ ggplot() +
   labs(title = "Map Title",
        fill = "Legend Title",
        caption = "Source: Your Source") +
-  the
+  theme(legend.position = "none")
 
+# save scratch plot
 ggsave("figures/scratch.png",
        bg = "white")
 
+```
+
+```{r 02b_explore_eco_l2_semi-arid, eval=FALSE}
+
+# Explore level 2 ecoregion names in Great Plains
+eco_l2_names <- eco_l1_great_plains %>%
+  as.data.frame() %>%
+  select(c(na_l2code, na_l2name)) %>%
+  distinct()
+
+# Select the Great Plains Level 1 ecoregion
+eco_l2_semi_arid <- eco_l3 %>%
+  filter(na_l2name == "WEST-CENTRAL SEMI-ARID PRAIRIES" |
+         na_l2name == "SOUTH CENTRAL SEMI-ARID PRAIRIES")
+
+# Plot with text labels
+ggplot() +
+  geom_sf(data = eco_l2_semi_arid,
+          aes(fill = na_l3name),
+          alpha = 0.5,
+          show.legend = FALSE
+          ) +
+  geom_text(data = eco_l2_semi_arid,
+            aes(x = text_x,
+                y = text_y,
+                label = na_l3name
+                ),
+            size = 3,
+            color = "black",
+            check_overlap = TRUE) +
+  theme_minimal() +
+  labs(title = "Map Title",
+       fill = "Legend Title",
+       caption = "Source: Your Source") +
+  theme(legend.position = "none")
+
+# save scratch plot
+ggsave("figures/scratch.png",
+       bg = "white")
 
 ```
 
+# START HERE
+```{r 02c_explore_eco_l3_nw-grt-pln_high-pln_sandhills, eval=FALSE}
 
+# start here
+# Explore level 2 ecoregion names in Great Plains
+eco_l2_names <- eco_l1_great_plains %>%
+  as.data.frame() %>%
+  select(c(na_l2code, na_l2name)) %>%
+  distinct()
 
+# Select the Great Plains Level 1 ecoregion
+eco_l2_semi_arid <- eco_l3 %>%
+  filter(na_l2name == "WEST-CENTRAL SEMI-ARID PRAIRIES" |
+         na_l2name == "SOUTH CENTRAL SEMI-ARID PRAIRIES")
 
-#%>%
-  filter(region != 9)   %>%     # eliminates island protectorates
-  filter(division > 3)  %>%     # eliminates northeastern states
-  filter(division != 5) %>%     # eliminates eastern states
-  filter(division != 7) #%>%     # eliminates western states
-  filter(stusps != "HI" &
-         stusps != "GU" &
-         stusps != "AS" &
-         stusps != "MP" &
-         stusps != "VI" &
-         stusps != "AK" &
-         stusps != "PR"
-         )
+# Plot with text labels
+ggplot() +
+  geom_sf(data = eco_l2_semi_arid,
+          aes(fill = na_l3name),
+          alpha = 0.5,
+          show.legend = FALSE
+          ) +
+  geom_text(data = eco_l2_semi_arid,
+            aes(x = text_x,
+                y = text_y,
+                label = na_l3name
+                ),
+            size = 3,
+            color = "black",
+            check_overlap = TRUE) +
+  theme_minimal() +
+  labs(title = "Map Title",
+       fill = "Legend Title",
+       caption = "Source: Your Source") +
+  theme(legend.position = "none")
 
+# save scratch plot
+ggsave("figures/scratch.png",
+       bg = "white")
 
-## Run analysis here
+```
+
+## REDO BELOW
+
 ```{r 02_convert_to_spatial_reproject_data}
 
 # convert stations into a spatial format (sf) object
@@ -271,41 +315,7 @@ eco_l4 <- eco_l4 %>%
 
 ```
 
-
-
-
-
-```{r 03_explore_eco_shapefile_names}
-
-# Explore level 1 ecoregion names
-eco_l1_names <- eco_l3 %>%
-  as.data.frame() %>%
-  select(na_l1name) %>%
-  distinct()
-
-# Get level 2 ecoregion names based on level 1 ecoregions:
-#   * Great Plains,
-#   * Southern Semi-arid Highlands
-eco_l2_names <- eco_l3 %>%
-  as.data.frame() %>%
-  filter(na_l1name == "GREAT PLAINS" |
-         na_l1name == "SOUTHERN SEMI-ARID HIGHLANDS") %>%
-  select(na_l2name) %>%
-  distinct()
-
-# Get level 3 ecoregion names based on level 2 ecoregions:
-#   * West-central Semi-arid Prairies,
-#   * South Central Semi-arid Prairies
-eco_l3_na_names <- eco_l3 %>%
-  as.data.frame() %>%
-  filter(na_l2name == "WEST-CENTRAL SEMI-ARID PRAIRIES" |
-         na_l2name == "SOUTH CENTRAL SEMI-ARID PRAIRIES") %>%
-  select(na_l3name) %>%
-  distinct()
-
-```
-
-```{r}
+```{r eval=FALSE}
 
 eco_l3 %>%
   filter(na_l3name == "High Plains" |
@@ -315,9 +325,9 @@ eco_l3 %>%
   geom_sf()
 
 
+
+
 ```
-
-
 
 ```{r 04_reproject_eco_shapefile}
 
@@ -341,8 +351,6 @@ crs_study_area_unproj <- study_area_unproj %>%
   st_crs()
 
 ```
-
-
 
 ```{r 05_reproject_eco_shapefile}
 # make bounding box -- done recursively to create a bb in 01_get_ecoreg_shapefiles
@@ -462,6 +470,25 @@ rm(sites_pk_bb,
 
 ```
 
+
+
+
+```{r eval=FALSE}
+
+#%>%
+  filter(region != 9)   %>%     # eliminates island protectorates
+  filter(division > 3)  %>%     # eliminates northeastern states
+  filter(division != 5) %>%     # eliminates eastern states
+  filter(division != 7) #%>%     # eliminates western states
+  filter(stusps != "HI" &
+         stusps != "GU" &
+         stusps != "AS" &
+         stusps != "MP" &
+         stusps != "VI" &
+         stusps != "AK" &
+         stusps != "PR"
+         )
+```
 
 
 
