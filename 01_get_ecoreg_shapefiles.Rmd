@@ -134,6 +134,17 @@ unzip(zipfile = paste(file_path, file_name, sep = ""),
       exdir = paste(file_path, dir_name, sep = ""))
 file.remove(paste(file_path, file_name, sep = ""))
 
+# USA Tribal Lands
+url <- "https://www2.census.gov/geo/tiger/TIGER2020/AITSN/tl_2020_us_aitsn.zip"
+file_name <- "tl_2020_us_aitsn.zip"
+dir_name <- "tl_2020_us_aitsn"
+
+download.file(url, paste(file_path, file_name, sep = ""))
+dir.create(paste(file_path, dir_name, sep = ""))
+unzip(zipfile = paste(file_path, file_name, sep = ""),
+      exdir = paste(file_path, dir_name, sep = ""))
+file.remove(paste(file_path, file_name, sep = ""))
+
 # Read XML metadata from a file
 file_path <- "data_spatial/tl_2012_us_state/"
 file_name <- "tl_2012_us_state.shp.xml"
