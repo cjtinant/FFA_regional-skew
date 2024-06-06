@@ -8,7 +8,10 @@ output: html_document
 <!--
 Gets all USGS site numbers from a bounding box
 Filters by stream, peak flow
+
+# Need to 
 -->
+
 
 ```{r 00_setup, include=FALSE}
 
@@ -22,9 +25,107 @@ library(dataRetrieval)    # Retrieval functions for USGS and EPA hydrology and
 library(sf)               # Simple features for R
 library(here)
 
+# Functions:
+# process_geometries -- written with ChatGPT 4.0 on 2024-06-06
+#     The function returns the modified sf object with additional columns for
+#     the centroid and its coordinates.
+# The function automates the following functions:
+#     Check and make geometries valid
+#         eco_l3$geometry <- st_make_valid(eco_l3$geometry)
+#     Safely calculate centroids for valid geometries
+#         eco_l3$centroid <- ifelse(st_is_valid(eco_l3$geometry),
+#                                   st_centroid(eco_l3$geometry), NA)
+#      Extract coordinates from centroids
+#          eco_l3$text_x <- ifelse(!is.na(eco_l3$centroid),
+#                                  st_coordinates(eco_l3$centroid)[, 1],
+#                                  NA)
+#          eco_l3$text_y <- ifelse(!is.na(eco_l3$centroid),
+#                                  st_coordinates(eco_l3$centroid)[, 2],
+#                                  NA)
+#
+# Details about process_geometries:
+# Geometry Validation:
+#   st_make_valid() is used to correct any invalid geometries within the
+#     spatial data frame. The function identifies indices of valid geometries
+#     to ensure that centroids and subsequent operations are only applied to
+#     them.
+# Centroid Calculation:
+#   st_centroid() is applied conditionally only to valid geometries using
+#     ifelse().
+#   If a geometry is invalid, NA is used as a fallback.
+#      st_centroid() is applied only to the valid parts of the geometry column.
+#   Centroids are stored in a list to handle any type of geometry being returned
+#      from st_centroid().
+#   Each geometry is processed individually within a loop to allow more control
+#      over handling each item and better debugging capabilities if errors occur.
+#   !is_empty(centroid) checks if the centroid is not empty. 
+#   The function also ensures that st_coordinates(centroid) actually returns
+#      a non-empty data frame before trying to access its elements.
+# Conditional Coordinates Extraction:
+#   The x and y coordinates are extracted from the centroid. If the centroid
+#      is NA (because the geometry was invalid), the coordinate fields are set
+#      to NA.
+#   Coordinates are extracted only if there are valid centroids. This is
+#      safeguarded by checking if there are valid indices before attempting to
+#      extract coordinates.
+#   text_x and text_y are initialized with NA_real_ to ensure that the type
+#      consistency is maintained for cases where centroids might not be
+#      computable.
+#   Before extracting coordinates, the function checks if the centroid is not NA
+#      and contains rows. Then it ensures that the coordinates can be indexed
+#      properly, and has the required number of columns 
+#        (at least two, for x and y coordinates).
+# Additional checks:
+#   Separate Checks for NAs and Data Structure Validity: The function checks
+#       for NAs and the structure of coords are now more explicit.
+#     The function checks if centroid is not NA and not empty. Then, if coords
+#       is derived, the function ensures it is not NA and has the necessary rows
+#       and columns.
+#   Avoid Coercion Errors: By ensuring each part of the conditional is valid
+#       before evaluating the next part, this prevents logical operations on
+#       possibly undefined or inappropriate data types.
+#   Direct Evaluation of Conditions: The logic is structured to progressively
+#       verify conditions before accessing potentially problematic attributes
+#       like the number of rows or columns.
+#   Check for null in coords: The function ensures that coords is not null
+#       before proceeding to check its dimensions. This prevents logical errors
+#       when coords might be an unexpected type or structure.
+#   Explicit Structure Check: By using is.null along with checks for the number
+#       of rows and columns in coords, the function can more reliably ensure
+#       that the data structure is correct before attempting to access its
+#       elements.
+
+process_geometries <- function(sf_object) {
+  # Ensure all geometries are valid
+  sf_object$geometry <- st_make_valid(sf_object$geometry)
+  
+  # Initialize columns for centroids and coordinates
+  sf_object$text_x <- rep(NA_real_, nrow(sf_object))
+  sf_object$text_y <- rep(NA_real_, nrow(sf_object))
+
+  # Calculate centroids for valid geometries and extract coordinates
+  for (i in seq_len(nrow(sf_object))) {
+    if (st_is_valid(sf_object$geometry[i])) {
+      centroid <- st_centroid(sf_object$geometry[i])
+      if (!is.na(centroid) && !st_is_empty(centroid)) {
+        coords <- st_coordinates(centroid)
+        # Explicit check for coords' validity and structure
+        if (!is.null(coords) && nrow(coords) > 0 && ncol(coords) >= 2) {
+          sf_object$text_x[i] <- coords[1, 1]
+          sf_object$text_y[i] <- coords[1, 2]
+        }
+      }
+    }
+  }
+
+  # Return the modified sf object
+  return(sf_object)
+}
+
 ```
 
-```{r 01a_get_peak-flow_site_ecoreg_data_Cyverse, eval=FALSE}
+## Get data -- either from Cyverse or locally
+```{r 01a_get_and_clean_data_Cyverse, eval=FALSE}
 
 sites_pk_bb <- read_csv("~/FFA_regional-skew/data/sites_pk_bb.csv")
 
@@ -34,17 +135,112 @@ eco_l3 <- st_read("~/data-store/home/cjtinant/data_spatial/us_eco_l3.shp") %>%
 
 ```
 
-```{r 01b_get_peak-flow_site_ecoreg_data_local, eval=FALSE}
+```{r 01b_get_and_clean_data_local, eval=FALSE}
 
+# load shapefiles -- local path -- and check geometry
+eco_l3 <- st_read("data_spatial/us_eco_l3/us_eco_l3.shp") %>%
+  janitor::clean_names() %>%
+  process_geometries()
+
+eco_l4 <- st_read("data_spatial/us_eco_l4/us_eco_l4_no_st.shp") %>%
+  janitor::clean_names() %>%
+  process_geometries()
+
+state_bdy <- st_read("data_spatial/tl_2012_us_state/tl_2012_us_state.shp") %>%
+  janitor::clean_names() %>%
+  process_geometries()
+
+# get sites
 sites_pk_bb <- read_csv("data/sites_pk_bb.csv")
-
-# load ecoregion shapefile -- local path
-eco_l3 <- st_read("data_spatial/data_spus_eco_l3/us_eco_l3.shp") %>%
-  janitor::clean_names()
 
 ```
 
-```{r 02_convert_peak-flow_sites_to_spatial}
+
+
+
+
+
+
+
+
+
+
+```{r 02_process_geometries}
+
+eco_l3 <- process_geometries(eco_l3)
+
+```
+
+
+
+```{r 04_visually_check_results}
+
+# Check and make geometries valid
+eco_l3$geometry <- st_make_valid(eco_l3$geometry)
+
+
+# Safely calculate centroids for valid geometries
+eco_l3$centroid <- ifelse(st_is_valid(eco_l3$geometry), st_centroid(eco_l3$geometry), NA)
+
+# Extract coordinates from centroids
+eco_l3$text_x <- ifelse(!is.na(eco_l3$centroid),
+                        st_coordinates(eco_l3$centroid)[, 1],
+                        NA)
+
+eco_l3$text_y <- ifelse(!is.na(eco_l3$centroid),
+                        st_coordinates(eco_l3$centroid)[, 2],
+                        NA)
+
+```
+
+
+```{r 04_visually_check_results}
+
+# Plotting the map with text labels
+ggplot() +
+  geom_sf(data = eco_l3,
+          aes(fill = na_l2name)
+          ) +
+  geom_text(data = eco_l3,
+            aes(x = text_x,
+                y = text_y,
+                label = na_l2name
+                ),
+            size = 3,
+            color = "black",
+            check_overlap = TRUE) +
+  theme_minimal() +
+  labs(title = "Map Title",
+       fill = "Legend Title",
+       caption = "Source: Your Source") +
+  the
+
+ggsave("figures/scratch.png",
+       bg = "white")
+
+
+```
+
+
+
+
+#%>%
+  filter(region != 9)   %>%     # eliminates island protectorates
+  filter(division > 3)  %>%     # eliminates northeastern states
+  filter(division != 5) %>%     # eliminates eastern states
+  filter(division != 7) #%>%     # eliminates western states
+  filter(stusps != "HI" &
+         stusps != "GU" &
+         stusps != "AS" &
+         stusps != "MP" &
+         stusps != "VI" &
+         stusps != "AK" &
+         stusps != "PR"
+         )
+
+
+## Run analysis here
+```{r 02_convert_to_spatial_reproject_data}
 
 # convert stations into a spatial format (sf) object
 sites_pk_bb <- st_as_sf(sites_pk_bb,
@@ -53,23 +249,53 @@ sites_pk_bb <- st_as_sf(sites_pk_bb,
                     crs = 4269,                     # projection, this is NAD83
                     remove = FALSE)                 # don't remove lat/lon cols
 
+# check geometry of shapefiles
+crs_geom <- eco_l3 %>%
+  st_crs() %>%
+  pluck(.,1)
+
+crs_geom <- eco_l4 %>%
+  st_crs() %>%
+  pluck(.,1)
+
+crs_geom <- state_bdy %>%
+  st_crs() %>%
+  pluck(.,1)
+
+# reproject ecoregions to NAD83 Geographic (ESPG:4269) -- Lat Lon
+eco_l3 <- eco_l3 %>%
+  st_transform(crs = 4269)
+
+eco_l4 <- eco_l4 %>%
+  st_transform(crs = 4269)
+
 ```
+
+
+
+
 
 ```{r 03_explore_eco_shapefile_names}
 
-# explore names
+# Explore level 1 ecoregion names
 eco_l1_names <- eco_l3 %>%
   as.data.frame() %>%
   select(na_l1name) %>%
   distinct()
 
+# Get level 2 ecoregion names based on level 1 ecoregions:
+#   * Great Plains,
+#   * Southern Semi-arid Highlands
 eco_l2_names <- eco_l3 %>%
   as.data.frame() %>%
   filter(na_l1name == "GREAT PLAINS" |
          na_l1name == "SOUTHERN SEMI-ARID HIGHLANDS") %>%
   select(na_l2name) %>%
   distinct()
-  
+
+# Get level 3 ecoregion names based on level 2 ecoregions:
+#   * West-central Semi-arid Prairies,
+#   * South Central Semi-arid Prairies
 eco_l3_na_names <- eco_l3 %>%
   as.data.frame() %>%
   filter(na_l2name == "WEST-CENTRAL SEMI-ARID PRAIRIES" |
@@ -79,6 +305,20 @@ eco_l3_na_names <- eco_l3 %>%
 
 ```
 
+```{r}
+
+eco_l3 %>%
+  filter(na_l3name == "High Plains" |
+         na_l3name == "Northwestern Great Plains" |
+         na_l3name == "Nebraska Sand Hills") %>%
+  ggplot() +
+  geom_sf()
+
+
+```
+
+
+
 ```{r 04_reproject_eco_shapefile}
 
 # check geometry of ecoreg
@@ -86,17 +326,25 @@ crs_eco_l3 <- eco_l3 %>%
   st_crs()
 
 # subset study area -- Albers refers to Albers Equal Area Conic projection
+#   * High Plains
 study_area_albers <- eco_l3 %>%
   filter(na_l3name == "High Plains" |
          na_l3name == "Northwestern Great Plains")
 
-# project study area to NAD83 Geographic (ESPG:4269)
+# project study area to NAD83 Geographic (ESPG:4269) -- Lat Lon
+#   need to keep the study area
 study_area_unproj <- study_area_albers %>%
   st_transform(crs = 4269)
 
+# check results
 crs_study_area_unproj <- study_area_unproj %>%
   st_crs()
 
+```
+
+
+
+```{r 05_reproject_eco_shapefile}
 # make bounding box -- done recursively to create a bb in 01_get_ecoreg_shapefiles
 bb_study_area_unproj <- study_area_unproj %>%
   st_bbox() %>%
@@ -116,7 +364,7 @@ rm(list = ls(pattern = "crs"))
 
 ```
 
-```{r 05_intersect_sites_study_area}
+```{r 06_intersect_sites_study_area}
 
 # drop sites outside of ecoreg
 sites_pk_in_ecoreg <- st_intersection(sites_pk_bb, study_area_unproj)
@@ -135,7 +383,7 @@ rm(bb_study_area_unproj)
 
 ```
 
-```{r 06_get_peak-flow_data_w_min_20_obs}
+```{r 07_get_peak-flow_data_w_min_20_obs}
 
 # get peak flow data for gages with min 20 observations
 site_ids <- sites_gt_20 %>%
@@ -165,7 +413,7 @@ rm(site_ids,
 
 ```
 
-```{r 07_visually_check_results}
+```{r 08_visually_check_results}
 
 # plot results
 ggplot() +
