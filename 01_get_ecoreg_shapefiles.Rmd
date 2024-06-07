@@ -25,48 +25,7 @@ library(xml2)             # Parse XML
 
 ```
 
-```{r 01_make_criteria_cde_metadata, eval=FALSE}
- 
-# the criteria code metadata is for peak flow sites
-site_criteria_cde <- tribble( 
-  ~code,
-  ~description,
-  "agency_cd", "The agency that is reporting the data. Agency codes are fixed values assigned by the National Water Information System (NWIS).",
-  "site_no", "Each site in the USGS data base has a unique 8- to 15-digit identification number.",
-  "station_nm", "This is the official name of the site in the database. For well information this can be a district-assigned local number.",
- "site_tp_cd", "A list of primary and secondary site types that can be associated with data collection sites. A site type is a generalized location in the hydrologic cycle, or a man-made feature thought to affect the hydrologic conditions measured at a site. All sites are associated with a primary site type, and may additionally be associated with a secondary site type that further describes the location.",
- "dec_lat_va", "Latitude in decimal degrees",
- "dec_long_va", "Longitude in decimal degrees",
- "coord_acy_cd", "Lat/Long coordinate accuracy codes indicating the accuracy of the latitude longitude values.",
- "dec_coord_datum_cd", "Lat/Long coordinate datum.",
- "alt_va", "Altitude of the site referenced to the specified Vertical Datum",
- "alt_acy_va", "Altitude accuracy value. Many altitudes are interpolated from the contours on topographic maps; accuracies determined in this way are generally entered as one-half of the contour interval.",
- "alt_datum_cd", "Altitude coordinate datum.",
- "huc_cd", "Hydrologic unit codes. The United States is divided and sub-divided into successively smaller hydrologic units which are classified into four levels: regions, sub-regions, accounting units, and cataloging units. The hydrologic units are arranged within each other, from the smallest (cataloging units) to the largest (regions). Each hydrologic unit is identified by a unique hydrologic unit code (HUC) consisting of two to eight digits based on the four levels of classification in the hydrologic unit system.",
- "data_type_cd", "All USGS data falls into one of: Current Conditions, Daily Data, Surface Water, Water Quality, Groundwater. Current condition data is any data down to the 15 minute interval that has been transmitted in the last 120 days. Daily Data is the average daily value for a site. Surface Water is water flow and levels in streams, lakes and springs. Water Quality is chemical and physical data for streams, lakes, springs, and wells. Groundwater is water levels in wells.",
- "parm_cd", "Parameter code",
- "stat_cd", "Statistics code",
- "ts_id", "Time-series ID. The ts_id is a surrogate key assigned and used by the database for efficient queries of data and for download or display as a list, table, or graph.",
- "loc_web_ds", "Additional measurement description",
- "medium_grp_cd", "Medium type refers to the specific environmental medium that was sampled and analyzed. Medium type differs from site type because one site type, such as surface water, could have data for several media, such as water, bottom sediment, fish tissue, and others.",
- "parm_grp_cd", "Parameter group code",
- "srs_id", "USEPA SRS.http://www.epa.gov/srs/",
- "access_cd", "Access code",
- "begin_date", "Begin date of the period of record for the data",
- "end_date", "End date of the period of record for the data",
- "count_nu", "Number of records",
- "na_l3_cde", "User-generated code for level-3 ecoregion names, where 'ngp' = 'Northern Great Plains' and 'hp' = High Plains"
- )
-
-# write metadata file
-write_csv(site_criteria_cde, "data_output/sites_site_criteria_cde.csv")
-
-# clean Global Environment
-rm(list = ls(pattern = "_cde"))
-
-```
-
-```{r 02_dl_shapefiles_metadata_DOES-NOT-WORK-FROM-CYVERSE, eval=FALSE}
+```{r 01_dl_shapefiles_metadata_DOES-NOT-WORK-FROM-CYVERSE, eval=FALSE}
 
 # 1. download shapefiles by calling the download.file() function, and passing 
 #   in the URL and file name/location as arguments
@@ -162,7 +121,7 @@ file.remove(paste(file_path, file_name, sep = ""))
 
 ```
 
-```{r 03_get_peak_flow_site_info}
+```{r 02_get_peak_flow_site_info}
 
 # Get peak flow sites in the Northern Great Plains and High Plains bb
 sites_nw <- whatNWISsites(                     #  xmin   ymin  xmax  ymax
@@ -214,7 +173,7 @@ rm(list = ls(pattern = "sites_s"))
 
 ```
 
-```{r 04_get_peak-flow_sites}
+```{r 03_get_peak-flow_sites}
 
 # get a list of all streamflow flow data in bounding box
 sites_st <-sites_all %>%
@@ -230,6 +189,49 @@ sites_pk_bb <-  whatNWISdata(
 write_csv(sites_pk_bb, "~/FFA_regional-skew/data/sites_pk_bb")
 
 ```
+
+```{r 04_make_criteria_cde_metadata, eval=FALSE}
+ 
+# the criteria code metadata is for peak flow sites
+site_criteria_cde <- tribble( 
+  ~code,
+  ~description,
+  "agency_cd", "The agency that is reporting the data. Agency codes are fixed values assigned by the National Water Information System (NWIS).",
+  "site_no", "Each site in the USGS data base has a unique 8- to 15-digit identification number.",
+  "station_nm", "This is the official name of the site in the database. For well information this can be a district-assigned local number.",
+ "site_tp_cd", "A list of primary and secondary site types that can be associated with data collection sites. A site type is a generalized location in the hydrologic cycle, or a man-made feature thought to affect the hydrologic conditions measured at a site. All sites are associated with a primary site type, and may additionally be associated with a secondary site type that further describes the location.",
+ "dec_lat_va", "Latitude in decimal degrees",
+ "dec_long_va", "Longitude in decimal degrees",
+ "coord_acy_cd", "Lat/Long coordinate accuracy codes indicating the accuracy of the latitude longitude values.",
+ "dec_coord_datum_cd", "Lat/Long coordinate datum.",
+ "alt_va", "Altitude of the site referenced to the specified Vertical Datum",
+ "alt_acy_va", "Altitude accuracy value. Many altitudes are interpolated from the contours on topographic maps; accuracies determined in this way are generally entered as one-half of the contour interval.",
+ "alt_datum_cd", "Altitude coordinate datum.",
+ "huc_cd", "Hydrologic unit codes. The United States is divided and sub-divided into successively smaller hydrologic units which are classified into four levels: regions, sub-regions, accounting units, and cataloging units. The hydrologic units are arranged within each other, from the smallest (cataloging units) to the largest (regions). Each hydrologic unit is identified by a unique hydrologic unit code (HUC) consisting of two to eight digits based on the four levels of classification in the hydrologic unit system.",
+ "data_type_cd", "All USGS data falls into one of: Current Conditions, Daily Data, Surface Water, Water Quality, Groundwater. Current condition data is any data down to the 15 minute interval that has been transmitted in the last 120 days. Daily Data is the average daily value for a site. Surface Water is water flow and levels in streams, lakes and springs. Water Quality is chemical and physical data for streams, lakes, springs, and wells. Groundwater is water levels in wells.",
+ "parm_cd", "Parameter code",
+ "stat_cd", "Statistics code",
+ "ts_id", "Time-series ID. The ts_id is a surrogate key assigned and used by the database for efficient queries of data and for download or display as a list, table, or graph.",
+ "loc_web_ds", "Additional measurement description",
+ "medium_grp_cd", "Medium type refers to the specific environmental medium that was sampled and analyzed. Medium type differs from site type because one site type, such as surface water, could have data for several media, such as water, bottom sediment, fish tissue, and others.",
+ "parm_grp_cd", "Parameter group code",
+ "srs_id", "USEPA SRS.http://www.epa.gov/srs/",
+ "access_cd", "Access code",
+ "begin_date", "Begin date of the period of record for the data",
+ "end_date", "End date of the period of record for the data",
+ "count_nu", "Number of records",
+ "na_l3_cde", "User-generated code for level-3 ecoregion names, where 'ngp' = 'Northern Great Plains' and 'hp' = High Plains"
+ )
+
+
+# write metadata file ---
+write_csv(site_criteria_cde, "data_output/sites_site_criteria_cde.csv")
+
+# clean Global Environment
+rm(list = ls(pattern = "_cde"))
+
+```
+
 
 ```{r xx_read_XML_data_NOT-WORKING, eval=FALSE}
 # discuss this
