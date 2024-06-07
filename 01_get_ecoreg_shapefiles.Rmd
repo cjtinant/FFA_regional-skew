@@ -232,7 +232,7 @@ write_csv(sites_pk_bb, "~/FFA_regional-skew/data/sites_pk_bb")
 ```
 
 ```{r xx_read_XML_data_NOT-WORKING, eval=FALSE}
-
+# discuss this
 # Prepare to read XML metadata from a file----
 file_path <- "data_spatial/tl_2020_us_aitsn/"
 file_name <- "tl_2020_us_aitsn.shp.ea.iso.xml"
