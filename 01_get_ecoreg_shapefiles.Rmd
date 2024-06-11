@@ -105,7 +105,18 @@ unzip(zipfile = paste(file_path, file_name, sep = ""),
       exdir = paste(file_path, dir_name, sep = ""))
 file.remove(paste(file_path, file_name, sep = ""))
 
-# get USA Tribal Lands metadata----
+# Köppen climate classification for the CONUS----
+url <- "https://geocatalog-uidaho.hub.arcgis.com/datasets/a1209a5383c04ef18addea0e10ab10e5"
+file_name <- "koppen-climate-classification.zip"
+dir_name <- "koppen-climate-classification"
+
+download.file(url, paste(file_path, file_name, sep = ""))
+dir.create(paste(file_path, dir_name, sep = ""))
+unzip(zipfile = paste(file_path, file_name, sep = ""),
+      exdir = paste(file_path, dir_name, sep = ""))
+file.remove(paste(file_path, file_name, sep = ""))
+
+# get metadata USA Tribal Lands----
 url <- "https://www2.census.gov/geo/docs/reference/codes2020/national_aiannh2020.txt"
 file_path   <- "data_spatial/metadata/"
 file_name   <- "national_aiannh2020.txt"
