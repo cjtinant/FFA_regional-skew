@@ -284,8 +284,15 @@ state_bdy <- state_bdy_usa %>%
            )
 
 # make a single polygon of the Rocky Mountain and Great Plains regions
+# https://mgimond.github.io/Spatial/vector-operations-in-r.html
 rm_gp_bdy <- state_bdy %>%
-  st_union()
+  st_union(.,
+           by_feature = FALSE)
+
+# make polygons of aiannh
+tribal_lands <- tribal_lands_rm_gp %>%
+  st_union(.,
+           by_feature = FALSE)
 
 # intersect eco_l3 by the Rocky Mountain and Great Plains region boundary
 eco_l3_rm_gp <- st_intersection(eco_l3_proj, rm_gp_bdy)
@@ -297,11 +304,10 @@ rm(aiannh_table,
    state_bdy_usa,
    tribal_lands_usa,
    crs_geom_eco,
-   crs_geom_st_bdy
+   crs_geom_st_bdy_usa
    )
 
 ```
-
 
 ```{r 02b_visualize_eco_l3_bdry_w_rm_gp_region}
 
@@ -387,6 +393,12 @@ ggplot() +
           color = "black",
           size = 0.5
           ) +
+   geom_sf(data = tribal_lands,
+            fill = "gray50",
+            alpha = 0.5
+#           aes(fill = aiannhce,
+#           show.legend = FALSE)
+           ) +
   labs(title = "Semi-Arid Great Plains Ecoregions with State Boundaries",
        fill = "Ecological Region") +  # Adding title and legend title
   scale_fill_viridis_d() +  # A color scale that's visually appealing and accessible
@@ -427,6 +439,14 @@ ggplot() +
        fill = "Ecological Region") +  # Adding title and legend title
   scale_fill_viridis_d() +  # A color scale that's visually appealing and accessible
   theme_minimal()  # A clean theme
+
+```
+
+## Create bounding box
+```{r 03_create_bounding_box}
+
+# create a bounding box for the semi-arid prairies
+
 
 ```
 
