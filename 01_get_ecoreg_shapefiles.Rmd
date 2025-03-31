@@ -7,6 +7,9 @@ output: html_document
 
 <!--
 Shapefiles were downloaded locally and uploaded to ~/data-store/home/cjtinant/data_spatial
+
+# 2025-03-31 -- the EPA ecoregion file does not exist anymore
+
 --> 
 
 ```{r 00_setup, include=FALSE}
@@ -133,6 +136,9 @@ file.remove(paste(file_path, file_name, sep = ""))
 ```
 
 
+```{r}
+
+```
 
 
 
