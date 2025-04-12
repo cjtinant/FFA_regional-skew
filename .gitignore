@@ -37,3 +37,9 @@ schema.ini
 .Rhistory
 .RData
 .Rproj.user/
+
+# =======================
+# Temporary files to delete on final
+# =======================
+delete/
+
