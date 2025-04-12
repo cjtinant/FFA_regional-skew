@@ -1,0 +1,5 @@
+"0","write_csv(""data/site_types.csv"")
+"
+"2","Error in write_delim(x, file, delim = "","", na = na, append = append, col_names = col_names,  : 
+  is.data.frame(x) is not TRUE
+"

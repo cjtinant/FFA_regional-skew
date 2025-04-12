@@ -1,0 +1,203 @@
+---
+title: "Untitled"
+author: "CJ Tinant"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# load libraries
+library(tidyverse)        # Load the 'Tidyverse' packages: ggplot2, dplyr, 
+                          #   tidyr, readr, purrr, tibble, stringr, and forcats
+library(sf)               # Simple features for R
+library(rnaturalearth)    # World map data from Natural Earth
+library(sp)               # provides classes and methods for spatial data
+library(raster)           # Create a raster layer object
+
+# Functions:
+# process_geometries -- written with ChatGPT 4.0 on 2024-06-06
+#     The function returns a modified sf object with additional columns for
+#     the centroid and its coordinates.
+# The function automates the following functions:
+#     Check and make geometries valid
+#         eco_l3$geometry <- st_make_valid(eco_l3$geometry)
+#     Safely calculate centroids for valid geometries
+#         eco_l3$centroid <- ifelse(st_is_valid(eco_l3$geometry),
+#                                   st_centroid(eco_l3$geometry), NA)
+#      Extract coordinates from centroids
+#          eco_l3$text_x <- ifelse(!is.na(eco_l3$centroid),
+#                                  st_coordinates(eco_l3$centroid)[, 1],
+#                                  NA)
+#          eco_l3$text_y <- ifelse(!is.na(eco_l3$centroid),
+#                                  st_coordinates(eco_l3$centroid)[, 2],
+#                                  NA)
+#
+# Details about process_geometries:
+# Geometry Validation:
+#   st_make_valid() is used to correct any invalid geometries within the
+#     spatial data frame. The function identifies indices of valid geometries
+#     to ensure that centroids and subsequent operations are only applied to
+#     them.
+# Centroid Calculation:
+#   st_centroid() is applied conditionally only to valid geometries using
+#     ifelse().
+#   If a geometry is invalid, NA is used as a fallback.
+#      st_centroid() is applied only to the valid parts of the geometry column.
+#   Centroids are stored in a list to handle any type of geometry being returned
+#      from st_centroid().
+#   Each geometry is processed individually within a loop to allow more control
+#      over handling each item and better debugging capabilities if errors occur.
+#   !is_empty(centroid) checks if the centroid is not empty. 
+#   The function also ensures that st_coordinates(centroid) actually returns
+#      a non-empty data frame before trying to access its elements.
+# Conditional Coordinates Extraction:
+#   The x and y coordinates are extracted from the centroid. If the centroid
+#      is NA (because the geometry was invalid), the coordinate fields are set
+#      to NA.
+#   Coordinates are extracted only if there are valid centroids. This is
+#      safeguarded by checking if there are valid indices before attempting to
+#      extract coordinates.
+#   text_x and text_y are initialized with NA_real_ to ensure that the type
+#      consistency is maintained for cases where centroids might not be
+#      computable.
+#   Before extracting coordinates, the function checks if the centroid is not NA
+#      and contains rows. Then it ensures that the coordinates can be indexed
+#      properly, and has the required number of columns 
+#        (at least two, for x and y coordinates).
+# Additional checks:
+#   Separate Checks for NAs and Data Structure Validity: The function checks
+#       for NAs and the structure of coords are now more explicit.
+#     The function checks if centroid is not NA and not empty. Then, if coords
+#       is derived, the function ensures it is not NA and has the necessary rows
+#       and columns.
+#   Avoid Coercion Errors: By ensuring each part of the conditional is valid
+#       before evaluating the next part, this prevents logical operations on
+#       possibly undefined or inappropriate data types.
+#   Direct Evaluation of Conditions: The logic is structured to progressively
+#       verify conditions before accessing potentially problematic attributes
+#       like the number of rows or columns.
+#   Check for null in coords: The function ensures that coords is not null
+#       before proceeding to check its dimensions. This prevents logical errors
+#       when coords might be an unexpected type or structure.
+#   Explicit Structure Check: By using is.null along with checks for the number
+#       of rows and columns in coords, the function can more reliably ensure
+#       that the data structure is correct before attempting to access its
+#       elements.
+
+process_geometries <- function(sf_object) {
+  # Ensure all geometries are valid
+  sf_object$geometry <- st_make_valid(sf_object$geometry)
+  
+  # Initialize columns for centroids and coordinates
+  sf_object$text_x <- rep(NA_real_, nrow(sf_object))
+  sf_object$text_y <- rep(NA_real_, nrow(sf_object))
+
+  # Calculate centroids for valid geometries and extract coordinates
+  for (i in seq_len(nrow(sf_object))) {
+    if (st_is_valid(sf_object$geometry[i])) {
+      centroid <- st_centroid(sf_object$geometry[i])
+      if (!is.na(centroid) && !st_is_empty(centroid)) {
+        coords <- st_coordinates(centroid)
+        # Explicit check for coords' validity and structure
+        if (!is.null(coords) && nrow(coords) > 0 && ncol(coords) >= 2) {
+          sf_object$text_x[i] <- coords[1, 1]
+          sf_object$text_y[i] <- coords[1, 2]
+        }
+      }
+    }
+  }
+
+  # Return the modified sf object
+  return(sf_object)
+}
+
+```
+
+```{r 01_load_data_raster}
+
+# Load ESRI grid file is in the working directory or specify the full path
+climate_zones_rast <- raster( "data_spatial/koppen-climate-classification/koppen_ics")
+
+climate_zones <- as.data.frame(rasterToPoints(climate_zones_rast))
+
+```
+
+```{r}
+
+ggplot() +
+  geom_tile(data = climate_zones,   # Plot with tiles colored by the climate class
+            aes(x = x,
+                y = y,
+                fill = factor(CLASS))) +  
+  ) +
+
+  scale_fill_viridis_d() +  # Uses a discrete color scale suitable for categorical data
+  labs(title = "Climate Zones Map", x = "Longitude", y = "Latitude", fill = "Climate Class") +
+  coord_fixed() +  # Keeps aspect ratio 1:1
+  theme_minimal()  # Minimal theme to keep the focus on the data
+
+```
+
+
+```{r}
+
+# Plot
+ggplot() +
+  geom_sf(data = climate_zones,
+          aes(fill = climate_zones),
+          show.legend = TRUE) #+
+  geom_sf(data = us_states, fill = NA, color = "black") +
+  geom_sf(data = reservations, fill = NA, color = "red", linetype = "dashed") +
+  scale_fill_viridis_d(option = "C", name = "Köppen Zone") +
+  labs(title = "Köppen Climate Classification of the USA with State and Reservation Boundaries",
+       caption = "Data source: Köppen, U.S. Census Bureau, Bureau of Indian Affairs") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+```
+
+
+```{r 01_load_data_raster}
+# load shapefiles -- local path -- and check geometry
+file_path <- "data_spatial/"
+
+# usa states
+file_name <- "tl_2012_us_state/tl_2012_us_state.shp"
+us_states <- st_read(paste(file_path,
+                        file_name,
+                        sep = "")) %>%
+  janitor::clean_names() %>%
+  process_geometries()
+
+# usa tribal lands
+file_name <- "tl_2020_us_aitsn/tl_2020_us_aitsn.shp"
+reservations <- st_read(paste(file_path,
+                        file_name,
+                        sep = "")) %>%
+  janitor::clean_names() %>%
+  process_geometries()
+
+# us_states <- st_read("path_to_us_states.shp")
+# reservations <- st_read("path_to_reservations.shp")
+
+```
+
+```{r}
+
+# Plot
+ggplot() +
+  geom_sf(data = climate_zones,
+          aes(fill = climate_zones),
+          show.legend = TRUE) #+
+  geom_sf(data = us_states, fill = NA, color = "black") +
+  geom_sf(data = reservations, fill = NA, color = "red", linetype = "dashed") +
+  scale_fill_viridis_d(option = "C", name = "Köppen Zone") +
+  labs(title = "Köppen Climate Classification of the USA with State and Reservation Boundaries",
+       caption = "Data source: Köppen, U.S. Census Bureau, Bureau of Indian Affairs") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+```
+

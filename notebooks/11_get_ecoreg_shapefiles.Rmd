@@ -1,0 +1,144 @@
+---
+title: "Get shapefiles for Northwestern Great Plains ecoregion gages"
+author: "CJ Tinant"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+<!--
+Shapefiles were downloaded locally and uploaded to ~/data-store/home/cjtinant/data_spatial
+
+# 2025-03-31 -- the EPA ecoregion file does not exist anymore
+
+--> 
+
+```{r 00_setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# library
+library(tidyverse)        # Load the 'Tidyverse' packages: ggplot2, dplyr, 
+                          #   tidyr, readr, purrr, tibble, stringr, and forcats
+library(dataRetrieval)    # Retrieval functions for USGS and EPA hydrology and
+                          #   water quality data
+library(sf)               # Simple features for R
+library(here)             # A simpler way to find files
+library(utils)            # The R utils package
+library(XML)              # Tools for parsing and generating XML
+library(xml2)             # Parse XML
+
+```
+
+```{r 01_dl_shapefiles_metadata_DOES-NOT-WORK-FROM-CYVERSE, eval=FALSE}
+
+# 1. download shapefiles by calling the download.file() function, and passing 
+#   in the URL and file name/location as arguments
+# 2. make a new directory
+# 3. unzip files to the new directory
+
+# location where you want to save the file on your computer after here()
+file_path <- "data_spatial/"
+
+# level-3 ecoregion download----
+# URL of the file to download and file name save on your computer
+url       <- "https://gaftp.epa.gov/EPADataCommons/ORD/Ecoregions/us/us_eco_l3.zip"
+file_name <- "us_eco_l3.zip"
+dir_name <- "us_eco_l3"
+
+download.file(url, paste(file_path, file_name, sep = ""))
+dir.create(paste(file_path, dir_name, sep = ""))
+unzip(zipfile = paste(file_path, file_name, sep = ""),
+      exdir = paste(file_path, dir_name, sep = ""))
+file.remove(paste(file_path, file_name, sep = ""))
+
+# level-4 ecoregion download----
+# URL of the file to download and file name save on your computer
+url <- "https://gaftp.epa.gov/EPADataCommons/ORD/Ecoregions/us/us_eco_l4.zip"
+file_name <- "us_eco_l4.zip"
+dir_name <- "us_eco_l4"
+
+download.file(url, paste(file_path, file_name, sep = ""))
+dir.create(paste(file_path, dir_name, sep = ""))
+unzip(zipfile = paste(file_path, file_name, sep = ""),
+      exdir = paste(file_path, dir_name, sep = ""))
+file.remove(paste(file_path, file_name, sep = ""))
+
+# 2023 USDA Plant Hardiness Zone GIS datasets----
+#   https://prism.oregonstate.edu/projects/plant_hardiness_zones.php
+url <- "https://prism.oregonstate.edu/projects/phm_data/phzm_us_zones_shp_2023.zip"
+file_name <- "phzm_us_zones_shp_2023.zip"
+dir_name <- "phzm_us_zones_shp_2023"
+
+download.file(url, paste(file_path, file_name, sep = ""))
+dir.create(paste(file_path, dir_name, sep = ""))
+unzip(zipfile = paste(file_path, file_name, sep = ""),
+      exdir = paste(file_path, dir_name, sep = ""))
+file.remove(paste(file_path, file_name, sep = ""))
+
+# GRID data----
+url <- "https://prism.oregonstate.edu/projects/phm_data/phzm_us_grid_2023.zip"
+file_name <- "phzm_us_grid_2023.zip"
+dir_name <- "phzm_us_grid_2023"
+
+download.file(url, paste(file_path, file_name, sep = ""))
+dir.create(paste(file_path, dir_name, sep = ""))
+unzip(zipfile = paste(file_path, file_name, sep = ""),
+      exdir = paste(file_path, dir_name, sep = ""))
+file.remove(paste(file_path, file_name, sep = ""))
+
+# USA State boundary----
+# https://www.sciencebase.gov/catalog/item/52c78623e4b060b9ebca5be5
+url <- "http://www2.census.gov/geo/tiger/TIGER2012/STATE/tl_2012_us_state.zip"
+file_name <- "tl_2012_us_state.zip"
+dir_name <- "tl_2012_us_state"
+
+download.file(url, paste(file_path, file_name, sep = ""))
+dir.create(paste(file_path, dir_name, sep = ""))
+unzip(zipfile = paste(file_path, file_name, sep = ""),
+      exdir = paste(file_path, dir_name, sep = ""))
+file.remove(paste(file_path, file_name, sep = ""))
+
+# USA Tribal Lands----
+url <- "https://www2.census.gov/geo/tiger/TIGER2020/AITSN/tl_2020_us_aitsn.zip"
+file_name <- "tl_2020_us_aitsn.zip"
+dir_name <- "tl_2020_us_aitsn"
+
+download.file(url, paste(file_path, file_name, sep = ""))
+dir.create(paste(file_path, dir_name, sep = ""))
+unzip(zipfile = paste(file_path, file_name, sep = ""),
+      exdir = paste(file_path, dir_name, sep = ""))
+file.remove(paste(file_path, file_name, sep = ""))
+
+# Köppen climate classification for the CONUS----
+url <- "https://geocatalog-uidaho.hub.arcgis.com/datasets/a1209a5383c04ef18addea0e10ab10e5"
+file_name <- "koppen-climate-classification.zip"
+dir_name <- "koppen-climate-classification"
+
+download.file(url, paste(file_path, file_name, sep = ""))
+dir.create(paste(file_path, dir_name, sep = ""))
+unzip(zipfile = paste(file_path, file_name, sep = ""),
+      exdir = paste(file_path, dir_name, sep = ""))
+file.remove(paste(file_path, file_name, sep = ""))
+
+# get metadata USA Tribal Lands----
+url <- "https://www2.census.gov/geo/docs/reference/codes2020/national_aiannh2020.txt"
+file_path   <- "data_spatial/metadata/"
+file_name   <- "national_aiannh2020.txt"
+output_name <- "national_aiannh2020.csv"
+
+# download file, read .txt, write .csv, remove file
+download.file(url, paste(file_path, file_name, sep = ""))
+data <- read_delim(paste(file_path, file_name, sep = ""),
+                       delim = "|",
+                       col_names = TRUE)
+write_csv(data, paste(file_path, output_name, sep = ""))
+file.remove(paste(file_path, file_name, sep = ""))
+
+```
+
+
+```{r}
+
+```
+
+
+
