@@ -53,7 +53,7 @@ source("scripts/f_process_geometries.R")
 # ------------------------------------------------------------------------------
 # 1) Load ecoregion data and transform to geographic
 
-file_path  <- "data_spatial"     # top-level folder for spatial data
+file_path  <- "data/spatial"     # top-level folder for spatial data
 dir_name   <- "us_eco_lev01"     # subfolder for level 1 ecoregions
 file_name <- "us_eco_l1.shp"
 target_file <- glue("{here()}/{file_path}/{dir_name}/{file_name}")
@@ -259,5 +259,5 @@ sites_all_pk_in_bb <- st_as_sf(sites_all_pk_in_bb,
 sites_pk_eco_only <- st_intersection(sites_all_pk_in_bb, eco_lev1_gp_geo)
 
 # Export all peakflow sites
-write_csv(sites_pk_eco_only, "data/sites_pk_eco_only.csv")
+write_csv(sites_pk_eco_only, "data/raw/sites_pk_eco_only.csv")
 

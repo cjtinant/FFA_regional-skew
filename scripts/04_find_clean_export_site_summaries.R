@@ -72,7 +72,7 @@ library(glue)           # For string interpolation
 
 # ---------------------------------------------------------
 # Load final unregulated sites with ≥20 years of record
-sites <- read_csv("data/sites_pk_unreg_gt_20.csv")
+sites <- read_csv("data/clean/sites_pk_unreg_gt_20.csv")
 
 # ---------------------------------------------------------
 # Get Summary of Site Data Available from Water Quality Portal
@@ -173,7 +173,7 @@ site_summary_list <- list(
 # Write CSVs only if data exist
 purrr::imap(site_summary_list, ~ {
   if (nrow(.x) > 0) {
-    file_name <- glue::glue("data/site_summary_{.y}_clean.csv")
+    file_name <- glue::glue("data/clean/site_summary_{.y}_clean.csv")
     message(glue::glue("Writing {file_name}"))
     write_csv(.x, file_name)
   } else {
