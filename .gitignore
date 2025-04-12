@@ -4,7 +4,7 @@
 
 # Ignore folders used for processing or outputs
 data/delete/
-data_spatial/
+data/spatial/*
 results/
 
 # =======================
