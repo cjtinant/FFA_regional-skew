@@ -63,3 +63,91 @@ summaries.</td>
 -   `/data/clean/` contains final processed data used in analysis.
 -   All scripts are named and numbered to reflect the workflow order.
 -   Custom helper functions are in `/functions/`.
+
+# Overview
+
+This project develops regional estimates of flood skew for unregulated
+USGS gage sites with ≥20 years of peak flow records. The workflow
+follows a reproducible, script-based approach using `tidyverse` tools in
+R.
+
+------------------------------------------------------------------------
+
+# Workflow Steps
+
+## 01\_get-spatial-data.R
+
+Download and prepare spatial data: - USGS HUC boundaries - Ecoregions -
+State boundaries
+
+Outputs: - `data/spatial/*`
+
+------------------------------------------------------------------------
+
+## 02\_get-gage-data.R
+
+Download USGS peak flow data from NWIS: - All sites within bounding
+box - All annual peak flow records
+
+Outputs: - `data/raw/sites_all_peak_in_bb.csv` -
+`data/raw/data_all_peak_in_bb.csv`
+
+------------------------------------------------------------------------
+
+## 03\_filter\_unregulated\_gage\_data.R
+
+Filter peak flow data to: - Remove regulated/affected observations -
+Keep unregulated sites only - Retain sites with ≥20 years of record
+
+Outputs: - `data/clean/data_pk_unreg_gt_20.csv` -
+`data/clean/sites_pk_gt_20.csv` - `data/clean/sites_reg_or_lt_20.csv`
+
+------------------------------------------------------------------------
+
+## 04\_find\_clean\_export\_site\_summaries.R
+
+Query site metadata from: - NWIS (location, drainage area) - WQP (data
+availability)
+
+Outputs: - `data/clean/site_summary_NWIS_clean.csv` -
+`data/clean/site_summary_WDP_clean.csv`
+
+------------------------------------------------------------------------
+
+## 05\_update\_problem\_sites.R
+
+Identify and remove sites with: - All missing or all zero peak values -
+Fewer than 20 usable observations
+
+Update site lists and site summary data.
+
+Outputs: - Updated `data/clean/*.csv` files - Problem site info: -
+`data/clean/problem_sites_skew.csv` -
+`data/clean/data_problem_sites_skew.csv`
+
+------------------------------------------------------------------------
+
+## 06\_calculate\_station\_skew.R
+
+Calculate log-Pearson III station skew for each site: - Requires ≥20
+usable peak flows - Excludes sites with all NA or all zero values -
+Includes site coordinates in output - Provides summary stats and
+visualization
+
+Outputs: - `data/clean/station_skew.csv`
+
+------------------------------------------------------------------------
+
+# Next Steps
+
+-   Develop regional models of skew
+-   Explore spatial patterns in station skew
+-   Evaluate potential explanatory variables
+-   Fit regression models
+
+------------------------------------------------------------------------
+
+# Dependencies
+
+\`\`\`r library(tidyverse) library(dataRetrieval) library(here)
+library(glue)
