@@ -54,7 +54,7 @@ library(dataRetrieval)  # Retrieval functions for USGS and EPA hydro & wq data
 
 # ---------------------------------------------------------
 # Load sites in Great Plains ecoregion from local storage
-sites_eco_only <- read_csv("data/sites_pk_eco_only.csv")
+sites_eco_only <- read_csv("data/clean/sites_pk_eco_only.csv")
 
 # drop sites with l.t 20 observations
 sites_gt_20 <- sites_eco_only %>%
@@ -67,7 +67,7 @@ duplicates <- sites_pk_eco_gt_20 %>%
   filter(duplicated(.) | duplicated(., fromLast = TRUE))
 
 # Export sites
-write_csv(sites_eco_gt_20, "data/sites_pk_eco_gt_20.csv")
+write_csv(sites_eco_gt_20, "data/clean/sites_pk_eco_gt_20.csv")
 
 # ---------------------------------------------------------
 # Get peakflow data
@@ -102,10 +102,7 @@ peak_data_list <- map2(
 data_gt_20 <- bind_rows(peak_data_list)
 
 # Export peak_data_gt_20
-write_csv(data_pk_gt_20, "data/data_pk_gt_20")
-
-# Read peak flow data with g.t. 20 yrs --used in code check--
-#data_gt_20 <- read_csv("data/data_pk_gt_20")
+write_csv(data_pk_gt_20, "data/clean/data_pk_gt_20")
 
 # Clean up Global Environment
 rm(list = ls(pattern = "batch"))
@@ -207,7 +204,7 @@ sites_unreg_gt_20 <- sites_unreg %>%
 
 sites_reg_or_lt_20 <- anti_join(sites_gt_20, sites_unreg_gt_20)
 
-write_csv(sites_reg_or_lt_20, "data/sites_reg_or_lt_20.csv")
+write_csv(sites_reg_or_lt_20, "data/clean/sites_reg_or_lt_20.csv")
 
 # filter data for unregulated sites with gt 20 yrs obs
 data_unreg_gt_20 <- data_unregulated %>%
@@ -216,5 +213,5 @@ data_unreg_gt_20 <- data_unregulated %>%
 ck_final_ave_yr <- nrow(data_unreg_gt_20) / nrow(sites_unreg_gt_20)
 
 # export data
-write_csv(sites_unreg_gt_20, "data/sites_pk_unreg_gt_20.csv")
-write_csv(data_unreg_gt_20, "data/data_pk_unreg_gt_20.csv")
+write_csv(sites_unreg_gt_20, "data/clean/sites_pk_unreg_gt_20.csv")
+write_csv(data_unreg_gt_20, "data/clean/data_pk_unreg_gt_20.csv")
