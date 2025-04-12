@@ -29,3 +29,10 @@ schema.ini
 *.bak
 *.tmp
 ~$*
+
+# =======================
+# RStudio Junk
+# =======================
+.Rproj.user/
+.Rhistory
+.RData
