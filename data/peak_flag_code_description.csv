@@ -1,0 +1,17 @@
+peak_cd,peak_cd_descr
+1,Discharge is a Maximum Daily Average
+2,Discharge is an Estimate
+3,Discharge affected by Dam Failure
+4,Discharge less than indicated value which is Minimum Recordable Discharge at this site
+5,Discharge affected to unknown degree by Regulation or Diversion
+6,Discharge affected by Regulation or Diversion
+7,Discharge is an Historic Peak
+8,Discharge actually greater than indicated value
+9,"Discharge due to Snowmelt, Hurricane, Ice-Jam or Debris Dam breakup"
+A,Year of occurrence is unknown or not exact
+Bd,Day of occurrence is unknown or not exact
+Bm,Month of occurrence is unknown or not exact
+C,"All or part of the record affected by Urbanization, Mining, Agricultural changes, Channelization, or other"
+F,Peak supplied by another agency
+O,Opportunistic value not from systematic data collection
+R,Revised

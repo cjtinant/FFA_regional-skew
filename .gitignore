@@ -1,61 +1,31 @@
 # =======================
-# OS-Specific Junk Files
+# Output Data (Generated or Large Files)
 # =======================
-.DS_Store
-Thumbs.db
+
+# Ignore folders used for processing or outputs
+data/delete/
+data_spatial/
+results/
 
 # =======================
-# R History, Session, and Environment Files
+# ArcGIS Pro Artifacts (Expanded)
 # =======================
-.Rhistory
-.Rapp.history
-.RData
-.RDataTmp
-.Renviron
-.Ruserdata
-.httr-oauth
+
+# Anything inside arcgis_project that isn't a manual config
+arcgis_project/*
 
 # =======================
-# RStudio Files
+# R Markdown Generated Files (Expanded)
 # =======================
-.Rproj.user/
+
+*.html
+*.pdf
 
 # =======================
-# Build & Package Artifacts
+# General Windows or Mac Junk
 # =======================
-*-Ex.R
-/*.tar.gz
-/*.Rcheck/
 
-# =======================
-# Knitr / R Markdown Artifacts
-# =======================
-*_cache/
-cache/
-*.utf8.md
-*.knit.md
-vignettes/*.html
-vignettes/*.pdf
-
-# =======================
-# Documentation (e.g., pkgdown or manual sites)
-# =======================
-docs/
-po/*~
-rsconnect/
-
-# =======================
-# ArcGIS Pro Artifacts
-# =======================
-arcgis_project/Index/
-arcgis_project/*_index/
-
-# Optional: ignore geoprocessing logs and temporary scratch outputs
-**/GpMessages/
-**/scratch.gdb/
-**/memory.gdb/
-
-# =======================
-# VSCode or IDE-specific files (if ever used)
-# =======================
-.vscode/
+schema.ini
+*.bak
+*.tmp
+~$*
