@@ -50,7 +50,7 @@ library(sf)          # Simple features for R
 # Level 1 Ecoregion Download
 # 1) Setup
 
-file_path  <- "data_spatial"     # top-level folder for spatial data
+file_path  <- "data/spatial"     # top-level folder for spatial data
 dir_name   <- "us_eco_lev01"     # subfolder for level 1 ecoregions
 zip_name   <- "us_eco_lev01.zip"
 html_name  <- "NA_CEC_Eco_Level1.htm"
