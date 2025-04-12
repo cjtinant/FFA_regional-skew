@@ -1,38 +1,61 @@
-# History files
+# =======================
+# OS-Specific Junk Files
+# =======================
+.DS_Store
+Thumbs.db
+
+# =======================
+# R History, Session, and Environment Files
+# =======================
 .Rhistory
 .Rapp.history
-# Session Data files
 .RData
 .RDataTmp
-# User-specific files
+.Renviron
 .Ruserdata
-# Example code in package build process
-*-Ex.R
-# Output files from R CMD build
-/*.tar.gz
-# Output files from R CMD check
-/*.Rcheck/
-# RStudio files
-.Rproj.user/
-# produced vignettes
-vignettes/*.html
-vignettes/*.pdf
-# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
 .httr-oauth
-# knitr and R markdown default cache directories
+
+# =======================
+# RStudio Files
+# =======================
+.Rproj.user/
+
+# =======================
+# Build & Package Artifacts
+# =======================
+*-Ex.R
+/*.tar.gz
+/*.Rcheck/
+
+# =======================
+# Knitr / R Markdown Artifacts
+# =======================
 *_cache/
-/cache/
-# Temporary files created by R markdown
+cache/
 *.utf8.md
 *.knit.md
-# R Environment Variables
-.Renviron
-# pkgdown site
+vignettes/*.html
+vignettes/*.pdf
+
+# =======================
+# Documentation (e.g., pkgdown or manual sites)
+# =======================
 docs/
-# translation temp files
 po/*~
-# RStudio Connect folder
 rsconnect/
-.Rproj.user
-data_spus_eco_l4.zip
-data_spus_eco_l3.zip
+
+# =======================
+# ArcGIS Pro Artifacts
+# =======================
+arcgis_project/Index/
+arcgis_project/*_index/
+
+# Optional: ignore geoprocessing logs and temporary scratch outputs
+**/GpMessages/
+**/scratch.gdb/
+**/memory.gdb/
+
+# =======================
+# VSCode or IDE-specific files (if ever used)
+# =======================
+.vscode/
