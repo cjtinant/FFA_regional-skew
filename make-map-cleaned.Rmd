@@ -1,0 +1,108 @@
+---
+title: "Mapping USGS Stream Gages in the Great Plains Ecoregion"
+author: "CJ Tinant"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Workflow Overview — Mapping USGS Stream Gages in the Great Plains Ecoregion
+
+This RMarkdown document creates maps of USGS stream gages within the Great Plains ecoregion, focusing on sites with long-term, unregulated streamflow data. The workflow uses spatial data and USGS stream gage metadata to visualize and differentiate between all gages and those with peak flow data suitable for flood frequency analysis.
+
+## Workflow Steps
+
+1. Load required R packages for data manipulation, spatial analysis, and visualization.
+2. Import site data:
+   - `sites_all_in_bb.csv`: All USGS gages in the bounding box (BB).
+   - `sites_all_peak_in_bb.csv`: Subset of gages with peak flow data and ≥20 years of unregulated records.
+3. Prepare site data for mapping:
+   - Select relevant columns.
+   - Add grouping variables for plotting.
+4. Create and customize the map:
+   - Plot base map using `ggplot2`.
+   - Overlay gage locations.
+   - Differentiate sites by data type (all gages vs. peak flow gages).
+5. Export the final map for reporting or publication.
+
+<!--
+Notes on naming -- sites refer to USGS gages. The nominclature came from the function dataRetrieval
+
+need to call readNW
+need to add water year
+
+-->
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# libraries
+library(tidyverse)      # Load 'Tidyverse' packages: ggplot2, dplyr, tidyr, 
+#                                 readr, purrr, tibble, stringr, forcats
+library(glue)           # For string interpolation
+library(here)           # A simpler way to find files
+library(dataRetrieval)  # Retrieval functions for USGS and EPA hydro & wq data
+
+```
+
+```{r import-data}
+
+# get gages in GP ecoregion with gt 20 yrs of unregulated streamflow data
+
+sites_in_bb <- read_csv("data/sites_all_in_bb.csv") %>%
+  select(site_no, starts_with("dec")) %>%
+  mutate(ordinal_num = 1) %>%
+  mutate(type = "all sites")
+
+sites_peak_in_bb <- read_csv("data/sites_all_peak_in_bb.csv") %>%
+  select(site_no, starts_with("dec")) %>%
+  mutate(ordinal_num = 2) %>%
+  mutate(type = "peak sites")
+
+sites_eco <- read_csv("data/sites_pk_eco_only.csv") %>%
+  select(site_no, starts_with("dec")) %>%
+  mutate(ordinal_num = 3) %>%
+  mutate(type = "peak sites in ecoregion")
+
+sites_gt_20 <- read_csv("data/sites_reg_or_lt_20.csv") %>%
+  select(site_no, starts_with("dec")) %>%
+  mutate(ordinal_num = 4) %>%
+  mutate(type = "peak sites g.t. 20 yrs")
+
+sites_unreg_gt_20 <- read_csv("data/sites_pk_unreg_gt_20.csv") %>%
+  select(site_no, starts_with("dec")) %>%
+  mutate(ordinal_num = 5) %>%
+  mutate(type = "unregulated peak sites g.t. 20 yrs")
+
+```
+
+```{r bind-rows}
+
+scr1 <- bind_rows(sites_unreg_gt_20, sites_gt_20)
+
+rm(sites_unreg_gt_20, sites_gt_20)
+
+scr2 <- anti_join(sites_eco, scr1)
+
+rm(sites_eco, scr1)
+
+scr3 <- anti_join(sites_peak_in_bb, scr2) %>%
+  select(-dec_coord_datum_cd)
+
+rm(sites_peak_in_bb, scr2)
+
+scr4 <- anti_join(sites_in_bb, scr3)
+
+rm(sites_in_bb, scr3)
+
+```
+
+```{r export-results}
+
+write_csv(scr4, "data/site_types.csv")
+
+```
+
+
+
+
