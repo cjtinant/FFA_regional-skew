@@ -20,7 +20,7 @@
 # Output:
 # - Clean shapefiles for Level 1, Level 2, and Level 3 ecoregions clipped to CONUS
 # - Folder structure:
-#     data_spatial/
+#     data/spatial/
 #       ├── us_eco_lev01/us_eco_l1.shp
 #       ├── us_eco_lev02/us_eco_l2.shp
 #       ├── us_eco_lev03/us_eco_l3.shp
@@ -107,7 +107,7 @@ target_dir %>%
 # Level 2 Ecoregion Download
 # 1) Setup
 
-file_path  <- "data_spatial"     # top-level folder for spatial data
+file_path  <- "data/spatial"     # top-level folder for spatial data
 dir_name   <- "us_eco_lev02"     # subfolder for level 1 ecoregions
 zip_name   <- "us_eco_lev02.zip"
 html_name  <- "NA_CEC_Eco_Level2.htm"
@@ -163,7 +163,7 @@ target_dir %>%
 # ------------------------------------------------------------------------------
 # Level 3 Ecoregion Download
 # 1) Setup
-file_path  <- "data_spatial"     # top-level folder for spatial data
+file_path  <- "data/spatial"     # top-level folder for spatial data
 dir_name  <- "us_eco_lev03"
 zip_name <- "us_eco_lev03.zip"
 html_name  <- "NA_CEC_Eco_Level3.htm"
@@ -221,7 +221,7 @@ target_dir %>%
 # ------------------------------------------------------------------------------
 # Level 4 Ecoregion Download
 # 1) Setup
-file_path  <- "data_spatial"     # top-level folder for spatial data
+file_path  <- "data/spatial"     # top-level folder for spatial data
 dir_name  <- "us_eco_lev04"
 zip_name <- "us_eco_lev04.zip"
 html_name  <- "NA_CEC_Eco_Level4.htm"
@@ -278,7 +278,7 @@ target_dir %>%
 # Clip the extent of Ecoregion Level 1 to Level 3 to CONUS extent
 
 # 1) Setup
-file_path  <- "data_spatial"     # top-level folder for spatial data
+file_path  <- "data/spatial"     # top-level folder for spatial data
 dir_name   <- "us_eco_lev04"
 file_name  <- "us_eco_l4_no_st.shp"
 target_file <- glue("{here()}/{file_path}/{dir_name}/{file_name}")
@@ -366,7 +366,7 @@ level3_conus <- level3_conus %>% select(-Shape_Area)
 
 # 5) Save the clipped results
 # Level 1
-file_path  <- "data_spatial"     # top-level folder for spatial data
+file_path  <- "data/spatial"     # top-level folder for spatial data
 dir_name   <- "us_eco_lev01"
 file_name  <- "us_eco_l1.shp"
 
@@ -374,7 +374,7 @@ st_write(level1_conus,
          glue("{here()}/{file_path}/{dir_name}/{file_name}"))
 
 # Level 2
-file_path  <- "data_spatial"     # top-level folder for spatial data
+file_path  <- "data/spatial"     # top-level folder for spatial data
 dir_name   <- "us_eco_lev02"
 file_name  <- "us_eco_l2.shp"
 
@@ -382,7 +382,7 @@ st_write(level2_conus,
          glue("{here()}/{file_path}/{dir_name}/{file_name}"))
 
 # Level 3
-file_path  <- "data_spatial"     # top-level folder for spatial data
+file_path  <- "data/spatial"     # top-level folder for spatial data
 dir_name   <- "us_eco_lev03"
 file_name  <- "us_eco_l3.shp"
 
