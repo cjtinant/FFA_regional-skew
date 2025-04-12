@@ -1,77 +1,100 @@
-## Overview
+# Overview
 
 This project supports the development of regional skew estimation for
-flood frequency analysis. The workflow automates data download,
-cleaning, and organization of USGS NWIS and WQP data for unregulated
-stream gages with sufficient record length.
+flood frequency analysis using USGS NWIS data. The workflow automates
+data download, cleaning, and preparation of stream gage records with ≥20
+years of unregulated peak flow data.
 
-## Project Structure
+------------------------------------------------------------------------
 
-    FFA_regional-skew/
-    ├── data/
-    │   ├── raw/           # Original input data from USGS/NWIS/WQP
-    │   ├── clean/         # Cleaned and processed data ready for analysis
-    ├── functions/         # Custom R functions used across scripts
-    ├── scripts/           # R scripts for data processing workflows
-    ├── README.Rmd         # R Markdown file to generate project documentation
-    ├── README.md          # Auto-generated Markdown documentation
+# Folder Structure
 
-## Workflow Overview
+FA\_regional-skew/ ├── data/ \# Raw & processed data outputs │ ├──
+spatial/ \# Spatial shapefiles + related data │ ├── raw/ \# Raw pulled
+data (NWIS, WQP, etc) │ ├── clean/ \# Clean/filtered outputs ready for
+analysis │ └── meta/ \# Metadata, reference tables, lookup codes │ ├──
+scripts/ \# Main project scripts │ ├── 01\_get-spatial-data.R │ ├──
+02\_get-gage-data.R │ ├── 03\_filter\_unregulated\_gage\_data.R │ └──
+04\_find\_clean\_export\_site\_summaries.R │ ├── functions/ \# Custom
+reusable R functions │ └── f\_process\_geometries.R │ ├── output/ \#
+Maps, figures, tables for reporting │ ├── docs/ \# README files, project
+documentation │ ├── .gitignore ├── README.md ├── README.Rmd \# R
+Markdown file to generate project documentation └──
+FFA\_regional-skew.Rproj \# RStudio project file
+
+------------------------------------------------------------------------
+
+# Workflow Summary
 
 <table>
 <colgroup>
-<col style="width: 39%" />
-<col style="width: 28%" />
-<col style="width: 32%" />
+<col style="width: 16%" />
+<col style="width: 21%" />
+<col style="width: 24%" />
+<col style="width: 37%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th>Milestone</th>
+<th>Step</th>
 <th>Script</th>
 <th>Purpose</th>
+<th>Key Outputs</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>01</td>
 <td>01_get-spatial-data.R</td>
-<td>Download and clean HUC, ecoregion, and gage spatial data.</td>
+<td>Download and clean spatial data (HUCs, ecoregions, state
+boundaries)</td>
+<td>data/spatial/</td>
 </tr>
 <tr class="even">
 <td>02</td>
 <td>02_get-gage-data.R</td>
-<td>Query peak flow records for all USGS sites in bounding box.</td>
+<td>Download peak flow records for USGS gages in study area</td>
+<td>data/raw/sites_all_peak_in_bb.csv,
+data/raw/data_all_peak_in_bb.csv</td>
 </tr>
 <tr class="odd">
 <td>03</td>
 <td>03_filter_unregulated_gage_data.R</td>
-<td>Filter gages to unregulated sites with ≥20 years of data.</td>
+<td>Filter to unregulated sites with ≥20 years of peak flow record</td>
+<td>data/clean/data_pk_unreg_gt_20.csv, sites_pk_gt_20.csv,
+sites_reg_or_lt_20.csv</td>
 </tr>
 <tr class="even">
 <td>04</td>
 <td>04_find_clean_export_site_summaries.R</td>
-<td>Query NWIS and WQP for site metadata, clean, and export site
-summaries.</td>
+<td>Query NWIS &amp; WQP for site metadata, clean and export</td>
+<td>data/clean/site_summary_NWIS_clean.csv,
+site_summary_WDP_clean.csv</td>
+</tr>
+<tr class="odd">
+<td>05</td>
+<td>05_update_problem_sites.R</td>
+<td>Remove sites with all missing/zero peak_va or &lt;20 usable
+records</td>
+<td>Updated site lists and problem site tracking</td>
+</tr>
+<tr class="even">
+<td>06</td>
+<td>06_calculate_station_skew.R</td>
+<td>Calculate station skew (log-Pearson III) for each gage</td>
+<td>data/clean/station_skew.csv</td>
 </tr>
 </tbody>
 </table>
 
-## Data Notes
-
--   `/data/raw/` contains raw unprocessed data pulled directly from
-    APIs.
--   `/data/clean/` contains final processed data used in analysis.
--   All scripts are named and numbered to reflect the workflow order.
--   Custom helper functions are in `/functions/`.
-
-# Overview
-
-This project develops regional estimates of flood skew for unregulated
-USGS gage sites with ≥20 years of peak flow records. The workflow
-follows a reproducible, script-based approach using `tidyverse` tools in
-R.
-
 ------------------------------------------------------------------------
+
+# Data Notes
+
+-   `/data/raw/` — Raw API downloads (unaltered)
+-   `/data/clean/` — Final cleaned datasets for analysis
+-   `/data/spatial/` — GIS boundaries, shapefiles, geospatial data
+-   All scripts numbered to reflect workflow sequence
+-   Custom functions modularized in `/functions/`
 
 # Workflow Steps
 
@@ -140,10 +163,9 @@ Outputs: - `data/clean/station_skew.csv`
 
 # Next Steps
 
--   Develop regional models of skew
+-   Calculate station skew
 -   Explore spatial patterns in station skew
--   Evaluate potential explanatory variables
--   Fit regression models
+-   Fit potential explanatory variables to station skew
 
 ------------------------------------------------------------------------
 
