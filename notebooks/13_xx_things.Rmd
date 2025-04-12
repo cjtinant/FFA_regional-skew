@@ -1,0 +1,409 @@
+---
+title: "03_xx_things"
+author: "CJ Tinant"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+<!--
+Purpose:
+
+Overview:
+* load and process spatial data -- currently only locally works
+-- imports and validates shapefiles
+-- returns spatial objects with centroid and coordinates
+
+* iteratively visualize and select ecoregions
+
+# Next steps:
+* fix CyVerse to work with the data
+
+# References:
+https://github.com/EmilHvitfeldt/r-color-palettes
+https://r.geocompx.org/
+-->
+
+```{r 00_setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+# library
+library(tidyverse)        # Load the 'Tidyverse' packages: ggplot2, dplyr, 
+                          #   tidyr, readr, purrr, tibble, stringr, and forcats
+library(dataRetrieval)    # Retrieval functions for USGS and EPA hydrology and
+                          #   water quality data
+library(sf)               # Simple features for R
+library(here)
+
+# Functions:
+# process_geometries -- written with ChatGPT 4.0 on 2024-06-06
+#     The function returns a modified sf object with additional columns for
+#     the centroid and its coordinates.
+# The function automates the following functions:
+#     Check and make geometries valid
+#         eco_l3$geometry <- st_make_valid(eco_l3$geometry)
+#     Safely calculate centroids for valid geometries
+#         eco_l3$centroid <- ifelse(st_is_valid(eco_l3$geometry),
+#                                   st_centroid(eco_l3$geometry), NA)
+#      Extract coordinates from centroids
+#          eco_l3$text_x <- ifelse(!is.na(eco_l3$centroid),
+#                                  st_coordinates(eco_l3$centroid)[, 1],
+#                                  NA)
+#          eco_l3$text_y <- ifelse(!is.na(eco_l3$centroid),
+#                                  st_coordinates(eco_l3$centroid)[, 2],
+#                                  NA)
+#
+# Details about process_geometries:
+# Geometry Validation:
+#   st_make_valid() is used to correct any invalid geometries within the
+#     spatial data frame. The function identifies indices of valid geometries
+#     to ensure that centroids and subsequent operations are only applied to
+#     them.
+# Centroid Calculation:
+#   st_centroid() is applied conditionally only to valid geometries using
+#     ifelse().
+#   If a geometry is invalid, NA is used as a fallback.
+#      st_centroid() is applied only to the valid parts of the geometry column.
+#   Centroids are stored in a list to handle any type of geometry being returned
+#      from st_centroid().
+#   Each geometry is processed individually within a loop to allow more control
+#      over handling each item and better debugging capabilities if errors occur.
+#   !is_empty(centroid) checks if the centroid is not empty. 
+#   The function also ensures that st_coordinates(centroid) actually returns
+#      a non-empty data frame before trying to access its elements.
+# Conditional Coordinates Extraction:
+#   The x and y coordinates are extracted from the centroid. If the centroid
+#      is NA (because the geometry was invalid), the coordinate fields are set
+#      to NA.
+#   Coordinates are extracted only if there are valid centroids. This is
+#      safeguarded by checking if there are valid indices before attempting to
+#      extract coordinates.
+#   text_x and text_y are initialized with NA_real_ to ensure that the type
+#      consistency is maintained for cases where centroids might not be
+#      computable.
+#   Before extracting coordinates, the function checks if the centroid is not NA
+#      and contains rows. Then it ensures that the coordinates can be indexed
+#      properly, and has the required number of columns 
+#        (at least two, for x and y coordinates).
+# Additional checks:
+#   Separate Checks for NAs and Data Structure Validity: The function checks
+#       for NAs and the structure of coords are now more explicit.
+#     The function checks if centroid is not NA and not empty. Then, if coords
+#       is derived, the function ensures it is not NA and has the necessary rows
+#       and columns.
+#   Avoid Coercion Errors: By ensuring each part of the conditional is valid
+#       before evaluating the next part, this prevents logical operations on
+#       possibly undefined or inappropriate data types.
+#   Direct Evaluation of Conditions: The logic is structured to progressively
+#       verify conditions before accessing potentially problematic attributes
+#       like the number of rows or columns.
+#   Check for null in coords: The function ensures that coords is not null
+#       before proceeding to check its dimensions. This prevents logical errors
+#       when coords might be an unexpected type or structure.
+#   Explicit Structure Check: By using is.null along with checks for the number
+#       of rows and columns in coords, the function can more reliably ensure
+#       that the data structure is correct before attempting to access its
+#       elements.
+
+process_geometries <- function(sf_object) {
+  # Ensure all geometries are valid
+  sf_object$geometry <- st_make_valid(sf_object$geometry)
+  
+  # Initialize columns for centroids and coordinates
+  sf_object$text_x <- rep(NA_real_, nrow(sf_object))
+  sf_object$text_y <- rep(NA_real_, nrow(sf_object))
+
+  # Calculate centroids for valid geometries and extract coordinates
+  for (i in seq_len(nrow(sf_object))) {
+    if (st_is_valid(sf_object$geometry[i])) {
+      centroid <- st_centroid(sf_object$geometry[i])
+      if (!is.na(centroid) && !st_is_empty(centroid)) {
+        coords <- st_coordinates(centroid)
+        # Explicit check for coords' validity and structure
+        if (!is.null(coords) && nrow(coords) > 0 && ncol(coords) >= 2) {
+          sf_object$text_x[i] <- coords[1, 1]
+          sf_object$text_y[i] <- coords[1, 2]
+        }
+      }
+    }
+  }
+
+  # Return the modified sf object
+  return(sf_object)
+}
+
+```
+
+## Get data -- either from Cyverse or locally
+```{r 01a_get_data_local}
+# load shapefiles -- local path -- and check geometry
+file_path <- "data_spatial/"
+
+# Rocky Mountain and Great Plains (RM and GP) region states
+file_name <- "tl_2012_us_state/tl_2012_us_state.shp"
+state_bdy <- st_read(paste(file_path,
+                        file_name,
+                        sep = "")) %>%
+  janitor::clean_names() %>%
+  process_geometries() %>%
+  filter(stusps == "SD" |
+         stusps == "ND" |
+         stusps == "NE" |
+         stusps == "MT" |
+         stusps == "WY"
+           )
+
+# Semi-arid Prairies (Ecoregion level 3) reproject NAD83 Geo (ESPG:4269)
+file_name <- "us_eco_l3/us_eco_l3.shp"
+eco_l3_semi_usa <- st_read(paste(file_path,
+                        file_name,
+                        sep = "")) %>%
+  janitor::clean_names() %>%
+  process_geometries() %>%
+  filter(na_l2name == "SOUTH CENTRAL SEMI-ARID PRAIRIES" |
+         na_l2name == "WEST-CENTRAL SEMI-ARID PRAIRIES") %>%
+  st_transform(crs = 4269)
+
+# usa tribal lands
+file_name <- "tl_2020_us_aitsn/tl_2020_us_aitsn.shp"
+tribal_lands_usa <- st_read(paste(file_path,
+                        file_name,
+                        sep = "")) %>%
+  janitor::clean_names() %>%
+  process_geometries()
+
+# load census codes for American Indian, Alaska Native, and
+#   Native Hawaiian Areas (AIANNH) 2020 ----
+#     https://www.census.gov/library/reference/code-lists/ansi.html
+# select the census codes for states in Rocky Mountain and Great Plains regions
+file_path <- "data_spatial/metadata/"
+file_name <- "national_aiannh2020.csv"
+
+aiannh_rm_gp <- read_csv(paste(file_path, file_name, sep = "")) %>%
+  janitor::clean_names() %>%
+  filter(states == "SD" |
+         states == "ND" |
+         states == "NE" |
+         states == "MT" |
+         states == "WY"
+           )
+
+# clean up Global Environment
+rm(list = ls(pattern = "file"))
+rm(list = ls(pattern = "process"))
+
+```
+
+```{r 01b_get_data_Cyverse, eval=FALSE}
+
+# load shapefiles -- local path -- and check geometry
+eco_l3 <- st_read("data_spatial/us_eco_l3/us_eco_l3.shp") %>%
+  janitor::clean_names() %>%
+  process_geometries()
+
+eco_l4 <- st_read("data_spatial/us_eco_l4/us_eco_l4_no_st.shp") %>%
+  janitor::clean_names() %>%
+  process_geometries()
+
+state_bdy <- st_read("data_spatial/tl_2012_us_state/tl_2012_us_state.shp") %>%
+  janitor::clean_names() %>%
+  process_geometries()
+
+tribal_lands_usa <- st_read("data_spatial/tl_2020_us_aitsn/tl_2020_us_aitsn.shp") %>%
+  janitor::clean_names() %>%
+  process_geometries()
+
+# load 2020 Census codes for American Indian, Alaska Native, and
+#   Native Hawaiian Areas (AIANNH)----
+#     https://www.census.gov/library/reference/code-lists/ansi.html
+#   need to pivot the data because tribal lands in multiple states
+file_path <- "data_spatial/metadata/"
+file_name <- "national_aiannh2020.csv"
+
+aiannh_table <- read_csv(paste(file_path, file_name, sep = "")) %>%
+  janitor::clean_names() %>%
+  separate_wider_delim(
+    cols = states,
+    delim = "~",
+    names = c("scratch_1", "scratch_2", "scratch_3"),
+    too_few = "align_start",
+    too_many = "merge"
+    ) %>%
+  pivot_longer(cols = starts_with("scratch"),
+               names_to = "scratch",
+               values_to = "states") %>%
+  select(-scratch) %>%
+  filter(!is.na(states))
+
+```
+
+```{r 02_process_data}
+
+# filter the tribal lands in Rocky Mountain and Great Plains regions
+tribal_lands_rm_gp <- tribal_lands_usa %>%
+  filter(aiannhce %in% aiannh_rm_gp$aiannhce)
+
+# make a single polygons for intersect and visualization
+rm_gp_bdy <- state_bdy %>%
+  st_union(.,
+           by_feature = FALSE)
+
+tribal_lands <- tribal_lands_rm_gp %>%
+  st_union(.,
+           by_feature = FALSE)
+
+# intersect eco_l3 by the Rocky Mountain and Great Plains region boundary
+eco_l3_semi <- st_intersection(eco_l3_semi_usa, rm_gp_bdy)
+
+rm(tribal_lands_usa,
+   eco_l3_semi_usa)
+
+```
+
+
+```{r 08_export_results}
+
+# save plot of gages
+ggsave("figures/gage-selection_initial.png")
+
+# save site-data as a csv
+write_csv(sites_pk_in_ecoreg, "data/sites_pk_in_ecoreg.csv")
+
+write_csv(sites_gt_20, "data/sites_peak_gt_20.csv")
+
+# save peak flow data as a csv
+write_csv(peak_data_no_dups, "data/data_peak_gt_20.csv")
+
+# Clean up Global Environment
+rm(sites_pk_bb,
+   sites_pk_in_ecoreg,
+   study_area_albers,
+   study_area_unproj,
+   bb_study_area_unproj,
+   )
+
+```
+
+
+```{r old-visualization-code_to-add_check}
+
+# ggplot() +
+#   geom_sf(data = eco_l3_semi_ng,
+#           aes(fill = us_l3name)#,
+#           #show.legend = FALSE
+#           ) +  # Control legend visibility globally or modify if needed
+#   geom_sf(data = state_bdy,
+#           fill = "transparent",
+#           color = "black",         # Add a border color for states
+#           size = 0.5) +            # Adjust line size
+#   geom_sf(data = tribal_lands_rm_gp,
+#           fill = "gray",           # Adjust color for visibility
+#           alpha = 0.5) +
+#   scale_fill_viridis_d(option = "C") +  # Use a colorblind-friendly palette
+#   labs(title = "Map of Level-3 Ecoregions",
+#        caption = "Data source: XYZ") +
+#   theme_minimal() +
+#   theme(legend.position = "bottom",    # Adjust legend position
+#         plot.title = element_text(hjust = 0.5),
+#         plot.caption = element_text(hjust = 0, size = 8),
+#         axis.text = element_blank(),
+#         axis.ticks = element_blank())
+# 
+# ggsave("data_spatial/ecoregions_map_final.png",
+#        width = 10,
+#        height = 8,
+#        bg = "white",
+#        dpi = 300)  # Save high-resolution image
+
+
+# check table and spatial data prior to join
+#   make a quick check of the data
+# ch_table <- aiannh_table %>%
+#   filter(states == "SD" |
+#          states == "ND")
+# 
+# ch_spatial <- tribal_lands_usa %>%
+#   filter(aiannhce %in% ch_table$aiannhce)
+# 
+# # join metadata to spatial data
+# tribal_lands_join <- right_join(aiannh_table, tribal_lands_usa,
+#                            by = join_by(aiannhce))
+
+# fix the table
+ # %>%
+ #  separate_wider_delim(
+ #    cols = states,
+ #    delim = "~",
+ #    names = c("scratch_1", "scratch_2", "scratch_3"),
+ #    too_few = "align_start",
+ #    too_many = "merge"
+ #    ) %>%
+ #  pivot_longer(cols = starts_with("scratch"),
+ #               names_to = "scratch",
+ #               values_to = "states") %>%
+ #  select(-scratch) %>%
+ #  filter(!is.na(states))
+
+
+# # filter tribal lands in Rocky Mountain and Great Plains regions
+# tribal_lands_rm_gp <- tribal_lands_join %>%
+#   filter(states == "SD" |
+#          states == "ND" |
+#          states == "NE" |
+#          states == "MT" |
+#          states == "WY"
+#            ) %>%
+#   process_geometries()
+# 
+# # clean up Global Environment
+# rm(list = ls(pattern = "ch"))
+# rm(aiannh_table)
+
+```
+
+
+
+
+```{rupdate_ 05_make_criteria_cde_metadata, eval=FALSE}
+ 
+# the criteria code metadata is for peak flow sites
+site_criteria_cde <- tribble( 
+  ~code,
+  ~description,
+  "agency_cd", "The agency that is reporting the data. Agency codes are fixed values assigned by the National Water Information System (NWIS).",
+  "site_no", "Each site in the USGS data base has a unique 8- to 15-digit identification number.",
+  "station_nm", "This is the official name of the site in the database. For well information this can be a district-assigned local number.",
+ "site_tp_cd", "A list of primary and secondary site types that can be associated with data collection sites. A site type is a generalized location in the hydrologic cycle, or a man-made feature thought to affect the hydrologic conditions measured at a site. All sites are associated with a primary site type, and may additionally be associated with a secondary site type that further describes the location.",
+ "dec_lat_va", "Latitude in decimal degrees",
+ "dec_long_va", "Longitude in decimal degrees",
+ "coord_acy_cd", "Lat/Long coordinate accuracy codes indicating the accuracy of the latitude longitude values.",
+ "dec_coord_datum_cd", "Lat/Long coordinate datum.",
+ "alt_va", "Altitude of the site referenced to the specified Vertical Datum",
+ "alt_acy_va", "Altitude accuracy value. Many altitudes are interpolated from the contours on topographic maps; accuracies determined in this way are generally entered as one-half of the contour interval.",
+ "alt_datum_cd", "Altitude coordinate datum.",
+ "huc_cd", "Hydrologic unit codes. The United States is divided and sub-divided into successively smaller hydrologic units which are classified into four levels: regions, sub-regions, accounting units, and cataloging units. The hydrologic units are arranged within each other, from the smallest (cataloging units) to the largest (regions). Each hydrologic unit is identified by a unique hydrologic unit code (HUC) consisting of two to eight digits based on the four levels of classification in the hydrologic unit system.",
+ "data_type_cd", "All USGS data falls into one of: Current Conditions, Daily Data, Surface Water, Water Quality, Groundwater. Current condition data is any data down to the 15 minute interval that has been transmitted in the last 120 days. Daily Data is the average daily value for a site. Surface Water is water flow and levels in streams, lakes and springs. Water Quality is chemical and physical data for streams, lakes, springs, and wells. Groundwater is water levels in wells.",
+ "parm_cd", "Parameter code",
+ "stat_cd", "Statistics code",
+ "ts_id", "Time-series ID. The ts_id is a surrogate key assigned and used by the database for efficient queries of data and for download or display as a list, table, or graph.",
+ "loc_web_ds", "Additional measurement description",
+ "medium_grp_cd", "Medium type refers to the specific environmental medium that was sampled and analyzed. Medium type differs from site type because one site type, such as surface water, could have data for several media, such as water, bottom sediment, fish tissue, and others.",
+ "parm_grp_cd", "Parameter group code",
+ "srs_id", "USEPA SRS.http://www.epa.gov/srs/",
+ "access_cd", "Access code",
+ "begin_date", "Begin date of the period of record for the data",
+ "end_date", "End date of the period of record for the data",
+ "count_nu", "Number of records",
+ "na_l3_cde", "User-generated code for level-3 ecoregion names, where 'ngp' = 'Northern Great Plains' and 'hp' = High Plains"
+ )
+
+
+# write metadata file ---
+write_csv(site_criteria_cde, "data_output/sites_site_criteria_cde.csv")
+
+# clean Global Environment
+rm(list = ls(pattern = "_cde"))
+
+```
+
+
