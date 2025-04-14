@@ -1,8 +1,9 @@
 # ==============================================================================
-# Script: 09_join_covariates_for_modeling.R
-# Purpose: Join numeric covariates (climate, terrain) with station skew values
+# Script: 09a_dont_run_join_covariates_for_modeling.R
+# Purpose: THIS SCRIPT DOCUMENTS REMOVAL OF A SITE PRIOR TO MODELING
+#          Join numeric covariates (climate, terrain) with station skew values
 #          to create a modeling-ready dataset for exploratory analysis and modeling.
-#
+# 
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created: April 2025
 #
