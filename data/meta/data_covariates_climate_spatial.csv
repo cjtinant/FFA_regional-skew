@@ -1,0 +1,16 @@
+attribute,value
+Variable,Precipitation & Temperature
+Time Period,1991-2020 Normals
+Resolution,4km (~0.04166667 degrees)
+Projection,Geographic Coordinate System (Lat/Long)
+Datum,North American Datum 1983 (NAD83)
+Ellipsoid,Geodetic Reference System 80 (GRS80)
+Cell Size,0.04166667 degrees
+Extent West,-125.0208333
+Extent East,-66.4791667
+Extent North,49.9375
+Extent South,24.0625
+Units Precipitation,Millimeters
+Units Temperature,Degrees Celsius
+Source,https://prism.oregonstate.edu/normals/
+Method,"PRISM model - Parameter-elevation Regressions on Independent Slopes Model (Daly et al. 2008, 2015)"
