@@ -1,31 +1,24 @@
 # ==============================================================================
-# Script: 10_exploratory_modeling.R
-# Purpose: Exploratory modeling of station skew using climate and terrain covariates.
+# Script: 10a_exploratory_modeling_initial_checks.R
+# Purpose: Perform initial checks for missing data and remove outliers 
+#          from the modeling dataset (e.g., sites with missing terrain covariates).
 #
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created: April 2025
 #
-# Notes:
-# - This script focuses on exploratory modeling only.
-# - Final modeling and cross-validation workflows will follow in later milestones.
+# Outputs:
+# - data/clean/data_covariates_modeling_clean.csv
 #
+# Notes:
+# - This script prepares a clean dataset for exploratory and predictive modeling.
+# - Sites with missing elevation or slope are excluded from modeling.
 # ==============================================================================
-
 
 # Load Libraries ---------------------------------------------------------------
 
-library(tidyverse)      # Core data manipulation
-library(here)           # File paths
-library(janitor)        # Clean names
-library(GGally)         # Pairplots
-library(corrr)          # Correlation
-library(ggcorrplot)     # Correlation heatmap
-library(broom)          # Tidy regression output
-library(mgcv)           # Generalized Additive Models
-library(glmnet)         # Elastic Net Regression
-library(tidymodels)     # Modeling framework
-library(sf)             # Spatial data
-library(spdep)          # Spatial autocorrelation
+library(tidyverse)  # Includes readr, dplyr, tidyr, ggplot2, etc.
+library(here)       # File paths
+library(janitor)    # clean_names()
 
 
 # Load Data --------------------------------------------------------------------
