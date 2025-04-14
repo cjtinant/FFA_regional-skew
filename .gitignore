@@ -43,3 +43,4 @@ schema.ini
 # =======================
 delete/
 
+data/raw/elevation_ned.tif
