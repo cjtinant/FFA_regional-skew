@@ -60,3 +60,26 @@ covariates_terrain <- sites %>%
 write_csv(covariates_terrain, here("data/clean/data_covariates_terrain.csv"))
 
 message("Finished downloading, extracting, and exporting terrain covariates.")
+
+# ------------------------------------------------------------------------------
+# Metadata for Terrain Covariates
+
+terrain_metadata <- tribble(
+  ~attribute, ~value,
+  
+  "Source", "USGS 3DEP Elevation via {elevatr} R package",
+  "Resolution", "Variable by location (~10m or ~30m depending on coverage)",
+  "Projection", "WGS84 (EPSG:4326) for download; reproject to NAD83 in later steps",
+  "Datum", "WGS84 (EPSG:4326)",
+  "Elevation Units", "Meters above sea level",
+  "Slope Units", "Degrees",
+  "Slope Calculation", "Derived from elevation raster using terra::terrain() with v = 'slope' and unit = 'degrees'",
+  "Download Date", format(Sys.Date(), "%Y-%m-%d"),
+  "Processing Notes", "Elevation data downloaded via get_elev_raster(locations, z = 10). Slope calculated using terra::terrain(). Extracted to USGS site locations using terra::extract(). Outputs ready for modeling station skew."
+)
+
+# ------------------------------------------------------------------------------
+# Export Metadata
+write_csv(terrain_metadata, here("data/meta/prism_metadata_terrain.csv"))
+
+message("Terrain covariate metadata saved to: data/meta/prism_metadata_terrain.csv")
