@@ -8,6 +8,8 @@ Regional Skew Estimation Project
   - [PRISM Climate Normals](#prism-climate-normals)
   - [USGS Peak Flow Data](#usgs-peak-flow-data)
 - [Reproducibility Notes](#reproducibility-notes)
+  - [Note on Outlier Removal: Slope Outlier
+    Site](#note-on-outlier-removal-slope-outlier-site)
   - [Coordinate Reference Systems
     (CRS)](#coordinate-reference-systems-crs)
 - [Dependencies](#dependencies)
@@ -28,12 +30,15 @@ The project follows a reproducible, modular workflow using R and the
 
     FFA_regional-skew/
     ├── data/
-    │   ├── raw/           # Original downloaded data (PRISM, USGS, ecoregions)
+    │   ├── raw/           # Original downloaded data (PRISM, USGS)
+           ├── prism/ 
     │   ├── clean/         # Cleaned data ready for modeling
-    │   └── meta/          # Metadata for all datasets
-    │
-    ├── scripts/           # Numbered R scripts for each workflow milestone
+    │   ├── meta/          # Metadata for all datasets
+    │   └── spatial/       # Spatial data for ecoregions (EPA)
     ├── functions/         # Reusable R functions
+    ├── notebooks/         # Rmd files from prior EDA
+    ├── references_pdfs/   # A subset of project-related references
+    ├── scripts/           # Numbered R scripts for each workflow milestone
     ├── README.Rmd         # This file (source)
     ├── README.md          # Rendered output
     └── .gitignore         # Prevents sensitive/local files from being pushed
@@ -49,7 +54,8 @@ The project follows a reproducible, modular workflow using R and the
 | 05 | 05_update_problem_sites.R | Remove sites with missing/zero peaks or \<20 observations. | Updated site and data files |
 | 06 | 06_calculate_station_skew.R | Calculate log-Pearson III station skew for each site. | `/data/clean/station_skew.csv` |
 | 07 | 07_download_climate_covariates.R | Download & extract PRISM climate normals to gage sites. | `/data/clean/data_covariates_climate.csv` |
-| 08 | 08_download_terrain_covariates.R | Download & extract elevation & slope covariates (planned). | `/data/clean/data_covariates_terrain.csv` |
+| 08 | 08_download_terrain_covariates.R | Download & extract elevation & slope covariates. | `/data/clean/data_covariates_terrain.csv` |
+| 09 | 09_join_covariates_for_modeling.R | Integrate covariate datasets with calculated station skew values for initial regional skew modeling. | `/data/clean/data_covariates_modeling.csv` `/data/meta/data_covariates_modeling.csv` results/figures/ Exploratory plots: pairplots, heatmaps, and maps of terrain outliers |
 
 # Data Notes
 
@@ -72,6 +78,44 @@ The project follows a reproducible, modular workflow using R and the
   - Record length
 
 # Reproducibility Notes
+
+## Note on Outlier Removal: Slope Outlier Site
+
+During Milestone 09, an exploratory analysis of terrain covariates
+identified a single gage site with an unusually high slope value
+relative to the surrounding landscape of the Great Plains Level I
+Ecoregion, where terrain is generally low relief and slope values are
+typically small.
+
+Specifically: - Site Number: `06192500` - Slope: 25.48 degrees
+(substantially higher than the regional norm) - Location: Perched at the
+abrupt edge of a significant elevation transition zone (e.g., mountain
+front)
+
+The slope value derived from a coarse-resolution elevation raster (z =
+8, ~1 km), near a sharp elevation break.Slope estimation in these
+transitional zones is highly sensitive to raster resolution and gage
+placement relative to topography.
+
+Given the magnitude of this outlier, and its likely geologic
+distinctiveness compared to the majority of sites in this study area,
+this site was removed from subsequent exploratory analysis and modeling
+datasets.
+
+The site was retained in the raw terrain covariate dataset
+(`data/clean/data_covariates_terrain.csv`) for transparency, but
+excluded from the final modeling dataset
+(`data/clean/data_covariates_modeling.csv`).
+
+Rationale for removal: - Prevent undue influence of a single
+geologically distinct site on model fit. - Focus on generalizing skew
+relationships for typical Great Plains terrain settings. - Outlier
+removal was fully documented in: - `09_join_covariates_for_modeling.R`
+(script) - `data/meta/data_covariates_modeling.csv` (metadata)
+
+A map of the outlier location is provided in:
+
+results/figures/slope_outlier.png
 
 ## Coordinate Reference Systems (CRS)
 
