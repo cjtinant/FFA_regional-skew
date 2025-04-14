@@ -1,0 +1,5 @@
+variable,time_period,resolution,units,description,source
+Precipitation,1991-2020 Annual,4km,Millimeters,Average annual total precipitation derived from monthly grids.,https://prism.oregonstate.edu/normals/
+Precipitation,1991-2020 Monthly,4km,Millimeters,Monthly total precipitation normals.,https://prism.oregonstate.edu/normals/
+Temperature (Mean),1991-2020 Annual,4km,Degrees C,Average annual mean temperature derived from monthly grids.,https://prism.oregonstate.edu/normals/
+Temperature (Mean),1991-2020 Monthly,4km,Degrees C,Monthly mean temperature normals.,https://prism.oregonstate.edu/normals/
