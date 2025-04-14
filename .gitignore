@@ -42,4 +42,8 @@ schema.ini
 # =======================
 delete/
 
+# =======================
+# Large files
+# =======================
 data/raw/elevation_ned.tif
+*.zip
