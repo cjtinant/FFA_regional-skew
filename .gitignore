@@ -5,7 +5,6 @@
 # Ignore folders used for processing or outputs
 data/delete/
 data/spatial/*
-results/
 data/raw/prism/
 
 # =======================
