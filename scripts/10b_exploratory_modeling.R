@@ -37,8 +37,6 @@ covariates_modeling <- read_csv(
 covariates_modeling <- covariates_modeling %>%
   clean_names()
 
-# Check for missing data--------------------------------------------------------
-
 # Summarize missing data across all variables
 covariates_modeling %>%
   summarise(across(everything(), ~ sum(is.na(.)))) %>%
@@ -47,43 +45,42 @@ covariates_modeling %>%
                values_to = "n_missing") %>%
   filter(n_missing > 0)  # Show only variables with missing
 
-covariates_modeling %>%
-  filter(is.na(elev_m) | is.na(slope_deg)) %>%
-  select(site_no, dec_lat_va, dec_long_va, elev_m, slope_deg)
-
-# Remove sites with missing elev_m or slope_deg for modeling
-
-covariates_modeling_clean <- covariates_modeling %>%
-  filter(!site_no %in% c("05056200", "05422470", "06102500", "08212400"))
-
-# ------------------------------------------------------------------------------
-# Export cleaned modeling dataset (no missing elev/slope)
-
-write_csv(covariates_modeling_clean, here("data/clean/data_covariates_modeling_clean.csv"))
-
 # ==============================================================================
 # Step 1: Correlation Exploration & Variable Reduction
 # Purpose: Identify and address multicollinearity
 # Method: Pairwise plots, correlation matrix
 # ==============================================================================
 
-# Pairwise plot
-covariates_modeling %>%
-  select(skew, starts_with("ppt"), starts_with("tmean"), elev_m, slope_deg) %>%
-  ggpairs()
-
-# Correlation matrix
+# 1. Spearman Correlation Matrix
 cor_matrix <- covariates_modeling %>%
   select(where(is.numeric)) %>%
   correlate(method = "spearman") %>%
   rearrange(method = "MDS")
 
-# Plot correlation heatmap
-cor_matrix %>%
-  as_matrix() %>%
-  ggcorrplot(lab = TRUE)
+# 2. Visualize as heatmap
+heatmap_plot <- ggcorrplot::ggcorrplot(
+  cor_matrix %>% corrr::as_matrix(),
+  type = "lower",             # Lower triangle only
+  lab = FALSE,                # No correlation labels
+  colors = c("blue", "white", "red"),  # Diverging color scale
+  outline.color = "gray90",   # Optional: soft gridlines
+  tl.cex = 8                  # Optional: adjust text size
+) +
+  labs(title = "Spearman Correlation Heatmap of Numeric Covariates") +
+  theme_minimal(base_size = 10) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)  # Angled x labels
+  )
 
-# Consider removing/reducing correlated variables (>0.7?)
+# Save as PNG
+ggsave(
+  filename = here::here("results/figures/heatmap_covariates_no-labels.png"),
+  plot = heatmap_plot,
+  width = 10, height = 8, dpi = 300, bg = "white"
+)
+
+# Consider removing/reducing correlated variables
+write_csv(cor_matrix, here("data/clean/cor_matrix_clean.csv"))
 
 
 # ==============================================================================
