@@ -6,6 +6,7 @@
 data/delete/
 data/spatial/*
 results/
+data/raw/prism/
 
 # =======================
 # ArcGIS Pro Artifacts (Expanded)
