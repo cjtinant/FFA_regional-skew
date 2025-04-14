@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script: 10_exploratory_modeling.R
+# Script: 10b_exploratory_modeling.R
 # Purpose: Exploratory modeling of station skew using climate and terrain covariates.
 #
 # Author: Charles Jason Tinant — with ChatGPT 4o
@@ -9,6 +9,34 @@
 # - This script focuses on exploratory modeling only.
 # - Final modeling and cross-validation workflows will follow in later milestones.
 #
+
+# Exploratory Correlation Analysis
+# To better understand relationships among the numeric covariates and the response variable (station_skew), we began with a Spearman correlation analysis. This non-parametric method was chosen over Pearson correlation due to the presence of potential non-linear relationships and non-normal variable distributions.
+#
+# Overview of Results
+#
+# The correlation matrix revealed that station_skew is not strongly correlated with any single covariate.
+# 
+# Several climate variables—such as monthly and annual precipitation or temperature normals—exhibited strong inter-correlations, suggesting multi-collinearity.
+# 
+# Terrain variables (elevation and slope) were only weakly correlated with both station_skew and climate variables.
+# 
+# These results suggest that no single variable explains station skew alone, and underscore the potential value of multivariate and non-linear modeling approaches.
+# 
+# Visualization
+# 
+# We visualized the correlation matrix using a heatmap without embedded labels to reduce visual clutter. This allowed for quick identification of variable groupings and potential redundancies.
+# 
+# Heatmap of Spearman correlations among numeric covariates
+# Next Steps
+# 
+# Given the observed relationships:
+#   
+#   We will explore dimensionality reduction or regularization techniques (e.g., Elastic Net) to manage multicollinearity.
+# 
+# We will evaluate non-linear modeling approaches such as Generalized Additive Models (GAM).
+# 
+# A subset of representative climate variables may be retained for interpretability, based on domain knowledge and correlation structure.
 # ==============================================================================
 
 
