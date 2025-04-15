@@ -26,7 +26,7 @@ library(tidymodels)
 
 # ------------------------------------------------------------------------------
 # Load Data
-data <- read_csv(here("data/clean/data_covariates_modeling_final.csv")) %>%
+data <- read_csv(here("data/clean/data_covariates_modeling_seasonal.csv")) %>%
   clean_names()
 
 # Drop site_no if present
@@ -45,11 +45,9 @@ write_csv(lm_summary, here("results/model_summaries/lm_fit_tidy.csv"))
 
 # ------------------------------------------------------------------------------
 # 2. Generalized Additive Model (GAM)
-gam_fit <- mgcv::gam(skew ~ s(dec_lat_va) + s(dec_long_va) + 
-                     s(elev_m) + s(slope_deg) +
-                     s(ppt_spring_mm) + s(ppt_summer_mm) + 
-                     s(ppt_fall_mm) + s(ppt_winter_mm) +
-                     s(tmean_ann_c),
+gam_fit <- mgcv::gam(skew ~ s(dec_long_va) + s(elev_m) + s(slope_deg) + 
+                       tmean_m01_c + s(ppt_spring_mm) + s(ppt_summer_mm) + 
+                       s(ppt_winter_mm),
                      data = data)
 
 # Save model
@@ -61,7 +59,8 @@ write_csv(gam_summary, here("results/model_summaries/gam_fit_tidy.csv"))
 
 # ------------------------------------------------------------------------------
 # 3. Elastic Net Regression (ENet)
-set.seed(123)
+
+set.seed(42)      # why 42? Its the answer to life, the universe, and everything
 
 # Prepare recipe
 enet_recipe <- recipe(skew ~ ., data = data) %>%
@@ -77,7 +76,7 @@ enet_workflow <- workflow() %>%
   add_recipe(enet_recipe)
 
 # Resampling
-cv_folds <- vfold_cv(data, v = 5)
+cv_folds <- vfold_cv(data, v = 10)
 
 # Tuning grid
 enet_grid <- grid_regular(penalty(), mixture(), levels = 5)
@@ -90,8 +89,21 @@ enet_tuned <- tune_grid(
   control = control_grid(save_pred = TRUE)
 )
 
+# Compare multiple metrics -- using a vectorized pattern
+# Define the metrics to extract
+metrics <- c("rmse", "rsq")
+
+# Use map to loop over metrics
+enet_check_best_models <- metrics %>%
+  set_names() %>%  # So names in output = metric
+  map(~ show_best(enet_tuned, metric = .x, n = 5))  # Change n=5 as needed
+
+# flatten the named list
+enet_check_best_flat <- enet_check_best_models %>%
+  bind_rows(.id = "metric")  # Adds a column "metric" from list names
+
 # Finalize best model
-enet_best <- select_best(enet_tuned, "rmse")
+enet_best <- select_best(enet_tuned)
 enet_final <- finalize_workflow(enet_workflow, enet_best) %>%
   fit(data)
 
@@ -100,3 +112,6 @@ saveRDS(enet_final, here("results/models/enet_fit.rds"))
 
 # Export best tuning parameters
 write_csv(enet_best, here("results/model_summaries/enet_fit_best_params.csv"))
+write_csv(enet_check_best_flat, 
+          here("results/model_summaries/enet_check_best_params.csv"))
+
