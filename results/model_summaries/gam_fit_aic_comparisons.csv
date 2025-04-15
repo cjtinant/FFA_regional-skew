@@ -1,0 +1,7 @@
+name,df,aic
+simple vs climate,15.863,2086.058
+simple vs climate,30.993,2034.349
+climate vs refined1,30.993,2034.349
+climate vs refined1,30.139,2032.58
+refined1 vs refined2,30.139,2032.58
+refined1 vs refined2,29.532,2031.755
