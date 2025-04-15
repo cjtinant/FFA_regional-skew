@@ -1,0 +1,2 @@
+estimate1,estimate2,estimate3,statistic,p.value,method,alternative
+0.06883533363386006,-8.928571428571428e-4,1.9873386483135002e-4,4.946208934195967,3.783636860968711e-7,Moran I test under randomisation,greater
