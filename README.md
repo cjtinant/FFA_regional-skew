@@ -5,7 +5,7 @@ Regional Skew Estimation Project
 - [Planned Next Steps](#planned-next-steps)
 - [Project Structure](#project-structure)
 - [Workflow Overview](#workflow-overview)
-- [Next Steps (Milestone 11b)](#next-steps-milestone-11b)
+- [Modeling Approach and Rationale](#modeling-approach-and-rationale)
 - [Data Notes](#data-notes)
 - [Reproducibility Notes](#reproducibility-notes)
 - [Note on Outlier Removal: Slope Outlier
@@ -90,7 +90,8 @@ development of regional skew coefficients for improved FFA applications.
 | 10b | `10b_exploratory_modeling_correlation_reduction.R` | Heatmap of numeric covariate relationships |
 | 10c | `10c_exploratory_modeling_models.R` | Fit exploratory MLR and GAMs |
 | 10d | `10d_exploratory_modeling_variable-prep.R` | Calculate seasonal covariates and subset variables |
-| 11a | `11a_fit_models.R` | Fit and tune Elastic Net model (MLR) |
+| 11a | `11a_fit_lm_models.R` | Fit and tune Elastic Net model (MLR) |
+| 11b | `111b_fit_gam_models.R` | Fit and tune GAM model |
 
 ------------------------------------------------------------------------
 
@@ -122,11 +123,56 @@ Results exported to:
 
 ------------------------------------------------------------------------
 
-## Next Steps (Milestone 11b)
+## Modeling Approach and Rationale
 
-- Automate final model selection across GAM and Elastic Net
+### Generalized Additive Models (GAM)
+
+Initial modeling explored relationships between station skew and
+climate, terrain, and location-based covariates using Generalized
+Additive Models (GAM) implemented with `{mgcv}`.
+
+The GAM framework was selected to allow for flexible, non-linear
+relationships between covariates and station skew — a reasonable
+expectation given hydrologic processes in the Great Plains.
+
+#### Model Refinement Workflow
+
+1.  **Simple Model:** Location & Terrain only (`dec_long_va`, `elev_m`,
+    `slope_deg`)
+2.  **Full Climate Model:** Added seasonal precipitation and January
+    mean temperature
+3.  **Stepwise Refinement:**
+    - Removed `ppt_summer_mm` (non-significant, minimal contribution)
+    - Removed `elev_m` (non-significant after accounting for other
+      terms)
+
+#### Final Refined Model Terms
+
+| Covariate | Rationale |
+|----|----|
+| dec_long_va | Captures spatial trend east-west |
+| slope_deg | Weak but retained for terrain influence |
+| ppt_spring_mm | Important in driving peak flow magnitude |
+| ppt_winter_mm | Significant influence, possibly related to snow accumulation/melt |
+| tmean_m01_c | January mean temperature as indicator of winter severity |
+
+#### Model Evaluation
+
+- Model selection guided by AIC reduction and parsimony.
+- Visual diagnostics (smooth terms) confirmed non-linear relationships.
+- Deviance explained: ~15%  
+- Adj. R²: ~12-13%  
+- Residual diagnostics were reasonable, with minor structure remaining.
+
+------------------------------------------------------------------------
+
+### Next Steps
+
+- Compare performance with Elastic Net regression.
 - Use `last_fit()` for test-set evaluation
 - Evaluate residual spatial autocorrelation
+- Cross-validate final model(s) to assess predictive performance.
+- Explore prediction surfaces for regional skew estimation.
 - Create clean summaries and plots of best models
 - Document findings
 
@@ -187,11 +233,18 @@ The site was retained in the raw terrain covariate dataset
 excluded from the final modeling dataset
 (`data/clean/data_covariates_modeling.csv`).
 
-Rationale for removal: - Prevent undue influence of a single
-geologically distinct site on model fit. - Focus on generalizing skew
-relationships for typical Great Plains terrain settings. - Outlier
-removal was fully documented in: - `09_join_covariates_for_modeling.R`
-(script) - `data/meta/data_covariates_modeling.csv` (metadata)
+### Rationale for removal:
+
+- Prevent undue influence of a single geologically distinct site on
+  model fit.
+
+- Focus on generalizing skew relationships for typical Great Plains
+  terrain settings.
+
+- Outlier removal was fully documented in:
+
+  - `09_join_covariates_for_modeling.R` (script)
+  - `data/meta/data_covariates_modeling.csv` (metadata)
 
 A map of the outlier location is provided in:
 
