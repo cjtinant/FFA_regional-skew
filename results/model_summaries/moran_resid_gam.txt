@@ -1,0 +1,12 @@
+
+	Moran I test under randomisation
+
+data:  data$resid_gam  
+weights: listw    
+
+Moran I statistic standard deviate = 4.9462, p-value = 3.784e-07
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+     0.0688353336     -0.0008928571      0.0001987339 
+
