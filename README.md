@@ -4,6 +4,8 @@ Regional Skew Estimation Project
 - [Overview](#overview)
 - [Folder Structure](#folder-structure)
 - [Workflow Overview](#workflow-overview)
+  - [Exploratory Modeling Workflow (Milestone
+    10)](#exploratory-modeling-workflow-milestone-10)
 - [Data Notes](#data-notes)
   - [PRISM Climate Normals](#prism-climate-normals)
   - [USGS Peak Flow Data](#usgs-peak-flow-data)
@@ -56,6 +58,24 @@ The project follows a reproducible, modular workflow using R and the
 | 07 | 07_download_climate_covariates.R | Download & extract PRISM climate normals to gage sites. | `/data/clean/data_covariates_climate.csv` |
 | 08 | 08_download_terrain_covariates.R | Download & extract elevation & slope covariates. | `/data/clean/data_covariates_terrain.csv` |
 | 09 | 09_join_covariates_for_modeling.R | Integrate covariate datasets with calculated station skew values for initial regional skew modeling. | `/data/clean/data_covariates_modeling.csv` `/data/meta/data_covariates_modeling.csv` results/figures/ Exploratory plots: pairplots, heatmaps, and maps of terrain outliers |
+
+## Exploratory Modeling Workflow (Milestone 10)
+
+This section outlines the sequential modeling approaches used to explore
+relationships between station skew and landscape/climate covariates.
+Each step provides insight into the structure of the data and guides
+model development.
+
+| Step | Approach | Purpose | Key Tools |
+|----|----|----|----|
+| 01 | Correlation exploration | Assess relationships among covariates and identify multicollinearity | corrr, GGally, ggcorrplot |
+| 02 | Multiple Linear Regression (MLR) | Baseline, interpretable model to quantify effects | lm(), broom |
+| 03 | Generalized Additive Models (GAM) | Explore non-linear relationships flexibly | mgcv, ggplot2::geom_smooth |
+| 04 | Elastic Net Regression | Penalized regression for variable selection | glmnet, tidymodels |
+| 05 | Alternative Non-Linear Models | Explore thresholds, interactions, complex structure | rpart, randomForest |
+| 06 | Spatial Residual Analysis | Detect missing spatial structure | Moran’s I, variogram, mapping residuals |
+
+    See scripts/10_exploratory_modeling.R for implementation.
 
 # Data Notes
 

@@ -1,0 +1,10 @@
+variable,description,units,source
+site_no,USGS Site Number,ID,USGS NWIS
+dec_lat_va,Latitude,decimal degrees,USGS NWIS
+dec_long_va,Longitude,decimal degrees,USGS NWIS
+skew,Log-Pearson III Sample Station Skew,unitless,Calculated
+elev_m,Elevation,meters,USGS 3DEP
+slope_deg,Slope,degrees,USGS 3DEP
+ppt_spring_mm,Spring (Apr-May) Precipitation,mm,PRISM
+ppt_fall_mm,Fall (Oct-Nov) Precipitation,mm,PRISM
+ppt_winter_mm,Winter (Dec-Feb) Precipitation,mm,PRISM

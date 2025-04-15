@@ -1,14 +1,27 @@
 # ==============================================================================
-# Script: 10c_exploratory_modeling_models.R
-# Purpose: Initial exploratory model fits to investigate relationships between
-#          station skew and covariates (climate & terrain).
+# Script: 10c_exploratory_modeling_initial-models.R
+# Purpose: Fit initial exploratory models to evaluate relationships between
+#          station skew and covariates (climate, terrain, location).
 #
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created: April 2025
 #
 # Notes:
-# - This script focuses on simple, exploratory models only.
-# - Final models, cross-validation, and prediction will follow in later milestones.
+# - This script explores linear and non-linear relationships using:
+#     • Multiple Linear Regression (MLR)
+#     • Generalized Additive Models (GAM)
+#
+# - The goal is diagnostic, not predictive:
+#     • Identify key drivers of station skew
+#     • Explore non-linearity and variable significance
+#     • Inform variable reduction and modeling strategy
+#
+# - Final covariate selection, modeling, and validation will follow in later scripts.
+#
+# Outputs:
+# - Model summaries (MLR, GAM)
+# - Diagnostic plots (optional)
+# - Results to inform variable reduction in 10d
 # ==============================================================================
 
 
