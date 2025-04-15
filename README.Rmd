@@ -138,13 +138,19 @@ The GAM framework was selected to allow for flexible, non-linear relationships b
 
 ### Next Steps
 
-- Compare performance with Elastic Net regression.
-- Use `last_fit()` for test-set evaluation
-- Evaluate residual spatial autocorrelation
-- Cross-validate final model(s) to assess predictive performance.
-- Explore prediction surfaces for regional skew estimation.
-- Create clean summaries and plots of best models
-- Document findings
+- Compare performance between Generalized Additive Models (GAM) and Elastic Net regression.
+
+- Use last_fit() for test-set evaluation of model performance.
+
+- Perform cross-validation to assess generalizability and avoid overfitting.
+
+- Evaluate residual spatial autocorrelation (e.g., Moran’s I) to assess spatial structure not explained by the model.
+
+- Visualize prediction surfaces to explore spatial patterns in regional skew.
+
+- Generate clean model summaries and figures for communication and documentation.
+
+- Document findings and modeling decisions in the README and manuscript materials.
 
 ---
 
