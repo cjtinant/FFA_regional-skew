@@ -28,6 +28,7 @@ schema.ini
 *.bak
 *.tmp
 ~$*
+*.db
 
 # =======================
 # RStudio Junk
@@ -41,6 +42,7 @@ schema.ini
 # Temporary files to delete on final
 # =======================
 delete/
+prior-maps/
 
 # =======================
 # Large files
