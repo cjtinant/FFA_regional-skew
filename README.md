@@ -2,84 +2,139 @@ Regional Skew Estimation Project
 ================
 
 - [Overview](#overview)
-- [Folder Structure](#folder-structure)
+- [Planned Next Steps](#planned-next-steps)
+- [Project Structure](#project-structure)
 - [Workflow Overview](#workflow-overview)
-  - [Exploratory Modeling Workflow (Milestone
-    10)](#exploratory-modeling-workflow-milestone-10)
+- [Next Steps (Milestone 11b)](#next-steps-milestone-11b)
 - [Data Notes](#data-notes)
-  - [PRISM Climate Normals](#prism-climate-normals)
-  - [USGS Peak Flow Data](#usgs-peak-flow-data)
 - [Reproducibility Notes](#reproducibility-notes)
-  - [Note on Outlier Removal: Slope Outlier
-    Site](#note-on-outlier-removal-slope-outlier-site)
-  - [Coordinate Reference Systems
-    (CRS)](#coordinate-reference-systems-crs)
+- [Note on Outlier Removal: Slope Outlier
+  Site](#note-on-outlier-removal-slope-outlier-site)
+- [Coordinate Reference Systems
+  (CRS)](#coordinate-reference-systems-crs)
 - [Dependencies](#dependencies)
-- [Citation](#citation)
+- [Citations](#citations)
 
-# Overview
+## Overview
 
-This project supports the development of regional skew estimation for
-flood frequency analysis (FFA) across the Great Plains and adjacent
-regions. The workflow automates downloading, cleaning, and organizing
-USGS and PRISM data for unregulated stream gages with sufficient record
-length.
+This project develops a reproducible, data-driven workflow to support
+regional skew estimation for flood frequency analysis (FFA) at USGS
+stream gage sites across the Great Plains ecoregion.
 
-The project follows a reproducible, modular workflow using R and the
-`{tidyverse}`.
+The workflow uses R and {tidyverse} tools to automate the download,
+cleaning, joining, and modeling of covariate data associated with gage
+locations. Covariates include climate normals, terrain characteristics,
+and site location variables. Current Objective
 
-# Folder Structure
+The primary goal of this phase is to explain spatial variation in
+station skew — the log-Pearson Type III skew coefficient estimated at
+individual stream gages — using a set of numeric covariates derived
+from:
+
+- Climate normals (precipitation and temperature)
+
+- Terrain data (elevation and slope)
+
+- Site location (latitude and longitude)
+
+## Planned Next Steps
+
+Future work will expand the covariate dataset to include:
+
+- Watershed characteristics (e.g., drainage area)
+
+- Categorical variables derived from:
+
+  - Ecoregion membership (Levels I–IV)
+
+  - Landscape descriptors (e.g., glaciation history, soil texture)
+
+Subsequent analysis will explore classification approaches to group
+sites into hydrologically similar regions, ultimately supporting the
+development of regional skew coefficients for improved FFA applications.
+
+------------------------------------------------------------------------
+
+## Project Structure
 
     FFA_regional-skew/
     ├── data/
-    │   ├── raw/           # Original downloaded data (PRISM, USGS)
-           ├── prism/ 
-    │   ├── clean/         # Cleaned data ready for modeling
-    │   ├── meta/          # Metadata for all datasets
+    │   ├── raw/           # Raw downloads (PRISM, USGS, etc.)
+    │   ├── clean/         # Cleaned covariate & skew datasets
+    │   ├── meta/          # # Metadata for reproducibility
     │   └── spatial/       # Spatial data for ecoregions (EPA)
+    ├── figures/           # Plots and heatmaps
     ├── functions/         # Reusable R functions
-    ├── notebooks/         # Rmd files from prior EDA
-    ├── references_pdfs/   # A subset of project-related references
-    ├── scripts/           # Numbered R scripts for each workflow milestone
-    ├── README.Rmd         # This file (source)
-    ├── README.md          # Rendered output
+    ├── references_pdfs/   # Background readings
+    ├── model_summaries/   # CSVs of model coefficients, VIFs, etc.
+    ├── results/           # Rmd files from prior EDA
+    ├── scripts/           # Modular R scripts by milestone
+    ├── README.Rmd         # Workflow overview (editable)
+    ├── README.md          # Rendered Markdown output
     └── .gitignore         # Prevents sensitive/local files from being pushed
 
-# Workflow Overview
+## Workflow Overview
 
-| Milestone | Script | Purpose | Output(s) |
-|----|----|----|----|
-| 01 | 01_get_spatial_data.R | Download & prepare spatial data (bounding box, HUC, eco). | `/data/raw/spatial/` shapefiles |
-| 02 | 02_get_gage_data.R | Query USGS NWIS peak flow data for all sites in study area. | `/data/raw/sites_all_peak_in_bb.csv` |
-| 03 | 03_filter_unregulated_gage_data.R | Filter to unregulated sites with ≥20 years of data. | `/data/clean/data_pk_unreg_gt_20.csv` |
-| 04 | 04_find_clean_export_site_summaries.R | Query site metadata from NWIS and WQP, clean, export. | `/data/clean/site_summary_NWIS_clean.csv` |
-| 05 | 05_update_problem_sites.R | Remove sites with missing/zero peaks or \<20 observations. | Updated site and data files |
-| 06 | 06_calculate_station_skew.R | Calculate log-Pearson III station skew for each site. | `/data/clean/station_skew.csv` |
-| 07 | 07_download_climate_covariates.R | Download & extract PRISM climate normals to gage sites. | `/data/clean/data_covariates_climate.csv` |
-| 08 | 08_download_terrain_covariates.R | Download & extract elevation & slope covariates. | `/data/clean/data_covariates_terrain.csv` |
-| 09 | 09_join_covariates_for_modeling.R | Integrate covariate datasets with calculated station skew values for initial regional skew modeling. | `/data/clean/data_covariates_modeling.csv` `/data/meta/data_covariates_modeling.csv` results/figures/ Exploratory plots: pairplots, heatmaps, and maps of terrain outliers |
+| Milestone | Script(s) | Purpose |
+|---:|:---|:---|
+| 01 | `01_get-spatial-data.R` | Download and clean HUCs, ecoregions, and gage shapefiles |
+| 02 | `02_get-gage-data.R` | Download USGS annual peak flows |
+| 03 | `03_filter_unregulated_gage_data.R` | Filter to unregulated sites with ≥20 years |
+| 04 | `04_find_clean_export_site_summaries.R` | Query and export NWIS/WQP metadata |
+| 05 | `05_update_problem_sites.R` | Remove sites with unusable peak data |
+| 06 | `06_calculate_station_skew.R` | Compute log-Pearson III station skew |
+| 07 | `07_download_climate_covariates.R` | Download PRISM climate normals (monthly + annual) |
+| 08 | `08_download_terrain_covariates.R` | Extract elevation and slope from NED raster |
+| 09 | `09_join_covariates_for_modeling.R` | Join all covariates and remove outlier site |
+| 10a | `10a_exploratory_modeling_initial_checks.R` | Clean for modeling (drop NA/duplicates) |
+| 10b | `10b_exploratory_modeling_correlation_reduction.R` | Heatmap of numeric covariate relationships |
+| 10c | `10c_exploratory_modeling_models.R` | Fit exploratory MLR and GAMs |
+| 10d | `10d_exploratory_modeling_variable-prep.R` | Calculate seasonal covariates and subset variables |
+| 11a | `11a_fit_models.R` | Fit and tune Elastic Net model (MLR) |
 
-## Exploratory Modeling Workflow (Milestone 10)
+------------------------------------------------------------------------
 
-This section outlines the sequential modeling approaches used to explore
-relationships between station skew and landscape/climate covariates.
-Each step provides insight into the structure of the data and guides
-model development.
+### Highlights from Exploratory Modeling
 
-| Step | Approach | Purpose | Key Tools |
-|----|----|----|----|
-| 01 | Correlation exploration | Assess relationships among covariates and identify multicollinearity | corrr, GGally, ggcorrplot |
-| 02 | Multiple Linear Regression (MLR) | Baseline, interpretable model to quantify effects | lm(), broom |
-| 03 | Generalized Additive Models (GAM) | Explore non-linear relationships flexibly | mgcv, ggplot2::geom_smooth |
-| 04 | Elastic Net Regression | Penalized regression for variable selection | glmnet, tidymodels |
-| 05 | Alternative Non-Linear Models | Explore thresholds, interactions, complex structure | rpart, randomForest |
-| 06 | Spatial Residual Analysis | Detect missing spatial structure | Moran’s I, variogram, mapping residuals |
+- **No single covariate** explains station skew on its own.
+- **Annual temperature and spring/winter precipitation** show strong
+  non-linear effects (from GAMs).
+- **Latitude** consistently adds explanatory power; elevation and slope
+  are weaker.
+- Pairwise correlations showed **collinearity among monthly climate
+  variables**.
+- Seasonal summaries (spring, winter, etc.) reduce dimensionality while
+  preserving signal.
 
-    See scripts/10_exploratory_modeling.R for implementation.
+------------------------------------------------------------------------
 
-# Data Notes
+### Model Tuning Summary (Elastic Net)
 
-## PRISM Climate Normals
+- **Best RMSE (10-fold CV):** ~0.615  
+- **Best configuration:** ridge-like (mixture = 0), with small penalty  
+- **Tuning method:** `tune_grid()` over regular grid of 5 × 5 (penalty,
+  mixture)
+
+Results exported to:
+
+- `results/model_summaries/` (summary CSVs)
+- `results/figures/` (pair plots, correlation heatmaps)
+
+------------------------------------------------------------------------
+
+## Next Steps (Milestone 11b)
+
+- Automate final model selection across GAM and Elastic Net
+- Use `last_fit()` for test-set evaluation
+- Evaluate residual spatial autocorrelation
+- Create clean summaries and plots of best models
+- Document findings
+
+------------------------------------------------------------------------
+
+## Data Notes
+
+### PRISM Climate Normals
 
 - Source: <https://prism.oregonstate.edu/normals/>
 - Resolution: 4km gridded .bil rasters
@@ -88,7 +143,7 @@ model development.
   - Monthly & Annual Total Precipitation (mm)
   - Monthly & Annual Mean Temperature (°C)
 
-## USGS Peak Flow Data
+### USGS Peak Flow Data
 
 - Queried via `{dataRetrieval}` package
 - Includes:
@@ -97,7 +152,12 @@ model development.
   - Regulation flags
   - Record length
 
-# Reproducibility Notes
+## Reproducibility Notes
+
+- PRISM rasters are stored in `.bil` format at 4km resolution
+- Elevation rasters downloaded from USGS NED via `{elevatr}`
+- Scripts use `{here}`, `{tidymodels}`, `{terra}`, and `{sf}`
+- Site coordinates use **WGS84**; rasters use **NAD83**
 
 ## Note on Outlier Removal: Slope Outlier Site
 
@@ -135,7 +195,7 @@ removal was fully documented in: - `09_join_covariates_for_modeling.R`
 
 A map of the outlier location is provided in:
 
-results/figures/slope_outlier.png
+`results/figures/slope_outlier.png`
 
 ## Coordinate Reference Systems (CRS)
 
@@ -145,7 +205,7 @@ results/figures/slope_outlier.png
 | USGS Sites    | WGS84 | 4326 | Transformed to NAD83 later       |
 | Final Outputs | NAD83 | 4269 | All data harmonized for modeling |
 
-# Dependencies
+## Dependencies
 
 ``` r
 library(tidyverse)
@@ -158,7 +218,7 @@ library(dataRetrieval)
 library(glue)
 ```
 
-# Citation
+## Citations
 
 > Daly, C., et al. (2008). Physiographically-sensitive mapping of
 > temperature and precipitation across the conterminous United States.
