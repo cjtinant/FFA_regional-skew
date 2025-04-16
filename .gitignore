@@ -43,6 +43,7 @@ schema.ini
 # =======================
 delete/
 prior-maps/
+notebooks/
 
 # =======================
 # Large files
