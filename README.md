@@ -92,8 +92,8 @@ development of regional skew coefficients for improved FFA applications.
 | 10d | `10d_exploratory_modeling_variable-prep.R` | Calculate seasonal covariates and subset variables |
 | 11a | `11a_fit_lm_models.R` | Fit and tune Elastic Net model (MLR) |
 | 11b | `111b_fit_gam_models.R` | Fit and tune GAM model |
-| 11c | 11c_model_evaluation.R | Evaluate model metrics, residuals, and spatial structure |
-| 12 | 12_validate_and_interpret_models.R | Cross-validate, compare final models, create prediction surfaces |
+| 11c | `11c_model_evaluation.R` | Evaluate model metrics, residuals, and spatial structure |
+| 12 | `12_validate_and_interpret_models.R` | Cross-validate, compare final models, create prediction surfaces |
 
 ------------------------------------------------------------------------
 
