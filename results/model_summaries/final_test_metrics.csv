@@ -1,0 +1,7 @@
+model,.metric,.estimator,.estimate
+GAM,rmse,standard,0.5866159700557981
+GAM,rsq,standard,0.09042836846928481
+GAM,mae,standard,0.44722776336592507
+Elastic Net,rmse,standard,0.5998680201035456
+Elastic Net,rsq,standard,0.04825163438001265
+Elastic Net,mae,standard,0.46106463021647204
