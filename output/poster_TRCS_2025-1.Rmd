@@ -1,0 +1,132 @@
+---
+title: Climate and Terrain Drivers of Station Skew in the Great Plains Ecoregion
+
+author:
+  - name: C. Jason Tinant
+    affil: 1
+    orcid: '0000-0001-7192-5375'
+
+affiliation:
+  - num: 1
+    address: Math Science and Technology Department, Oglala Lakota College
+
+column_numbers: 3
+
+logoright_name: https&#58;//raw.githubusercontent.com/brentthorne/posterdown/master/images/betterhexlogo.png
+logoleft_name: https&#58;//raw.githubusercontent.com/brentthorne/posterdown/master/images/betterhexlogo.png
+
+output: 
+  posterdown::posterdown_html:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Introduction
+
+Flood frequency analysis (FFA) estimates the magnitude and frequency of floods such as the 100-year flood. Current Federal Guidance on FFA, Bulletin 17c, recommends regional skewness coefficients are combined with station-specific skewness to to improve peak flow estimates. However, no Federal or State guidance has been provided on how to calculate regional skewness coefficients for State and Tribal lands in the Upper Great Plains ecoregion. The overall purpose of the study is to identify clusters of similar gaging stations from which to calculate regional skewness coefficients. 
+
+## Objectives
+
+1. Identify gages in the Great Plains ecoregion for unregulated streams with at least twenty years of peak flows
+2. Identify location, climate, and terrain variables potentially explaining differences in station skewness.
+3. Refine the initial set of variables to a parsomonius and uncorrelated set of explanatory variables.
+4. Fit and compare candidate regional skew models.
+5. Estimate the effect of selected variables on regional skewness coefficients
+
+# Study Area, Data Sources, and Methods
+
+**Focus Region:** The Great Plains Ecoregion — high variability in precipitation, snowpack, and topography.
+
+**Data** USGS stream flow discharge gages with ≥ 20 years of unregulated record (N = 1,121), PRISM 30-year gridded climate normals (1991–2020) for monthly and annual temperature and precipitation, National Elevation Dataset (NED)
+
+**Models** - Generalized Additive Models (GAM), Elastic Net regression (glmnet, tidymodels). Workflow developed in R using {tidyverse}, {terra}, {mgcv}, and {tidymodels}.
+
+**Model Evaluation** Performed an 80/20 train/test split with RMSE and R² on both training and test sets. Moran’s I used to assess spatial autocorrelation in residuals
+
+# Results
+
+## Exploratory Modeling
+
+- Elastic Net models exhibited weaker performance and lower interpretability than GAM models
+
+- Initial explanatory variables exhibited substantial multicolinearity 
+
+#### Initial Heatmap
+```{r heatmap, out.width='100%', fig.align='center', fig.height=5}
+
+knitr::include_graphics("results/figures/heatmap_covariates_no-labels.png")
+
+```
+
+## Final Modeling
+
+- Seasonal precipitation normals increased predictive power and reduced covariance over monthly or annual normals.
+
+- GAMs revealed non-linear relationships between station skew, spring & winter precipitation, January mean temperature, longitude, and slope.
+
+#### Final GAM Smooth Terms
+
+```{r smoothterms, out.width='100%', fig.align='center', fig.height=5}
+
+knitr::include_graphics("results/figures/gam_terms/smooth_terms_combined.png")
+
+```
+
+## Model Performance
+
+```{r results_gam_elastic_net, out.width='80%', echo=FALSE}
+
+model_metrics <- tibble::tibble(
+  model = c("GAM", "Elastic Net"),
+  RMSE = c(0.579, 0.606),
+  Rsq = c(0.147, 0.060),
+  MAE = c(0.447, 0.469)
+)
+
+knitr::kable(
+  model_metrics,
+  caption = 'Test-set Performance Metrics',
+  align = 'l',
+  format = 'html'
+)
+```
+
+
+GAM outperforms Elastic Net across all metrics.
+
+
+```{r ObsPred, out.width='60%', fig.align='center', fig.height=3}
+
+knitr::include_graphics("results/figures/obs_vs_pred_test_gam.png")
+
+```
+
+# Conclusions
+
+- GAMs revealed non-linear relationships between station skew, climate and terrain. However, these variables only accounted for about 15% of station skewness variability 
+
+- spring precipitation is a key driver of floods
+
+- winter precipitation (snowpack, snowmelt) and January mean temperature has a small dampening effect on flood magnitude
+
+- longitude and slope provide additional information on E-W trends and terrain differences
+
+
+# Next Steps
+
+- Incorporate watershed area into model
+
+- Incorporate categorical variables based on Ecoregion levels I-IV.
+
+- Incorporate landscape and textural differences derived from Ecoregion descriptions such as history of glaciation and predominant soil texture.
+
+
+
+# Acknowledgements
+
+* This material is based upon work supported by the National Science Foundation's Tribal Colleges and Universities Program under Grant Number 2225573.
+
+
