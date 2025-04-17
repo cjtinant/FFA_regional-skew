@@ -1,0 +1,71 @@
+---
+title: Generate Reproducible & Live HTML and PDF Conference Posters Using RMarkdown
+author:
+  - name: Brent Thorne
+    affil: 1
+    orcid: '0000-0002-1099-3857'
+  - name: Another G. Author
+    affil: 2
+affiliation:
+  - num: 1
+    address: Department of Earth Science, Brock University
+  - num: 2
+    address: Department of Graphics and Layouts, University of Posters; Canada
+column_numbers: 3
+logoright_name: https&#58;//raw.githubusercontent.com/brentthorne/posterdown/master/images/betterhexlogo.png
+logoleft_name: https&#58;//raw.githubusercontent.com/brentthorne/posterdown/master/images/betterhexlogo.png
+output: 
+  posterdown::posterdown_html:
+    self_contained: false
+---
+
+
+
+
+
+# Background
+
+Flood frequency analysis (FFA) often relies on regional skew coefficients to improve peak flow estimates.  
+This project develops a flexible model using USGS streamgage data and GAMs.
+
+# Study Area & Data
+
+- **Streamgages**: ≥ 20 years of unregulated record  
+- **Climate Normals**: PRISM 1991–2020  
+- **Terrain**: Elevation & slope from NED  
+- **Focus Region**: Central Great Plains
+
+# Covariates
+
+- Spring & Winter PRISM Precipitation  
+- January Mean Temperature  
+- Elevation and Slope from NED  
+- Reprojected to Albers Equal Area (EPSG:5070)  
+- 1121 sites with complete covariates
+
+# Modeling Framework
+
+- **GAM** using `mgcv`  
+- **Elastic Net** via `tidymodels`
+
+# Evaluation
+
+- 80/20 train-test split  
+- RMSE, R², MAE on both sets  
+- Moran’s I for spatial residual clustering
+
+# Model Metrics
+
+```{r echo=FALSE, results='asis'}
+#knitr::kable(model_metrics)
+
+```
+
+# Residuals
+
+
+# Conclusion
+
+# Acknowledgements
+
+
