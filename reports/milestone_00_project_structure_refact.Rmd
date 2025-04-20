@@ -20,6 +20,9 @@ Plains Regional Skew Estimation project. The reorganization improves
 clarity, modularity, and reproducibility by aligning files with
 milestone workflows and standard naming conventions.
 
+**Summary:** This milestone documents a major restructuring of the project folder hierarchy, archiving legacy files, and organizing scripts into modular milestone-based subfolders. Also introduces the hierarchical covariate framework and macrozone classification for Great Plains analysis.
+
+
 ## Goals of Refactor
 
 -   Clarify distinction between raw, processed, and derived spatial data

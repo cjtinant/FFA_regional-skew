@@ -9,6 +9,7 @@ README – FFA Regional Skew Estimation
   - [Project Structure (as of v0.3)](#project-structure-as-of-v03)
   - [Getting Started](#getting-started)
   - [Reproducibility](#reproducibility)
+  - [Reports and Milestone Logs](#reports-and-milestone-logs)
   - [Versioning](#versioning)
 
 # Project Description
@@ -123,6 +124,13 @@ This project uses: - `.gitignore_spatial_template.txt` to exclude large
 geospatial files - `git_commit_reference_card.txt` for consistent commit
 messages - Modular milestone logs (see `reports/`) to track key
 development stages
+
+## Reports and Milestone Logs
+
+To explore the evolution of the project structure, covariate design, and
+documentation practices, see: 📁
+[`reports/README.md`](reports/README.md) — Overview of all milestone
+logs, reference tools, and future plans
 
 ## Versioning
 

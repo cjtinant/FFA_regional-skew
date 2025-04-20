@@ -9,6 +9,9 @@ output: github_document
 
 This milestone focuses on strengthening project transparency and reproducibility by embedding documentation within analysis folders and formalizing metadata management.
 
+> **Summary:** This milestone strengthens reproducibility by formalizing internal documentation practices. It includes README templates for `R/` subfolders, a planned data dictionary, and introduces `log_README.md` documentation inside each milestone to clarify roles, assumptions, and outputs.
+
+
 ---
 
 ### 📋 Task Checklist
