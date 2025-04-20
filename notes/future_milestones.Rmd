@@ -1,0 +1,80 @@
+---
+title: "Future Milestones"
+author: "CJ Tinant"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. Workflow Architecture Notes (Targets / Drake)
+
+    "Chain these in targets or drake pipelines"
+    "Consider a targets-based workflow if your scripts are getting complex"
+
+This idea deserves its own milestone when you're ready. For now, just document that you're not ready to commit, but it's on your radar.
+
+🔹 2. Documentation Infrastructure
+
+    "Add a log_README.md in each R/ subfolder to document script purpose"
+    "Use both .Rmd and .md for documentation"
+    "Add a data_dictionary.csv in data/meta/"
+
+✅ What to do with this: Create a separate Milestone titled:
+
+Milestone 02 — Improve Script and Metadata Documentation
+
+With tasks like:
+
+Add README.md to each R/ subfolder to document script roles
+
+Add data/meta/data_dictionary.csv to define covariate metadata
+
+    Add log_README.md template for reproducibility
+
+This is distinct from modeling and essential to reproducibility. It pairs beautifully with a future targets milestone.
+
+🔹 3. Refactor Visualization and Audit
+
+    "00_refactor_checklist.csv", "00_folder_before.png", "00_folder_after.png", "rename_scripts.R"
+
+✅ What to do with this: If you're doing teaching, writing a paper, or documenting before/after structure, these are great artifacts.
+
+→ Move these ideas to a section at the bottom of milestone_00 under:
+
+## Optional Reproducibility Artifacts (Not Tracked in Git Yet)
+
+- `00_refactor_checklist.csv`: CSV to track renaming
+- `00_folder_before.png` & `00_folder_after.png`: visuals of structure change
+- `rename_scripts.R`: test file renaming via R
+
+OR: add them to a future milestone focused on reproducibility documentation.
+🔹 4. Meta Data Organization
+
+    "Step 07 — Add data/meta/variable_scaffold.csv and README Tables"
+    "Step 08 — Distinguish between exploratory output and final cleaned results"
+
+✅ What to do with this:
+⬇ Suggest a milestone:
+
+Milestone 04 — Organize Metadata and Outputs
+
+- [ ] Create `data/meta/variable_scaffold.csv` for modeling inputs
+- [ ] Add variable scaffold to README via `knitr::kable()`
+- [ ] Distinguish between exploratory (`output/`) and final outputs (`results/`)
+
+This milestone links to R/03_covariates/ and R/05_eval/, and will improve clarity during modeling and publication prep.
+
+🧱 Suggested Next Steps
+
+Would you like me to:
+
+    Create a milestone_02_documentation.Rmd with the documentation-focused tasks?
+
+    Move these into a reusable future_milestones.Rmd as a long-term planning doc?
+
+    Scaffold the above 3–4 milestone headings in a milestones_log.Rmd?
+
+Let me know what fits your style — you're building something excellent here.

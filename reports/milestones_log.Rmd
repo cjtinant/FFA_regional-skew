@@ -17,13 +17,27 @@ This document tracks major milestones, structural updates, and analysis phases f
 **Purpose:**  
 Refactor the project for modularity, reproducibility, and long-term maintainability.
 
-**Key Changes:**
-- Modular folder structure under `R/`
+**Key outcomes:**
+- Modularized project folder structure by analysis step under `R/`
+- Introduced macrozone covariate integration (03c)
 - Added `03c_macrozone_covariates_l2.R` for Great Plains subregions
 - Removed oversized raster file (`elevation_ned.tif`)
+- Archived legacy scripts and restructured `.gitignore`
+- Created GitHub milestone and issue to track tasks
+- Updated `README.Rmd` with new project structure
 - Updated `.gitignore` and created reusable spatial data template
 - Cleaned git history using `git filter-repo`
-- Updated `README.Rmd` with new project structure
+
+
+## ✅ Milestone Closeout
+
+Milestone 00 completed on 2025-04-20 and tagged as `v0.3-structure-refactor`.
+
+
+
+Next steps:
+- Continue script renaming for `R/03_covariates/`, `R/04_modeling/`, and `R/05_eval/`
+- Begin planning Milestone 01: Exploratory Covariate Analysis and Model Selection
 
 ---
 

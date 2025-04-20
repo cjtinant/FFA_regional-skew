@@ -1,0 +1,75 @@
+---
+title: "03c Macrozone Covariates from Level II Ecoregions"
+author: "CJ Tinant"
+date: 2024-04-20
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview
+
+This script derives a categorical macroregional covariate ("macrozone") for stream gage sites within the Great Plains, based on EPA Level II ecoregions. The output provides spatial polygons classified into tallgrass, mixedgrass, shortgrass, or semidesert macrozones and is reprojected to EPSG:5070 (Albers Equal Area) for spatial modeling.
+
+---
+
+## 📥 Inputs
+
+| File | Description |
+|:----:|:-----------:|
+| NA_eco_lev2_GreatPlains_geographic.gpkg | Level II North American ecoregions (unprojected) |
+| NA_eco_lev1_GreatPlains_geographic.gpkg | Level I ecoregions (used to filter CONUS Great Plains only) |
+
+
+---
+
+## 🧭 Method
+
+Read and validate both Level I and Level II polygon datasets.
+
+Filter Level I to na_l1name == "GREAT PLAINS" to define the CONUS mask.
+
+Clip Level II polygons using st_filter() to retain only CONUS GP regions.
+
+Manually classify Level II ecoregions into four macrozones:
+
+    TEMPERATE PRAIRIES → Tallgrass
+
+    WEST-CENTRAL SEMIARID PRAIRIES → Mixedgrass
+
+    SOUTH CENTRAL SEMIARID PRAIRIES → Shortgrass
+
+    TEXAS-LOUISIANA COASTAL PLAIN, TAMAULIPAS-TEXAS SEMIARID PLAIN → Semidesert
+
+Drop geometry artifacts: remove columns such as shape_leng, shape_area, text_x, text_y.
+
+Reproject the data to EPSG:5070 (Albers Equal Area, NAD83).
+
+Calculate polygon area in square meters (area_m2).
+
+Write output to: `data/processed/spatial/gp_macrozone_derived_5070.gpkg`
+
+---
+
+## 📤 Outputs
+
+File | Description
+gp_macrozone_derived_5070.gpkg | Cleaned macrozone polygons (EPSG:5070), ready for use in modeling
+macrozone_key.csv (optional) | Key table showing L2 → macrozone mappings (for documentation or joins) | 
+
+---
+
+## 📝 Notes
+
+- Join is based on `na_l2name`
+- Output is ready for use in modeling regional skew
+- This step aligns with scripts in `R/01_download/03c_macrozone_covariates_l2.R`
+
+- Classification is based on na_l2name from the Level II shapefile.
+
+- This macrozone covariate aligns with exploratory hypotheses about regional drivers of flood skewness in the Great Plains.
+
+- This documentation corresponds to script:
+`R/03_covariates/03c_macrozone_covariates_l2.R`

@@ -1,0 +1,26 @@
+---
+title: "Milestone 01 – Build and Document Download Scripts"
+author: "C.J. Tinant"
+date: "`r Sys.Date()`"
+output: github_document
+---
+
+## Ver.0.4 – Update R/01_download
+
+| Step | Task                                                     | Status |
+|------|----------------------------------------------------------|--------|
+| 1    | Create download scripts for each domain and covariate    | [ ]    |
+| 2    | Create README-style notes in milestone folder            | [ ]    |
+| 3    | Refactor PRISM and terrain downloads                     | [ ]    |
+| 4    | Improve site-level metadata integration                  | [ ]    |
+| 5    | Validate spatial coverage across domains                 | [ ]    |
+| 6    | Document inputs, outputs, assumptions                    | [ ]    |
+| 7    | Add file size / resolution audit to .Rmd                 | [ ]    |
+| 8    | Commit and tag `v0.4-download-scripts`                   | [ ]    |
+
+## Notes
+
+- This milestone builds on `v0.3-structure-refactor`
+- All scripts will follow: `milestone + domain + covariate + source` naming
+- README-style documentation will be embedded in this .Rmd file for reproducibility
+
