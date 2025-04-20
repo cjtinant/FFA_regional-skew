@@ -1,6 +1,6 @@
 ---
-title: "00_refactor_log"
-author: "CJ Tinant"
+title: "Milestone 00 — Project Refactor"
+author: "C.J. Tinant"
 date: "`r Sys.Date()`"
 output: html_document
 editor_options: 
@@ -12,12 +12,6 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
----
-title: "00_refactor_log – File & Folder Reorganization Notes"
-author: "Charles Jason Tinant"
-date: "`r Sys.Date()`"
-output: html_document
----
 
 # Overview
 
@@ -39,6 +33,14 @@ milestone workflows and standard naming conventions.
 \_ Prepare for poster/reporting and model evaluation stages
 
 ------------------------------------------------------------------------
+
+### Summary of Changes
+
+- Modularized `R/` folder structure with numbered milestones
+- Moved and renamed shapefiles for clarity
+- Soft-archived old scripts and notebooks
+- Replaced legacy `.gitignore` with spatial-aware template
+- Added macrozone covariate pipeline (03c) with matching Rmd log
 
 # Project structure
 
@@ -137,13 +139,18 @@ FFA_regional-skew/
 | 0.3.5    | Move raw shapefiles to data/raw/spatial_raw/            | [X]    |
 | 0.3.6    | Move cleaned shapefiles to spatial/                     | [X]    |
 | 0.3.7    | Rename /R/01_download scripts as:                       |        |
-|      |   milestone + domain + covariate + source                   | [*]    |
-| 0.3.8    | Tag this commit in Git as v0.3-structure-refactor       | [*]    |
-| 0.3.9    | Create GitHub Milestone and Issue                       | []    |
+|      |   milestone + domain + covariate + source                   | [X]    |
+| 0.3.8    | Tag this commit in Git as v0.3-structure-refactor       | [X]    |
+| 0.3.9    | Create GitHub Milestone and Issue                       | [X]    |
 | 0.3.10    | Document changes in this .Rmd                          | []    |
 | 0.3.11    | Document changes in README.Rmd                         | []    |
 
-* Need to document these steps
+
+- **0.3.7:** Script renaming is partially complete. Scripts in R/01_download and R/02_clean have adopted the pattern: milestone + domain + covariate + source. Remaining scripts (e.g., 03b, 04_modeling) will be renamed accordingly.
+- **0.3.8:** Tag will be created after final push. Suggested tag: `v0.3-structure-refactor`.
+- **0.3.9:** GitHub milestone will be added once this document is finalized and committed.
+- **0.3.10 & 0.3.11:** This .Rmd and the README will be updated to document the completed refactor.
+
 
 ## Ver.0.4 -- Update R/01_download
 | Step | Task                                                          | Status |
@@ -450,7 +457,11 @@ spatial/
 ├── koppen_cleaned/
 ```
 
+### Notes on Step 0.3.7
+Files have been renamed for `01_download` and `02_clean`, but `03_covariates` is still mid-refactor. Consider adding tags like `03a`, `03b`, `03c` for clarity.
 
+### Notes on Step 0.3.8
+Will tag commit after final push of .gitkeep and milestone Rmd updates.
 
 
 # 🗂️ Summary of Key Structural Changes
