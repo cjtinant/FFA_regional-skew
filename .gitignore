@@ -55,3 +55,4 @@ data/raw/vector_raw/us_eco_l2/us_eco_l2.shp
 data/raw/vector_raw/us_eco_lev01/us_eco_l1.shp
 data/raw/raster_raw/elevation_ned.tif
 *.zip
+to_check/*.docx
