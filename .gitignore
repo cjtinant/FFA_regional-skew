@@ -46,7 +46,12 @@ prior-maps/
 notebooks/
 
 # =======================
-# Large files
+# LARGE FILES TO IGNORE (manually flagged over 50MB)
 # =======================
+data/raw/vector_raw/ecoregions_orig/us_eco_l4_no_st.shp
+data/raw/vector_raw/ecoregions_orig2/phzm_us_grid_2023/phzm_us_grid_2023.bil
+data/raw/vector_raw/us_eco_lev03/us_eco_l3.shp
+data/raw/vector_raw/us_eco_l2/us_eco_l2.shp
+data/raw/vector_raw/us_eco_lev01/us_eco_l1.shp
 data/raw/elevation_ned.tif
 *.zip
