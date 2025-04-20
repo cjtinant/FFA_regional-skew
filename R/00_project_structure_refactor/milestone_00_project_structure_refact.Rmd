@@ -139,15 +139,15 @@ FFA_regional-skew/
 | 0.3.5    | Move raw shapefiles to data/raw/spatial_raw/            | [X]    |
 | 0.3.6    | Move cleaned shapefiles to spatial/                     | [X]    |
 | 0.3.7    | Rename /R/01_download scripts as:                       |        |
-|      |   milestone + domain + covariate + source                   | [X]    |
+|          |   milestone + domain + covariate + source               | [P]    |
 | 0.3.8    | Tag this commit in Git as v0.3-structure-refactor       | [X]    |
 | 0.3.9    | Create GitHub Milestone and Issue                       | [X]    |
-| 0.3.10    | Document changes in this .Rmd                          | []    |
+| 0.3.10    | Document changes in this .Rmd                          | [X]    |
 | 0.3.11    | Document changes in README.Rmd                         | []    |
 
 
 - **0.3.7:** Script renaming is partially complete. Scripts in R/01_download and R/02_clean have adopted the pattern: milestone + domain + covariate + source. Remaining scripts (e.g., 03b, 04_modeling) will be renamed accordingly.
-- **0.3.8:** Tag will be created after final push. Suggested tag: `v0.3-structure-refactor`.
+
 - **0.3.9:** GitHub milestone will be added once this document is finalized and committed.
 - **0.3.10 & 0.3.11:** This .Rmd and the README will be updated to document the completed refactor.
 
