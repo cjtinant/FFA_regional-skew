@@ -1,0 +1,96 @@
+---
+title: "Milestone Log – FFA Regional Skew Project"
+output: html_document
+---
+
+# 🧭 Milestone Log
+
+This document tracks major milestones, structural updates, and analysis phases for the FFA Regional Skew estimation project.
+
+---
+
+## ✅ Milestone 00 – Project Structure Refactor and Cleanup
+
+**Date:** April 2025  
+**Tag:** `v0.3-refactor`
+
+**Purpose:**  
+Refactor the project for modularity, reproducibility, and long-term maintainability.
+
+**Key Changes:**
+- Modular folder structure under `R/`
+- Added `03c_macrozone_covariates_l2.R` for Great Plains subregions
+- Removed oversized raster file (`elevation_ned.tif`)
+- Updated `.gitignore` and created reusable spatial data template
+- Cleaned git history using `git filter-repo`
+- Updated `README.Rmd` with new project structure
+
+---
+
+## ✅ Milestone 01 – Raw Data Download
+
+**Scripts:**
+- (now) `R/01_download/01_get_spatial_data.R`
+- (now) `R/01_download/02_get_gage_data.R`
+
+**Purpose:**  
+Automate download of raw peak flow data, site info, and relevant spatial layers from NWIS and WQP.
+
+---
+
+## ✅ Milestone 03 – Filter Unregulated Gage Data
+
+**Script:** `R/02_clean/03_filter_unregulated_gage_data.R`  
+**Goal:** Identify long-term, unregulated gages with ≥ 20 years of data.
+
+---
+
+## ✅ Milestone 06 – Calculate Station Skew
+
+**Script:** `R/02_clean/06_calculate_station_skew.R`  
+**Goal:** Estimate station skew using B17C log-skew for each peak-flow record.
+
+---
+
+## ✅ Milestone 07 – Download Climate Covariates
+
+**Scripts:**
+- `R/01_download/03a_climate_covariates_prism.R`
+- `R/01_download/03b_terrain_covariates_elev_slope.R`
+
+**Goal:** Extract 4km PRISM precipitation/temperature normals and terrain data.
+
+---
+
+## ✅ Milestone 09 – Join Covariates and Prepare for Modeling
+
+**Script:** `R/03_covariates/09_join_covariates_for_modeling.R`
+
+---
+
+## ✅ Milestone 10 – Exploratory Modeling of Regional Skew
+
+**Scripts:**
+- `R/04_exploratory/10a_exploratory_modeling_initial_checks.R`
+- `10b`, `10c`, `10d`: Correlation and variable prep
+
+---
+
+## ✅ Milestone 11 – Final Model Fitting
+
+**Script:** `R/05_modeling/11a_fit_enet_models.R` and `11b_fit_gam_models.R`  
+**Goal:** Fit and compare Elastic Net and GAM models.
+
+---
+
+## ✅ Milestone 12 – Model Evaluation
+
+**Script:** `R/06_eval/12_model_evaluation.R`
+
+---
+
+## 🔄 Upcoming
+
+- Create modeling surface and prediction tools
+- Expand to seasonal modeling
+- Paper drafting milestone (`v1.0-paper-submitted`)
