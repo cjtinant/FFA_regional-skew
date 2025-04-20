@@ -127,21 +127,56 @@ FFA_regional-skew/
 
 # Migration Checklist
 
+## Ver0.3 -- Refactored project structure and added macrozone covariates
+| Step | Task                                                        | Status |
+|--------------|-----------------------------------------------------|--------|
+| 0.3.1    | Soft archive old files                                  | [X]    |
+| 0.3.2    | Create folders for each milestone step                  | [X]    |
+| 0.3.3    | Move functions/ to R/utils/ and source with source()    | [X]    |
+| 0.3.4    | Rename scripts/ to R/ and split by milestone function   | [X]    |
+| 0.3.5    | Move raw shapefiles to data/raw/spatial_raw/            | [X]    |
+| 0.3.6    | Move cleaned shapefiles to spatial/                     | [X]    |
+| 0.3.7    | Rename /R/01_download scripts as:                       |        |
+|      |   milestone + domain + covariate + source                   | [*]    |
+| 0.3.8    | Tag this commit in Git as v0.3-structure-refactor       | [*]    |
+| 0.3.9    | Create GitHub Milestone and Issue                       | []    |
+| 0.3.10    | Document changes in this .Rmd                          | []    |
+| 0.3.11    | Document changes in README.Rmd                         | []    |
+
+* Need to document these steps
+
+## Ver.0.4 -- Update R/01_download
 | Step | Task                                                          | Status |
 |--------------|-------------------------------------------------------|-------|
-| 1    | Soft archive old files                                        | [X]   |
-| 2    | Create folders for each milestone step                        | [X]   |
-| 3    | Move functions/ to R/utils/ and source with source()          | [X]   |
-| 4    | Rename scripts/ to R/ and split by milestone function         | [X]   |
-| 5    | Move raw shapefiles to data/raw/spatial_raw/                  | [X]   |
-| 6    | Move cleaned shapefiles (projected, reclassified) to spatial/ | [X]   |
-| 7    | Get Reference links                                           | []     |
+| 1    | Create downloads scripts for each domain and covariate        | []   |
+| 2    | Create README-style notes for script in milestone folder      | []   |
+| 3    |           | []   |
+| 4    |         | []   |
+| 5    |                  | []   |
+| 6    | | []   |
+
+| 8   |      | []     |
+
+Macro-regional (within GP)
+Climate
+Regional climate PC1–PC2 (or Köppen subtype)
+numeric / categorical
+PRISM / WorldClim / Köppen maps
+
+
+
+| 7    | Document changes in README.Rmd                                | []     |
+
+
 | 8    | Create README-style notes for each R milestone folder         | []     |
-| 9    | Document changes in README.Rmd                                | []     |
-| 10   | Tag this commit in Git as v0.1-structure-refactor             | []     |
+| 10   | Get Reference links                                           | []     |
+
+
 
 ```{=html}
 <!--
+
+Chain these in targets or drake pipelines
 
 
 add a data_dictionary.csv in data/meta/
@@ -159,6 +194,26 @@ Inside that same folder, you can later add:
     00_folder_before.png and 00_folder_after.png (for visuals)
 
     rename_scripts.R (if you want to learn R-side file management too)
+
+## Step 07 — Add data/meta/variable_scaffold.csv and README Tables
+
+-   **Reason:** Track covariates by scale and origin.
+
+-   **Before:** data/meta/variable_scaffold.csv
+
+-   **After:** README.Rmd as knitr::kable()
+
+
+
+
+## Step 08 Distinguish between exploratory output and final cleaned results.
+
+-   **Reason:** Distinguish between exploratory output and final cleaned
+    results.
+
+-   **Before:** All tables in output/
+
+-   **After:** Use results/ for cleaned output only.
 
 -->
 ```
@@ -395,25 +450,7 @@ spatial/
 ├── koppen_cleaned/
 ```
 
-## Step 07 — Add data/meta/variable_scaffold.csv and README Tables
 
--   **Reason:** Track covariates by scale and origin.
-
--   **Before:** data/meta/variable_scaffold.csv
-
--   **After:** README.Rmd as knitr::kable()
-
-
-
-
-## Step 08 Distinguish between exploratory output and final cleaned results.
-
--   **Reason:** Distinguish between exploratory output and final cleaned
-    results.
-
--   **Before:** All tables in output/
-
--   **After:** Use results/ for cleaned output only.
 
 
 # 🗂️ Summary of Key Structural Changes
