@@ -1,0 +1,73 @@
+# Git Commit Message Reference Card for FFA_regional-skew Project
+
+This guide helps maintain clear, consistent, and expressive commit messages using conventional prefixes and best practices for documenting changes in hydrologic modeling and data science projects.
+
+---
+
+## 📌 Commit Message Format
+
+```
+<type>: <short summary>
+
+<body – optional, wrap at 72 characters>
+```
+
+---
+
+## ✅ Common Prefixes (`<type>`)
+
+| Prefix     | When to Use                                                  |
+|------------|--------------------------------------------------------------|
+| `Feat:`    | New feature or script                                        |
+| `Fix:`     | Bug fix                                                      |
+| `Docs:`    | Documentation (README, Rmd logs, comments)                  |
+| `Refactor:`| Code reorganization or cleanup (no behavior change)         |
+| `Test:`    | Adding or updating tests                                     |
+| `Data:`    | Adding/removing/modifying data files                         |
+| `Chore:`   | Routine tasks (renaming, formatting, .gitignore edits)       |
+| `Build:`   | Dependency or environment updates                            |
+| `Tag:`     | Milestone tagging, version bump                              |
+
+---
+
+## ✅ Sample Commit Messages
+
+```
+Feat: add macrozone covariate extraction from Level II shapefile
+
+This adds a new script (03c_macrozone_covariates_l2.R) to assign prairie
+macroregions based on NA Ecoregion Level II polygons. Output is written to
+data/processed/spatial/.
+```
+
+```
+Docs: move macrozone covariates Rmd log to reports/
+
+Moved 03c Macrozone Covariates from Level II Ecoregions.Rmd from to_check/
+into reports/ to reflect finalized covariate pipeline documentation. Part
+of Milestone 00 refactor.
+```
+
+```
+Chore: update .gitignore with large file exclusions for GitHub limits
+```
+
+---
+
+## ✅ Tips for Good Commit Messages
+
+- Use the imperative mood: "Add", not "Added" or "Adds"
+- Keep subject lines ≤ 50 characters
+- Use the body to explain **why** and optionally **how**
+- Group commits by milestone or logical step
+
+---
+
+## 📂 Tagging Example
+
+```bash
+git tag -a v0.3-refactor -m "Refactor project structure and file locations"
+git push origin v0.3-refactor
+```
+
+Happy committing!

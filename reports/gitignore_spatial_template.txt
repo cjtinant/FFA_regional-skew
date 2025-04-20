@@ -1,0 +1,80 @@
+# =======================
+# OUTPUT DATA & INTERMEDIATE PRODUCTS
+# =======================
+data/delete/
+data/spatial/
+data/processed/
+data/raw/prism/
+data/raw/raster_raw/elevation_ned.tif
+
+# =======================
+# LARGE FILES & ARCHIVES
+# =======================
+*.zip
+*.tif
+*.bil
+*.img
+*.grd
+*.gri
+*.nc
+*.shp
+*.dbf
+*.prj
+*.shx
+*.cpg
+*.qpj
+*.sbn
+*.sbx
+*.rds
+*.rda
+
+# =======================
+# ARC GIS & QGIS PROJECT JUNK
+# =======================
+arcgis_project/*
+*.aux.xml
+*.lock
+*.qgz
+*.qgs~
+
+# =======================
+# RSTUDIO & R JUNK
+# =======================
+.Rproj.user/
+.Rhistory
+.Rhistory
+.RData
+.Rdata
+.Ruserdata
+*.Rproj
+.Rapp.history
+*.utf8.md
+*.knit.md
+
+# =======================
+# R MARKDOWN GENERATED FILES
+# =======================
+*.html
+*.pdf
+*.docx
+*.md
+*_files/
+cache/
+*_cache/
+
+# =======================
+# TEMPORARY WORKING FILES
+# =======================
+delete/
+to_check/
+tmp/
+*.bak
+*.tmp
+~$*
+
+# =======================
+# SYSTEM FILES
+# =======================
+.DS_Store
+Thumbs.db
+schema.ini
