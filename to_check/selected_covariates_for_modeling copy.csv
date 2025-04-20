@@ -1,0 +1,13 @@
+variable,grouping,notes
+latitude,location,Primary spatial gradient (north-south)
+longitude,location,Secondary spatial gradient (east-west)
+slope_deg,terrain,Potential proxy for local relief
+elev_m,terrain,"Less predictive than slope, possible drop candidate"
+tmean_ann_C,temperature,Strong non-linear relationship
+tmean_m01_C,temperature,"Winter temperature (January), important hydrologic signal"
+tmean_m06_C,temperature,"Summer temperature (June), captures growing season variability"
+ppt_m04_mm,precipitation,"Spring precipitation, snowmelt & seasonal transition"
+ppt_m05_mm,precipitation,"Late spring precipitation, peak flows in some regions"
+ppt_m10_mm,precipitation,"Autumn precipitation, hydrologic persistence"
+ppt_m11_mm,precipitation,"Early winter precipitation, snow accumulation"
+ppt_m12_mm,precipitation,"Winter precipitation, snow accumulation & melt processes"

@@ -1,0 +1,149 @@
+---
+title: "Improving Regional Skew Estimation for Rare Floods in the Great Plains"
+author: "C. Jason Tinant"
+affiliation: "Oglala Lakota College"
+date: 2025-04-16
+format:
+  html-poster:
+    theme: default
+    page-layout: full
+    poster-width: 48in
+    poster-height: 36in
+    columns: 3
+    gutter-width: 1in
+    font-size: 24pt
+editor: visual
+---
+
+::: {.grid-panel}
+
+## Background
+
+Flood frequency analysis (FFA) often relies on regional skew coefficients to improve peak flow estimates. This project focuses on developing an improved regional skew model for the Great Plains using machine learning and flexible statistical models.
+
+:::
+
+::: {.grid-panel}
+
+## Study Area & Data Sources
+
+- **Streamgage Sites**: USGS streamgages with ≥ 20 years of unregulated record  
+- **Climate Data**: PRISM 30-year climate normals (1991–2020)  
+- **Terrain Data**: National Elevation Dataset (NED)  
+- **Focus Region**: Central Great Plains — high variability in precipitation, snowpack, and topography
+
+:::
+
+::: {.grid-panel}
+
+
+## Preprocessing & Covariates
+
+- Covariates derived at each site:
+  - Seasonal PRISM precipitation (spring, winter)
+  - January mean temperature
+  - Elevation & slope (from NED)
+- All rasters reprojected to Albers Equal Area (EPSG:5070)
+- Final dataset included 1121 sites with full covariate coverage
+
+:::
+
+::: {.grid-panel}
+
+
+## Modeling Framework
+
+- Models evaluated:
+  - **Generalized Additive Model (GAM)** using `mgcv`
+  - **Elastic Net Regression** via `tidymodels`
+- Evaluation:
+  - 80/20 train/test split
+  - RMSE, R², and MAE on both training and test sets
+  - Moran’s I used to assess spatial autocorrelation in residuals
+
+:::
+
+::: {.grid-panel}
+
+
+## Model Performance
+
+
+```{r model-performance}
+
+
+```
+
+:::
+
+::: {.grid-panel}
+
+
+## Model Metrics
+
+```{r model_metrics}
+
+## model_metrics
+# Use code chunk or knit output with metrics table
+
+
+```
+
+
+:::
+
+::: {.grid-panel}
+
+
+## Prediction Surface
+
+- Predictions were generated across a 10 km grid using the final GAM model.
+- Raster covariates (PRISM + NED) were extracted to prediction points.
+
+```{r pred_surf}
+# Replace with your rendered prediction surface
+# ![](results/figures/predictions_surface_gam.png)
+```
+
+
+:::
+
+::: {.grid-panel}
+
+
+## Spatial Residuals
+
+- Moran’s I = 0.0688, p < 0.000001
+
+- Spatial clustering remains in residuals — room to improve model structure.
+
+
+```{r resid}
+
+
+# Replace with a figure of residuals or fitted vs residuals
+# ![](results/figures/resid_gam_vs_fitted.png)
+
+```
+
+
+:::
+
+::: {.grid-panel}
+
+
+## Conclusion & Next Steps
+
+    GAMs provide interpretable, flexible models for regional skew
+
+    Key predictors: Spring/winter precipitation, temperature, elevation, slope
+
+    Next steps:
+
+        Add spatial terms or ecoregion groupings
+
+        Extend model to cover Tribal lands with sparse gage data
+
+        Incorporate more predictors (land cover, soil, runoff ratio)
+
+:::

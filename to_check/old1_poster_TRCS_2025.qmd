@@ -1,0 +1,115 @@
+---
+title: "Improving Regional Skew Estimation for Rare Floods in the Great Plains"
+author: "C. Jason Tinant"
+affiliation: "Oglala Lakota College"
+format:
+  html-poster:
+    theme: default
+    page-layout: full
+    poster-width: 48in
+    poster-height: 36in
+    wrap-section-columns: true
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr
+    gutter-width: 1in
+editor: visual
+---
+
+::: {.grid .gap-3}
+
+::: {.card .col-span-2}
+## Background
+
+Flood frequency analysis (FFA) often relies on regional skew coefficients to improve peak flow estimates. This project focuses on the Great Plains ecoregion, developing a reproducible workflow to estimate station skew using spatial covariates such as climate normals, terrain, and location.
+
+Key goals:
+- Estimate spatial patterns in skew.
+- Compare predictive models.
+- Generate prediction surfaces.
+:::
+
+::: {.card .col-span-2}
+## Data & Methods
+
+**Data**
+- USGS streamgage sites (≥ 20 years of record, unregulated)
+- PRISM climate normals (1991–2020)
+- Terrain data from NED
+
+**Covariates**
+- Monthly/seasonal precipitation & temperature
+- Elevation, slope
+- Latitude, longitude
+
+**Models**
+- Generalized Additive Models (GAM)
+- Elastic Net regression (glmnet/tidymodels)
+
+Workflow developed in R using `{tidyverse}`, `{terra}`, `{mgcv}`, and `{tidymodels}`.
+:::
+
+::: {.card .col-span-2}
+## Exploratory Modeling
+
+GAMs revealed non-linear relationships between skew and:
+- Spring & winter precipitation
+- January mean temperature
+- Slope and longitude
+
+GAM model structure:
+```
+skew ~ s(ppt_spring_mm) + s(ppt_winter_mm) + s(tmean_m01_c) +
+       s(slope_deg) + s(elev_m) + s(dec_long_va)
+```
+
+Elastic Net models exhibited weaker performance and lower interpretability.
+:::
+
+::: {.card .col-span-3}
+## Results: Model Performance
+
+```{r results_gam_elastic-net}
+
+model_metrics <- tibble::tibble(
+  model = c("GAM", "Elastic Net"),
+  RMSE = c(0.579, 0.606),
+  Rsq = c(0.147, 0.060),
+  MAE = c(0.447, 0.469)
+)
+knitr::kable(model_metrics, caption = "Test-set Performance Metrics")
+
+```
+
+GAM outperforms Elastic Net across all metrics.
+:::
+
+::: {.card .col-span-3}
+## Prediction Surface (GAM)
+
+```{r scratch, eval=FALSE, out.width='100%'}
+knitr::include_graphics("results/figures/prediction_surface_gam.png")
+```
+
+Model output suggests spatial clustering of higher skew values in specific subregions. Residuals exhibit low spatial autocorrelation (Moran’s I = 0.068, p < 0.001).
+:::
+
+::: {.card .col-span-2}
+## Conclusion & Next Steps
+
+- GAM models provide interpretable, flexible predictors of skew.
+- Spatial prediction enables improved regional flood modeling.
+- Future work:
+  - Incorporate categorical variables (e.g., ecoregion, glaciation)
+  - Finalize regional skew coefficient groupings
+  - Submit to TRCS + journal publication
+:::
+
+::: {.card .col-span-1}
+## Acknowledgments
+
+- OLC Engineering
+- USGS NWIS
+- PRISM Climate Group
+- TRCS funding support
+:::
+
+:::

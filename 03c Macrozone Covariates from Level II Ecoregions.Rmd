@@ -1,0 +1,38 @@
+---
+title: "03c Macrozone Covariates from Level II Ecoregions"
+author: "CJ Tinant"
+date: 2024-04-20
+output: html_document
+---
+
+This script derives a categorical macroregional covariate ("macrozone") for the Great Plains, based on EPA Level II ecoregions. Output is saved in projected CRS (EPSG:5070) for modeling.
+
+## Inputs
+
+- `NA_eco_lev2_GreatPlains_geographic.gpkg` – Level II polygons (North America)
+- `NA_eco_lev1_GreatPlains_geographic.gpkg` – Level I polygons (used to filter CONUS)
+
+## Method
+
+1. Read and validate both Level I and Level II ecoregion files
+2. Filter to `na_l1name == "GREAT PLAINS"`
+3. Use `st_filter()` to clip Level II polygons to CONUS
+4. Classify Level II regions into one of four macrozones:
+   - **Tallgrass**
+   - **Mixedgrass**
+   - **Shortgrass**
+   - **Semidesert**
+5. Drop geometry artifacts
+6. Reproject to **EPSG:5070**
+7. Calculate area (m²)
+8. Export to: `data/processed/spatial/gp_macrozone_derived_5070.gpkg`
+
+## Outputs
+
+- Clean GeoPackage (EPSG:5070) with macrozone column and accurate area
+- Optional `.csv` key table of L2 → macrozone mappings
+
+## Notes
+
+- Join is based on `na_l2name`
+- Output can be used as a predictor for regional skew

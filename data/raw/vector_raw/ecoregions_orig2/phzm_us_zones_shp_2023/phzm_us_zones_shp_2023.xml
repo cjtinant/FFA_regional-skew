@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <idinfo>
+    <citation>
+      <citeinfo>
+        <origin>PRISM Climate Group at Oregon State University</origin>
+        <pubdate>20231117</pubdate>
+        <title>1991-2020 Mean Annual Extreme Minimum Temperature for the conterminous US (polygon shapefile)</title>
+        <geoform>maps and data</geoform>
+        <pubinfo>
+          <pubplace>Corvallis, OR, USA</pubplace>
+          <publish>PRISM Climate Group at Oregon State University</publish>
+        </pubinfo>
+        <onlink>prism.oregonstate.edu</onlink>
+      </citeinfo>
+    </citation>
+    <descript>
+      <abstract>This dataset represents the mean annual extreme minimum temperature for the 1991-2020 period. The dataset was created by assembling high quality station data of 30-year mean annual extreme minimum temperatures, performing quality control checks of the station data, and interpolating the data using the PRISM modeling system.</abstract>
+      <purpose>Provide an approved, updated mean annual extreme minimum temperature dataset for the 1991-2020 period with a goal of meeting modern standards of geostatistical analysis and data resolution. The resulting dataset was then used to derive an official USDA-ARS Plant Hardiness Zone Map (PHZM).</purpose>
+      <supplinf>This polygon shapefile dataset was derived from a source 800m resolution raster dataset representing plant hardiness zones in the conterminous US.</supplinf>
+    </descript>
+    <timeperd>
+      <timeinfo>
+        <rngdates>
+          <begdate>19910101</begdate>
+          <enddate>20201231</enddate>
+        </rngdates>
+      </timeinfo>
+	  <current>observed</current>
+    </timeperd>
+    <status>
+      <progress>complete</progress>
+      <update>as needed</update>
+    </status>
+    <spdom>
+      <bounding>
+        <westbc>-124.8125000</westbc>
+        <eastbc>-66.9125002</eastbc>
+        <northbc>49.4291667</northbc>
+        <southbc>24.4625001</southbc>
+      </bounding>
+    </spdom>
+    <keywords>
+      <theme>
+	    <themekt>PRISM Climate Group</themekt>
+	    <themekey>mean annual extreme minimum temperature</themekey>
+      </theme>
+	  <place>
+	    <placekt>US Census Bureau</placekt>
+	    <placekey>the conterminous US</placekey>
+	  </place>
+    </keywords>
+    <accconst>Access pursuant to license agreement</accconst>
+    <useconst>Acknowledgement of the following agencies in products derived from these data: PRISM Climate Group at Oregon State University.</useconst>
+  </idinfo>
+  <dataqual>
+    <attracc>
+      <attraccr>Similar quality assurance procedures were used with all input data sets.</attraccr>
+    </attracc>
+    <logic>Point estimates originated from many federal, state, and local weather networks. A list of networks is available from https://www.prism.oregonstate.edu/documents/PRISM_datasets.pdf. All station data were subjected to quality control checks by the PRISM Climate Group at Oregon State University.</logic>
+    <complete>This dataset is considered complete. Please view the logic section of this document for further information.</complete>
+    <posacc>
+      <horizpa>
+        <horizpar>Accuracy of this data set is based on the original specification of the Defense Mapping Agency (DMA) 1 degree digital elevation models (DEM). The stated accuracy of the original DEMs are 130 m circular error with 90% probability.</horizpar>
+      </horizpa>
+    </posacc>
+    <lineage>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>PRISM Climate Group</origin>
+            <pubdate>20231117</pubdate>
+            <title>1991-2020 Mean Annual Extreme Minimum Temperature for the conterminous US (polygon shapefile)</title>
+          </citeinfo>
+        </srccite>
+        <typesrc>digital file</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>19910101</begdate>
+              <enddate>20201231</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+          </srctime>
+        <srccitea>PRISM Climate Group</srccitea>
+        <srccontr>Please view the logic section of this document for further information.</srccontr>
+        </srcinfo>
+      <procstep>
+        <procdesc>This dataset was created via the PRISM modeling process. Please view the abstract section of this document for more information.</procdesc>
+        <srcused>PRISM Climate Group</srcused>
+        <procdate>20231115</procdate>
+      </procstep>
+    </lineage>
+  </dataqual>
+  <spdoinfo>
+    <direct>Vector</direct>
+  </spdoinfo>
+  <spref>
+    <horizsys>
+      <geograph>
+        <latres>0.004166667</latres>
+        <longres>0.004166667</longres>
+        <geogunit>Decimal degrees</geogunit>
+      </geograph>
+      <geodetic>
+        <horizdn>North American Datum of 1983</horizdn>
+        <ellips>Geodetic Reference System 80</ellips>
+        <semiaxis>6378137</semiaxis>
+        <denflat>298.257</denflat>
+      </geodetic>
+    </horizsys>
+  </spref>
+  <eainfo>
+    <detailed>
+      <enttyp>
+        <enttypl>USDA plant hardiness zones</enttypl>
+        <enttypd>Polygons representing USDA plant hardiness zones in the conterminous US</enttypd>
+        <enttypds>
+            [1] Daly, C., M.P. Widrlechner, M.D. Halbleib, J.I. Smith, and W.P. Gibson. 2012. Development of a new USDA plant hardiness zone map for the United States. Journal of Applied Meteorology and Climatology 51(2): 242-264. doi:10.1175/2010JAMC2536.1.
+            [2] Widrlechner, M.P., C. Daly, M. Keller, and K. Kaplan. 2012. Horticultural applications of a newly revised USDA plant hardiness zone map. HortTechnology 22(1): 6-19. doi:10.21273/HORTTECH.22.1.6.
+    		</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>id</attrlabl>
+        <attrdef>Unique indentifier</attrdef>
+		    <attrdefs>PRISM Climate Group</attrdefs>
+		    <attrdomv>
+		      <edom>
+            <edomv>Integer value</edomv>
+            <edomvd>Unique identifier</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+		    </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>gridcode</attrlabl>
+        <attrdef>Integer that associates a grid cell type with a plant hardiness zone polygon</attrdef>
+		    <attrdefs>PRISM Climate Group</attrdefs>
+		    <attrdomv>
+		      <edom>
+            <edomv>Integer value</edomv>
+            <edomvd>Unique identifier</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+		    </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>zone</attrlabl>
+        <attrdef>USDA plant hardiness zone</attrdef>
+		    <attrdefs>PRISM Climate Group</attrdefs>
+        <attrdomv>
+		      <edom>
+            <edomv>3a</edomv>
+            <edomvd>Plant hardiness zone 3a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>3b</edomv>
+            <edomvd>Plant hardiness zone 3b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>4a</edomv>
+            <edomvd>Plant hardiness zone 4a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>4b</edomv>
+            <edomvd>Plant hardiness zone 4b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>5a</edomv>
+            <edomvd>Plant hardiness zone 5a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>5b</edomv>
+            <edomvd>Plant hardiness zone 5b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>6a</edomv>
+            <edomvd>Plant hardiness zone 6a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>6b</edomv>
+            <edomvd>Plant hardiness zone 6b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>7a</edomv>
+            <edomvd>Plant hardiness zone 7a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>7b</edomv>
+            <edomvd>Plant hardiness zone 7b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>8a</edomv>
+            <edomvd>Plant hardiness zone 8a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>8b</edomv>
+            <edomvd>Plant hardiness zone 8b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>9a</edomv>
+            <edomvd>Plant hardiness zone 9a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>9b</edomv>
+            <edomvd>Plant hardiness zone 9b</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>10a</edomv>
+            <edomvd>Plant hardiness zone 10a</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>10b</edomv>
+            <edomvd>Plant hardiness zone 10b</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>11a</edomv>
+            <edomvd>Plant hardiness zone 11a</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>11b</edomv>
+            <edomvd>Plant hardiness zone 11b</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>12a</edomv>
+            <edomvd>Plant hardiness zone 12a</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>trange</attrlabl>
+        <attrdef>USDA plant hardiness zone mean annual extreme minimum temperature range (degrees Fahrenheit)</attrdef>
+		    <attrdefs>PRISM Climate Group</attrdefs>
+        <attrdomv>
+		      <edom>
+            <edomv>-40 to -35</edomv>
+            <edomvd>Range for plant hardiness zone 3a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>-35 to -30</edomv>
+            <edomvd>Range for plant hardiness zone 3b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>-30 to -25</edomv>
+            <edomvd>Range for plant hardiness zone 4a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>-25 to -20</edomv>
+            <edomvd>Range for plant hardiness zone 4b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>-20 to -15</edomv>
+            <edomvd>Range for plant hardiness zone 5a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>-15 to -10</edomv>
+            <edomvd>Range for plant hardiness zone 5b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>-10 to -5</edomv>
+            <edomvd>Range for plant hardiness zone 6a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>-5 to 0</edomv>
+            <edomvd>Range for plant hardiness zone 6b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>0 to 5</edomv>
+            <edomvd>Range for plant hardiness zone 7a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>5 to 10</edomv>
+            <edomvd>Range for plant hardiness zone 7b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>10 to 15</edomv>
+            <edomvd>Range for plant hardiness zone 8a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>15 to 20</edomv>
+            <edomvd>Range for plant hardiness zone 8b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>20 to 25</edomv>
+            <edomvd>Range for plant hardiness zone 9a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>25 to 30</edomv>
+            <edomvd>Range for plant hardiness zone 9b</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>30 to 35</edomv>
+            <edomvd>Range for plant hardiness zone 10a</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>35 to 40</edomv>
+            <edomvd>Range for plant hardiness zone 10b</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>40 to 45</edomv>
+            <edomvd>Range for plant hardiness zone 11a</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>45 to 50</edomv>
+            <edomvd>Range for plant hardiness zone 11b</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>50 to 55</edomv>
+            <edomvd>Range for plant hardiness zone 12a</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>zonetitle</attrlabl>
+        <attrdef>Text title that combines the attributes zone and trange</attrdef>
+		    <attrdefs>PRISM Climate Group</attrdefs>
+        <attrdomv>
+		      <edom>
+            <edomv>3a: -40 to -35</edomv>
+            <edomvd>Title for plant hardiness zone 3a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>3b: -35 to -30</edomv>
+            <edomvd>Title for plant hardiness zone 3b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>4a: -30 to -25</edomv>
+            <edomvd>Title for plant hardiness zone 4a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>4b: -25 to -20</edomv>
+            <edomvd>Title for plant hardiness zone 4b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>5a: -20 to -15</edomv>
+            <edomvd>Title for plant hardiness zone 5a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>5b: -15 to -10</edomv>
+            <edomvd>Title for plant hardiness zone 5b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>6a: -10 to -5</edomv>
+            <edomvd>Title for plant hardiness zone 6a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>6b: -5 to 0</edomv>
+            <edomvd>Title for plant hardiness zone 6b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>7a: 0 to 5</edomv>
+            <edomvd>Title for plant hardiness zone 7a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>7b: 5 to 10</edomv>
+            <edomvd>Title for plant hardiness zone 7b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>8a: 10 to 15</edomv>
+            <edomvd>Title for plant hardiness zone 8a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>8b: 15 to 20</edomv>
+            <edomvd>Title for plant hardiness zone 8b</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+		      <edom>
+            <edomv>9a: 20 to 25</edomv>
+            <edomvd>Title for plant hardiness zone 9a</edomvd>
+			      <edomvds>PRISM Climate Group</edomvds>
+		      </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>9b: 25 to 30</edomv>
+            <edomvd>Title for plant hardiness zone 9b</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>10a: 30 to 35</edomv>
+            <edomvd>Title for plant hardiness zone 10a</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>10b: 35 to 40</edomv>
+            <edomvd>Title for plant hardiness zone 10b</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>11a: 40 to 45</edomv>
+            <edomvd>Title for plant hardiness zone 11a</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>11b: 45 to 50</edomv>
+            <edomvd>Title for plant hardiness zone 11b</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>12a: 50 to 55</edomv>
+            <edomvd>Title for plant hardiness zone 12a</edomvd>
+            <edomvds>PRISM Climate Group</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+	  </detailed>
+  </eainfo>
+  <distinfo>
+    <distrib>
+      <cntinfo>
+        <cntperp>
+          <cntper>Chris Daly</cntper>
+          <cntorg>PRISM Climate Group</cntorg>
+        </cntperp>
+        <cntaddr>
+          <addrtype>mailing and physical</addrtype>
+          <address>NACSE, University Plaza</address>
+          <address>1600 SW Western Blvd, Ste 198</address>
+          <address>Oregon State University</address>
+          <city>Corvallis</city>
+          <state>OR</state>
+          <postal>97333</postal>
+          <country>USA</country>
+        </cntaddr>
+        <cntvoice>(541) 737-5657</cntvoice>
+        <cntemail>chris.daly@oregonstate.edu</cntemail>
+      </cntinfo>
+    </distrib>
+    <distliab>none</distliab>
+  </distinfo>
+  <metainfo>
+    <metd>20231117</metd>
+    <metc>
+      <cntinfo>
+        <cntperp>
+          <cntper>Chris Daly</cntper>
+          <cntorg>PRISM Climate Group</cntorg>
+        </cntperp>
+        <cntaddr>
+          <addrtype>mailing and physical</addrtype>
+          <address>NACSE, University Plaza</address>
+          <address>1600 SW Western Blvd, Ste 198</address>
+          <address>Oregon State University</address>
+          <city>Corvallis</city>
+          <state>OR</state>
+          <postal>97333</postal>
+          <country>USA</country>
+        </cntaddr>
+        <cntvoice>(541) 737-5657</cntvoice>
+        <cntemail>chris.daly@oregonstate.edu</cntemail>
+      </cntinfo>
+    </metc>
+    <metstdn>FDGC Content Standard for Digital Geospatial Metadata and Biological Data Profile</metstdn>
+    <metstdv>FDGC-STD-001-1998</metstdv>
+  </metainfo>
+</metadata>
