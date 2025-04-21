@@ -89,6 +89,40 @@ Inventory, validate, and deduplicate vector spatial files from `data/raw/vector_
 
 ------------------------------------------------------------------------
 
+✅ Milestone Maintenance – Git Recovery and Push
+
+Date: 2025-04-21
+Tag: (optional) v0.3.3-fix-index-cleanup
+Description:
+
+    Recovered from unintended mass git rm caused by staging deleted files.
+
+    Used git reset to walk back the commit and avoid permanent deletion.
+
+    Confirmed restored working files and verified repository state.
+
+    Successfully pushed cleaned commit to origin/main.
+
+    Git warnings noted for large files; plan to audit or archive .bil and .tif files exceeding 50 MB.
+
+Key Lessons & Notes:
+
+    Always double-check git status before committing large deletions.
+
+    Use git reset to undo staged changes safely.
+
+    Consider Git Large File Storage (LFS) or archival strategies for bulky raster files.
+
+Next Steps:
+
+    📦 Audit and optionally archive large .bil files
+
+    🧭 Resume spatial QA for raster layers
+
+    🏷️ Tag if desired to mark the recovery (v0.3.3-fix-index-cleanup)
+
+
+
 ## ✅ Milestone 03 – Filter Unregulated Gage Data
 
 **Script:** `R/02_clean/03_filter_unregulated_gage_data.R`\
