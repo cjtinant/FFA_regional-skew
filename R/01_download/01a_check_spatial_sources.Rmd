@@ -1,0 +1,79 @@
+---
+title: "Spatial Data Source Validation — Level I"
+author: "CJ Tinant"
+date: "`r format(Sys.Date(), '%Y-%m-%d')`"
+output: html_document
+---
+
+# Overview
+
+This document supports QA of raw spatial inputs used for regional skew modeling. The goal is to inventory, validate, and deduplicate vector and raster files within the `data/raw/` directory prior to covariate extraction.
+
+## Goals
+
+-   ✅ Identify and remove duplicate files from `data/raw/vector_raw`
+-   ✅ Deduplicate and standardize raster inputs in `data/raw/raster_raw`
+-   🗂️ Organize spatial datasets by relevance, format, and source
+-   📝 Document retained files in `data/meta/spatial_source_checklist.csv`
+
+## Workflow: Deduplication of Vector Spatial Files
+
+### 1. Inventory Vector Files
+
+- List vector files recursively and flag potential duplicates
+
+### 2. Summarize by Name and Size
+
+- Group by basename
+- Highlight different file sizes as potential version conflicts
+- Flag preferred formats (e.g., keep `.gpkg`, review `.shp`)
+
+### 3. Save Results to CSV
+
+**Exported outputs:**
+- `to_check/vector_file_inventory.csv` – full file list with duplicate flags
+- `to_check/duplicate_vector_summary.csv` – filtered table of same-name files
+
+### 4. Draft Cleanup Plan
+
+- Move lower-priority duplicates to `to_check/duplicates/`
+- Confirm projections and attribute consistency before deletion
+
+### 5. Documentation
+
+- Add exploratory summaries and notes on retained files
+- Optionally create `data/meta/spatial_source_checklist.csv`
+- Tag major cleanup step as `v0.3.1-dedup-raw-vector`
+- Append to `milestone_02_documentation.Rmd`
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(sf)              # simple features in R
+library(fs)              # file system operations
+library(here)            # find files
+library(tidyverse)
+
+file.exists(here("R/utils/dedup_vector_inventory.R"))
+
+source(here("R/utils/dedup_vector_inventory.R"))
+
+```
+
+### Run Deduplication Inventory Function
+
+```{r run-dedup-function}
+result <- dedup_vector_inventory()
+```
+
+### Preview Cleanup Recommendations
+
+```{r make_cleanup_checklist_table}
+result$duplicates %>%
+  mutate(action = if_else(file_type == "gpkg", "🟢 keep", "🔴 review")) %>%
+  select(basename, file_type, size_mb, action) %>%
+  distinct() %>%
+  arrange(basename) %>%
+  knitr::kable(caption = "Initial Cleanup Recommendations")
+```
+
