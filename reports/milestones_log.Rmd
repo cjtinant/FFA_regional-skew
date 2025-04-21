@@ -33,7 +33,8 @@ Cleaned git history using `git filter-repo`
 
 ## 📎 Script Folder ↔️ Milestone Crosswalk
 
-This table links each major `R/` script folder to its corresponding milestone for clarity and traceability.
+This table links each major `R/` script folder to its corresponding
+milestone for clarity and traceability.
 
 | Folder | Milestone | Description |
 |----|----|----|
@@ -47,27 +48,44 @@ This table links each major `R/` script folder to its corresponding milestone fo
 | R/utils/ | 01, shared | Used across milestones |
 | reports/ | 09 | Documentation, posters, summary outputs |
 
-
-
 ## ✅ Milestone Closeout
 
-Milestone 00 completed on 2025-04-20 and tagged as
-`v0.3-structure-refactor`.
+Milestone 00 completed on 2025-04-20 and tagged as `v0.3-structure-refactor`.
 
-Next steps: - Continue script renaming for `R/03_covariates/`,
-`R/04_modeling/`, and `R/05_eval/` - Begin planning Milestone 01:
-Exploratory Covariate Analysis and Model Selection
+Milestone 01 (Spatial File Inventory & Cleanup) completed on 2025-04-21 and tagged as `v0.3.2-cleanup-vector-files`.
+
+**Next steps:**
+- Begin Milestone 02: Download and QA of gage and spatial data
+- Consider raster audit for `data/raw/raster_raw/`
+- Continue script renaming and cleanup for `R/03_covariates/`, `R/04_modeling/`, and `R/05_eval/`
 
 ------------------------------------------------------------------------
 
-## ✅ Milestone 01 – Raw Data Download
+## ✅ Milestone 01 – Spatial File Inventory and Cleanup
 
-**Scripts:** - (now) `R/01_download/01_get_spatial_data.R` - (now)
-`R/01_download/02_get_gage_data.R`
+**Scripts:**
+- `R/01_download/01a_check_spatial_sources.Rmd`
+- `R/utils/dedup_vector_inventory.R`
+- `R/utils/move_low_priority_duplicates.R`
 
-**Purpose:**\
-Automate download of raw peak flow data, site info, and relevant spatial
-layers from NWIS and WQP.
+**Purpose:**
+Inventory, validate, and deduplicate vector spatial files from `data/raw/vector_raw/` prior to modeling and covariate extraction.
+
+**Summary:**
+- Used `dedup_vector_inventory()` to flag duplicates in `data/raw/vector_raw/`
+- Created reusable function `move_low_priority_duplicates()` to identify and relocate `.shp` files to `to_check/duplicates/`
+- Generated audit log `spatial_source_checklist.csv` and updated `vector_file_inventory.csv` and `duplicate_vector_summary.csv`
+- Committed deletions of original duplicate files from tracked repo
+
+**Files Added:**
+- `R/utils/move_low_priority_duplicates.R`
+- `to_check/spatial_source_checklist.csv`
+- `to_check/duplicates/*`
+
+**Files Deleted:**
+- Low-priority `.shp` files from `data/raw/vector_raw/`
+
+**Commit Tag:** `v0.3.2-cleanup-vector-files`
 
 ------------------------------------------------------------------------
 
