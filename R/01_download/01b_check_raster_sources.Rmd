@@ -1,0 +1,88 @@
+---
+title: "01b Check Raster Sources"
+author: "CJ Tinant"
+date: "`r format(Sys.Date(), '%Y-%m-%d')`"
+output: html_document
+---
+
+# Overview
+
+This document supports the QA and deduplication of raw raster inputs used in regional skew modeling. The focus is on validating `.bil`, `.tif`, and other common climate/terrain formats in `data/raw/raster_raw/`.
+
+## Goals
+
+- 📦 Inventory raster files (e.g., `.bil`, `.tif`, `.img`, `.zip`)
+- 🔁 Flag potential duplicates based on name and size
+- 🧾 Write summary CSVs to `to_check/`
+- 🧠 Inform later cleanup and covariate extraction workflows
+
+## Workflow
+
+```{r setup, include=FALSE}
+library(fs)
+library(here)
+library(tidyverse)
+```
+
+### Step 1: Inventory Raster Files
+
+```{r inventory-raster-files}
+raster_root <- here("data/raw/raster_raw")
+
+raster_files <- dir_info(
+  path = raster_root,
+  recurse = TRUE,
+  regexp = "\\.(bil|tif|img|zip|hdr|stx)$"
+) %>%
+  mutate(
+    file_type = tools::file_ext(path),
+    basename = path_file(path),
+    size_mb = round(as.numeric(size) / 1e6, 2)
+  )
+
+raster_files %>%
+  count(file_type, sort = TRUE)
+```
+
+### Step 2: Flag Potential Duplicates
+
+```{r detect-raster-duplicates}
+raster_dups <- raster_files %>%
+  group_by(basename) %>%
+  filter(n() > 1) %>%
+  mutate(size_variation = n_distinct(size_mb) > 1) %>%
+  ungroup()
+
+raster_dups %>%
+  select(basename, file_type, size_mb, size_variation, path)
+```
+
+### Step 3: Write Outputs
+
+```{r export-raster-inventory}
+write_csv(raster_files, here("to_check/raster_file_inventory.csv"))
+write_csv(raster_dups, here("to_check/duplicate_raster_summary.csv"))
+```
+
+```{r archive-rasters}
+
+# Create archive folder if needed
+archive_dir <- here("to_check/archives/raster_zips")
+dir_create(archive_dir)
+
+# Find and move .zip files from raster_raw
+zip_files <- dir_ls(here("data/raw/raster_raw"), recurse = TRUE, glob = "*.zip")
+
+# Move each .zip file
+file_move(zip_files, file.path(archive_dir, path_file(zip_files)))
+
+# Confirm result
+message("✅ Archived ", length(zip_files), " .zip files to: ", archive_dir)
+
+```
+
+### Notes
+
+- Next step: Write a `dedup_raster_inventory()` function in `R/utils/`
+- Consider keeping only one version of each `.bil` set if exact duplicates
+- May optionally inspect and extract from `.zip` files
