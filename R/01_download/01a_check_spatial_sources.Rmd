@@ -57,13 +57,17 @@ library(tidyverse)
 file.exists(here("R/utils/dedup_vector_inventory.R"))
 
 source(here("R/utils/dedup_vector_inventory.R"))
+source(here("R/utils/move_low_priority_duplicates.R"))
+
 
 ```
 
 ### Run Deduplication Inventory Function
 
 ```{r run-dedup-function}
+
 result <- dedup_vector_inventory()
+
 ```
 
 ### Preview Cleanup Recommendations
@@ -75,5 +79,52 @@ result$duplicates %>%
   distinct() %>%
   arrange(basename) %>%
   knitr::kable(caption = "Initial Cleanup Recommendations")
+```
+
+```{r move_duplicates}
+
+move_low_priority_duplicates()
+
+```
+
+```{r}
+
+source(here("R/utils/organize_raw_shapefiles.R"))
+shapefile_reorg <- readr::read_csv(here("to_check/shapefile_reorg_log.csv"))
+
+```
+
+
+
+```{r check_crs}
+
+# Get list of vector files from earlier
+vector_paths <- result$vector_files$path
+
+# Safely read each and extract the CRS string (WKT or EPSG)
+crs_check <- tibble(
+  path = vector_paths,
+  basename = path_file(path),
+  file_type = tools::file_ext(path),
+  crs = map_chr(path, ~ tryCatch(
+    st_crs(read_sf(.x))$input,
+    error = function(e) NA_character_
+  ))
+)
+
+# View summary table of CRS
+crs_summary <- crs_check %>%
+  count(crs, sort = TRUE)
+
+print(crs_summary)
+```
+
+```{r flag_missing_crs}
+
+# Flag missing CRS
+crs_check %>%
+  filter(is.na(crs)) %>%
+  select(basename, path)
+
 ```
 

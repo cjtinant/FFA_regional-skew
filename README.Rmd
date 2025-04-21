@@ -13,15 +13,9 @@ This project supports the estimation of regional skew coefficients for flood fre
 
 The workflow uses R and {tidyverse} tools to automate the download, cleaning, joining, and modeling of covariate data associated with gage locations. Covariates include climate normals, terrain characteristics, and site location variables. 
 
-## Current Objective
+## Goals and Objective
 
-The primary goal of this phase is to explain spatial variation in station skew — the log-Pearson Type III skew coefficient estimated at individual stream gages — using a set of numeric covariates derived from:
-
--   Climate normals (precipitation and temperature)
-
--   Terrain data (elevation and slope)
-
--   Site location (latitude and longitude)
+The primary goal of this phase is to explain spatial variation in station skew — the log-Pearson Type III skew coefficient estimated at individual stream gages — using a set of numeric covariates derived from data related to: Ecological Regions (Ecoregions), Location, Climate, Topography, Watershed Characteristics, Land Cover Characteristics.
 
 ## Layout of Analysis
 
@@ -44,7 +38,7 @@ hierarchical_variables <- tibble::tibble(
   variable = c(
     # Macro-regional
     "Great Plains macrozone (e.g., tallgrass, shortgrass, semiarid)",
-    "Macrozone centroid or bounding box",
+    "Gage locations",
     "Regional climate PC1–PC2 (or Köppen subtype)",
     "Mean elevation, broad slope",
     "Mean basin area per macrozone",

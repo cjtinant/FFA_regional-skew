@@ -11,24 +11,30 @@ This milestone focuses on strengthening project transparency and reproducibility
 
 > **Summary:** This milestone strengthens reproducibility by formalizing internal documentation practices. It includes README templates for `R/` subfolders, a planned data dictionary, and introduces `log_README.md` documentation inside each milestone to clarify roles, assumptions, and outputs.
 
-
----
+------------------------------------------------------------------------
 
 ### 📋 Task Checklist
 
-| Step | Task                                                                 | Status |
-|------|----------------------------------------------------------------------|--------|
-| 2.1  | Add `README.md` to each `R/` subfolder to describe script purpose    | [ ]    |
-| 2.2  | Create `data/meta/data_dictionary.csv` to define covariates          | [ ]    |
-| 2.3  | Standardize use of `.Rmd` and `.md` for documentation across project | [ ]    |
-| 2.4  | Develop `log_README.md` templates to include in `R/` and `data/`     | [ ]    |
-| 2.5  | Link README-style metadata to milestone logs                         | [ ]    |
-| 2.6  | Commit and push changes as tag `v0.5-docs-enhancement`               | [ ]    |
+| Step | Task | Status |
+|-----------|---------------------------------------------------|-----------|
+| 2.1 | Add `README.md` to each `R/` subfolder to describe script purpose | [ ] |
+| 2.2 | Create `data/meta/data_dictionary.csv` to define covariates | [ ] |
+| 2.3 | Standardize use of `.Rmd` and `.md` for documentation across project | [ ] |
+| 2.4 | Develop `log_README.md` templates to include in `R/` and `data/` | [ ] |
+| 2.5 | Link README-style metadata to milestone logs | [ ] |
+| 2.6 | Commit and push changes as tag `v0.5-docs-enhancement` | [ ] |
 
----
+------------------------------------------------------------------------
 
 ### 📝 Notes
 
-- This milestone builds on the modular structure defined in `v0.3-structure-refactor`.
-- `README.md` files will support onboarding, while `.Rmd` logs continue to serve reproducibility.
-- Metadata CSV will ensure clarity when joining covariates to modeling datasets.
+-   This milestone builds on the modular structure defined in `v0.3-structure-refactor`.
+-   `README.md` files will support onboarding, while `.Rmd` logs continue to serve reproducibility.
+-   Metadata CSV will ensure clarity when joining covariates to modeling datasets.
+
+### v0.3.4 – Final Raw Vector Cleanup
+
+-   Removed all full-CONUS ecoregion shapefiles after confirming Great Plains subsets exist
+-   Moved original files to `to_check/archives/`
+-   Cleaned up inconsistent naming and verified EPSG strings
+-   Repo now ready for reprojection to EPSG:5070 and spatial joins

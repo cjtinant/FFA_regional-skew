@@ -3,7 +3,7 @@ README – FFA Regional Skew Estimation
 
 - [Project Description](#project-description)
   - [Overview](#overview)
-  - [Current Objective](#current-objective)
+  - [Goals and Objective](#goals-and-objective)
   - [Layout of Analysis](#layout-of-analysis)
   - [Project Milestones](#project-milestones)
   - [Project Structure (as of v0.3)](#project-structure-as-of-v03)
@@ -26,18 +26,13 @@ cleaning, joining, and modeling of covariate data associated with gage
 locations. Covariates include climate normals, terrain characteristics,
 and site location variables.
 
-## Current Objective
+## Goals and Objective
 
 The primary goal of this phase is to explain spatial variation in
 station skew — the log-Pearson Type III skew coefficient estimated at
-individual stream gages — using a set of numeric covariates derived
-from:
-
-- Climate normals (precipitation and temperature)
-
-- Terrain data (elevation and slope)
-
-- Site location (latitude and longitude)
+individual stream gages — using a set of numeric covariates derived from
+data related to: Ecological Regions (Ecoregions), Location, Climate,
+Topography, Watershed Characteristics, Land Cover Characteristics.
 
 ## Layout of Analysis
 
@@ -49,7 +44,7 @@ domain, and data type.
 | scale | domain | variable | type | source_dataset |
 |:---|:---|:---|:---|:---|
 | Macro-regional (within GP) | Ecoregion | Great Plains macrozone (e.g., tallgrass, shortgrass, semiarid) | categorical | Custom classification from Level II ecoregion |
-| Macro-regional (within GP) | Location | Macrozone centroid or bounding box | spatial | Derived from ecoregion shapefiles |
+| Macro-regional (within GP) | Location | Gage locations | spatial | Derived from ecoregion shapefiles |
 | Macro-regional (within GP) | Climate | Regional climate PC1–PC2 (or Köppen subtype) | numeric / categorical | PRISM / WorldClim / Köppen maps |
 | Macro-regional (within GP) | Topography | Mean elevation, broad slope | numeric | NED / DEM elevation raster |
 | Macro-regional (within GP) | Watershed | Mean basin area per macrozone | numeric | Derived from basin shapefiles or NHD+ |

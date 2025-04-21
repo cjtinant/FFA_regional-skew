@@ -25,3 +25,85 @@ output: github_document
 -   This milestone builds on `v0.3-structure-refactor`
 -   All scripts will follow: `milestone + domain + covariate + source` naming
 -   README-style documentation will be embedded in this .Rmd file for reproducibility
+
+## Suggested Next Steps
+
+```         
+Milestone 01: Download Scripts
+
+.... Look through 01_get_spatial...R
+
+    Begin modular scripts for each covariate domain.
+
+    Optional: log intermediate outputs in data/meta/.
+
+Milestone 02: Documentation
+
+    Start data/meta/data_dictionary.csv
+
+    Add README.md templates to R/ and data/
+
+Plan Milestone 03: {targets} or covariate modeling
+
+    Add a placeholder script to scaffold milestone folders.
+
+    We can build a targets pipeline incrementally if you’d like.
+```
+
+## Longer-term Considerations
+
+### 🔁 Updated Plan Using Use Gage Locations (Filtered by Macrozone)
+
+1.  Assign each gage to a macrozone using st_join():
+
+```         
+gages_macrozone <- st_join(gages_sf, macrozone_sf["macrozone"])
+```
+
+2.  gages_macrozone \<- st_join(gages_sf, macrozone_sf["macrozone"])
+
+```         
+gages_macrozone %>%
+  group_by(macrozone) %>%
+  summarize(across(where(is.numeric), list(mean = mean, sd = sd), na.rm = TRUE))
+```
+
+3.  Model:
+
+    Include macrozone as a categorical fixed or random effect
+
+    Or use it to stratify residuals, fit regional models, etc.
+
+Bonus: You Can Still Use Polygons
+
+Even though you're using gages:
+
+```         
+You can visualize macrozones as basemap groups
+
+Or compute zone-wide summaries for supporting tables or EDA
+```
+
+🧭 Bottom Line
+
+You’re right to go with Use Gage Locations (Filtered by Macrozone) — it's more robust, interpretable, and directly connected to your outcome variable (station skew). Random samples are useful for some exploratory summaries, but not essential here.
+
+## 🌱 When You’re Ready to Grow Again…
+
+Here are next-step seeds you might plant: 1. Finalize Milestone 01
+
+```         
+Get gage locations, climate normals, and terrain data into shape
+
+Join covariates to each gage (with macrozone as a group)
+```
+
+2.  Begin Milestone 03 (Targets or Modeling)
+
+    Start small: just one covariate, one model
+
+    Or set up a {targets} pipeline to wrap download → clean → model
+
+3.  Open a Future Milestone Planning Doc
+
+You've already created notes/future_milestones.Rmd — that’s your strategic launchpad.
