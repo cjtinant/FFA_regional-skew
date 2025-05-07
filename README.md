@@ -36,25 +36,37 @@ Topography, Watershed Characteristics, Land Cover Characteristics.
 
 ## Layout of Analysis
 
-To explore the spatial and temporal drivers of flood skewness across
-diverse landscapes and climates, we adopt a multi-scale hierarchical
-framework. Variables are organized by spatial-temporal scale, ecological
-domain, and data type.
+I adopted a multi-scale hierarchical framework with variables organized
+by spatial scale and domain (below). The largest spatial scale is a
+custom macroregion based on prairie grassland type, which was derived
+from Level II Ecoregions. Other spatial scales include a regional scale
+at the Level II Ecoregion extent, a subregional scale at the Level III
+Ecoregion extent, and a local catchment level scale at the NHD+ extent
+(Figure 2).
+
+| Scale | Extent | Climate | Land Cover | Topography | Watershed | Total |
+|:---|:---|---:|---:|---:|---:|---:|
+| Macroregional | Custom Macrozone | 3 | 4 | 3 | 3 | 13 |
+| Regional | Level II Ecoregion | 4 | 4 | 4 | 5 | 17 |
+| Subregional | Level III Ecoregion | 6 | 2 | 4 | 3 | 15 |
+| Local | NHD+ catchments | 3 | 2 | 8 | 4 | 17 |
+
+Table: Variable Count
 
 | scale | domain | variable | type | source_dataset |
 |:---|:---|:---|:---|:---|
-| Macro-regional (within GP) | Ecoregion | Great Plains macrozone (e.g., tallgrass, shortgrass, semiarid) | categorical | Custom classification from Level II ecoregion |
-| Macro-regional (within GP) | Location | Gage locations | spatial | Derived from ecoregion shapefiles |
-| Macro-regional (within GP) | Climate | Regional climate PC1–PC2 (or Köppen subtype) | numeric / categorical | PRISM / WorldClim / Köppen maps |
-| Macro-regional (within GP) | Topography | Mean elevation, broad slope | numeric | NED / DEM elevation raster |
-| Macro-regional (within GP) | Watershed | Mean basin area per macrozone | numeric | Derived from basin shapefiles or NHD+ |
-| Macro-regional (within GP) | Land Cover | Dominant vegetation / NLCD cover class | categorical | NLCD (National Land Cover Database) |
-| Regional (Level II) | Ecoregion | Level II ecoregion (9.2–9.6) | categorical | EPA Level II ecoregions |
-| Regional (Level II) | Location | Regional centroid or HUC4 region | spatial | USGS Watershed Boundaries / HUC4 |
-| Regional (Level II) | Climate | Seasonal precip/temp normals, precipitation regime (e.g., monsoon index) | numeric | PRISM climate normals |
-| Regional (Level II) | Topography | Slope distribution (e.g., % flat, % steep) | numeric | Derived from elevation (NED) or slope raster |
-| Regional (Level II) | Watershed | Stream density, average flow length | numeric | NHD+ flowlines or catchment shapefiles |
-| Regional (Level II) | Land Cover | Seasonal NDVI or cover change metrics | numeric | MODIS NDVI or seasonal land cover |
+| Macroregional | Ecoregion | Great Plains macrozone (e.g., tallgrass, shortgrass, semiarid) | categorical | Custom classification from Level II ecoregion |
+| Macroregional | Location | Gage locations | spatial | Derived from ecoregion shapefiles |
+| Macroregional | Climate | Regional climate PC1–PC2 (or Köppen subtype) | numeric / categorical | PRISM / WorldClim / Köppen maps |
+| Macroregional | Topography | Mean elevation, broad slope | numeric | NED / DEM elevation raster |
+| Macroregional | Watershed | Mean basin area per macrozone | numeric | Derived from basin shapefiles or NHD+ |
+| Macroregional | Land Cover | Dominant vegetation / NLCD cover class | categorical | NLCD (National Land Cover Database) |
+| Regional | Ecoregion | Level II ecoregion (9.2–9.6) | categorical | EPA Level II ecoregions |
+| Regional | Location | Regional centroid or HUC4 region | spatial | USGS Watershed Boundaries / HUC4 |
+| Regional | Climate | Seasonal precip/temp normals, precipitation regime (e.g., monsoon index) | numeric | PRISM climate normals |
+| Regional | Topography | Slope distribution (e.g., % flat, % steep) | numeric | Derived from elevation (NED) or slope raster |
+| Regional | Watershed | Stream density, average flow length | numeric | NHD+ flowlines or catchment shapefiles |
+| Regional | Land Cover | Seasonal NDVI or cover change metrics | numeric | MODIS NDVI or seasonal land cover |
 | Subregional (Level III) | Ecoregion | Level III ecoregion | categorical | EPA Level III ecoregions |
 | Subregional (Level III) | Location | Station-specific coordinates | numeric | Gage lat/lon from NWIS |
 | Subregional (Level III) | Climate | Monthly precip/temp normals, Köppen subtype | numeric / categorical | PRISM monthly normals / Köppen subtypes |
@@ -70,6 +82,11 @@ domain, and data type.
 
 Table: Hierarchical Variable Scaffold for Skew Modeling in the Great
 Plains
+
+``` r
+source_data <- hierarchical_variables %>%
+  select(source_dataset)
+```
 
 ## Project Milestones
 

@@ -6,6 +6,16 @@ output:
     toc_depth: 2
 ---
 
+```{r setup, include=FALSE}
+library(tidyverse)
+library(knitr)
+library(tidyverse)
+library(knitr)
+
+
+```
+
+
 # Project Description
 ## Overview
 
@@ -19,21 +29,33 @@ The primary goal of this phase is to explain spatial variation in station skew â
 
 ## Layout of Analysis
 
-To explore the spatial and temporal drivers of flood skewness across diverse landscapes and climates, we adopt a multi-scale hierarchical framework. Variables are organized by spatial-temporal scale, ecological domain, and data type.
+I adopted a multi-scale hierarchical framework with variables organized by spatial scale and domain (below). The largest spatial scale is a custom macroregion based on prairie grassland type, which was derived from Level II Ecoregions. Other spatial scales include a regional scale at the Level II Ecoregion extent, a subregional scale at the Level III Ecoregion extent, and a local catchment level scale at the NHD+ extent (Figure 2).
+
 
 ```{r gp_variable_scaffold, echo=FALSE, results='asis'}
-library(tibble)
-library(knitr)
 
-# add 
+variable_count <- tibble::tribble(
+  ~Scale, ~Extent, ~Climate, ~`Land Cover`, ~Topography, ~Watershed, ~Total,
+  "Macroregional", "Custom Macrozone", 3, 4, 3, 3, 13,
+  "Regional", "Level II Ecoregion", 4, 4, 4, 5, 17, 
+  "Subregional", "Level III Ecoregion", 6, 2, 4, 3, 15, 
+  "Local", "NHD+ catchments", 3, 2, 8, 4, 17
+)
+
+knitr::kable(variable_count, caption = "Table: Variable Count")
+```
+
+```{r gp_variable_scaffold2, echo=FALSE, results='asis'}
 
 hierarchical_variables <- tibble::tibble(
-  scale = c(
-    rep("Macro-regional (within GP)", 6),
-    rep("Regional (Level II)", 6),
+# Macroregional x 6, then Regional x 6, ...
+    scale = c(
+    rep("Macroregional", 6),
+    rep("Regional", 6),
     rep("Subregional (Level III)", 6),
     rep("Local (Level IV / catchments)", 6)
   ),
+# Each of the domain vars listed x 4
   domain = rep(c("Ecoregion", "Location", "Climate", "Topography", "Watershed", "Land Cover"), 4),
   variable = c(
     # Macro-regional
@@ -111,6 +133,14 @@ hierarchical_variables <- tibble::tibble(
 
 knitr::kable(hierarchical_variables, caption = "Table: Hierarchical Variable Scaffold for Skew Modeling in the Great Plains")
 ```
+
+```{r}
+
+source_data <- hierarchical_variables %>%
+  select(source_dataset)
+
+```
+
 
 
 ## Project Milestones

@@ -8,6 +8,37 @@ data/spatial/*
 data/raw/prism/
 
 # =======================
+# Ignore binary Excel source metadata
+# =======================
+docs/skew_covariates_metadata_v*.xlsx
+
+# =======================
+# Ignore temporary or deprecated folders
+docs/delete_later/
+docs/_old_versions/
+docs/tmp/
+# =======================
+
+# =======================
+# Ignore Excel export logs or LaTeX leftovers
+docs/*.log
+docs/*.aux
+docs/*.toc
+docs/*.out
+# =======================
+
+# =======================
+# General Windows or MacOs cruft
+# =======================
+
+schema.ini
+*.bak
+*.tmp
+~$*
+*.db
+.DS_Store
+
+# =======================
 # ArcGIS Pro Artifacts (Expanded)
 # =======================
 
@@ -20,14 +51,9 @@ arcgis_project/*
 *.html
 
 # =======================
-# General Windows or Mac Junk
+# Generic
+*.zip
 # =======================
-
-schema.ini
-*.bak
-*.tmp
-~$*
-*.db
 
 # =======================
 # RStudio Junk
@@ -63,6 +89,5 @@ data/raw/vector_raw/us_eco_lev03/us_eco_l3.shp
 data/raw/vector_raw/us_eco_lev02/us_eco_l2.shp
 data/raw/vector_raw/us_eco_lev01/us_eco_l1.shp
 
-# Generic
-*.zip
+
 

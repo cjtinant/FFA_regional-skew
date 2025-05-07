@@ -1,0 +1,150 @@
+---
+title: "Data Dictionary: Covariates by Domain"
+author: "C.J. Tinant with ChatGPT 4o (20250504)"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    includes:
+      in_header: _latex_preamble.tex
+    keep_tex: true
+fontsize: 10pt
+documentclass: article
+geometry: margin=1in
+---
+
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(dplyr)
+library(kableExtra)
+library(stringr)
+library(readr)
+library(here)
+
+# Sanitize if needed (we'll skip escaping for now unless errors recur)
+sanitize_metadata <- function(df) {
+  df %>%
+    mutate(across(everything(), ~ stringi::stri_replace_all_fixed(., "\u202F", " "))) %>%
+    mutate(across(everything(), ~ str_replace_all(., "\u2212", "-"))) %>%
+    mutate(across(everything(), ~ str_replace_all(., "\u2265", "$\\geq$")))
+}
+
+
+```
+
+```{r intro_header, echo=FALSE, results='asis'}
+cat("\\section*{Introduction}\n\\addcontentsline{toc}{section}{Introduction}\n")
+```
+
+This document summarizes the covariate metadata used in the regional skew estimation study. Variables are grouped by **Domain** and described in terms of their name, definition, unit, spatial scale, and analytical notes.
+
+
+```{r make_latex_preamble, include=FALSE}
+
+# This creates a LaTeX preamble file to be included during PDF rendering,
+# used to enhance control over table styling, page headers, and spacing.
+
+writeLines(c(
+  "% _latex_preamble.tex",                 # (Comment in .tex: file description)
+  "\\usepackage{booktabs}",                # For professional-quality horizontal
+                                           #   rules in tables
+  "\\usepackage{longtable}",               # Enables tables that span multiple 
+                                           #   pages
+  "\\usepackage{geometry}",                # Lets us customize page margins
+  "\\usepackage{array}",                   # Enables advanced table formatting,
+                                           #   e.g., 'p{...}' columns
+  "\\renewcommand{\\arraystretch}{1.15}",  # Adds vertical padding between table 
+                                           #   rows (default is 1.0)
+  "\\geometry{margin=1in}",                # Sets uniform 1-inch margins all 
+                                           #   around
+  "\\usepackage{float}",                   # Improves float placement control 
+                                           #   (e.g., [H] option)
+  "\\usepackage{caption}",                 # For better control over 
+                                           #   figure/table captions
+  "\\usepackage{fancyhdr}",                # Allows custom headers/footers
+  "\\pagestyle{fancy}",                    # Enables the fancy page style
+  "\\fancyhf{}",                           # Clears default header/footer content
+  "\\rhead{\\thepage}",                    # Places page number in the top right
+                                           #   corner
+  "\\lhead{Regional Skew Covariates}",     # Places a custom header title 
+                                           #   in the top left
+  "\\usepackage{tocloft}",
+  "\\renewcommand{\\cftsecfont}{\\normalfont}",
+"\\renewcommand{\\cftsecpagefont}{\\normalfont}"
+), "_latex_preamble.tex")
+
+```
+
+```{r get_data}
+
+metadata <- read_csv(here(
+  "docs/regional_skew_covariates_metadata_by_scale_v022.csv")) %>%
+  sanitize_metadata() %>%
+ mutate(
+   Description = str_wrap(Description, 70),
+   Notes = str_wrap(Notes, 70)
+   )
+
+```
+
+```{r create_tables, echo=FALSE, results='asis'}
+
+# Unique domains
+unique_domains <- metadata %>%
+  pull(Domain) %>%
+  unique()
+
+options(knitr.kable.NA = '')
+
+# Loop through domains and print Table A and Table B
+for (d in unique_domains) {
+
+#  cat(paste0("\\section{", d, "}\n\n"))
+
+cat("\\section*{", d, "}\n\\addcontentsline{toc}{section}{", d, "}\n\n")
+
+  df <- metadata %>% filter(Domain == d)
+
+  # Table A
+  table_a <- df %>%
+    select(`Short Name`, Description, Unit) %>%
+    kbl(
+      format = "latex",
+      booktabs = TRUE, 
+      longtable = TRUE, 
+      caption = paste0("Table A: ", d, " — Definition and Units"),
+      align = c("l", "p{8cm}", "l")
+    ) %>%
+    kable_styling(latex_options = c("repeat_header", "hold_position"),
+      font_size = 8
+    )
+
+  cat(as.character(table_a))
+  cat("\n\n\\vspace{0.5cm}\n\n")
+
+  # Table B
+  table_b <- df %>%
+    select(`Short Name`, Notes, Scale) %>%
+    kbl(
+      format = "latex",
+      booktabs = TRUE,
+      longtable = TRUE,
+      caption = paste0("Table B: ", d, " — Notes and Temporal Scale"),
+      align = c("l", "p{8cm}", "l")
+    ) %>%
+    kable_styling(
+      latex_options = c("repeat_header", "hold_position"),
+      font_size = 8
+    )
+  cat(as.character(table_b))
+  cat("\n\n\\clearpage\n\n")
+}
+
+```
+
+
+

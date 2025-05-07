@@ -1,0 +1,27 @@
+Field Name,Description
+UID,Unique ID.
+Variable Name,Programming-safe variable name with no spaces or special characters.
+Short Name,"A concise, human-readable name for the variable intended for display in tables, plots, or dashboards. Not necessarily programming-safe, but should be brief and intuitive."
+Compact Plot Label,"A shortened, ASCII-safe label ideal for use in plot axes, map legends, and dashboards. Avoids special characters (e.g., °, %, subscript), favors brevity, and maintains clear communication of the variable meaning."
+Description,Concise description of the variable.
+Notes,Additional remarks or usage notes.
+Unit,Measurement unit or scale.
+Effective Analytical Resolution,"The spatial resolution at which the variable is most meaningfully interpreted or applied in analysis. This reflects the finest scale at which patterns, trends, or relationships can be reliably observed given the variable’s source, uncertainty, and role in modeling or decision-making. Informed by  measurement scale of the zonal statistic."
+Scale,Hierarchical spatial scale name.
+Scale Ordinal,Hierarchical scale level of the variable.
+Domain,Data domain.
+Domain Ordinal,Ordinal level for domain hierarchy.
+Concept Group,Thematic grouping.
+Concept Group Ordinal,Group’s position in conceptual hierarchy.
+NA,NA
+NA,NA
+NA,NA
+NA,NA
+NA,NA
+NA,NA
+NA,NA
+NA,Climate
+NA,Land Cover
+NA,Topography
+NA,Watershed
+NA,Station
