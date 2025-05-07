@@ -130,6 +130,23 @@ FFA_regional-skew/
 
 ```
 
+## Description of first level folders
+| Folder/File       | Purpose                        | Suggestions / Notes          |
+|:-----------------:| -------------------------------|----------------------------- |
+| `arcgis_project/` | Stores `.aprx` and layer files from ArcGIS Pro workflows | Add metadata or a `.gdb/` subfolder if you use file geodatabases |
+| `data/`           | Raw input datasets (e.g., shapefiles, CSVs, rasters) | Structure by source or domain (e.g., `raw/`, `external/`, `interim/`)  |
+| `docs/` | Project documentation, e.g., final reports, manuscripts, proposal materials. Reference documentation like README-style guides. Metadata crosswalks and data dictionaries for review or publication. Files you reference in Quarto/PDF reports or posters | Consider mirroring structure in `reports/` if overlap exists |
+| `FFA_regional-skew.Rproj` | RStudio project file for launching the workspace | Keep this in the root, versioned if necessary                       |
+| `notes/`          | Personal or team notes, meeting logs, brainstorms | Could be transitioned to Markdown or Quarto as the project matures |
+| `output/` | Intermediate outputs (e.g., `.Rds`, `.csv`, `.tif`) for handoff between scripts | Add subfolders like `extracted/`, `joined/`, or date-stamped folders |
+| `R/`              | All R scripts and notebooks | Refactor in milestone folders (`00_utils`, `01_download`, etc.) as discussed |
+| `README.md` | GitHub-compatible plain-text overview | Use this for quick navigation, build instructions, etc. |
+| `README.Rmd` | Richer, knit-ready documentation with figures, tables, and references | Can generate HTML/PDF documentation from this                |
+| `reports/`   | Analysis narratives, usually knitted `.Rmd` or `.qmd` output | Consider `reports/final/`, `reports/draft/` structure if versioning    |
+| `results/` | Final figures, tables, model outputs for publication or reporting | Organize by milestone or product (`maps/`, `tables/`, `models/`) |
+| `to_check/` | Temporary folder for files needing review or QA  | Consider renaming to `sandbox/` or clearing regularly |
+
+
 # Migration Checklist
 
 ## Ver0.3 -- Refactored project structure and added macrozone covariates
@@ -156,30 +173,74 @@ FFA_regional-skew/
 
 
 ## Ver.0.4 -- Update R/01_download
-| Step | Task                                                          | Status |
-|--------------|-------------------------------------------------------|-------|
-| 1    | Create downloads scripts for each domain and covariate        | []   |
-| 2    | Create README-style notes for script in milestone folder      | []   |
-| 3    |           | []   |
-| 4    |         | []   |
-| 5    |                  | []   |
-| 6    | | []   |
-
-| 8   |      | []     |
-
-Macro-regional (within GP)
-Climate
-Regional climate PC1–PC2 (or Köppen subtype)
-numeric / categorical
-PRISM / WorldClim / Köppen maps
+| Step | Task                                                         | Status |
+|:------------:|------------------------------------------------------|:------:|
+| 1    | Identify and document covariates using `01c_data_dictionary_for_covariates.Rmd`                      | []    |
+| 2    | Update R/01_download/ folder structure                         | []   |
+| 3    | Create downloads scripts for each domain and covariate         | []   |
+| 4    | Create README-style notes for script in milestone folder       | []   |
+| 5    | Rename scripts for clarity and consistency (e.g., 03a_, 03b_ ) | []   |
+| 6    | Validate chunk headers in .Rmd files ({r name, eval=} )        | []   |
+| 7    | Knit milestone and data dictionary .Rmd files to PDF           | []   |
+| 8    | Add file headers / docstrings to all scripts (author, purpose, date) | []   |
+| 9    | Document changes in 01_download README.Rmd                   | []     |
+| 10   | Add reference links (e.g., PRISM, USGS, NLCD) to documentation | []     |
+| 11    | Create README-style notes for each R milestone folder          | []     |
 
 
 
-| 7    | Document changes in README.Rmd                                | []     |
+
+<!--
+Next Steps FFA
 
 
-| 8    | Create README-style notes for each R milestone folder         | []     |
-| 10   | Get Reference links                                           | []     |
+1. If you haven’t already, consider:
+    Adding a docs/README.md with:
+        A short summary of each version (v021, v022)
+        Notes on what changed between versions
+        How/when they were used (e.g., linked to milestone 01c)
+    Renaming future versions with a yyyymmdd tag if versioning becomes complex:
+        regional_skew_covariates_metadata_by_scale_20250507.xlsx
+    Citing the metadata in milestone files or reports with a relative path like:
+    read_csv("docs/regional_skew_covariates_metadata_by_scale_v022.csv")
+
+2.	 write a short R snippet or Quarto chunk to auto-link covariate scripts to entries in the data dictionary?
+--> 
+
+## Covariate Metadata
+
+This project includes a structured covariate metadata file to support reproducibility, clarity, and consistency in modeling regional skew. The metadata defines each covariate's name, description, units, analytical resolution, and conceptual grouping.
+
+### Purpose
+The covariate metadata documents all variables used in regional skew modeling and spatial stratification. It is designed to ensure:
+
+-  consistent naming across scripts and visualizations,
+
+-  interpretable plots and maps,
+
+-  scalable use across spatial resolutions and modeling domains.
+
+### Source
+The original .xlsx file is stored as: `docs/skew_covariates_metadata_v01.xlsx`
+
+Older working versions are archived in: `docs/delete_later/`
+
+### Script and Output Location
+
+The script used to generate modular .csv files: `docs/01_split-xlsx-into-csv.R`
+
+Output .csv files (one per worksheet): `docs/covariates_metadata_split/`
+
+### QA / Validation
+A multi-step metadata quality checklist was used to validate content before export. This includes checks for:
+
+-  completeness of key fields,
+
+-  consistency in phrasing and formatting,
+
+-  conceptual alignment across scales and groups,
+
+-  clarity and interpretability of variable description
 
 
 
@@ -385,7 +446,7 @@ mv ~/Documents/Rprojects_not-class/FFA_regional-skew/scripts/09a_dont-run_join_c
 
 ```
 
-```{r move_clean_scripts_to_04_exploratory eval=FALSE}
+```{r move_clean_scripts_to_04_exploratory, eval=FALSE}
 
 # Ensure folders exist
 mkdir -p R/04_exploratory
@@ -465,6 +526,10 @@ Files have been renamed for `01_download` and `02_clean`, but `03_covariates` is
 
 ### Notes on Step 0.3.8
 Will tag commit after final push of .gitkeep and milestone Rmd updates.
+
+
+
+
 
 
 # 🗂️ Summary of Key Structural Changes
