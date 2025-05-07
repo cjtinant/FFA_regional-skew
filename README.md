@@ -10,6 +10,7 @@ README – FFA Regional Skew Estimation
   - [Getting Started](#getting-started)
   - [Reproducibility](#reproducibility)
   - [Reports and Milestone Logs](#reports-and-milestone-logs)
+  - [Covariate Metadata](#covariate-metadata)
   - [Versioning](#versioning)
 
 # Project Description
@@ -143,6 +144,51 @@ To explore the evolution of the project structure, covariate design, and
 documentation practices, see: 📁
 [`reports/README.md`](reports/README.md) — Overview of all milestone
 logs, reference tools, and future plans
+
+## Covariate Metadata
+
+This project includes a structured covariate metadata file to support
+reproducibility, clarity, and consistency in modeling regional skew. The
+metadata defines each covariate’s name, description, units, analytical
+resolution, and conceptual grouping.
+
+### Purpose
+
+The covariate metadata documents all variables used in regional skew
+modeling and spatial stratification. It is designed to ensure:
+
+- consistent naming across scripts and visualizations,
+
+- interpretable plots and maps,
+
+- scalable use across spatial resolutions and modeling domains.
+
+### Source
+
+The original .xlsx file is stored as:
+`docs/skew_covariates_metadata_v01.xlsx`
+
+Older working versions are archived in: `docs/delete_later/`
+
+### Script and Output Location
+
+The script used to generate modular .csv files:
+`docs/01_split-xlsx-into-csv.R`
+
+Output .csv files (one per worksheet): `docs/covariates_metadata_split/`
+
+### QA / Validation
+
+A multi-step metadata quality checklist was used to validate content
+before export. This includes checks for:
+
+- completeness of key fields,
+
+- consistency in phrasing and formatting,
+
+- conceptual alignment across scales and groups,
+
+- clarity and interpretability of variable description
 
 ## Versioning
 
