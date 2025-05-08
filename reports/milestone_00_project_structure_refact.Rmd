@@ -12,7 +12,6 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
 # Overview
 
 This document tracks the **project structure refactor** for the Great
@@ -33,7 +32,7 @@ milestone workflows and standard naming conventions.
 
 -   Standardize naming and improve long-term maintainability
 
-\_ Prepare for poster/reporting and model evaluation stages
+_   Prepare for poster/reporting and model evaluation stages
 
 ------------------------------------------------------------------------
 
@@ -45,169 +44,7 @@ milestone workflows and standard naming conventions.
 - Replaced legacy `.gitignore` with spatial-aware template
 - Added macrozone covariate pipeline (03c) with matching Rmd log
 
-# Project structure
-
-## Original project structure
-
-``` text
-    FFA_regional-skew/
-    ├── arcgis_project/    # ArcGIS files
-    ├── data/
-    │   ├── raw/           # Raw downloads (PRISM, USGS, etc.)
-    │   ├── clean/         # Cleaned covariate & skew datasets
-    │   ├── meta/          # # Metadata for reproducibility
-    │   └── spatial/       # Spatial data for ecoregions (EPA)
-    ├── figures/           # Plots and heatmaps
-    ├── functions/         # Reusable R functions
-    ├── references_pdfs/   # Background readings
-    ├── model_summaries/   # CSVs of model coefficients, VIFs, etc.
-    ├── results/           # Rmd files from prior EDA
-    ├── scripts/           # Modular R scripts by milestone
-    ├── README.Rmd         # Workflow overview (editable)
-    ├── README.md          # Rendered Markdown output
-    └── .gitignore         # Prevents sensitive/local files from being pushed
-```
-
-## Updated File Structure
-
-``` text
-FFA_regional-skew/
-├── .gitignore                     # Prevents sensitive/local files from being pushed
-├── FFA_regional-skew.Rproj       # RStudio project file
-├── README.Rmd                    # Workflow overview (editable)
-├── README.md                     # Rendered Markdown output
-
-├── docs/                   # For flowcharts, planning diagrams, milestone logs
-├── notebooks/              # For ad hoc .Rmd or .qmd experiments
-├── log/                    # For shell logs or targets progress reports 
-
-├── R/                            # All analysis scripts (milestone-organized)
-│   ├── 01_download/              # NWIS, PRISM, Ecoregions
-│   ├── 02_clean/                 # Filtering, QA, station skew
-│   ├── 03_covariates/            # Climate, topography, land cover
-│   ├── 04_modeling/              # GAMs, Elastic Net, correlation
-│   ├── 05_eval/                  # Model diagnostics, residuals, validation
-│   └── utils/                    # Reusable functions
-│       └── f_process_geometries.R
-
-├── data/
-│   ├── raw/                      # Unmodified input data
-│   │   ├── elevation_ned.tif
-│   │   ├── sites_all_in_bb.csv
-│   │   ├── sites_all_peak_in_bb.csv
-│   │   ├── raster_raw/          # PRISM rasters
-│   │   └── vector_raw/          # Shapefiles (unprojected/unprocessed)
-│   │       ├── ecoregions_orig/
-│   │       ├── ecoregions_unprojected/
-│   │       ├── koppen-climate-classification/
-│   │       ├── us_eco_lev01/ through us_eco_lev04/
-│   │       └── misc shapefiles/
-│   ├── processed/               # Cleaned, derived datasets
-│   │   ├── spatial/             # Ready-to-use shapefiles and rasters
-│   │   │   ├── us_eco_lev01/
-│   │   │   ├── us_eco_lev02/
-│   │   │   ├── us_eco_lev03/
-│   │   │   ├── us_eco_lev04/
-│   │   │   ├── koppen_climate/
-│   │   │   ├── tl_state_boundaries/
-│   │   │   └── derived_products/
-│   └── meta/                    # CRS info, variable scaffold, project metadata
-│       └── variable_scaffold.csv
-
-├── output/
-│   ├── figs/                    # Plots and maps
-│   ├── models/                  # Model objects (.rds)
-│   └── tables/                  # Summary tables (.csv, .html)
-
-├── results/                     # Manuscript-ready outputs, model metrics, final figures
-
-├── reports/
-│   ├── README.Rmd               # Project structure and data flow
-│   ├── posterdown/              # Poster files and assets
-│   └── slides/                  # Slide decks or visualizations
-
-├── to_check/                    # Temporary holding area for uncertain or transitional files
-
-```
-
-## Description of first level folders
-| Folder/File       | Purpose                        | Suggestions / Notes          |
-|:-----------------:| -------------------------------|----------------------------- |
-| `arcgis_project/` | Stores `.aprx` and layer files from ArcGIS Pro workflows | Add metadata or a `.gdb/` subfolder if you use file geodatabases |
-| `data/`           | Raw input datasets (e.g., shapefiles, CSVs, rasters) | Structure by source or domain (e.g., `raw/`, `external/`, `interim/`)  |
-| `docs/` | Project documentation, e.g., final reports, manuscripts, proposal materials. Reference documentation like README-style guides. Metadata crosswalks and data dictionaries for review or publication. Files you reference in Quarto/PDF reports or posters | Consider mirroring structure in `reports/` if overlap exists |
-| `FFA_regional-skew.Rproj` | RStudio project file for launching the workspace | Keep this in the root, versioned if necessary                       |
-| `notes/`          | Personal or team notes, meeting logs, brainstorms | Could be transitioned to Markdown or Quarto as the project matures |
-| `output/` | Intermediate outputs (e.g., `.Rds`, `.csv`, `.tif`) for handoff between scripts | Add subfolders like `extracted/`, `joined/`, or date-stamped folders |
-| `R/`              | All R scripts and notebooks | Refactor in milestone folders (`00_utils`, `01_download`, etc.) as discussed |
-| `README.md` | GitHub-compatible plain-text overview | Use this for quick navigation, build instructions, etc. |
-| `README.Rmd` | Richer, knit-ready documentation with figures, tables, and references | Can generate HTML/PDF documentation from this                |
-| `reports/`   | Analysis narratives, usually knitted `.Rmd` or `.qmd` output | Consider `reports/final/`, `reports/draft/` structure if versioning    |
-| `results/` | Final figures, tables, model outputs for publication or reporting | Organize by milestone or product (`maps/`, `tables/`, `models/`) |
-| `to_check/` | Temporary folder for files needing review or QA  | Consider renaming to `sandbox/` or clearing regularly |
-
-
-# Migration Checklist
-
-## Ver0.3 -- Refactored project structure and added macrozone covariates
-| Step | Task                                                        | Status |
-|--------------|-----------------------------------------------------|--------|
-| 0.3.1    | Soft archive old files                                  | [X]    |
-| 0.3.2    | Create folders for each milestone step                  | [X]    |
-| 0.3.3    | Move functions/ to R/utils/ and source with source()    | [X]    |
-| 0.3.4    | Rename scripts/ to R/ and split by milestone function   | [X]    |
-| 0.3.5    | Move raw shapefiles to data/raw/spatial_raw/            | [X]    |
-| 0.3.6    | Move cleaned shapefiles to spatial/                     | [X]    |
-| 0.3.7    | Rename /R/01_download scripts as:                       |        |
-|          |   milestone + domain + covariate + source               | [P]    |
-| 0.3.8    | Tag this commit in Git as v0.3-structure-refactor       | [X]    |
-| 0.3.9    | Create GitHub Milestone and Issue                       | [X]    |
-| 0.3.10    | Document changes in this .Rmd                          | [X]    |
-| 0.3.11    | Document changes in README.Rmd                         | []    |
-
-
-- **0.3.7:** Script renaming is partially complete. Scripts in R/01_download and R/02_clean have adopted the pattern: milestone + domain + covariate + source. Remaining scripts (e.g., 03b, 04_modeling) will be renamed accordingly.
-
-- **0.3.9:** GitHub milestone will be added once this document is finalized and committed.
-- **0.3.10 & 0.3.11:** This .Rmd and the README will be updated to document the completed refactor.
-
-
-## Ver.0.4 -- Update R/01_download
-| Step | Task                                                         | Status |
-|:------------:|------------------------------------------------------|:------:|
-| 1    | Identify and document covariates using `01c_data_dictionary_for_covariates.Rmd`                      | []    |
-| 2    | Update R/01_download/ folder structure                         | []   |
-| 3    | Create downloads scripts for each domain and covariate         | []   |
-| 4    | Create README-style notes for script in milestone folder       | []   |
-| 5    | Rename scripts for clarity and consistency (e.g., 03a_, 03b_ ) | []   |
-| 6    | Validate chunk headers in .Rmd files ({r name, eval=} )        | []   |
-| 7    | Knit milestone and data dictionary .Rmd files to PDF           | []   |
-| 8    | Add file headers / docstrings to all scripts (author, purpose, date) | []   |
-| 9    | Document changes in 01_download README.Rmd                   | []     |
-| 10   | Add reference links (e.g., PRISM, USGS, NLCD) to documentation | []     |
-| 11    | Create README-style notes for each R milestone folder          | []     |
-
-
-
-
-<!--
-Next Steps FFA
-
-
-1. If you haven’t already, consider:
-    Adding a docs/README.md with:
-        A short summary of each version (v021, v022)
-        Notes on what changed between versions
-        How/when they were used (e.g., linked to milestone 01c)
-    Renaming future versions with a yyyymmdd tag if versioning becomes complex:
-        regional_skew_covariates_metadata_by_scale_20250507.xlsx
-    Citing the metadata in milestone files or reports with a relative path like:
-    read_csv("docs/regional_skew_covariates_metadata_by_scale_v022.csv")
-
-2.	 write a short R snippet or Quarto chunk to auto-link covariate scripts to entries in the data dictionary?
---> 
-
-## Covariate Metadata
+## Covariate Metadata (Ver. 0.4)
 
 This project includes a structured covariate metadata file to support reproducibility, clarity, and consistency in modeling regional skew. The metadata defines each covariate's name, description, units, analytical resolution, and conceptual grouping.
 
@@ -242,56 +79,155 @@ A multi-step metadata quality checklist was used to validate content before expo
 
 -  clarity and interpretability of variable description
 
+# Project structure
 
+## Original project structure
 
-```{=html}
-<!--
-
-Chain these in targets or drake pipelines
-
-
-add a data_dictionary.csv in data/meta/
-
-Add a log_README.md in each R/ subfolder to document script purpose
-
-Consider a targets-based workflow if your scripts are getting complex
-
-    Use both .Rmd and .md for documentation (👍).
-
-Inside that same folder, you can later add:
-
-    00_refactor_checklist.csv (if you want a CSV to track renaming/moves)
-
-    00_folder_before.png and 00_folder_after.png (for visuals)
-
-    rename_scripts.R (if you want to learn R-side file management too)
-
-## Step 07 — Add data/meta/variable_scaffold.csv and README Tables
-
--   **Reason:** Track covariates by scale and origin.
-
--   **Before:** data/meta/variable_scaffold.csv
-
--   **After:** README.Rmd as knitr::kable()
-
-
-
-
-## Step 08 Distinguish between exploratory output and final cleaned results.
-
--   **Reason:** Distinguish between exploratory output and final cleaned
-    results.
-
--   **Before:** All tables in output/
-
--   **After:** Use results/ for cleaned output only.
-
--->
+``` text
+    FFA_regional-skew/
+    ├── arcgis_project/    # ArcGIS files
+    ├── data/
+    │   ├── raw/           # Raw downloads (PRISM, USGS, etc.)
+    │   ├── clean/         # Cleaned covariate & skew datasets
+    │   ├── meta/          # # Metadata for reproducibility
+    │   └── spatial/       # Spatial data for ecoregions (EPA)
+    ├── figures/           # Plots and heatmaps
+    ├── functions/         # Reusable R functions
+    ├── references_pdfs/   # Background readings
+    ├── model_summaries/   # CSVs of model coefficients, VIFs, etc.
+    ├── results/           # Rmd files from prior EDA
+    ├── scripts/           # Modular R scripts by milestone
+    ├── README.Rmd         # Workflow overview (editable)
+    ├── README.md          # Rendered Markdown output
+    └── .gitignore         # Prevents sensitive/local files from being pushed
 ```
 
-# Step-by-Step Refactor Log
+## Updated File Structure (Ver. 0.3)
 
-## Step 01 - Soft Archive Old Files
+``` text
+FFA_regional-skew/
+├── .gitignore                    # Prevents sensitive/local files from being pushed
+├── arcgis_project/               # Stores `.aprx` and layer files from ArcGIS 
+                                  #   Pro workflows
+
+├── data/ 
+│   ├── raw/                      # Unmodified input data 
+                                  #   e.g., shapefiles, CSVs, rasters
+│   │   ├── elevation_ned.tif
+│   │   ├── sites_all_in_bb.csv
+│   │   ├── sites_all_peak_in_bb.csv
+│   │   ├── raster_raw/          # PRISM rasters
+│   │   └── vector_raw/          # Shapefiles (unprojected/unprocessed)
+│   │       ├── ecoregions_orig/
+│   │       ├── ecoregions_unprojected/
+│   │       ├── koppen-climate-classification/
+│   │       ├── us_eco_lev01/ through us_eco_lev04/
+│   │       └── misc shapefiles/
+
+│   ├── processed/               # Cleaned, derived datasets
+
+│   │   ├── spatial/             # Ready-to-use shapefiles and rasters
+│   │   │   ├── us_eco_lev01/
+│   │   │   ├── us_eco_lev02/
+│   │   │   ├── us_eco_lev03/
+│   │   │   ├── us_eco_lev04/
+│   │   │   ├── koppen_climate/
+│   │   │   ├── tl_state_boundaries/
+│   │   │   └── derived_products/
+│   └── meta/                    # CRS info, variable scaffold, project metadata
+│       └── variable_scaffold.csv
+
+├── docs/                     # Project documentation, e.g., final reports, 
+                              #   manuscripts, proposal materials. 
+                              # Reference documentation like README-style guides. 
+                              # Metadata crosswalks and data dictionaries
+                              # review or publication. 
+                              # Files you reference in Quarto/PDF reports or posters
+
+├── FFA_regional-skew.Rproj   # RStudio project file for launching the 
+                              # workspace. Keep this in the root.
+├── log/                      # For shell logs or targets progress reports 
+├── notebooks/                # For ad hoc .Rmd or .qmd experiments 
+├── notes/                    # Personal or team notes, meeting logs, brainstorms
+                              #   Could be transitioned to Markdown or Quarto as
+                              #   the project matures
+
+├── output/                   # Intermediate outputs (e.g., `.Rds`, `.csv`, `.tif`)
+                              # Next Steps: Add subfolders like `extracted/`,
+                              #   `joined/`, or date-stamped folders |
+│   ├── figs/                    # Plots and maps
+│   ├── models/                  # Model objects (.rds)
+│   └── tables/                  # Summary tables (.csv, .html)
+
+├── R/                            # All analysis scripts (milestone-organized)
+│   ├── 01_download/              # NWIS, PRISM, Ecoregions
+│   ├── 02_clean/                 # Filtering, QA, station skew
+│   ├── 03_covariates/            # Climate, topography, land cover
+│   ├── 04_modeling/              # GAMs, Elastic Net, correlation
+│   ├── 05_eval/                  # Model diagnostics, residuals, validation
+│   └── utils/                    # Reusable functions
+│       └── f_process_geometries.R
+
+├── README.md                     # Rendered Markdown output.  GitHub-compatible
+                                  #   plain-text overview. Use for quick 
+                                  #   navigation, build instructions, etc. 
+├── README.Rmd                    # Workflow overview (editable).  Richer,
+                                  #   knit-ready documentation with figures, 
+                                  #  tables, and references. Can generate 
+                                  #   HTML/PDF documentation from this file
+
+├── reports/                      # analysis narratives, usually knitted `.Rmd` 
+                                  #   or `.qmd` output. Next Steps: Consider 
+                                  #   `reports/final/`, `reports/draft/` 
+                                  #   structure if versioning
+
+├── results/                      # Manuscript-ready outputs, model metrics, 
+                                  #   final figures, tables, model outputs for 
+                                  #   publication or reporting Next Steps: 
+                                  #   Organize by milestone or product:
+                                  #     `maps/`, `tables/`, `models/`
+│   ├── posterdown/                 # Poster files and assets
+│   └── slides/                     # Slide decks or visualizations
+
+├── to_check/                    # Temporary holding area for uncertain or 
+                                 #   transitional files needing review or QA. 
+                                 # Next Steps: Consider renaming to `sandbox/` 
+                                 # and clearing regularly.
+```
+
+### 🗂️ Summary of Key Structural Changes
+
+| Old Path                       | New Path              | Change Type |
+|:------------------------------:|:---------------------:|:-----------:|
+| functions/                     | R/utils/              | relocate    |
+| scripts/                       | R/01_download/ etc.   | split + tag |
+| data/spatial/ecoregions_*      | data/raw/spatial_raw/ | move        |
+| us_eco_lev*/                   | spatial/              | promote     |
+| README.Rmd (updated structure) |                       | revise      |
+
+
+# Ver.0.3 -- Refactored project structure and added macrozone covariates
+
+## Migration Checklist
+| Step | Task                                                        | Status |
+|--------------|-----------------------------------------------------|--------|
+| 0.3.1     | Soft archive old files                                  | [X]    |
+| 0.3.2     | Create folders for each milestone step                  | [X]    |
+| 0.3.3     | Move functions/ to R/utils/ and source with source()    | [X]    |
+| 0.3.4     | Rename scripts/ to R/ and split by milestone function   | [X]    |
+| 0.3.5     | Move raw shapefiles to data/raw/spatial_raw/            | [X]    |
+| 0.3.6     | Move cleaned shapefiles to spatial/                     | [X]    |
+| Goto 0.4  | Identified a need to                                    | []    | 
+| 0.3.7     | Rename /R/01_download scripts as:                       |        |
+|           |   milestone + domain + covariate + source               | [P]    |
+| 0.3.8     | Tag this commit in Git as v0.3-structure-refactor       | [X]    |
+| 0.3.9     | Create GitHub Milestone and Issue                       | [X]    |
+| 0.3.10    | Document changes in this .Rmd                           | [X]    |
+| 0.3.11    | Document changes in README.Rmd                          | []    |
+
+## Ver.0.3 Step-by-Step Refactor Log
+
+### Step 0.3.1 - Soft Archive Old Files
 
 -   **Action:** Move unverified/legacy files to to_check/ or delete/
     with caution.
@@ -306,7 +242,15 @@ Inside that same folder, you can later add:
 
 -   **After:** Cleaner directory structure.
 
-```{bash archive_unsorted, eval=FALSE}
+-   **General Notes:**
+
+   - Preserve original files in to_check/ if unsure
+
+   - Consider backing up entire project before file moves
+
+   - Update any hardcoded paths in scripts
+
+```{bash archive_unsorted, eval=FALSE, echo=FALSE}
 
 cd ~/Documents/Rprojects_not-class/FFA_regional-skew/
 
@@ -337,7 +281,7 @@ mv references_pdfs/* to_check/
 
 ```
 
-## Step 02 — Create files for each milestone step
+### Step 0.3.2 — Create files for each milestone step
 
 -   **Reason:** Improves clarity, modularity, and reproducibility of
     workflow.
@@ -348,7 +292,7 @@ mv references_pdfs/* to_check/
 -   **After:** Separate raw/, clean/, meta/, functions/, and output/.
     Spatial data organized and modularized.
 
-```{bash create_milestone_dirs, eval=FALSE}
+```{bash create_milestone_dirs, eval=FALSE, echo=FALSE}
 # Create folders for each milestone step.
 # The -p option makes sure parent folders are created if they don't exist,
 # and it won't throw an error if the folder already exists.
@@ -364,7 +308,7 @@ mkdir -p R/utils              # Reusable functions
 
 ```
 
-## Step 03 Move Functions into a Unified utils/ Folder
+### Step 0.3.3 - Move Functions into a Unified utils/ Folder
 
 -   **Reason:** Centralize and reuse processing functions.
 
@@ -375,7 +319,7 @@ mkdir -p R/utils              # Reusable functions
 -   **Scripts affected:** Any sourcing functions/; update to
     source("R/utils/…")
 
-```{bash move_functions_to_utils, eval=FALSE}
+```{bash move_functions_to_utils, eval=FALSE, echo=FALSE}
 
 mv functions/*.R R/utils/      # Move the files inside of functions/
 
@@ -383,7 +327,7 @@ rmdir functions/               # Remove functions/ if it's empty
 
 ```
 
-## Step 04 — Split and Organize scripts/ into Milestone-Based Folders
+### Step 0.3.4 — Split and Organize scripts/ into Milestone-Based Folders
 
 -   **Reason:** Improves modularity and tracks workflow by purpose.
 
@@ -402,7 +346,7 @@ R/
 
 -   **Scripts affected:** All main workflow scripts.
 
-```{bash move_download_scripts_to_01_download, eval=FALSE}
+```{bash move_download_scripts_to_01_download, eval=FALSE, echo=FALSE}
 
 mv ~/Documents/Rprojects_not-class/FFA_regional-skew/scripts/01_get-spatial-data.R ~/Documents/Rprojects_not-class/FFA_regional-skew/R/01_download/01_get_spatial_data.R
 
@@ -415,7 +359,7 @@ mv ~/Documents/Rprojects_not-class/FFA_regional-skew/scripts/08_download_terrain
 
 ```
 
-```{bash move_clean_scripts_to_02_clean, eval=FALSE}
+```{bash move_clean_scripts_to_02_clean, eval=FALSE, echo=FALSE}
 
 # Make sure the destination exists
 mkdir -p R/02_clean
@@ -431,7 +375,7 @@ mv ~/Documents/Rprojects_not-class/FFA_regional-skew/scripts/06_calculate_statio
 
 ```
 
-```{r move_clean_scripts_to_03_covariates, eval=FALSE}
+```{r move_clean_scripts_to_03_covariates, eval=FALSE, echo=FALSE}
 
 # Ensure folders exist
 mkdir -p R/03_covariates 
@@ -446,7 +390,7 @@ mv ~/Documents/Rprojects_not-class/FFA_regional-skew/scripts/09a_dont-run_join_c
 
 ```
 
-```{r move_clean_scripts_to_04_exploratory, eval=FALSE}
+```{r move_clean_scripts_to_04_exploratory, eval=FALSE, echo=FALSE}
 
 # Ensure folders exist
 mkdir -p R/04_exploratory
@@ -462,7 +406,7 @@ mv ~/Documents/Rprojects_not-class/FFA_regional-skew/scripts/10d_exploratory_mod
 
 ```
 
-```{r move_clean_scripts_to_05_modeling, eval=FALSE}
+```{r move_clean_scripts_to_05_modeling, eval=FALSE, echo=FALSE}
 
 # Ensure folders exist
 mkdir -p R/05_modeling
@@ -474,7 +418,7 @@ mv ~/Documents/Rprojects_not-class/FFA_regional-skew/scripts/11b_fit_gam_models.
 
 ```
 
-```{r move_clean_scripts_to_06_eval, eval=FALSE}
+```{r move_clean_scripts_to_06_eval, eval=FALSE, echo=FALSE}
 
 # Ensure folders exist
 mkdir -p R/06_eval
@@ -488,7 +432,7 @@ mv ~/Documents/Rprojects_not-class/FFA_regional-skew/scripts/12b_model_validatio
 
 ```
 
-## Step 05 — Move Raw Spatial and Climate Data into data/raw/
+### Step 0.3.5 — Move Raw Spatial and Climate Data into data/raw/
 
 -   **Reason:** Distinguish between raw inputs and processed outputs.
 
@@ -506,7 +450,7 @@ data/
 -   **Folders moved:** ecoregions, koppen-climate-classification, tl\_,
     us_eco
 
-## Step 06— Promote Processed Spatial Layers to /spatial/
+### Step 0.3.6 — Promote Processed Spatial Layers to /spatial/
 
 -   **Reason:** Maintain easy access to ready-to-use shapefiles.
 
@@ -514,44 +458,185 @@ data/
 
 -   **After:** R/utils/f_process_geometries.R
 
-```         
+``` text
 spatial/
 ├── us_eco_lev01/
 ├── us_eco_lev02/
 ├── koppen_cleaned/
 ```
 
-### Notes on Step 0.3.7
-Files have been renamed for `01_download` and `02_clean`, but `03_covariates` is still mid-refactor. Consider adding tags like `03a`, `03b`, `03c` for clarity.
 
-### Notes on Step 0.3.8
-Will tag commit after final push of .gitkeep and milestone Rmd updates.
+###  Step 0.3.7 - Script renaming is partially complete. 
+
+-   Scripts in R/01_download and R/02_clean have adopted the pattern: milestone + domain + covariate + source. Remaining scripts (e.g., 03b, 04_modeling) will be renamed accordingly.
+
+-   Files have been renamed for `01_download` and `02_clean`, but `03_covariates` is still mid-refactor. Consider adding tags like `03a`, `03b`, `03c` for clarity.
+
+###  Step 0.3.8 -  
+
+-   Will tag commit after final push of .gitkeep and milestone Rmd updates.
+
+###  Step 0.3.9 - GitHub milestone will be added once this document is finalized and committed.
+###  Step 0.3.10 & 0.3.11 - This .Rmd and the README will be updated to document the completed refactor.
 
 
+# Ver.0.4 -- Update R/01_download folder
+
+## Update checklist
+| Step | Task                                                         | Status |
+|:--------:|----------------------------------------------------------|:------:|
+| 0.4.1    | Update 0.3 file structure in this Rmd and in FFA_regional_skew | [X] |
+| 0.4.2    | Identify and document covariates using `01c_data_dictionary_for_covariates.Rmd` | []    |
+| 0.4.3    | Update R/01_download/ folder structure                   | []    |
+| 0.4.4    | Create downloads scripts for each domain and covariate   | []    |
+| 0.4.5    | Create README-style notes for script in milestone folder | []   |
+| 0.4.6    | Rename scripts for clarity and consistency e.g., 03a_, 03b_ | []  |
+| 0.4.7    | Validate chunk headers in .Rmd files ({r name, eval=} )  | []    |
+| 0.4.8    | Knit milestone and data dictionary .Rmd files to PDF     | []    |
+| 0.4.9    | Add file headers / docstrings to all scripts e.g. author, purpose, date| []   |
+| 0.4.10   | Document changes in 01_download README.Rmd               | []    |
+| 0.4.11   | Add reference links to documentation e.g., PRISM, USGS, NLCD | [] |
+| 0.4.12    | Create README-style notes for each R milestone folder    | []    |
+
+## Ver.0.4 Step-by-Step Update Log
+
+-   **Action:** 
+
+-   **Before:** 
+
+-   **Reason:** 
+
+### Step 0.4.1 — Identify and document covariates
+
+-   **Action:** 
+
+-   **Before:** 
+
+-   **Reason:** 
+
+### Step 0.4.2 — Update R/01_download/ folder structure
+
+-   **Action:** 
+
+-   **Before:** 
+
+-   **Reason:** 
+
+### Step 0.4.3 — 
+
+-   **Action:** 
+
+-   **Before:** 
+
+-   **Reason:** 
+
+### Step 0.4.4 — 
+
+-   **Action:** 
+
+-   **Before:** 
+
+-   **Reason:** 
+
+### Step 0.4.5 — 
+
+-   **Action:** 
+
+-   **Before:** 
+
+-   **Reason:** 
+
+### Step 0.4.6 — 
+
+-   **Action:** 
+
+-   **Before:** 
+
+-   **Reason:** 
+
+### Step 0.4.7 — 
+
+-   **Action:** 
+
+-   **Before:** 
+
+-   **Reason:** 
+
+### Step 0.4.8 — 
+
+-   **Action:** 
+
+-   **Before:** 
+
+-   **Reason:** 
+
+### Step 0.4.9 — 
+
+-   **Action:** 
+
+-   **Before:** 
+
+-   **Reason:** 
+
+### Step 0.4.10 —  
+
+-   **Action:** 
+
+-   **Before:** 
+
+-   **Reason:** 
+
+### Step 0.4.11 — 
+
+-   **Action:** 
+
+-   **Before:** 
+
+-   **Reason:** 
+
+<!--
+Next Steps FFA
 
 
+1. If you haven’t already, consider:
+    Adding a docs/README.md with:
+        A short summary of each version (v021, v022)
+        Notes on what changed between versions
+        How/when they were used (e.g., linked to milestone 01c)
+    Renaming future versions with a yyyymmdd tag if versioning becomes complex:
+        regional_skew_covariates_metadata_by_scale_20250507.xlsx
+    Citing the metadata in milestone files or reports with a relative path like:
+    read_csv("docs/regional_skew_covariates_metadata_by_scale_v022.csv")
+
+2.	 write a short R snippet or Quarto chunk to auto-link covariate scripts to entries in the data dictionary?
+
+Chain these in targets or drake pipelines
+
+add a data_dictionary.csv in data/meta/
+
+Add a log_README.md in each R/ subfolder to document script purpose
+
+Consider a targets-based workflow if your scripts are getting complex
+
+    Use both .Rmd and .md for documentation (👍).
+
+Inside that same folder, you can later add:
+
+    00_refactor_checklist.csv (if you want a CSV to track renaming/moves)
+
+    00_folder_before.png and 00_folder_after.png (for visuals)
+
+    rename_scripts.R (if you want to learn R-side file management too)
 
 
-# 🗂️ Summary of Key Structural Changes
-
-```         
-Old Path | New Path | Change Type
-functions/ | R/utils/ | relocate
-scripts/ | R/01_download/ etc. | split + tag
-data/spatial/ecoregions_* | data/raw/spatial_raw/ | move
-us_eco_lev*/ | spatial/ | promote
-README.Rmd (updated structure) |  | revise
+-->
 ```
 
-# 🧾 Notes
-
--   Preserve original files in to_check/ if unsure
-
--   Consider backing up entire project before file moves
-
--   Update any hardcoded paths in scripts
 
 # 🔗 References
+
+
+
 
 # GE
 
