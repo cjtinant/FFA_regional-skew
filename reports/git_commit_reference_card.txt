@@ -63,6 +63,41 @@ Chore: update .gitignore with large file exclusions for GitHub limits
 
 ---
 
+# ✅ When to Create a GitHub Issue Comment or Changelog Entry
+
+| Change Type                        | GitHub Issue Comment | Changelog Entry |
+| Major feature or milestone         | ✅ Yes               | ✅ Yes           |
+| Fix for a reported bug             | ✅ Yes               | ✅ Yes           |
+| Refactor that affects structure    | 🔶 Optional          | ✅ Yes           |
+| Minor formatting or typo fix       | ❌ No	               | ❌ No            |
+| Cleanup (e.g., deleting old files) | ❌ No                | 🔶 Optional      |
+| Data or output regeneration only   | ❌ No                | 🔶 Optional      |
+
+🔶 = Do it if you're tracking tightly or have collaborators who care about visibility
+
+## 📝 Best Practices
+
+### GitHub Issue Comments:
+
+-   Use when the change is relevant to tracking progress or collaboration.
+-   Ideal if you’re closing or referencing an issue:
+        git commit -m "Fix: update structure (#42)"
+
+### Changelog:
+
+-   Group minor edits into a single entry under a version:
+        ### Changed
+        - Minor edits to milestone_00 structure and output cleanup
+
+## 🚀 Practical Suggestion
+
+For minor solo edits, let your commit messages carry the weight. Then, before a release, summarize them into the changelog.
+
+Would you like a script to auto-generate changelog entries from Git commits between tags?
+
+
+
+
 # ✅ Semantic Versioning (SemVer) – Recommended Tagging Approach
 
 Format: MAJOR.MINOR.PATCH (e.g., v2.3.1)
