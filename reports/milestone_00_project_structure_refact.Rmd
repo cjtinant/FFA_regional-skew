@@ -25,14 +25,10 @@ milestone workflows and standard naming conventions.
 ## Goals of Refactor
 
 -   Clarify distinction between raw, processed, and derived spatial data
-
 -   Move and modularize R scripts into milestone-based folders
-
 -   Consolidate utility functions into a reusable location
-
 -   Standardize naming and improve long-term maintainability
-
-_   Prepare for poster/reporting and model evaluation stages
+-   Prepare for poster/reporting and model evaluation stages
 
 ------------------------------------------------------------------------
 
@@ -43,41 +39,6 @@ _   Prepare for poster/reporting and model evaluation stages
 - Soft-archived old scripts and notebooks
 - Replaced legacy `.gitignore` with spatial-aware template
 - Added macrozone covariate pipeline (03c) with matching Rmd log
-
-## Covariate Metadata (Ver. 0.4)
-
-This project includes a structured covariate metadata file to support reproducibility, clarity, and consistency in modeling regional skew. The metadata defines each covariate's name, description, units, analytical resolution, and conceptual grouping.
-
-### Purpose
-The covariate metadata documents all variables used in regional skew modeling and spatial stratification. It is designed to ensure:
-
--  consistent naming across scripts and visualizations,
-
--  interpretable plots and maps,
-
--  scalable use across spatial resolutions and modeling domains.
-
-### Source
-The original .xlsx file is stored as: `docs/skew_covariates_metadata_v01.xlsx`
-
-Older working versions are archived in: `docs/delete_later/`
-
-### Script and Output Location
-
-The script used to generate modular .csv files: `docs/01_split-xlsx-into-csv.R`
-
-Output .csv files (one per worksheet): `docs/covariates_metadata_split/`
-
-### QA / Validation
-A multi-step metadata quality checklist was used to validate content before export. This includes checks for:
-
--  completeness of key fields,
-
--  consistency in phrasing and formatting,
-
--  conceptual alignment across scales and groups,
-
--  clarity and interpretability of variable description
 
 # Project structure
 
@@ -195,7 +156,9 @@ FFA_regional-skew/
                                  # and clearing regularly.
 ```
 
-### 🗂️ Summary of Key Structural Changes
+<!--
+Update after completing Ver 0.4
+## Summary of Key Structural Changes
 
 | Old Path                       | New Path              | Change Type |
 |:------------------------------:|:---------------------:|:-----------:|
@@ -203,12 +166,14 @@ FFA_regional-skew/
 | scripts/                       | R/01_download/ etc.   | split + tag |
 | data/spatial/ecoregions_*      | data/raw/spatial_raw/ | move        |
 | us_eco_lev*/                   | spatial/              | promote     |
+
 | README.Rmd (updated structure) |                       | revise      |
 
+--> 
 
-# Ver.0.3 -- Refactored project structure and added macrozone covariates
+# Ver.0.3 -- Refactor project structure
 
-## Migration Checklist
+## Migration Checklist -- Ver. 0.3
 | Step | Task                                                        | Status |
 |--------------|-----------------------------------------------------|--------|
 | 0.3.1     | Soft archive old files                                  | [X]    |
@@ -217,30 +182,15 @@ FFA_regional-skew/
 | 0.3.4     | Rename scripts/ to R/ and split by milestone function   | [X]    |
 | 0.3.5     | Move raw shapefiles to data/raw/spatial_raw/            | [X]    |
 | 0.3.6     | Move cleaned shapefiles to spatial/                     | [X]    |
-| Goto 0.4  | Identified a need to                                    | []    | 
+| * 0.4 *   | Identified a need to                                    | []    | 
 | 0.3.7     | Rename /R/01_download scripts as:                       |        |
 |           |   milestone + domain + covariate + source               | [P]    |
-| 0.3.8     | Tag this commit in Git as v0.3-structure-refactor       | [X]    |
-| 0.3.9     | Create GitHub Milestone and Issue                       | [X]    |
-| 0.3.10    | Document changes in this .Rmd                           | [X]    |
-| 0.3.11    | Document changes in README.Rmd                          | []    |
+| 0.3.8     | Tag this commit in Git as v0.3-structure-refactor       | []    |
+| 0.3.9     | Create GitHub Milestone and Issue                       | []    |
+| 0.3.10    | Document final changes in this .Rmd                     | []    |
+| 0.3.11    | Document final changes in README.Rmd                    | []    |
 
-## Ver.0.3 Step-by-Step Refactor Log
-
-### Step 0.3.1 - Soft Archive Old Files
-
--   **Action:** Move unverified/legacy files to to_check/ or delete/
-    with caution.
-
--   **Before:** data/meta/variable_scaffold.csv
-
--   **Reason:** Improves clarity, modularity, and reproducibility of
-    workflow.
-
--   **Before:** Unorganized files that may or may not be aligned with
-    current project workflow.
-
--   **After:** Cleaner directory structure.
+## Ver. 0.3 Step-by-Step Refactor Log
 
 -   **General Notes:**
 
@@ -249,6 +199,19 @@ FFA_regional-skew/
    - Consider backing up entire project before file moves
 
    - Update any hardcoded paths in scripts
+
+### Step 0.3.1 - Soft Archive Old Files
+
+-   **Action:** Move unverified/legacy files to to_check/ or delete/
+    with caution.
+
+-   **Before:** Unorganized files that may or may not be aligned with
+    current project workflow.
+
+-   **Reason:** Improves clarity, modularity, and reproducibility of
+    workflow.
+
+-   **After:** Cleaner directory structure.
 
 ```{bash archive_unsorted, eval=FALSE, echo=FALSE}
 
@@ -447,7 +410,7 @@ data/
 │   ├── vector_raw/
 ```
 
--   **Folders moved:** ecoregions, koppen-climate-classification, tl\_,
+-   **Folders moved:** ecoregions, koppen-climate-classification, phzm,
     us_eco
 
 ### Step 0.3.6 — Promote Processed Spatial Layers to /spatial/
@@ -465,12 +428,17 @@ spatial/
 ├── koppen_cleaned/
 ```
 
-
 ###  Step 0.3.7 - Script renaming is partially complete. 
 
 -   Scripts in R/01_download and R/02_clean have adopted the pattern: milestone + domain + covariate + source. Remaining scripts (e.g., 03b, 04_modeling) will be renamed accordingly.
 
--   Files have been renamed for `01_download` and `02_clean`, but `03_covariates` is still mid-refactor. Consider adding tags like `03a`, `03b`, `03c` for clarity.
+-   Files have been renamed for `01_download` and `02_clean`, but `03_covariates` is still mid-refactor. 
+
+-   Identified a need identify covariates, and create and validate covariate metadata.
+
+-   Created sub-issue Ver. 0.4 of Milestone 00 (this milestone).
+
+-   **Next Steps:** Close sub-issue Ver. 0.4. (below) Consider adding tags like `03a`, `03b`, `03c` to improve script clarity. Close remaining Milestone 00 issues, by completing remaining Ver. 0.3 steps.
 
 ###  Step 0.3.8 -  
 
@@ -480,39 +448,86 @@ spatial/
 ###  Step 0.3.10 & 0.3.11 - This .Rmd and the README will be updated to document the completed refactor.
 
 
-# Ver.0.4 -- Update R/01_download folder
 
-## Update checklist
+# Ver. 0.4 -- Update Covariate Data and Metadata
+
+This project includes a structured covariate metadata file to support reproducibility, clarity, and consistency in modeling regional skew. The metadata defines each covariate's name, description, units, analytical resolution, and conceptual grouping.
+
+### Purpose
+The covariate metadata documents all variables used in regional skew modeling and spatial stratification. It is designed to ensure:
+
+-  consistent naming across scripts and visualizations,
+-  interpretable plots and maps,
+-  scalable use across spatial resolutions and modeling domains.
+
+### Source
+The original .xlsx file is stored as: `docs/skew_covariates_metadata_v01.xlsx`
+
+Older working versions are archived in: `docs/delete_later/`
+
+### Script and Output Location
+
+The script used to generate modular .csv files: `docs/01_split-xlsx-into-csv.R`
+
+Output .csv files (one per worksheet): `docs/covariates_metadata_split/`
+
+### QA / Validation
+A multi-step metadata quality checklist was used to validate content before export. This includes checks for:
+
+-  completeness of key fields,
+-  consistency in phrasing and formatting,
+-  conceptual alignment across scales and groups,
+-  clarity and interpretability of variable description
+
+## Update checklist -- Ver. 0.4
 | Step | Task                                                         | Status |
 |:--------:|----------------------------------------------------------|:------:|
-| 0.4.1    | Update 0.3 file structure in this Rmd and in FFA_regional_skew | [X] |
+| 0.4.1    | Reorganize this Rmd                                      | [X]    |
 | 0.4.2    | Identify and document covariates using `01c_data_dictionary_for_covariates.Rmd` | []    |
-| 0.4.3    | Update R/01_download/ folder structure                   | []    |
-| 0.4.4    | Create downloads scripts for each domain and covariate   | []    |
-| 0.4.5    | Create README-style notes for script in milestone folder | []   |
-| 0.4.6    | Rename scripts for clarity and consistency e.g., 03a_, 03b_ | []  |
-| 0.4.7    | Validate chunk headers in .Rmd files ({r name, eval=} )  | []    |
-| 0.4.8    | Knit milestone and data dictionary .Rmd files to PDF     | []    |
-| 0.4.9    | Add file headers / docstrings to all scripts e.g. author, purpose, date| []   |
-| 0.4.10   | Document changes in 01_download README.Rmd               | []    |
-| 0.4.11   | Add reference links to documentation e.g., PRISM, USGS, NLCD | [] |
-| 0.4.12    | Create README-style notes for each R milestone folder    | []    |
+| 0.4.3    | Validate and document Notes folder                       | []    |
+| 0.4.4    | Develop a consistent naming strategy for raw and processed data | [] |
+| 0.4.5    | Update R/01_download/ folder structure                   | []    |
+| 0.4.6    | Create downloads scripts for each domain and covariate   | []    |
+| 0.4.7    | Create README-style notes for script in milestone folder | []   |
+| 0.4.8    | Rename scripts for clarity and consistency e.g., 03a_, 03b_ | []  |
+| 0.4.9    | Validate chunk headers in .Rmd files ({r name, eval=} )  | []    |
+| 0.4.10    | Knit milestone and data dictionary .Rmd files to PDF     | []    |
+| 0.4.11    | Add file headers / docstrings to all scripts e.g. author, purpose, date| []   |
+| 0.4.12   | Document changes in 01_download README.Rmd               | []    |
+| 0.4.13   | Add reference links to documentation e.g., PRISM, USGS, NLCD | [] |
+| 0.4.14    | Create README-style notes for each R milestone folder    | []    |
 
-## Ver.0.4 Step-by-Step Update Log
+## Ver. 0.4 Step-by-Step Update Log
+### Step 0.4.1 — Update project structure refactor report
 
--   **Action:** 
+-   **Action:** Update project structure refactor report (this Rmd). Tasks: Reorganize report sections. Update file folder structure metadata. Create missing file folders in FFA.
 
--   **Before:** 
+-   **Reason/Before:** Unclear project workflow and documentation. Differences between project file structure and file structure metadata.
 
--   **Reason:** 
+-   **After:** Improves readability, clarity, consistency of report. Provides consistent naming across project
 
-### Step 0.4.1 — Identify and document covariates
+### Step 0.4.2 — Identify and document covariates
 
--   **Action:** 
+-   **Action:** Identify covariates. Create and validate covariate metadata,
 
--   **Before:** 
+-   **Reason/Before:** Covariates not structured spatially or by domain.
 
--   **Reason:** 
+-   **After:** The covariate framework is hierarchically organized across five spatial scales, ranging from station-level (scale 0) to local, subregional, regional, and macroregional levels (scales 1–4), and four major domains: Climate, Land Cover, Topography, and Watershed Metrics. The covariate metadata documents all variables used in regional skew modeling and spatial stratification. 
+
+```{r gp_variable_scaffold, echo=FALSE, results='asis'}
+
+variable_count <- tibble::tribble(
+  ~Level, ~Scale, ~Extent, ~Climate, ~`Land Cover`, ~Topography, ~Watershed, ~Total,
+  0, "Station-level", "Point-derived",       2, 0, 1, 1,  4,
+  1, "Macroregional", "Custom Macrozone",    3, 4, 3, 0, 10,
+  2, "Regional",      "Level II Ecoregion",  4, 4, 4, 5, 17, 
+  3, "Subregional",   "Level III Ecoregion", 6, 2, 4, 3, 15, 
+  4, "Local",         "NHD+ catchments",     3, 2, 8, 4, 17
+)
+
+knitr::kable(variable_count, 
+             caption = "Table: Covariate Count Organized by Domain and Scale")
+```
 
 ### Step 0.4.2 — Update R/01_download/ folder structure
 
