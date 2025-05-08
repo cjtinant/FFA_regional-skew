@@ -20,8 +20,8 @@ This guide helps maintain clear, consistent, and expressive commit messages usin
 |------------|--------------------------------------------------------------|
 | `Feat:`    | New feature or script                                        |
 | `Fix:`     | Bug fix                                                      |
-| `Docs:`    | Documentation (README, Rmd logs, comments)                  |
-| `Refactor:`| Code reorganization or cleanup (no behavior change)         |
+| `Docs:`    | Documentation (README, Rmd logs, comments)                   |
+| `Refactor:`| Code reorganization or cleanup (no behavior change)          |
 | `Test:`    | Adding or updating tests                                     |
 | `Data:`    | Adding/removing/modifying data files                         |
 | `Chore:`   | Routine tasks (renaming, formatting, .gitignore edits)       |
@@ -63,6 +63,55 @@ Chore: update .gitignore with large file exclusions for GitHub limits
 
 ---
 
+# ✅ Semantic Versioning (SemVer) – Recommended Tagging Approach
+
+Format: MAJOR.MINOR.PATCH (e.g., v2.3.1)
+
+Each number has a specific meaning:
+
+| Component	| Changes When...                                      | Example |
+|-----------|------------------------------------------------------|---------|
+| MAJOR	    | Incompatible changes are made (breaks old use)	   | v2.0.0  |
+| MINOR	    | New features are added in a backward-compatible way  | v2.1.0  |
+| PATCH	    | Bug fixes or minor changes that don’t break anything | v2.1.1  |
+
+## 👇 When to Increment Which?
+| Situation	                                        | Version Example |
+|---------------------------------------------------|-----------------|
+| You break the API or change file formats	        | v2.0.0          |
+| You add a new data field or function (compatible)	| v1.1.0          |
+| You fix a bug or typo in documentation/code	    | v1.0.1          |
+
+## 🧠 Why Use SemVer?
+
+- Clear communication of changes
+
+- Enables automation of version checks
+
+- Plays well with Git tags, changelogs, and CI/CD tools
+
+- Supports dependency tracking (e.g., for R packages, Python modules)
+
+---
+
+## 🔖 Optional Extensions
+
+You can also add:
+
+- Pre-releases: v2.0.0-beta, v1.2.0-rc1
+
+- Build metadata: v1.0.0+20240508
+
+---
+
+## 🔧 Suggested Tag Format
+
+Stick to lowercase v prefix: v1.2.0
+
+- This helps distinguish tags from branch names and aligns with GitHub release conventions.
+
+---
+
 ## 📂 Tagging Example
 
 ```bash
@@ -70,4 +119,102 @@ git tag -a v0.3-refactor -m "Refactor project structure and file locations"
 git push origin v0.3-refactor
 ```
 
-Happy committing!
+---
+
+# 📓 1. CHANGELOG Format (Based on Keep a Changelog)
+
+Use a CHANGELOG.md file at the root of your project.
+
+🔧 Recommended Format:
+
+    # Changelog
+
+    All notable changes to this project will be documented in this file.
+
+    The format is based on [Keep a Changelog](https://keepachangelog.com/)
+    and this project adheres to [Semantic Versioning](https://semver.org/).
+
+    ---
+
+    ## [Unreleased]
+
+    ### Added
+    - Initial support for batch PRISM climate data download
+    - Created `10a_exploratory_modeling_check_missing.R` for handling NA values
+
+    ### Changed
+    - Improved slope outlier detection method in modeling script
+
+    ### Fixed
+    - Bug in elevation raster alignment
+
+    ---
+
+    ## [v1.2.0] - 2025-05-08
+
+    ### Added
+    - Integrated GAM modeling with `mgcv` package
+    - Exported residual plots for model diagnostics
+
+    ### Changed
+    - Updated `README.Rmd` with covariate metadata overview
+    - Harmonized variable names for terrain and climate covariates
+
+    ### Deprecated
+    - Old correlation heatmap script (`10b_corr_old.R`)
+
+    ---
+
+    ## [v1.1.0] - 2025-04-15
+
+    ### Added
+    - Initial elastic net model with tidymodels
+    - Ecoregion zonal majority mask added
+
+    ---
+
+    ## [v1.0.0] - 2025-04-01
+
+    ### Added
+    - Project structure and milestone folders
+    - USGS site metadata download script
+    - Data dictionary template and preamble
+
+---
+
+# ✅ 2. Release Checklist (Markdown or Issue Template)
+
+Use this to ensure every release is polished and complete.
+
+🔍 Example: RELEASE_CHECKLIST.md
+
+    # Release Checklist for Version X.Y.Z
+
+    ## 🔢 Versioning
+    - [ ] Bump version (MAJOR / MINOR / PATCH) in tag and `README` if needed
+    - [ ] Create annotated Git tag: `git tag -a vX.Y.Z -m "Release vX.Y.Z"`
+
+    ## 📝 Documentation
+    - [ ] Update `CHANGELOG.md`
+    - [ ] Update `README.md` or `README.Rmd` (if applicable)
+    - [ ] Confirm that all scripts are commented and up-to-date
+    - [ ] If R package: update `DESCRIPTION` and `NEWS.md`
+
+    ## 📁 Code and Data
+    - [ ] Validate all outputs in `data/` and `outputs/`
+    - [ ] Confirm that intermediate files are not committed unless intentional
+    - [ ] Check that all scripts run without error from a clean clone
+
+    ## 🧪 Testing
+    - [ ] Run model scripts and validate final output summaries
+    - [ ] Visually inspect maps and plots for clarity
+    - [ ] Check regression residuals and other diagnostics
+
+    ## 🚀 Deployment
+    - [ ] Push all commits and tag to GitHub: `git push && git push origin --tags`
+    - [ ] Attach `CHANGELOG` section to GitHub release page
+    - [ ] (Optional) Notify collaborators, update shared folder, archive versioned ZIP
+
+    ## 📦 Optional Extras
+    - [ ] Archive important rasters or scripts to `release/vX.Y.Z/`
+    - [ ] Create reproducibility snapshot (e.g., via `renv::snapshot()` in R)
