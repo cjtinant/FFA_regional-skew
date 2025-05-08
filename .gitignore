@@ -1,4 +1,20 @@
 # =======================
+# LARGE FILES TO IGNORE (flagged >50MB)
+# =======================
+
+# Raster Grid (PRISM / PHZM)
+data/raw/raster_raw/phzm_us_grid_2023/phzm_us_grid_2023.bil
+data/raw/raster_raw/koppen-climate-classification/koppen_classification.tif
+data/raw/raster_raw/elevation_ned.tif
+
+# Vector Files (Shapefiles)
+data/raw/vector_raw/ecoregions_orig/us_eco_l4_no_st.shp
+data/raw/vector_raw/ecoregions_orig2/phzm_us_zones_shp_2023/phzm_us_zones_shp_2023.shp
+data/raw/vector_raw/us_eco_lev03/us_eco_l3.shp
+data/raw/vector_raw/us_eco_lev02/us_eco_l2.shp
+data/raw/vector_raw/us_eco_lev01/us_eco_l1.shp
+
+# =======================
 # Output Data (Generated or Large Files)
 # =======================
 
@@ -6,6 +22,17 @@
 data/delete/
 data/spatial/*
 data/raw/prism/
+
+# =======================
+# Ignore ArcGIS Pro Artifacts
+# =======================
+
+arcgis_project/*
+
+# =======================
+# Ignore generic
+*.zip
+# =======================
 
 # =======================
 # Ignore binary Excel source metadata
@@ -21,6 +48,7 @@ docs/tmp/
 
 # =======================
 # Ignore Excel export logs or LaTeX leftovers
+# =======================
 docs/*.log
 docs/*.aux
 docs/*.toc
@@ -28,7 +56,7 @@ docs/*.out
 # =======================
 
 # =======================
-# General Windows or MacOs cruft
+# Ignore General Windows or MacOs cruft
 # =======================
 
 schema.ini
@@ -39,24 +67,7 @@ schema.ini
 .DS_Store
 
 # =======================
-# ArcGIS Pro Artifacts (Expanded)
-# =======================
-
-arcgis_project/*
-
-# =======================
-# R Markdown Generated Files (Expanded)
-# =======================
-
-*.html
-
-# =======================
-# Generic
-*.zip
-# =======================
-
-# =======================
-# RStudio Junk
+# Ignore RStudio Junk
 # =======================
 
 .Rproj.user/
@@ -64,30 +75,15 @@ arcgis_project/*
 .RData
 
 # =======================
-# Temporary files to delete on final
+# Ignore Temporary files to delete on final
 # =======================
 
 delete/
 prior-maps/
 notebooks/
-to_check/*.docx
-to_check/*.Rmd
+to_check/
 
-# =======================
-# LARGE FILES TO IGNORE (flagged >50MB)
-# =======================
 
-# Raster Grid (PRISM / PHZM)
-data/raw/raster_raw/phzm_us_grid_2023/phzm_us_grid_2023.bil
-data/raw/raster_raw/koppen-climate-classification/koppen_classification.tif
-data/raw/raster_raw/elevation_ned.tif
-
-# Vector Files (Shapefiles)
-data/raw/vector_raw/ecoregions_orig/us_eco_l4_no_st.shp
-data/raw/vector_raw/ecoregions_orig2/phzm_us_zones_shp_2023/phzm_us_zones_shp_2023.shp
-data/raw/vector_raw/us_eco_lev03/us_eco_l3.shp
-data/raw/vector_raw/us_eco_lev02/us_eco_l2.shp
-data/raw/vector_raw/us_eco_lev01/us_eco_l1.shp
 
 
 
