@@ -571,7 +571,7 @@ Update after completing Ver 0.4
 </tr>
 <tr class="odd">
 <td>* 0.4 *</td>
-<td>Identified a need to</td>
+<td>Identified a need to update covariates</td>
 <td>[]</td>
 </tr>
 <tr class="even">
@@ -801,13 +801,13 @@ before export. This includes checks for:</p>
 <tr class="even">
 <td align="center">0.4.2</td>
 <td>Identify and document covariates using
-<code>01c_data_dictionary_for_covariates.Rmd</code></td>
-<td align="center">[]</td>
+<code>R/01_download/01c_data_dictionary_for_covariates.Rmd</code></td>
+<td align="center">[X]</td>
 </tr>
 <tr class="odd">
 <td align="center">0.4.3</td>
 <td>Validate and document Notes folder</td>
-<td align="center">[]</td>
+<td align="center">[X]</td>
 </tr>
 <tr class="even">
 <td align="center">0.4.4</td>
@@ -976,20 +976,15 @@ in regional skew modeling and spatial stratification.</p></li>
 </tbody>
 </table>
 </div>
-<div id="step-0.4.2-update-r01_download-folder-structure" class="section level3">
-<h3>Step 0.4.2 — Update R/01_download/ folder structure</h3>
+<div id="step-0.4.3-validate-and-document-notes-folder" class="section level3">
+<h3>Step 0.4.3 — Validate and document Notes folder</h3>
 <ul>
-<li><p><strong>Action:</strong></p></li>
-<li><p><strong>Before:</strong></p></li>
-<li><p><strong>Reason:</strong></p></li>
-</ul>
-</div>
-<div id="step-0.4.3" class="section level3">
-<h3>Step 0.4.3 —</h3>
-<ul>
-<li><p><strong>Action:</strong></p></li>
-<li><p><strong>Before:</strong></p></li>
-<li><p><strong>Reason:</strong></p></li>
+<li><p><strong>Action:</strong> Added notes folder to Git</p></li>
+<li><p><strong>Before/Reason:</strong> Notes folder was not included in
+Git, as clear notes on method had not been compiled</p></li>
+<li><p><strong>After:</strong> Notes folder contains discussion how
+zonal statistics will be calculated and other notes regarding
+covariates.</p></li>
 </ul>
 </div>
 <div id="step-0.4.4" class="section level3">
@@ -1058,36 +1053,9 @@ in regional skew modeling and spatial stratification.</p></li>
 <!--
 Next Steps FFA
 
-
-1. If you haven’t already, consider:
-    Adding a docs/README.md with:
-        A short summary of each version (v021, v022)
-        Notes on what changed between versions
-        How/when they were used (e.g., linked to milestone 01c)
-    Renaming future versions with a yyyymmdd tag if versioning becomes complex:
-        regional_skew_covariates_metadata_by_scale_20250507.xlsx
-    Citing the metadata in milestone files or reports with a relative path like:
-    read_csv("docs/regional_skew_covariates_metadata_by_scale_v022.csv")
-
-2.   write a short R snippet or Quarto chunk to auto-link covariate scripts to entries in the data dictionary?
-
 Chain these in targets or drake pipelines
 
-add a data_dictionary.csv in data/meta/
-
 Add a log_README.md in each R/ subfolder to document script purpose
-
-Consider a targets-based workflow if your scripts are getting complex
-
-    Use both .Rmd and .md for documentation (👍).
-
-Inside that same folder, you can later add:
-
-    00_refactor_checklist.csv (if you want a CSV to track renaming/moves)
-
-    00_folder_before.png and 00_folder_after.png (for visuals)
-
-    rename_scripts.R (if you want to learn R-side file management too)
 
 
 -->

@@ -483,8 +483,8 @@ A multi-step metadata quality checklist was used to validate content before expo
 | Step | Task                                                         | Status |
 |:--------:|----------------------------------------------------------|:------:|
 | 0.4.1    | Reorganize this Rmd                                      | [X]    |
-| 0.4.2    | Identify and document covariates using `01c_data_dictionary_for_covariates.Rmd` | []    |
-| 0.4.3    | Validate and document Notes folder                       | []    |
+| 0.4.2    | Identify and document covariates using `R/01_download/01c_data_dictionary_for_covariates.Rmd` | [X]    |
+| 0.4.3    | Validate and document Notes folder                       | [X]    |
 | 0.4.4    | Develop a consistent naming strategy for raw and processed data | [] |
 | 0.4.5    | Update R/01_download/ folder structure                   | []    |
 | 0.4.6    | Create downloads scripts for each domain and covariate   | []    |
@@ -529,21 +529,13 @@ knitr::kable(variable_count,
              caption = "Table: Covariate Count Organized by Domain and Scale")
 ```
 
-### Step 0.4.2 — Update R/01_download/ folder structure
+### Step 0.4.3 — Validate and document Notes folder
 
--   **Action:** 
+-   **Action:** Added notes folder to Git
 
--   **Before:** 
+-   **Before/Reason:** Notes folder was not included in Git, as clear notes on method had not been compiled
 
--   **Reason:** 
-
-### Step 0.4.3 — 
-
--   **Action:** 
-
--   **Before:** 
-
--   **Reason:** 
+-   **After:** Notes folder contains discussion how zonal statistics will be calculated and other notes regarding covariates.
 
 ### Step 0.4.4 — 
 
@@ -612,36 +604,9 @@ knitr::kable(variable_count,
 <!--
 Next Steps FFA
 
-
-1. If you haven’t already, consider:
-    Adding a docs/README.md with:
-        A short summary of each version (v021, v022)
-        Notes on what changed between versions
-        How/when they were used (e.g., linked to milestone 01c)
-    Renaming future versions with a yyyymmdd tag if versioning becomes complex:
-        regional_skew_covariates_metadata_by_scale_20250507.xlsx
-    Citing the metadata in milestone files or reports with a relative path like:
-    read_csv("docs/regional_skew_covariates_metadata_by_scale_v022.csv")
-
-2.	 write a short R snippet or Quarto chunk to auto-link covariate scripts to entries in the data dictionary?
-
 Chain these in targets or drake pipelines
 
-add a data_dictionary.csv in data/meta/
-
 Add a log_README.md in each R/ subfolder to document script purpose
-
-Consider a targets-based workflow if your scripts are getting complex
-
-    Use both .Rmd and .md for documentation (👍).
-
-Inside that same folder, you can later add:
-
-    00_refactor_checklist.csv (if you want a CSV to track renaming/moves)
-
-    00_folder_before.png and 00_folder_after.png (for visuals)
-
-    rename_scripts.R (if you want to learn R-side file management too)
 
 
 -->
