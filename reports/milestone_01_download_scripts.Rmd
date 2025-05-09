@@ -55,9 +55,9 @@ See [`spatial_data_preparation_checklist.md`](../reports_milestone01_download_sc
 
 Use:
 
--   /data_raw/epa_landcover_2021/  
+-   /data_raster_raw/epa_landcover_2021/  
 
--   /data_raw/usgs_nhdplusv2/  
+-   /data_raster_raw/usgs_nhdplusv2/  
 
 -   /data_raw/prism_ppt_normals/
 
