@@ -49,10 +49,11 @@ docs/tmp/
 # =======================
 # Ignore Excel export logs or LaTeX leftovers
 # =======================
-docs/*.log
-docs/*.aux
-docs/*.toc
-docs/*.out
+*.log
+*.aux
+*.toc
+*.out
+*.log
 # =======================
 
 # =======================
