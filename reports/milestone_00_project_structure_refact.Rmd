@@ -116,17 +116,108 @@ FFA_regional-skew/
 ├── output/                   # Intermediate outputs (e.g., `.Rds`, `.csv`, `.tif`)
                               # Next Steps: Add subfolders like `extracted/`,
                               #   `joined/`, or date-stamped folders |
-│   ├── figs/                    # Plots and maps
-│   ├── models/                  # Model objects (.rds)
-│   └── tables/                  # Summary tables (.csv, .html)
+│   ├── figs/                 # Plots and maps
+│   ├── models/               # Model objects (.rds)
+│   └── tables/               # Summary tables (.csv, .html)
 
-├── R/                            # All analysis scripts (milestone-organized)
-│   ├── 01_download/              # NWIS, PRISM, Ecoregions
-│   ├── 02_clean/                 # Filtering, QA, station skew
-│   ├── 03_covariates/            # Climate, topography, land cover
-│   ├── 04_modeling/              # GAMs, Elastic Net, correlation
-│   ├── 05_eval/                  # Model diagnostics, residuals, validation
-│   └── utils/                    # Reusable functions
+├── R/                        # All analysis scripts (milestone-organized)
+│   ├── 01_download/          # NWIS, PRISM, Ecoregions
+│   ├── 02_clean/             # Filtering, QA, station skew
+│   ├── 03_covariates/        # Climate, topography, land cover
+│   ├── 04_modeling/          # GAMs, Elastic Net, correlation
+│   ├── 05_eval/              # Model diagnostics, residuals, validation
+│   └── utils/                # Reusable functions
+│       └── f_process_geometries.R
+
+├── README.md                     # Rendered Markdown output.  GitHub-compatible
+                                  #   plain-text overview. Use for quick 
+                                  #   navigation, build instructions, etc. 
+├── README.Rmd                    # Workflow overview (editable).  Richer,
+                                  #   knit-ready documentation with figures, 
+                                  #  tables, and references. Can generate 
+                                  #   HTML/PDF documentation from this file
+
+├── reports/                      # analysis narratives, usually knitted `.Rmd` 
+                                  #   or `.qmd` output. Next Steps: Consider 
+                                  #   `reports/final/`, `reports/draft/` 
+                                  #   structure if versioning
+
+├── results/                      # Manuscript-ready outputs, model metrics, 
+                                  #   final figures, tables, model outputs for 
+                                  #   publication or reporting Next Steps: 
+                                  #   Organize by milestone or product:
+                                  #     `maps/`, `tables/`, `models/`
+│   ├── posterdown/                 # Poster files and assets
+│   └── slides/                     # Slide decks or visualizations
+
+├── to_check/                    # Temporary holding area for uncertain or 
+                                 #   transitional files needing review or QA. 
+                                 # Next Steps: Consider renaming to `sandbox/` 
+                                 # and clearing regularly.
+```
+
+
+## Updated File Structure (Ver. 0.4)
+
+``` text
+FFA_regional-skew/
+├── .gitignore                    # Prevents sensitive/local files from being pushed
+├── arcgis_project/               # Stores `.aprx` and layer files from ArcGIS 
+                                  #   Pro workflows
+
+├── data/ 
+│   ├── meta/                     # Metadata
+│   ├── raw/                      # Unmodified input data 
+                                  #   e.g., shapefiles, CSVs, rasters
+
+│   │   ├── sites_raw/            # raw site data
+|   │   │   ├── sites_all_in_bb.csv
+|   │   │   ├── sites_all_peak_in_bb.csv
+│   │   ├── raster_raw/          # Raster data (unprojected/unprocessed)
+│   │   └── vector_raw/          # Shapefiles (unprojected/unprocessed)
+
+│   ├── processed/               # Cleaned, derived datasets
+
+│   │   ├── spatial/             # Ready-to-use shapefiles and rasters
+│   │   │   ├── us_eco_lev01/
+│   │   │   ├── us_eco_lev02/
+│   │   │   ├── us_eco_lev03/
+│   │   │   ├── us_eco_lev04/
+│   │   │   ├── koppen_climate/
+│   │   │   ├── tl_state_boundaries/
+│   │   │   └── derived_products/
+│   └── meta/                    # CRS info, variable scaffold, project metadata
+│       └── variable_scaffold.csv
+
+├── docs/                     # Project documentation, e.g., final reports, 
+                              #   manuscripts, proposal materials. 
+                              # Reference documentation like README-style guides. 
+                              # Metadata crosswalks and data dictionaries
+                              # review or publication. 
+                              # Files you reference in Quarto/PDF reports or posters
+
+├── FFA_regional-skew.Rproj   # RStudio project file for launching the 
+                              # workspace. Keep this in the root.
+├── log/                      # For shell logs or targets progress reports 
+├── notebooks/                # For ad hoc .Rmd or .qmd experiments 
+├── notes/                    # Personal or team notes, meeting logs, brainstorms
+                              #   Could be transitioned to Markdown or Quarto as
+                              #   the project matures
+
+├── output/                   # Intermediate outputs (e.g., `.Rds`, `.csv`, `.tif`)
+                              # Next Steps: Add subfolders like `extracted/`,
+                              #   `joined/`, or date-stamped folders |
+│   ├── figs/                 # Plots and maps
+│   ├── models/               # Model objects (.rds)
+│   └── tables/               # Summary tables (.csv, .html)
+
+├── R/                        # All analysis scripts (milestone-organized)
+│   ├── 01_download/          # NWIS, PRISM, Ecoregions
+│   ├── 02_clean/             # Filtering, QA, station skew
+│   ├── 03_covariates/        # Climate, topography, land cover
+│   ├── 04_modeling/          # GAMs, Elastic Net, correlation
+│   ├── 05_eval/              # Model diagnostics, residuals, validation
+│   └── utils/                # Reusable functions
 │       └── f_process_geometries.R
 
 ├── README.md                     # Rendered Markdown output.  GitHub-compatible
@@ -483,10 +574,10 @@ A multi-step metadata quality checklist was used to validate content before expo
 | Step | Task                                                         | Status |
 |:--------:|----------------------------------------------------------|:------:|
 | 0.4.1    | Reorganize this Rmd                                      | [X]    |
-| 0.4.2    | Identify and document covariates using `R/01_download/01c_data_dictionary_for_covariates.Rmd` | [X]    |
+| 0.4.2    | Identify and document covariates                         | [X]    |
 | 0.4.3    | Validate and document Notes folder                       | [X]    |
-| 0.4.4    | Develop a consistent naming strategy for raw and processed data | [] |
-| 0.4.5    | Update R/01_download/ folder structure                   | []    |
+| 0.4.4    | Update raw data/ folder structure / naming strategy      | [X]    |
+| 0.4.5   | Update R/01_download/ folder structure                   | []    |
 | 0.4.6    | Create downloads scripts for each domain and covariate   | []    |
 | 0.4.7    | Create README-style notes for script in milestone folder | []   |
 | 0.4.8    | Rename scripts for clarity and consistency e.g., 03a_, 03b_ | []  |
