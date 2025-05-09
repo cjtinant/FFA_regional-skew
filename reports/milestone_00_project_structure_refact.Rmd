@@ -182,7 +182,7 @@ Update after completing Ver 0.4
 | 0.3.4     | Rename scripts/ to R/ and split by milestone function   | [X]    |
 | 0.3.5     | Move raw shapefiles to data/raw/spatial_raw/            | [X]    |
 | 0.3.6     | Move cleaned shapefiles to spatial/                     | [X]    |
-| * 0.4 *   | Identified a need to                                    | []    | 
+| * 0.4 *   | Identified a need to update covariates                  | []    | 
 | 0.3.7     | Rename /R/01_download scripts as:                       |        |
 |           |   milestone + domain + covariate + source               | [P]    |
 | 0.3.8     | Tag this commit in Git as v0.3-structure-refactor       | []    |
