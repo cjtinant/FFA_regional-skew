@@ -1,10 +1,16 @@
 ---
-title: "Milestone 00 — Project Refactor"
+title: "Milestone 00 — Project Structure Refactor"
+subtitle: "Establishing a Reproducible Framework for Regional Skew Estimation"
 author: "C.J. Tinant"
-date: "`r Sys.Date()`"
-output: html_document
-editor_options: 
-  markdown: 
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  github_document:
+    toc: true
+    toc_depth: 2
+params:
+  version: "v0.4"
+editor_options:
+  markdown:
     wrap: 72
 ---
 
@@ -12,7 +18,9 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Overview
+# Overview of `r params$version`
+
+This document describes the structure and metadata setup completed for **Milestone `r params$version`**.
 
 This document tracks the **project structure refactor** for a project to estimate regional skew of the annual flood series for the Great Plains ecoregion. The reorganization improves clarity, modularity, and reproducibility by aligning files with milestone workflows and standard naming conventions.
 
@@ -490,18 +498,27 @@ knitr::kable(variable_count,
 
 -   **After:** Adopted a Subdirectory Strategy for folders and a [source]_[layer]_[year|version]_[status].[ext] strategy for naming.
 
-### Step 0.3.7  - ** Updated ** Move steps to milestone_01
+### Step 0.3.7 – Refactor and Modularize
 
--   **Action:** Created sub-issue v0.4 of Milestone 00 (this milestone). Moved steps related to downloading scripts to Milestone 01. Closed sub-issue v0.4.
+-   **Action:** Created sub-issue `v0.4` under Milestone 00. Moved script-related steps (e.g., downloading covariate data) to **Milestone 01 – Data Download and Preparation**. Closed the sub-issue after restructuring.
 
--   **Reason/Before:** Identified a need identify covariates, and create and validate covariate metadata. 
+-   **Reason (Before):** Covariate identification and metadata creation required their own distinct milestone. The original milestone was too broad.
 
--   **After:** Better organized and modularized project workflow.
+-   **Result (After):** Project structure is now better modularized by task and milestone. Documentation and code are easier to maintain.
 
-### Step 0.3.8  - Update GitHub Milestone and Issue
-### Step 0.3.9  - Document Final Changes this Rmd
-### Step 0.3.10 - Document changes in README
-### Step 0.3.11 - Push to .git and tag commit
+### Step 0.3.8 – Update GitHub Milestone
 
+-   **Action:** Updated GitHub Milestone 00 title and description to reflect changes in scope and tagging.
 
+### Step 0.3.9 – Final Edits to Documentation
+
+-   **Action:** Updated this .Rmd file with a GitHub-friendly YAML header. Ensured clarity, TOC, and version parameter (params$version: "v0.4").
+
+### Step 0.3.10 – README Update
+
+-   **Action:** Edited README.Rmd and README.md to reflect the current project structure and metadata paths.
+
+### Step 0.3.11 – Git Commit and Tag
+
+-   **Action:** Committed changes to Git, including output and documentation files. Tagged the repository as v0.4.
 
