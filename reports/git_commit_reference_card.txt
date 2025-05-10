@@ -4,7 +4,7 @@ This guide helps maintain clear, consistent, and expressive commit messages usin
 
 ---
 
-## 📌 Commit Message Format
+## 📌 Commit Message FormatD
 
 ```
 <type>: <short summary>
@@ -27,6 +27,7 @@ This guide helps maintain clear, consistent, and expressive commit messages usin
 | `Chore:`   | Routine tasks (renaming, formatting, .gitignore edits)       |
 | `Build:`   | Dependency or environment updates                            |
 | `Tag:`     | Milestone tagging, version bump                              |
+| `Output`   | Changes to the output\ file                                  |
 
 ---
 
