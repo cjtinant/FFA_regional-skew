@@ -7,14 +7,16 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+# Load necessary libraries
 library(tidyverse)
 library(knitr)
-library(tidyverse)
-library(knitr)
+library(kableExtra)
+library(ggforce)
+
 
 ```
 
-## Project Overview
+# Project Overview
 
 This project supports the estimation of regional skew coefficients for flood frequency analysis (FFA) in the Great Plains. It emphasizes:
 
@@ -30,39 +32,33 @@ One of the core challenges in FFA is that short periods of record often result i
 
 However, standardized procedures for calculating robust regional skew coefficients remain underdeveloped. This project addresses that gap by integrating spatial and climatic covariates into a reproducible modeling workflow designed to improve regional estimation.
 
-## Phase Objectives
+# Phase Objectives
 
 The primary goals of this phase are twofold:
 
--   To explain spatial variation in station skew, defined as the skew coefficient of the Log-Pearson Type III distribution estimated at individual stream gages. This is accomplished by modeling skew as a function of numeric covariates derived from:
+-   To explain spatial variation in station skew, defined as the skew coefficient of the Log-Pearson Type III distribution estimated at individual stream gages. This is accomplished by modeling skew as a function of numeric covariates. These covariates are primary derived from raster data aggregated by Level II, III Ecoregions (ecological and physiographic classifications), or NHD+ catchments. The covariates include:
 
--   
-     Ecoregions (ecological and physiographic classifications)
+    -   Geographic Location (latitude and longitude)
 
+    -   Climate (e.g., precipitation and temperature normals)
 
--   Geographic Location (latitude and longitude)
+    -   Topography (elevation, slope, and terrain indices)
 
--   Climate (e.g., precipitation and temperature normals)
+    -   Watershed Characteristics (drainage area, shape, etc.)
 
--   Topography (elevation, slope, and terrain indices)
-
-
--   Watershed Characteristics (drainage area, shape, etc.)
-
-
--   Land Cover (vegetation, impervious surfaces, etc.)
+    -   Land Cover (vegetation, impervious surfaces, etc.)
 
 -   To identify clusters of gaging stations with similar characteristics based on these covariates. These clusters will serve as the basis for calculating regional skew coefficients tailored to stream discharge gages on Tribal lands within the Great Plains ecoregion.
 
-## Layout of Analysis
+# Analysis Layout
 
 This project is implemented in R using the {tidyverse} and related tools to automate a reproducible workflow for downloading, cleaning, joining, and modeling covariate data associated with stream gage locations.
 
-### Study Domain
+## Study Domain
 
 The study focuses on stream gaging stations within the Great Plains ecoregion. An initial inventory included approximately 11,000 stations across the contiguous U.S. After filtering out sites with flow regulation, water withdrawals, or insufficient record length, a final set of \~1,100 gages was retained for analysis. Each of these stations has more than 20 years of peak flow data and meets data quality criteria suitable for estimating flood skew.
 
-### Covariates and Multiscale Design Framework
+## Nested Scale Design Framework
 
 Covariates span four major domains:
 
@@ -86,15 +82,14 @@ To capture spatial heterogeneity and support robust regionalization, covariates 
 
 -   Scale 4: Macroregional (custom prairie macrozones derived from Level II groupings)
 
-This design balances thematic depth and spatial resolution. Regional and local-scale metrics are prioritized within the Climate and Topography domains to reflect key drivers of flood skew. Macroregional variables offer contextual information (e.g., climate zones, land cover fractions), while fine-scale metrics (e.g., slope, flow accumulation) support physically-based interpretation of runoff generation and hydrograph response.
-
 The table below summarizes the number of covariates at each spatial scale and domain:
 
 ```{r gp_variable_scaffold, echo=FALSE, results='asis'}
 
 variable_count <- tibble::tribble(
   ~Scale, ~Extent, ~Climate, ~`Land Cover`, ~Topography, ~Watershed, ~Total,
-  "Macroregional", "Custom Macrozone", 3, 4, 3, 3, 13,
+  "Station-specific", "Point-level", 2, 0, 1, 1, 4,
+  "Macroregional", "Custom Macrozone", 3, 4, 3, 0, 10,
   "Regional", "Level II Ecoregion", 4, 4, 4, 5, 17, 
   "Subregional", "Level III Ecoregion", 6, 2, 4, 3, 15, 
   "Local", "NHD+ catchments", 3, 2, 8, 4, 17
@@ -103,9 +98,81 @@ variable_count <- tibble::tribble(
 knitr::kable(variable_count, caption = "Table: Variable Count")
 ```
 
-## Covariate Description by Spatial Scale
+The design balances resolution across spatial and temporal scales. Macroregional-scale drivers reflect long-term, broad-context influences such as climate zones, dominant land cover fractions, and large-scale ecological patterns. These variables provide stable background conditions that shape hydrologic and geomorphic processes over decadal to centennial timeframes. Regional-scale drivers capture intermediate temporal patterns and spatial detail, including climate normals (e.g., mean temperature and precipitation), seasonal storm characteristics, and watershed properties such as stream order, terrain complexity, soil texture, and net primary productivity. These factors influence annual to decadal variability in hydrologic response. Subregional-scale drivers emphasize short-term temporal dynamics and finer spatial heterogeneity, incorporating intra-annual climate variability (e.g., seasonal precipitation metrics), localized land use patterns (e.g., MODIS land cover fractions and diversity indices), and terrain–hydrology interactions (e.g., soil permeability, runoff class, topographic wetness index, and flow accumulation). Fine-scale metrics—including climate intensity, dominant land use, terrain morphology, watershed geometry, and network structure—support physically based interpretation of runoff generation mechanisms and hydrograph response characteristics.
 
-### Station-Level Geospatial and Watershed Metadata
+```{r scale_diagram, echo=FALSE}
+
+# Create data for concentric circles
+circle_data <- tibble::tibble(
+  label = c("Macroregional", "Regional", "Subregional", "Fine-scale"),
+  radius = c(4, 3, 2, 1),
+  x0 = 0,
+  y0 = 0
+)
+
+# Text positions
+text_data <- tibble::tibble(
+  label = c("Macroregional", "Regional", "Subregional", "Fine-scale\n(Process Model)"),
+  x = c(0, 0, 0, 0),
+  y = c(4.2, 3.2, 2.2, 0)
+)
+
+# Plot
+ggplot() +
+  # Draw concentric circles
+  geom_circle(data = circle_data, 
+              aes(x0 = x0, y0 = y0, r = radius),
+              color = "gray30", 
+              fill = NA,
+              linewidth = 1) +
+  # Add scale labels
+  geom_text(data = text_data,
+            aes(x = x, y = y, label = label),
+            size = c(5, 4.5, 4, 4),
+            fontface = "bold") +
+  # Theme and adjustments
+  coord_fixed() +
+  theme_void() +
+  ggtitle("Nested Spatial and Temporal Scales in Hydrologic Modeling") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+## Environmental Covariate Descriptions
+
+```{r scale_table, echo=FALSE, results='asis'}
+scale_table <- tibble::tibble(
+  `Scale` = c("Macroregional", "Regional", "Subregional", "Fine-scale"),
+  `Temporal Range` = c(
+    "Decades to centuries",
+    "Annual to decadal",
+    "Seasonal to annual",
+    "Event to seasonal"
+  ),
+  `Spatial Focus` = c(
+    "Continental to subcontinental",
+    "Multi-state to watershed",
+    "Sub-watershed or HUC-12",
+    "Field-scale to catchment"
+  ),
+  `Representative Variables` = c(
+    "Climate zones, dominant land cover, ecoregion class",
+    "Climate normals, storm seasonality, stream order, terrain complexity, net primary productivity",
+    "Seasonal precipitation metrics, MODIS land cover %, soil texture, runoff class, TWI, flow accumulation",
+    "Precipitation intensity, land use class, terrain morphology, watershed geometry, stream network structure"
+  ),
+  `Hydrologic Relevance` = c(
+    "Broad climate context, vegetation regime",
+    "Watershed-scale flow patterns and variability",
+    "Runoff potential, localized hydrologic processes",
+    "Runoff generation, hydrograph response"
+  )
+)
+
+knitr::kable(scale_table, format = "markdown", caption = "Summary of Covariate Scales")
+
+```
+
+### Station-Level Environmental Covariates
 
 These point-based covariates describe intrinsic site characteristics that serve as fixed inputs in hydrologic modeling:
 
@@ -171,25 +238,8 @@ These high-resolution variables, derived at the catchment scale (\~1–5 km²), 
 
 -   Drainage network structure is described by Stream Density, Flow Length, and Stream Slope, which together determine runoff velocity, timing, and erosive potential.
 
-## Methods Notes
-
-### Spatial Unit Merging Procedure
-
-To ensure statistical robustness in regional analyses, polygons smaller than 1,000 km² or containing fewer than 30 stream gages were merged with the most ecologically similar adjacent Level III ecoregions. The merging process followed a hierarchical decision rule:
-
--   Primary criterion: adjacency with a unit sharing the same Level II ecoregion classification
-
--   Secondary criterion: ecological similarity, evaluated using Euclidean distance in a multivariate space defined by:
-
--   Land cover composition (e.g., cropland, forest, urban fractions)
-
--   Terrain metrics (mean and standard deviation of slope)
-
--   Vegetation seasonality (NDVI amplitude and timing of peak greenness)
-
-This approach preserved regional coherence while improving the gage count and spatial contiguity required for reliable skew estimation.
-
-### Rationale for Using 2016 as the Reference Year
+# Methods Notes
+## Rationale for Using 2016 as the Reference Year
 
 The year 2016 was selected as the reference year for environmental covariates due to its widespread use and stability in environmental modeling. Key justifications include:
 
@@ -209,23 +259,23 @@ The year 2016 was selected as the reference year for environmental covariates du
 
 By standardizing on 2016, this project supports consistent, comparable modeling across datasets and scales.
 
-<!--
+## Spatial Unit Merging Procedure
 
-9.2 TEMPERATE PRAIRIES
+To ensure statistical robustness in regional analyses, polygons smaller than 1,000 km² or containing fewer than 30 stream gages were merged with the most ecologically similar adjacent Level III ecoregions. The merging process followed a hierarchical decision rule:
 
-9.3 WEST-CENTRAL SEMI-ARID PRAIRIES
+-   Primary criterion: adjacency with a unit sharing the same Level II ecoregion classification
 
-9.4 SOUTH CENTRAL SEMI-ARID PRAIRIES
+-   Secondary criterion: ecological similarity, evaluated using Euclidean distance in a multivariate space defined by:
 
-9.5 TEXAS-LOUISIANA COASTAL PLAIN
+-   Land cover composition (e.g., cropland, forest, urban fractions)
 
-9.6 TAMAULIPAS-TEXAS SEMIARID PLAIN
+-   Terrain metrics (mean and standard deviation of slope)
 
--->
+-   Vegetation seasonality (NDVI amplitude and timing of peak greenness)
 
+This approach preserved regional coherence while improving the gage count and spatial contiguity required for reliable skew estimation.
 
-
-## Attribution of Prairie Macrozone Delineation
+## Prairie Macrozone Delineation
 
 The delineation of prairie macrozones (Tallgrass, Mixed-Grass, and Shortgrass) in this study is based on aggregations of EPA Level III and IV Ecoregions1, guided by ecological, climatic, and physiographic criteria. Boundaries were refined using expert knowledge of prairie vegetation transitions, precipitation gradients, soil characteristics, and land use patterns.
 
@@ -233,7 +283,7 @@ The delineation of prairie macrozones (Tallgrass, Mixed-Grass, and Shortgrass) i
 
  The grouping captures regions with similar hydroclimatic dynamics and strong surface–subsurface hydrologic connectivity, important for flood response and baseflow recharge.
 
-### Tallgrass Prairie Macrozone
+#### Tallgrass Prairie Macrozone Description
 
 The Tallgrass Prairie macrozone represents the mesic end of the prairie continuum, with:
 
@@ -271,7 +321,7 @@ Level III and IV ecoregions in the Tallgrass Prairie macrozone include U.S porti
 
 -   9.5.1 Western Gulf Coastal Plain (US 34): Nearly flat coastal plain.
 
-### Mixed-Grass Prairie Macrozone
+#### Mixed-Grass Prairie Macrozone Description
 
 The Mixed-Grass Prairie macrozone is a transitional zone between the wetter Tallgrass systems and the drier Shortgrass steppes characterized by:
 
@@ -289,12 +339,7 @@ The Mixed-Grass Prairie macrozone is a transitional zone between the wetter Tall
     
     -   Stipa sp. (Needlegrass species)
 
-This zone Hydrologically, this zone exhibits a spatially heterogeneous
-hydrologically dynamic system with: 
-
--   moderate infiltration and runoff, and
-
--   variable soil texture.
+Hydrologic behavior in this macrozone is a spatially heterogeneous hydrologically dynamic system with moderate infiltration and runoff, and variable soil texture.
 
 Level III and IV ecoregions in the Mixed-Grass Prairie macrozone include U.S portions of Level II ecoregions: the West Central Semi-Arid Prairies (9.3), central portions of the South Central Semiarid Prairies (9.4), and uplands portions of the Tamaulipas-Texas Semi-Arid Plain (9.6).
 
@@ -322,7 +367,7 @@ Level III and IV ecoregions in the Mixed-Grass Prairie macrozone include U.S por
 
     -    Semiarid Canadian Breaks (26d)
 
-### Shortgrass Prairie Macrozone
+#### Shortgrass Prairie Macrozone Description
 
 The Shortgrass Prairie macrozone marks the xeric end of the gradient, characterized by:
 
@@ -340,131 +385,87 @@ Level III and IV ecoregions in the Shortgrass Prairie macrozone include portions
 
 -   9.6.1 Southwestern Tablelands (US 26) lowlands areas (25b, 25c, 25e to 25q)
 
-
-
-
-
-
-
 Hydrologic behavior in this macrozone is dominated by rapid surface runoff and higher flood skew, driven by reduced canopy structure and limited ET buffering.
 
- and the southern and western portions of the South Central Semiarid Prairies. These areas experience low annual precipitation, high evapotranspiration, and limited canopy cover. Vegetation is dominated by drought-adapted short grasses such as blue grama and buffalograss. This macrozone reflects ecosystems with reduced infiltration, elevated runoff ratios, and rapid hydrologic response, making it distinct from more mesic prairie types.
 
-
-## Project Milestones
-
-Current version: v0.3 – Refactored Project Structure See [milestone_00_project_structure_refact.Rmd](reports/milestone_00_project_structure_refact.Rmd) for detailed changelog. **Note** v0.4 is incorporated as a sub-issue of v0.3
 
 ------------------------------------------------------------------------
 
-## Project Structure (as of v0.4)
+# Project Structure (as of v0.4)
 
-``` text
-FFA_regional-skew/
-├── .gitignore                    # Prevents sensitive/local files from being pushed
-├── arcgis_project/               # Stores `.aprx` and layer files from ArcGIS 
-                                  #   Pro workflows
-
-├── data/ 
-    ├── meta/                     # Metadata
-        ├── prism/
-        |   └── ppt_30yrnormals/
-        |        └── prism_ppt_30yrnormals_raw.bil
-        ├── epa/
-        |    └── nlcd_2021/
-        │       └── epa_nlcd_2021_raw.tif
-        └── usgs/
-            └── nhdplus/
-            |   └── usgs_nhdplus_catchments_v21_raw.shp
-            └── waterdata/
-                ├── sites_all_in_bb.csv
-                └── sites_all_peak_in_bb.csv
-
-    ├── processed/               # Cleaned, derived datasets
-        ├── prism/
-        |   └── ppt_30yrnormals/
-        |        └── prism_ppt_30yrnormals_raw.bil
-        ├── epa/
-        |    └── nlcd_2021/
-        │       └── epa_nlcd_2021_raw.tif
-        └── usgs/
-            └── nhdplus/
-            |   └── usgs_nhdplus_catchments_v21_raw.shp
-            └── waterdata/
-                ├── sites_all_in_bb.csv
-                └── sites_all_peak_in_bb.csv
-
-    ├── raw/                      # Unmodified input data 
-        ├── prism/
-        |   └── ppt_30yrnormals/
-        |        └── prism_ppt_30yrnormals_raw.bil
-        ├── epa/
-        |    └── nlcd_2021/
-        │       └── epa_nlcd_2021_raw.tif
-        └── usgs/
-            └── nhdplus/
-            |   └── usgs_nhdplus_catchments_v21_raw.shp
-            └── waterdata/
-                ├── sites_all_in_bb.csv
-                └── sites_all_peak_in_bb.csv
-
-├── docs/                     # Project documentation, e.g., final reports, 
-                              #   manuscripts, proposal materials. 
-                              # Reference documentation like README-style guides. 
-                              # Metadata crosswalks and data dictionaries
-                              # review or publication. 
-                              # Files you reference in Quarto/PDF reports or posters
-
-├── FFA_regional-skew.Rproj   # RStudio project file for launching the 
-                              # workspace. Keep this in the root.
-├── log/                      # For shell logs or targets progress reports 
-├── notebooks/                # For ad hoc .Rmd or .qmd experiments 
-├── notes/                    # Personal or team notes, meeting logs, brainstorms
-                              #   Could be transitioned to Markdown or Quarto as
-                              #   the project matures
-
-├── output/                   # Intermediate outputs (e.g., `.Rds`, `.csv`, `.tif`)
-                              # Next Steps: Add subfolders like `extracted/`,
-                              #   `joined/`, or date-stamped folders |
-│   ├── figs/                 # Plots and maps
-│   ├── models/               # Model objects (.rds)
-│   └── tables/               # Summary tables (.csv, .html)
-
-├── R/                        # All analysis scripts (milestone-organized)
-│   ├── 01_download/          # NWIS, PRISM, Ecoregions
-│   ├── 02_clean/             # Filtering, QA, station skew
-│   ├── 03_covariates/        # Climate, topography, land cover
-│   ├── 04_modeling/          # GAMs, Elastic Net, correlation
-│   ├── 05_eval/              # Model diagnostics, residuals, validation
-│   └── utils/                # Reusable functions
-│       └── f_process_geometries.R
-
-├── README.md                     # Rendered Markdown output.  GitHub-compatible
-                                  #   plain-text overview. Use for quick 
-                                  #   navigation, build instructions, etc. 
-├── README.Rmd                    # Workflow overview (editable).  Richer,
-                                  #   knit-ready documentation with figures, 
-                                  #  tables, and references. Can generate 
-                                  #   HTML/PDF documentation from this file
-
-├── reports/                      # analysis narratives, usually knitted `.Rmd` 
-                                  #   or `.qmd` output. Next Steps: Consider 
-                                  #   `reports/final/`, `reports/draft/` 
-                                  #   structure if versioning
-
-├── results/                      # Manuscript-ready outputs, model metrics, 
-                                  #   final figures, tables, model outputs for 
-                                  #   publication or reporting Next Steps: 
-                                  #   Organize by milestone or product:
-                                  #     `maps/`, `tables/`, `models/`
-│   ├── posterdown/                 # Poster files and assets
-│   └── slides/                     # Slide decks or visualizations
-
-├── to_check/                    # Temporary holding area for uncertain or 
-                                 #   transitional files needing review or QA. 
-                                 # Next Steps: Consider renaming to `sandbox/` 
-                                 # and clearing regularly.
 ```
+FFA_regional-skew/
+├── .gitignore                 # Ignore local/sensitive files
+├── arcgis_project/           # ArcGIS Pro project files
+├── data/
+│   ├── meta/                 # Metadata inputs
+│   │   ├── prism/
+│   │   │   └── ppt_30yrnormals/
+│   │   │       └── prism_ppt_30yrnormals_raw.bil
+│   │   ├── epa/
+│   │   │   └── nlcd_2021/
+│   │   │       └── epa_nlcd_2021_raw.tif
+│   │   └── usgs/
+│   │       ├── nhdplus/
+│   │       │   └── usgs_nhdplus_catchments_v21_raw.shp
+│   │       └── waterdata/
+│   │           ├── sites_all_in_bb.csv
+│   │           └── sites_all_peak_in_bb.csv
+│   ├── processed/            # Cleaned, derived datasets
+│   └── raw/                  # Unmodified source data
+├── docs/                     # Reports, metadata, README guides
+├── FFA_regional-skew.Rproj  # RStudio project launcher
+├── log/                     # Logs and progress traces
+├── notebooks/               # Exploratory .Rmd or .qmd drafts
+├── notes/                   # Internal notes or meeting logs
+├── output/                  # Intermediate model/data outputs
+│   ├── figs/
+│   ├── models/
+│   └── tables/
+├── R/                       # All analysis code
+│   ├── 01_download/
+│   ├── 02_clean/
+│   ├── 03_covariates/
+│   ├── 04_modeling/
+│   ├── 05_eval/
+│   └── utils/
+├── README.md                # GitHub-facing overview
+├── README.Rmd               # Full workflow documentation
+├── reports/                 # Knitted reports (.Rmd/.qmd)
+├── results/                 # Final outputs for publication
+│   ├── posterdown/
+│   └── slides/
+├── to_check/                # Staging area for review
+```
+
+# Project Milestones
+
+## Milestone 00 – Project Initialization
+
+This milestone establishes the foundation for reproducible regional skew estimation through:
+
+- Defining a modular and transparent directory structure  
+- Establishing consistent naming conventions for raw, interim, and processed data  
+- Creating a metadata inventory for raw covariates, including source documentation, units, spatial scale, and data format  
+
+Remaining tasks—such as dataset downloads, QA of spatial files, and extraction of site-level covariates—have been deferred to **Milestone 01 – Download and Prepare Data** for clarity and project tracking.
+
+**Git tag:** `milestone-00-complete`  
+**Related script:** `R/01_download/01c_data_dictionary_for_covariates.Rmd`  
+**Metadata location:** `data/meta/covariates_metadata_split/`, which contains the schema, color palette, and quality-check metadata derived from `skew_covariates_metadata_v01.xlsx`.
+
+### Tagged Versions
+
+| Tag                            | Description |
+| ------------------------------ | ----------- |
+| `milestone-00-complete`          | Completion of Milestone 00 – Project Initialization |
+| `v0.3-refactor`                  | Refactor (general) prior to structuring milestone folders |
+| `v0.3-structure-refactor`        | Major folder and file restructure |
+| `v0.3.2-cleanup-vector-files`    | Vector file cleanup and QA pass |
+| `v0.3.3-fix-index-cleanup`       | Index fix and additional cleanup tasks |
+| `v0.3.4-finalize-vector-cleanup` | Final round of vector cleanup and reorganization | `v0.4`                           | Milestone documentation and metadata structure |
+
+# Other Notes
 
 ## Getting Started
 
@@ -477,8 +478,6 @@ source("R/02_clean/03_filter_unregulated_gage_data.R")
 
 All scripts assume R project is opened at the repository root (e.g., using .Rproj file).
 
-------------------------------------------------------------------------
-
 ## Reproducibility
 
 This project uses: - `.gitignore_spatial_template.txt` to exclude large geospatial files - `git_commit_reference_card.txt` for consistent commit messages - Modular milestone logs (see `reports/`) to track key development stages
@@ -486,10 +485,6 @@ This project uses: - `.gitignore_spatial_template.txt` to exclude large geospati
 ## Reports and Milestone Logs
 
 To explore the evolution of the project structure, covariate design, and documentation practices, see: 📁 [`reports/README.md`](reports/README.md) — Overview of all milestone logs, reference tools, and future plans
-
-## Versioning
-
-Tagged versions: - **`v0.3-structure-refactor`** – Major restructure of project folders and files
 
 ## Footnotes
 
