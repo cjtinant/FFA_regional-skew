@@ -11,7 +11,7 @@
 
 <meta name="author" content="C.J. Tinant" />
 
-<meta name="date" content="2025-05-08" />
+<meta name="date" content="2025-05-09" />
 
 <title>Milestone 00 — Project Refactor</title>
 
@@ -352,7 +352,7 @@ display: none;
 
 <h1 class="title toc-ignore">Milestone 00 — Project Refactor</h1>
 <h4 class="author">C.J. Tinant</h4>
-<h4 class="date">2025-05-08</h4>
+<h4 class="date">2025-05-09</h4>
 
 </div>
 
@@ -360,42 +360,84 @@ display: none;
 <div id="overview" class="section level1">
 <h1>Overview</h1>
 <p>This document tracks the <strong>project structure refactor</strong>
-for the Great Plains Regional Skew Estimation project. The
-reorganization improves clarity, modularity, and reproducibility by
-aligning files with milestone workflows and standard naming
-conventions.</p>
-<p><strong>Summary:</strong> This milestone documents a major
-restructuring of the project folder hierarchy, archiving legacy files,
-and organizing scripts into modular milestone-based subfolders. Also
-introduces the hierarchical covariate framework and macrozone
-classification for Great Plains analysis.</p>
-<div id="goals-of-refactor" class="section level2">
-<h2>Goals of Refactor</h2>
+for a project to estimate regional skew of the annual flood series for
+the Great Plains ecoregion. The reorganization improves clarity,
+modularity, and reproducibility by aligning files with milestone
+workflows and standard naming conventions.</p>
+<p>Additionally, this document tracks the <strong>development of a
+structured covariate metadata file</strong> to support reproducibility,
+clarity, and consistency in modeling regional skew. The metadata defines
+each covariate’s name, description, units, analytical resolution, and
+conceptual grouping.</p>
+<div id="covariate-metadata" class="section level2">
+<h2>Covariate Metadata</h2>
+<div id="purpose" class="section level3">
+<h3>Purpose</h3>
+<p>The covariate metadata documents all variables used in regional skew
+modeling and spatial stratification. It is designed to ensure:</p>
 <ul>
-<li>Clarify distinction between raw, processed, and derived spatial
-data</li>
-<li>Move and modularize R scripts into milestone-based folders</li>
-<li>Consolidate utility functions into a reusable location</li>
-<li>Standardize naming and improve long-term maintainability</li>
-<li>Prepare for poster/reporting and model evaluation stages</li>
+<li>consistent naming across scripts and visualizations,</li>
+<li>interpretable plots and maps,</li>
+<li>scalable use across spatial resolutions and modeling domains.</li>
+</ul>
+</div>
+<div id="source" class="section level3">
+<h3>Source</h3>
+<p>The original .xlsx file is stored as:
+<code>docs/skew_covariates_metadata_v01.xlsx</code></p>
+<p>Older working versions are archived in:
+<code>docs/delete_later/</code></p>
+</div>
+<div id="script-and-output-location" class="section level3">
+<h3>Script and Output Location</h3>
+<p>The script used to generate modular .csv files:
+<code>docs/01_split-xlsx-into-csv.R</code></p>
+<p>Output .csv files (one per worksheet):
+<code>docs/covariates_metadata_split/</code></p>
+</div>
+<div id="qa-validation" class="section level3">
+<h3>QA / Validation</h3>
+<p>A multi-step metadata quality checklist was used to validate content
+before export. This includes checks for:</p>
+<ul>
+<li>completeness of key fields,</li>
+<li>consistency in phrasing and formatting,</li>
+<li>conceptual alignment across scales and groups,</li>
+<li>clarity and interpretability of variable description</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="summary-of-changes" class="section level1">
+<h1>Summary of Changes</h1>
+<p>This milestone documents a major restructuring of the project folder
+hierarchy, archiving legacy files, and organizing scripts into modular
+milestone-based subfolders. Additionally, this milestone introduces the
+hierarchical covariate framework and macrozone classification for Great
+Plains analysis and develops covariate metadata. The following changes
+were made to the project:</p>
+<ul>
+<li><p>Soft-archived old scripts and notebooks</p></li>
+<li><p>Modularized <code>R/</code> folder structure with numbered
+milestones</p></li>
+<li><p>Consolidated utility functions into a reusable location</p></li>
+<li><p>Moved and modularized R scripts into milestone-based
+folders</p></li>
+<li><p>Moved and renamed and organized shapefiles for clarity</p></li>
+<li><p>Reorganized this Rmd to improved clarity</p></li>
+<li><p>Identified and documented covariates with metadata</p></li>
+<li><p>Replaced legacy <code>.gitignore</code> with spatial-aware
+template</p></li>
+<li><p>Standardized naming tp improve long-term maintainability</p></li>
+<li><p>Developed a consistent naming strategy for data folders and
+files</p></li>
+<li><p>Refactored this milestone – moved download-related steps to
+milestone_01</p></li>
 </ul>
 <hr />
-<div id="summary-of-changes" class="section level3">
-<h3>Summary of Changes</h3>
-<ul>
-<li>Modularized <code>R/</code> folder structure with numbered
-milestones</li>
-<li>Moved and renamed shapefiles for clarity</li>
-<li>Soft-archived old scripts and notebooks</li>
-<li>Replaced legacy <code>.gitignore</code> with spatial-aware
-template</li>
-<li>Added macrozone covariate pipeline (03c) with matching Rmd log</li>
-</ul>
 </div>
-</div>
-</div>
-<div id="project-structure" class="section level1">
-<h1>Project structure</h1>
+<div id="project-structure-v0.3" class="section level1">
+<h1>Project structure (v0.3)</h1>
 <div id="original-project-structure" class="section level2">
 <h2>Original project structure</h2>
 <pre class="text"><code>    FFA_regional-skew/
@@ -415,8 +457,8 @@ template</li>
     ├── README.md          # Rendered Markdown output
     └── .gitignore         # Prevents sensitive/local files from being pushed</code></pre>
 </div>
-<div id="updated-file-structure-ver.-0.3" class="section level2">
-<h2>Updated File Structure (Ver. 0.3)</h2>
+<div id="updated-file-structure-v0.3" class="section level2">
+<h2>Updated File Structure (v0.3)</h2>
 <pre class="text"><code>FFA_regional-skew/
 ├── .gitignore                    # Prevents sensitive/local files from being pushed
 ├── arcgis_project/               # Stores `.aprx` and layer files from ArcGIS 
@@ -467,17 +509,17 @@ template</li>
 ├── output/                   # Intermediate outputs (e.g., `.Rds`, `.csv`, `.tif`)
                               # Next Steps: Add subfolders like `extracted/`,
                               #   `joined/`, or date-stamped folders |
-│   ├── figs/                    # Plots and maps
-│   ├── models/                  # Model objects (.rds)
-│   └── tables/                  # Summary tables (.csv, .html)
+│   ├── figs/                 # Plots and maps
+│   ├── models/               # Model objects (.rds)
+│   └── tables/               # Summary tables (.csv, .html)
 
-├── R/                            # All analysis scripts (milestone-organized)
-│   ├── 01_download/              # NWIS, PRISM, Ecoregions
-│   ├── 02_clean/                 # Filtering, QA, station skew
-│   ├── 03_covariates/            # Climate, topography, land cover
-│   ├── 04_modeling/              # GAMs, Elastic Net, correlation
-│   ├── 05_eval/                  # Model diagnostics, residuals, validation
-│   └── utils/                    # Reusable functions
+├── R/                        # All analysis scripts (milestone-organized)
+│   ├── 01_download/          # NWIS, PRISM, Ecoregions
+│   ├── 02_clean/             # Filtering, QA, station skew
+│   ├── 03_covariates/        # Climate, topography, land cover
+│   ├── 04_modeling/          # GAMs, Elastic Net, correlation
+│   ├── 05_eval/              # Model diagnostics, residuals, validation
+│   └── utils/                # Reusable functions
 │       └── f_process_geometries.R
 
 ├── README.md                     # Rendered Markdown output.  GitHub-compatible
@@ -505,30 +547,17 @@ template</li>
                                  #   transitional files needing review or QA. 
                                  # Next Steps: Consider renaming to `sandbox/` 
                                  # and clearing regularly.</code></pre>
-<!--
-Update after completing Ver 0.4
-## Summary of Key Structural Changes
-
-| Old Path                       | New Path              | Change Type |
-|:------------------------------:|:---------------------:|:-----------:|
-| functions/                     | R/utils/              | relocate    |
-| scripts/                       | R/01_download/ etc.   | split + tag |
-| data/spatial/ecoregions_*      | data/raw/spatial_raw/ | move        |
-| us_eco_lev*/                   | spatial/              | promote     |
-
-| README.Rmd (updated structure) |                       | revise      |
-
--->
+<hr />
 </div>
 </div>
-<div id="ver.0.3-refactor-project-structure" class="section level1">
-<h1>Ver.0.3 – Refactor project structure</h1>
-<div id="migration-checklist-ver.-0.3" class="section level2">
-<h2>Migration Checklist – Ver. 0.3</h2>
+<div id="refactor-project-structure-v0.4" class="section level1">
+<h1>Refactor project structure (v0.4)</h1>
+<div id="migration-checklist-v0.4" class="section level2">
+<h2>Migration Checklist – v0.4</h2>
 <table>
 <colgroup>
-<col width="18%" />
-<col width="70%" />
+<col width="11%" />
+<col width="77%" />
 <col width="10%" />
 </colgroup>
 <thead>
@@ -572,51 +601,60 @@ Update after completing Ver 0.4
 <tr class="odd">
 <td>* 0.4 *</td>
 <td>Identified a need to update covariates</td>
-<td>[]</td>
+<td>[X]</td>
+</tr>
+<tr class="even">
+<td>0.4.1</td>
+<td>Reorganize this Rmd</td>
+<td>[X]</td>
+</tr>
+<tr class="odd">
+<td>0.4.2</td>
+<td>Identify and document covariates</td>
+<td>[X]</td>
+</tr>
+<tr class="even">
+<td>0.4.3</td>
+<td>Validate and document Notes folder</td>
+<td>[X]</td>
+</tr>
+<tr class="odd">
+<td>0.4.4</td>
+<td>Update raw data/ folder structure / naming strategy</td>
+<td>[X]</td>
 </tr>
 <tr class="even">
 <td>0.3.7</td>
-<td>Rename /R/01_download scripts as:</td>
-<td></td>
+<td>** Updated ** Move steps to milestone_01</td>
+<td>[X]</td>
 </tr>
 <tr class="odd">
-<td></td>
-<td>milestone + domain + covariate + source</td>
-<td>[P]</td>
-</tr>
-<tr class="even">
 <td>0.3.8</td>
-<td>Tag this commit in Git as v0.3-structure-refactor</td>
-<td>[]</td>
-</tr>
-<tr class="odd">
-<td>0.3.9</td>
-<td>Create GitHub Milestone and Issue</td>
-<td>[]</td>
+<td>Update GitHub Milestone and Issue</td>
+<td>[X]</td>
 </tr>
 <tr class="even">
-<td>0.3.10</td>
+<td>0.3.9</td>
 <td>Document final changes in this .Rmd</td>
-<td>[]</td>
+<td>[X]</td>
 </tr>
 <tr class="odd">
-<td>0.3.11</td>
+<td>0.3.10</td>
 <td>Document final changes in README.Rmd</td>
-<td>[]</td>
+<td>[X]</td>
+</tr>
+<tr class="even">
+<td>0.3.11</td>
+<td>Tag this commit in Git as v0.3-structure-refactor</td>
+<td>[X]</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="ver.-0.3-step-by-step-refactor-log" class="section level2">
-<h2>Ver. 0.3 Step-by-Step Refactor Log</h2>
-<ul>
-<li><p><strong>General Notes:</strong></p></li>
-<li><p>Preserve original files in to_check/ if unsure</p></li>
-<li><p>Consider backing up entire project before file moves</p></li>
-<li><p>Update any hardcoded paths in scripts</p></li>
-</ul>
+<div id="v0.3-v0.4-step-by-step-refactor-log" class="section level2">
+<h2>v0.3 &amp; v0.4 Step-by-Step Refactor Log</h2>
 <div id="step-0.3.1---soft-archive-old-files" class="section level3">
-<h3>Step 0.3.1 - Soft Archive Old Files</h3>
+<h3>Step 0.3.1 - Soft archive old files</h3>
 <ul>
 <li><p><strong>Action:</strong> Move unverified/legacy files to
 to_check/ or delete/ with caution.</p></li>
@@ -639,7 +677,7 @@ and output/. Spatial data organized and modularized.</p></li>
 </ul>
 </div>
 <div id="step-0.3.3---move-functions-into-a-unified-utils-folder" class="section level3">
-<h3>Step 0.3.3 - Move Functions into a Unified utils/ Folder</h3>
+<h3>Step 0.3.3 - Move functions into a unified utils/ folder</h3>
 <ul>
 <li><p><strong>Reason:</strong> Centralize and reuse processing
 functions.</p></li>
@@ -651,8 +689,8 @@ update to source(“R/utils/…”)</p></li>
 </ul>
 </div>
 <div id="step-0.3.4-split-and-organize-scripts-into-milestone-based-folders" class="section level3">
-<h3>Step 0.3.4 — Split and Organize scripts/ into Milestone-Based
-Folders</h3>
+<h3>Step 0.3.4 — Split and organize scripts/ into milestone-based
+folders</h3>
 <ul>
 <li><p><strong>Reason:</strong> Improves modularity and tracks workflow
 by purpose.</p></li>
@@ -670,7 +708,7 @@ by purpose.</p></li>
 </ul>
 </div>
 <div id="step-0.3.5-move-raw-spatial-and-climate-data-into-dataraw" class="section level3">
-<h3>Step 0.3.5 — Move Raw Spatial and Climate Data into data/raw/</h3>
+<h3>Step 0.3.5 — Move raw spatial and climate data into data/raw/</h3>
 <ul>
 <li><p><strong>Reason:</strong> Distinguish between raw inputs and
 processed outputs.</p></li>
@@ -700,176 +738,6 @@ shapefiles.</p></li>
 ├── us_eco_lev02/
 ├── koppen_cleaned/</code></pre>
 </div>
-<div id="step-0.3.7---script-renaming-is-partially-complete." class="section level3">
-<h3>Step 0.3.7 - Script renaming is partially complete.</h3>
-<ul>
-<li><p>Scripts in R/01_download and R/02_clean have adopted the pattern:
-milestone + domain + covariate + source. Remaining scripts (e.g., 03b,
-04_modeling) will be renamed accordingly.</p></li>
-<li><p>Files have been renamed for <code>01_download</code> and
-<code>02_clean</code>, but <code>03_covariates</code> is still
-mid-refactor.</p></li>
-<li><p>Identified a need identify covariates, and create and validate
-covariate metadata.</p></li>
-<li><p>Created sub-issue Ver. 0.4 of Milestone 00 (this
-milestone).</p></li>
-<li><p><strong>Next Steps:</strong> Close sub-issue Ver. 0.4. (below)
-Consider adding tags like <code>03a</code>, <code>03b</code>,
-<code>03c</code> to improve script clarity. Close remaining Milestone 00
-issues, by completing remaining Ver. 0.3 steps.</p></li>
-</ul>
-</div>
-<div id="step-0.3.8--" class="section level3">
-<h3>Step 0.3.8 -</h3>
-<ul>
-<li>Will tag commit after final push of .gitkeep and milestone Rmd
-updates.</li>
-</ul>
-</div>
-<div id="step-0.3.9---github-milestone-will-be-added-once-this-document-is-finalized-and-committed." class="section level3">
-<h3>Step 0.3.9 - GitHub milestone will be added once this document is
-finalized and committed.</h3>
-</div>
-<div id="step-0.3.10-0.3.11---this-.rmd-and-the-readme-will-be-updated-to-document-the-completed-refactor." class="section level3">
-<h3>Step 0.3.10 &amp; 0.3.11 - This .Rmd and the README will be updated
-to document the completed refactor.</h3>
-</div>
-</div>
-</div>
-<div id="ver.-0.4-update-covariate-data-and-metadata" class="section level1">
-<h1>Ver. 0.4 – Update Covariate Data and Metadata</h1>
-<p>This project includes a structured covariate metadata file to support
-reproducibility, clarity, and consistency in modeling regional skew. The
-metadata defines each covariate’s name, description, units, analytical
-resolution, and conceptual grouping.</p>
-<div id="purpose" class="section level3">
-<h3>Purpose</h3>
-<p>The covariate metadata documents all variables used in regional skew
-modeling and spatial stratification. It is designed to ensure:</p>
-<ul>
-<li>consistent naming across scripts and visualizations,</li>
-<li>interpretable plots and maps,</li>
-<li>scalable use across spatial resolutions and modeling domains.</li>
-</ul>
-</div>
-<div id="source" class="section level3">
-<h3>Source</h3>
-<p>The original .xlsx file is stored as:
-<code>docs/skew_covariates_metadata_v01.xlsx</code></p>
-<p>Older working versions are archived in:
-<code>docs/delete_later/</code></p>
-</div>
-<div id="script-and-output-location" class="section level3">
-<h3>Script and Output Location</h3>
-<p>The script used to generate modular .csv files:
-<code>docs/01_split-xlsx-into-csv.R</code></p>
-<p>Output .csv files (one per worksheet):
-<code>docs/covariates_metadata_split/</code></p>
-</div>
-<div id="qa-validation" class="section level3">
-<h3>QA / Validation</h3>
-<p>A multi-step metadata quality checklist was used to validate content
-before export. This includes checks for:</p>
-<ul>
-<li>completeness of key fields,</li>
-<li>consistency in phrasing and formatting,</li>
-<li>conceptual alignment across scales and groups,</li>
-<li>clarity and interpretability of variable description</li>
-</ul>
-</div>
-<div id="update-checklist-ver.-0.4" class="section level2">
-<h2>Update checklist – Ver. 0.4</h2>
-<table>
-<colgroup>
-<col width="13%" />
-<col width="76%" />
-<col width="10%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center">Step</th>
-<th>Task</th>
-<th align="center">Status</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">0.4.1</td>
-<td>Reorganize this Rmd</td>
-<td align="center">[X]</td>
-</tr>
-<tr class="even">
-<td align="center">0.4.2</td>
-<td>Identify and document covariates using
-<code>R/01_download/01c_data_dictionary_for_covariates.Rmd</code></td>
-<td align="center">[X]</td>
-</tr>
-<tr class="odd">
-<td align="center">0.4.3</td>
-<td>Validate and document Notes folder</td>
-<td align="center">[X]</td>
-</tr>
-<tr class="even">
-<td align="center">0.4.4</td>
-<td>Develop a consistent naming strategy for raw and processed data</td>
-<td align="center">[]</td>
-</tr>
-<tr class="odd">
-<td align="center">0.4.5</td>
-<td>Update R/01_download/ folder structure</td>
-<td align="center">[]</td>
-</tr>
-<tr class="even">
-<td align="center">0.4.6</td>
-<td>Create downloads scripts for each domain and covariate</td>
-<td align="center">[]</td>
-</tr>
-<tr class="odd">
-<td align="center">0.4.7</td>
-<td>Create README-style notes for script in milestone folder</td>
-<td align="center">[]</td>
-</tr>
-<tr class="even">
-<td align="center">0.4.8</td>
-<td>Rename scripts for clarity and consistency e.g., 03a_, 03b_</td>
-<td align="center">[]</td>
-</tr>
-<tr class="odd">
-<td align="center">0.4.9</td>
-<td>Validate chunk headers in .Rmd files ({r name, eval=} )</td>
-<td align="center">[]</td>
-</tr>
-<tr class="even">
-<td align="center">0.4.10</td>
-<td>Knit milestone and data dictionary .Rmd files to PDF</td>
-<td align="center">[]</td>
-</tr>
-<tr class="odd">
-<td align="center">0.4.11</td>
-<td>Add file headers / docstrings to all scripts e.g. author, purpose,
-date</td>
-<td align="center">[]</td>
-</tr>
-<tr class="even">
-<td align="center">0.4.12</td>
-<td>Document changes in 01_download README.Rmd</td>
-<td align="center">[]</td>
-</tr>
-<tr class="odd">
-<td align="center">0.4.13</td>
-<td>Add reference links to documentation e.g., PRISM, USGS, NLCD</td>
-<td align="center">[]</td>
-</tr>
-<tr class="even">
-<td align="center">0.4.14</td>
-<td>Create README-style notes for each R milestone folder</td>
-<td align="center">[]</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="ver.-0.4-step-by-step-update-log" class="section level2">
-<h2>Ver. 0.4 Step-by-Step Update Log</h2>
 <div id="step-0.4.1-update-project-structure-refactor-report" class="section level3">
 <h3>Step 0.4.1 — Update project structure refactor report</h3>
 <ul>
@@ -987,91 +855,44 @@ zonal statistics will be calculated and other notes regarding
 covariates.</p></li>
 </ul>
 </div>
-<div id="step-0.4.4" class="section level3">
-<h3>Step 0.4.4 —</h3>
+<div id="step-0.4.4-document-raw-data-folder-structure-naming-strategy" class="section level3">
+<h3>Step 0.4.4 — Document raw data/ folder structure / naming
+strategy</h3>
 <ul>
-<li><p><strong>Action:</strong></p></li>
-<li><p><strong>Before:</strong></p></li>
-<li><p><strong>Reason:</strong></p></li>
+<li><p><strong>Action:</strong> Documented a naming strategy in
+reports/milestones_01_download scripts</p></li>
+<li><p><strong>Before/Reason:</strong> Inconsistent naming strategy –
+led to a lot of confusion</p></li>
+<li><p><strong>After:</strong> Adopted a Subdirectory Strategy for
+folders and a <a href="#source">source</a><em>[layer]</em>[year|version]_[status].[ext]
+strategy for naming.</p></li>
 </ul>
 </div>
-<div id="step-0.4.5" class="section level3">
-<h3>Step 0.4.5 —</h3>
+<div id="step-0.3.7---updated-move-steps-to-milestone_01" class="section level3">
+<h3>Step 0.3.7 - ** Updated ** Move steps to milestone_01</h3>
 <ul>
-<li><p><strong>Action:</strong></p></li>
-<li><p><strong>Before:</strong></p></li>
-<li><p><strong>Reason:</strong></p></li>
+<li><p><strong>Action:</strong> Created sub-issue v0.4 of Milestone 00
+(this milestone). Moved steps related to downloading scripts to
+Milestone 01. Closed sub-issue v0.4.</p></li>
+<li><p><strong>Reason/Before:</strong> Identified a need identify
+covariates, and create and validate covariate metadata.</p></li>
+<li><p><strong>After:</strong> Better organized and modularized project
+workflow.</p></li>
 </ul>
 </div>
-<div id="step-0.4.6" class="section level3">
-<h3>Step 0.4.6 —</h3>
-<ul>
-<li><p><strong>Action:</strong></p></li>
-<li><p><strong>Before:</strong></p></li>
-<li><p><strong>Reason:</strong></p></li>
-</ul>
+<div id="step-0.3.8---update-github-milestone-and-issue" class="section level3">
+<h3>Step 0.3.8 - Update GitHub Milestone and Issue</h3>
 </div>
-<div id="step-0.4.7" class="section level3">
-<h3>Step 0.4.7 —</h3>
-<ul>
-<li><p><strong>Action:</strong></p></li>
-<li><p><strong>Before:</strong></p></li>
-<li><p><strong>Reason:</strong></p></li>
-</ul>
+<div id="step-0.3.9---document-final-changes-this-rmd" class="section level3">
+<h3>Step 0.3.9 - Document Final Changes this Rmd</h3>
 </div>
-<div id="step-0.4.8" class="section level3">
-<h3>Step 0.4.8 —</h3>
-<ul>
-<li><p><strong>Action:</strong></p></li>
-<li><p><strong>Before:</strong></p></li>
-<li><p><strong>Reason:</strong></p></li>
-</ul>
+<div id="step-0.3.10---document-changes-in-readme" class="section level3">
+<h3>Step 0.3.10 - Document changes in README</h3>
 </div>
-<div id="step-0.4.9" class="section level3">
-<h3>Step 0.4.9 —</h3>
-<ul>
-<li><p><strong>Action:</strong></p></li>
-<li><p><strong>Before:</strong></p></li>
-<li><p><strong>Reason:</strong></p></li>
-</ul>
-</div>
-<div id="step-0.4.10" class="section level3">
-<h3>Step 0.4.10 —</h3>
-<ul>
-<li><p><strong>Action:</strong></p></li>
-<li><p><strong>Before:</strong></p></li>
-<li><p><strong>Reason:</strong></p></li>
-</ul>
-</div>
-<div id="step-0.4.11" class="section level3">
-<h3>Step 0.4.11 —</h3>
-<ul>
-<li><p><strong>Action:</strong></p></li>
-<li><p><strong>Before:</strong></p></li>
-<li><p><strong>Reason:</strong></p></li>
-</ul>
-<!--
-Next Steps FFA
-
-Chain these in targets or drake pipelines
-
-Add a log_README.md in each R/ subfolder to document script purpose
-
-
--->
-<p>```</p>
+<div id="step-0.3.11---push-to-.git-and-tag-commit" class="section level3">
+<h3>Step 0.3.11 - Push to .git and tag commit</h3>
 </div>
 </div>
-</div>
-<div id="references" class="section level1">
-<h1>🔗 References</h1>
-</div>
-<div id="ge" class="section level1">
-<h1>GE</h1>
-<ul>
-<li><p>Bespoke project organization for data science</p></li>
-<li><p>Workflow principles in hydrology</p></li>
-</ul>
 </div>
 
 
