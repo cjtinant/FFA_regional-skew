@@ -1,0 +1,26 @@
+---
+title: "Covariate Source Inventory"
+author: "Charles Tinant"
+date: "`r Sys.Date()`"
+output:
+  github_document:
+    toc: true
+    toc_depth: 2
+---
+
+## Spatial Data Preparation Checklist
+This reusable checklist explains covariate sources and tracks other data
+
+## Covariate Source Inventory
+
+This table lists core covariate datasets used in the regional skew estimation project. All datasets are publicly available, spatially referenced, and selected for their hydrologic relevance.
+
+| Dataset Name            | Purpose / Use                 |                        Source / Link                | Format | Status  | Resolution / CRS  Version / Year | Priority | Download Date | Filename Prefix  | Notes                |
+|-------------------------|--------------------|---------------|--------|----------|--------------------------|----------------|----------|----------------|----------------|--------|
+| EPA Ecoregions I–IV     | Zonal stratification | [EPA](https://www.epa.gov/eco-research) | `.shp` | Recheck | Albers           | Check        | core      | check          | epa_ecoregions  | Used for aggregation  |
+| USGS NHDPlus Catchments | Watershed boundary + drainage area | [USGS](https://www.usgs.gov/) | `.shp` | Needed   | NAD83 | V2 or HR | core |       | nhd_catchments | Use V2 or HR variant |
+| PRISM PPT Normals       | Covariate for skew regression | [PRISM](https://prism.oregonstate.edu)              | `.bil` | Needed | 4 km, WGS84 | 1981–2010          | core      |               | prism_ppt_normals | Download monthly + annual |
+| NLCD Land Cover 2016    | Land use predictor | [MRLC](https://www.mrlc.gov/) | `.tif` | Needed   | 30 m, Albers | 2016 | core |     | nlcd_landcover_2021 | Clip to HUC region |
+| NED Elevation           | Terrain covariate | [National Map](https://apps.nationalmap.gov/) | `.tif` | Needed | 1/3 arc-second | 2020+ | core | | ned_elevation | Reproject to match others |
+
+
