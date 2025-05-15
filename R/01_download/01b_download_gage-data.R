@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name: 02_get-gage-data.R
+# Script Name: 01b_download-gage-data.R
 # Author: Charles Jason Tinant
 # Date Created: April 2025
 #
