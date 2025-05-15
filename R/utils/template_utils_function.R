@@ -4,12 +4,6 @@
 # Date Created:   [yyyy-mm-dd]
 # Last Updated:   [yyyy-mm-dd]
 # Purpose:        [Brief purpose — e.g., "Helper function to extract X from Y"]
-
-
-# Purpose: Download and prepare climate data
-
-# Author:         CJ Tinant
-
 #
 # Description:
 #   - [Step 1: what the function does...]
@@ -41,6 +35,6 @@
 #' [Example usage, e.g., function_name("path/to/file")]
 #'
 #' @export
-[your_function_name] <- function([param1], [param2 = NULL]) {
+#[your_function_name] <- function([param1], [param2 = NULL]) {
   # Your code here
-}
+#}
