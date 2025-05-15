@@ -9,6 +9,7 @@
 data/raw/
 data/intermediate/
 data/processed/prism
+data/processed/*.gpkg
 
 
 # Raster Grid (PRISM / PHZM)
