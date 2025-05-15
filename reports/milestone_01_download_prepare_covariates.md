@@ -1,10 +1,14 @@
 Milestone 01 — Download and Prepare Covariates
 ================
 C.J. Tinant
-May 11, 2025
+May 12, 2025
 
 - [Overview of v0.5](#overview-of-v05)
+- [Goals](#goals)
 - [Notes](#notes)
+- [Standardized Script Naming
+  Conventions](#standardized-script-naming-conventions)
+- [Subdirectory Naming Convention:](#subdirectory-naming-convention)
 - [Project Structure](#project-structure)
 - [v0.5 – Download and Prepare
   Covariates](#v05--download-and-prepare-covariates)
@@ -12,8 +16,9 @@ May 11, 2025
 
 ## Overview of v0.5
 
-This document describes the structure and metadata setup completed for
-**Milestone v0.5**.
+This document outlines the setup, documentation, and reproducibility
+scaffolding established for **Milestone v0.5**, focused on acquiring and
+validating spatial covariates for regional skew modeling.
 
 ### Summary
 
@@ -26,7 +31,9 @@ See
 for a reusable checklist used to guide and document preprocessing steps
 across spatial layers.
 
-### Goals
+## Goals
+
+**Update the covariate source inventory**
 
 - Downloading and staging spatial datasets (ecoregions, PRISM, NED,
   etc.)
@@ -51,51 +58,127 @@ across spatial layers.
 - README-style documentation will be embedded in this .Rmd file for
   reproducibility
 
-### Naming convention:
+## Standardized Script Naming Conventions
 
-- Subdirectory naming follows as shown in **Project Structure**. Example
-  folder names:
-
-  - /data_raster_raw/epa_landcover_2016/
-
-  - /data_raster_raw/usgs_nhdplusv2/
-
-  - /data_raw/prism_ppt_normals/
-
-  - Script naming follows: `milestone + domain + covariate + source`
-
-- Data naming follows:
-  \[source\]*\[layer\]*\[year\|version\]\_\[status\].\[ext\]. Example
-  filenames:
-
-  - prism_ppt_30yrnormals_raw.bil
-
-  - usgs_nhdplus_catchments_v21_raw.shp
-
-  - epa_nlcd_2021_raw.tif
-
-  - census_county_boundaries_2020_raw.gpkg
+To improve clarity and reproducibility, scripts follow a standardized
+naming format.
 
 See: `R/00_setup/` and `data/raw/` for implementation scripts and
-acquired data
+acquired data.
+
+## Subdirectory Naming Convention:
+
+Subdirectories are named to reflect the `workflow stage`, `data source`,
+and `data domain or content category`, ensuring a transparent and
+reproducible project structure.
+
+Subdirectory naming follows the format: `[stage]/[source]_[category]/`
+
+**Where:**
+
+- `[stage]` – Workflow status or type (e.g., `raw`, `processed`, `meta`,
+  `interim`)
+
+- `[source]` – Data provider or system (e.g., `epa`, `prism`, `usgs`,
+  `ned`, `nlcd`)
+
+- `[category]` – Broad data content or theme (e.g., `ecoregions`,
+  `30yrnormals`, `landcover`, `elev`, `catchments`
+
+### Example Subdirectory Names
+
+| Folder Path | Description |
+|----|----|
+| `data/meta/epa_ecoregions/` | Metadata or schema for EPA ecoregions shapefiles |
+
+`data/raw/prism_30yrnormals/` \| Raw PRISM precipitation normals \|  
+`data/processed/usgs_catchments/` \| Processed USGS NHDPlus catchments
+\|
+
+`data/interim/ned_elev/` \| Intermediate elevation surfaces (clipped or
+reprojected) \|
+
+### Script Naming Convention
+
+Scripts follow a standardized naming format to promote readability,
+automation, and chronological sequencing within the workflow.
+
+`[step#]_[task]_[source].R or .Rmd`
+
+**Where:**
+
+- `[step#]` – A numeric and letter code (e.g., `01a`, `02b`, `03c`)
+  indicating the execution order within a milestone.
+
+- `[task]` – The primary action or processing stage (e.g., `download`,
+  `check`, `extract`, `join`, `assign`, `summarize`)
+
+- `[source]` – The data domain or specific dataset (e.g., `prism`,
+  `gage`, `nlcd`, `elev_slope`, `ecoregion`)
+
+#### Example Scripts:
+
+| Script Name | Description |
+|----|----|
+| `01a_download_epa_ecoregions.R` | Download raw `peakflow gage` data |
+| `01b_download_gage-data.R` | Download raw `peakflow gage` data |
+| `01a_download_prism.R` | Download raw `prism` data |
+| `01a_download_nlcd.R` | Download raw `nlcd` data |
+| `01a_download_ned.R` | Download raw `ned` data |
+| `01b_check_vector_sources.Rmd` | QA/QC for vector datasets (e.g., shapefiles) |
+| `01c_check_raster_sources.Rmd` | Validate raster coverage, resolution, and projection |
+| `01d_data_dictionary_covariates.Rmd` | Generate structured metadata and variable dictionary |
+| `02a_download_gage_data.R` | Pull site and peak flow data from NWIS or WQP |
+| `03a_extract_covariates_climate_prism.R` | Extract PRISM climate normals to gage locations |
+| `03b_extract_covariates_terrain_elev_slope.R` | Extract elevation and slope metrics |
+| `03c_assign_macrozone_covariates_L2.R` | Assign each site to a macrozone based on L2 ecoregions |
+
+### Data Naming Convention
+
+- Data naming follows:
+  \[source\]*\[layer\]*\[year\|version\]\_\[status\].\[ext\].
+
+**Where:**
+
+- `[source]` – Data provider or domain (e.g., prism, usgs, epa)
+
+- `[layer]` – Thematic content or variable (e.g., ppt, catchments,
+  landcover, eco_l1)
+
+- `[year|version]` – Dataset version, publication year, or climatology
+  period (e.g., 2021, v21, 30yrnormals)
+
+- `[status]` – Workflow stage (e.g., raw, clean, clipped, joined)
+
+- `[ext]`– File extension (e.g., .shp, .tif, .bil, .csv)
+
+#### Example filenames:
+
+| Filename | Description |
+|----|----|
+| epa_eco_l1_us_raw.shp | EPA Level I ecoregions (US coverage), raw shapefile |
+| prism_ppt_30yrnormals_raw.bil | PRISM precipitation 30-year normals, raw raster |
+| usgs_nhdplus_catchments_v21_raw.shp | UUSGS NHDPlus V2.1 catchments, raw shapefile |
+| usgs_nlcd_2016_raw.tif | USGS NLCD land cover for 2016, raw raster |
+
+prism_tmean_2020_clipped.tif \| PRISM 2020 mean temperature, clipped to
+study area  
+ned_elev_2023_clean.tif \| NED elevation, cleaned and reprojected \|
+
+        |        └── prism_ppt_30yrnormals_raw.bil
 
 <!--
 &#10;    Commit & Tag When Stable
 &#10;        Push milestone script changes and metadata updates
 &#10;        Use tags like v0.5-prism-dl or milestone-01-initial
-&#10;## Tag when complete
-git tag -a milestone-01-complete -m "Milestone 01: Covariate acquisition and QA complete"
-git push origin milestone-01-complete
-&#10;Next Steps for Milestone 01 – Download and QA Raw Covariate Data
+&#10;
+Next Steps for Milestone 01 – Download and QA Raw Covariate Data
 &#10;🔹 02. Write or Refactor Download Scripts
 &#10;.... Look through 01_get_spatial...R
 &#10;    Begin modular scripts for each covariate domain.
 &#10;    Optional: log intermediate outputs in data/meta/.
 &#10;    🔲 Break scripts into modular chunks by source:
-&#10;        01a_get_prism.R
-&#10;        01b_get_nlcd.R
-&#10;        01c_get_ned_elev.R
-&#10;        01d_get_stream_networks.R, etc.
+&#10;
 &#10;    🔲 Validate reproducibility with here(), glue(), and httr::GET() or download.file()
 &#10;    🔲 Save logs or hash summaries to /log/ or /data/meta/
 &#10;🔹 03. Spatial File QA + Metadata Logging
@@ -137,7 +220,11 @@ You can visualize macrozones as basemap groups
 &#10;    Or set up a {targets} pipeline to wrap download → clean → model
 &#10;3.  Open a Future Milestone Planning Doc
 &#10;You've already created notes/future_milestones.Rmd — that’s your strategic launchpad.
-&#10;-->
+&#10;## Tag when complete
+git tag -a milestone-01-complete -m "Milestone 01: Covariate acquisition and QA complete"
+git push origin milestone-01-complete
+&#10;
+-->
 
 # Project Structure
 
@@ -254,8 +341,8 @@ FFA_regional-skew/
 
 | Step    | Task                                                      | Status |
 |---------|-----------------------------------------------------------|--------|
-| 0.5.1   | Refine the Covariate Inventory                            | \[ \]  |
-| 0.5.1.5 | Document inputs, outputs, assumptions                     | \[ \]  |
+| 0.5.1   | Refine the Covariate Inventory                            | \[X\]  |
+| 0.5.1.5 | Document inputs, outputs, assumptions                     | \[X\]  |
 | 0.5.2   | Update folder structure for data/                         | \[ \]  |
 | 0.5.3   | Create downloads scripts for each domain and covariate    | \[ \]  |
 | 0.5.3.5 | Validate chunk headers in .Rmd files ({r name, eval=} )   | \[ \]  |
@@ -270,37 +357,41 @@ FFA_regional-skew/
 
 ### Step 0.5.1 — Refine the Covariate Inventory
 
-**Actions**
+**Actions** - Finalized the list of covariates by domain (climate,
+terrain, land cover)
 
-- Final list of covariates by domain (climate, terrain, land cover)
+- Documented filenames, expected data sources, priority classification,
+  versioning, and download status
 
-- Document Filenames, expected sources, priority, and version tracking
+- Created reusable documentation for source tracking and spatial QA
 
-**Reason (Before):**
+**Reason (Before):** The covariate inventory lacked a unified, versioned
+reference for dataset origin, naming, and QA status. Metadata was
+distributed across exploratory scripts without a centralized schema or
+checklist for spatial data preparation.
 
 **Result (After):**
 
-1.  Added docs/spatial_data_preparation_checklist.md.
+- All covariates included in this milestone are now explicitly
+  classified as core inputs for regional skew modeling
 
-2.  Updated: `data/meta/covariates_metadata_schema.csv`
+- Created `docs/covariate_source_inventory.md` to document dataset
+  purpose, source, format, resolution, version, and status
 
-3.  All covariates included in this phase are considered core inputs for
-    regional skew modeling. These variables—derived from climate,
-    terrain, and location data—were selected based on prior studies,
-    ecological relevance, and data availability. No optional or
-    exploratory variables have been included in this milestone.
+- Created `docs/spatial_data_preparation_checklist.md` with a reusable
+  12-step QA framework for processing spatial data
 
-4.  Created: `docs/spatial_data_preparation_checklist.md`
+- Updated `data/meta/covariates_metadata_schema.csv` to reflect current
+  file expectations and schema details
 
-5.  Created: `docs/covariate_source_inventory.md`
+- Standardized covariate metadata for reproducibility, audit tracking,
+  and use in subsequent milestones
 
 ### Step 0.5.2 — Update folder structure for data/
 
 **Actions**
 
-- Consider backing up entire project before file moves
-
-- Update any hardcoded paths in scripts
+- Backed up entire project
 
 **Reason (Before):**
 
@@ -313,6 +404,8 @@ FFA_regional-skew/
 **Reason (Before):**
 
 **Result (After):**
+
+- Update any hardcoded paths in scripts
 
 ### Step 0.5.4 — Standardize and validate metadata for downloads
 
@@ -357,6 +450,11 @@ FFA_regional-skew/
 ### Step 0.5.9 — Commit and tag `v0.5-download-scripts`
 
 **Actions**
+
+git tag -a v0.5-download-scripts -m “Milestone 01: Download scripts and
+covariate metadata”
+
+git push origin v0.5-download-scripts
 
 **Reason (Before):**
 
