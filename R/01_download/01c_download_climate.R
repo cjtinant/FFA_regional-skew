@@ -4,10 +4,9 @@
 # Date Created:   2025-04-15
 # Last Updated:   2025-05-15      # update script header
 #
-#
-# Purpose: Download, processes, and prepare the following climate data
-# -   Köppen Geiger climate raster, 
-# -   gridded USDA Plant Hardiness Zone Map (PHZM) raster, and 
+# Purpose: Download, processes, and prepare climate rasters:
+# -   Köppen Geiger climate, 
+# -   gridded USDA Plant Hardiness Zone Map (PHZM), and 
 # -   PRISM 30-year normals at 800m resolution
 #       -  annual tmax
 #       - annual tmean
@@ -18,12 +17,10 @@
 #       -   daily tmin
 #       -   daily ppt
 #
-#
 # Data URLs:
 # -   Köppen Geiger climate -- gewww.gloh2o.org/koppen/
 # -   Plant Hardiness Zones -- https://prism.oregonstate.edu/projects/plant_hardiness_zones.php
 # -   PRISM climate normals -- https://prism.oregonstate.edu/
-#
 #
 # Workflow Summary:
 # 1.   Download zipped archives, extract data and organize raster data
@@ -31,7 +28,6 @@
 #        for spatial analysis.
 # 3.   Stack PRISM rasters (where appropriate)
 # 4.   Export reprojected, stacked rasters to ~data/processed.
-#
 #
 # Output:
 # Validated climate rasters projected to a common CRS
@@ -51,17 +47,15 @@
 #                ├── 1991_2020/
 #                ├── 2041_2070/
 #                └── 2071_2099/
-
+#
 #      ├── phzm/
 #      ├── prism/
-
-#    data/intermediate/
-
 #
-# data/processed/
+#    data/intermediate/                          # intermediate processing
+#
+# data/processed/                                # clean and in common crs
 #      ├── us_eco_levels.gpkg
 #      └── prism/
-#
 #
 # Dependencies:
 # -   tidyverse::dplyr
@@ -76,90 +70,20 @@
 # Load Libraries
 library(tidyverse)
 library(here)
-library(fs)                  # file interface system
+library(fs)
 library(here)
 library(glue)
 library(httr)
 library(prism)
 library(terra)
 
-# library(sf)
-# library(janitor)
-
 # Load function definitions
-source(here("R/utils/download_data/verify_prism_archive.R"))
+source(here("R/utils/qaqc/verify_prism_archive.R"))
+source(here("R/utils/metadata/check_crs.R"))
+source(here("R/utils/spatial/check_crs.R"))
 
-# Functions to move----
 
-# Check CRS for each raster
-crs_summary <- purrr::map_dfr(bil_files, function(file) {
-  r <- rast(file)
-  tibble(
-    file = basename(file),
-    crs = crs(r, describe = TRUE)
-  )
-})
 
-# ------------------------------------------------------------------------------
-# Utility: Build SpatRaster from prism_archive_ls() results
-
-build_prism_rasters <- function(prism_dirs) {
-  bil_paths <- file.path(
-    prism_get_dl_dir(),
-    prism_dirs,
-    paste0(basename(prism_dirs), ".bil")
-  )
-  terra::rast(bil_paths)
-}
-
-# ------------------------------------------------------------------------------
-# Utility: reproject to EPSG5070
-reproject_to_epsg5070_batch <- function(bil_files,
-                                        out_dir = here::here("data/intermediate/prism_epsg5070"),
-                                        log_path = here::here("data/log/prism_crs_log.csv")) {
-  library(terra)
-  library(fs)
-  library(dplyr)
-  
-  dir_create(out_dir, recurse = TRUE)
-  
-  crs_log <- purrr::map_dfr(bil_files, function(f) {
-    r <- rast(f)
-    crs_original <- crs(r)
-    
-    # Check if it's already in EPSG:5070
-    is_proj_5070 <- grepl("5070", crs_original) || grepl("Conus Albers", crs_original)
-    
-    # Output path
-    fname_out <- path_file(f)
-    fname_out <- path_ext_set(fname_out, "tif")
-    out_path <- file.path(out_dir, fname_out)
-    
-    # Reproject if needed
-    if (!is_proj_5070) {
-      cat("Reprojecting:", fname_out, "\n")
-      r_proj <- project(r, "EPSG:5070", method = "bilinear")
-      writeRaster(r_proj, filename = out_path, overwrite = TRUE)
-      crs_new <- crs(r_proj)
-    } else {
-      cat("Already EPSG:5070:", fname_out, "\n")
-      file_copy(f, out_path, overwrite = TRUE)
-      crs_new <- crs(r)
-    }
-    
-    tibble(
-      file = f,
-      output = out_path,
-      original_crs = crs_original,
-      new_crs = crs_new
-    )
-  })
-  
-  # Save log
-  readr::write_csv(crs_log, log_path)
-  
-  invisible(crs_log)
-}
 #-------------------------------------------------------------------------------
 # Create rename table from bil_files
 rename_tbl <- tibble(
@@ -323,26 +247,27 @@ write_csv(prism_files, here("data/log/prism_files.csv"))
                         output_csv = "data/log/prism_qc.csv"
                       )
 
-# check CRS
-# Ensure path to PRISM rasters
-prism_dir <- here("data/raw/prism")
-
-# List all .bil files
-bil_files <- list.files(
-  path = "data/raw/prism",
-  pattern = "\\.bil$", 
-  recursive = TRUE, 
-  full.names = TRUE
-)
-
-# Show unique CRS strings
-crs_summary %>% distinct(crs)
+summarise_raster_crs(prism_files)
+# # check CRS
+# # Ensure path to PRISM rasters
+# prism_dir <- here("data/raw/prism")
+# 
+# # List all .bil files
+# bil_files <- list.files(
+#   path = "data/raw/prism",
+#   pattern = "\\.bil$", 
+#   recursive = TRUE, 
+#   full.names = TRUE
+# )
+# 
+# # Show unique CRS strings
+# crs_summary %>% distinct(crs)
 
 # Load a raster and check current CRS (should be GCS NAD83)
-r <- rast("data/raw/prism/PRISM_tmax_30yr_normal_800mM5_annual_bil/PRISM_tmax_30yr_normal_800mM5_annual_bil.bil")
+# r <- rast("data/raw/prism/PRISM_tmax_30yr_normal_800mM5_annual_bil/PRISM_tmax_30yr_normal_800mM5_annual_bil.bil")
 
 # Run the batch reprojector
-#reproject_to_epsg5070_batch(bil_files)
+#reproject_to_epsg5070(bil_files)
 
 #-------------------------------------------------------------------------------
 # Rename the reprojected rasters
