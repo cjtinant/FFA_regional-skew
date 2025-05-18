@@ -1,18 +1,26 @@
 Milestone 01 — Download and Prepare Covariates
 ================
 C.J. Tinant
-May 12, 2025
+May 18, 2025
 
 - [Overview of v0.5](#overview-of-v05)
 - [Goals](#goals)
 - [Notes](#notes)
 - [Standardized Script Naming
   Conventions](#standardized-script-naming-conventions)
-- [Subdirectory Naming Convention:](#subdirectory-naming-convention)
 - [Project Structure](#project-structure)
 - [v0.5 – Download and Prepare
   Covariates](#v05--download-and-prepare-covariates)
 - [v0.5 Tasklist](#v05-tasklist)
+- [NEXT STEPS](#next-steps)
+  - [├── gp_eco_levels.gpkg](#-gp_eco_levelsgpkg)
+- [CREATE CUSTOM MACROREGIONS](#create-custom-macroregions)
+- [Load Site Locations](#load-site-locations)
+- [——————————————————————————](#section)
+- [Make PRISM metadata](#make-prism-metadata)
+- [accessed from
+  https://prism.oregonstate.edu/fetchData.php](#accessed-from-httpsprismoregonstateedufetchdataphp)
+- [and fed into ChatGPT](#and-fed-into-chatgpt)
 
 ## Overview of v0.5
 
@@ -66,7 +74,7 @@ naming format.
 See: `R/00_setup/` and `data/raw/` for implementation scripts and
 acquired data.
 
-## Subdirectory Naming Convention:
+### Subdirectory Naming Convention:
 
 Subdirectories are named to reflect the `workflow stage`, `data source`,
 and `data domain or content category`, ensuring a transparent and
@@ -173,11 +181,14 @@ ned_elev_2023_clean.tif \| NED elevation, cleaned and reprojected \|
 &#10;        Use tags like v0.5-prism-dl or milestone-01-initial
 &#10;
 Next Steps for Milestone 01 – Download and QA Raw Covariate Data
-&#10;🔹 02. Write or Refactor Download Scripts
-&#10;.... Look through 01_get_spatial...R
-&#10;    Begin modular scripts for each covariate domain.
-&#10;    Optional: log intermediate outputs in data/meta/.
-&#10;    🔲 Break scripts into modular chunks by source:
+&#10;📏 Best Practices for Working Across Scales:
+Step    Action
+1.  Ensure CRS alignment: both raster and vector data should be in the same projection (e.g., Albers or UTM, not lat/lon).
+2.  Rasterize zones if needed, using nearest-neighbor or majority rule, to match 1 km grid (if aggregating by raster cell).
+3.  Buffer or simplify zone boundaries to reflect their 1:250,000-scale fidelity, especially if comparing to higher-res zones.
+4.  Use weighted stats when a raster cell overlaps multiple zones (e.g., exactextractr::exact_extract() in R).
+5.  Document the mismatch in scale/resolution in metadata: users should know the raster is finer than the zones.
+&#10;
 &#10;
 &#10;    🔲 Validate reproducibility with here(), glue(), and httr::GET() or download.file()
 &#10;    🔲 Save logs or hash summaries to /log/ or /data/meta/
@@ -264,15 +275,17 @@ FFA_regional-skew/
                 └── sites_all_peak_in_bb.csv
 
     ├── raw/                      # Unmodified input data 
-        ├── prism/
-        |   └── ppt_30yrnormals/
-        |        └── prism_ppt_30yrnormals_raw.bil
         ├── epa/
+        |    └── nlcd_2021/
+        │       └── epa_nlcd_2021_raw.tif
         |    └── nlcd_2021/
         │       └── epa_nlcd_2021_raw.tif
         └── usgs/
             └── nhdplus/
             |   └── usgs_nhdplus_catchments_v21_raw.shp
+        ├── prism/
+        |   └── ppt_30yrnormals/
+        |        └── prism_ppt_30yrnormals_raw.bil
             └── waterdata/
                 ├── sites_all_in_bb.csv
                 └── sites_all_peak_in_bb.csv
@@ -339,21 +352,36 @@ FFA_regional-skew/
 
 # v0.5 Tasklist
 
-| Step    | Task                                                      | Status |
-|---------|-----------------------------------------------------------|--------|
-| 0.5.1   | Refine the Covariate Inventory                            | \[X\]  |
-| 0.5.1.5 | Document inputs, outputs, assumptions                     | \[X\]  |
-| 0.5.2   | Update folder structure for data/                         | \[ \]  |
-| 0.5.3   | Create downloads scripts for each domain and covariate    | \[ \]  |
-| 0.5.3.5 | Validate chunk headers in .Rmd files ({r name, eval=} )   | \[ \]  |
-| 0.5.4   | Standardize and validate metadata for downloads           | \[ \]  |
-| 0.5.4.5 | Validate spatial coverage and CRS for covariates          | \[ \]  |
-| 0.5.5   | Create README-style notes for scripts in milestone folder | \[ \]  |
-| 0.5.5.5 | Add file size / resolution audit to .Rmd                  | \[ \]  |
-| 0.5.6   | Add ref. links to documentation e.g., PRISM, USGS, NLCD   | \[ \]  |
-| 0.5.7   | Knit milestone and data dictionary .Rmd files to PDF      | \[ \]  |
-| 0.5.8   | Document changes in 01_download README.Rmd                | \[ \]  |
-| 0.5.9   | Commit and tag `v0.5-download-scripts`                    | \[ \]  |
+| Step      | Task                                                    | Status |
+|-----------|---------------------------------------------------------|--------|
+| **0.5.1** | Refine the Covariate Inventory                          | \[X\]  |
+| 0.5.1.5   | Document inputs, outputs, assumptions                   | \[X\]  |
+| **0.5.2** | Update folder structure                                 | \[ \]  |
+| 0.5.2.1   | Update folder structure for data/                       | \[ \]  |
+| 0.5.2.2   | Update folder structure for utilities scripts           | \[ \]  |
+| **0.5.3** | Create downloads scripts for vector and point data      | \[ \]  |
+| 0.5.3.1   | Create downloads scripts for EPA ecoregions shapefiles  | \[ \]  |
+| 0.5.3.2   | Create downloads scripts for NHD+ data                  | \[ \]  |
+| 0.5.3.3   | Create downloads scripts for USGS Station data          | \[ \]  |
+| **0.5.4** | Create downloads scripts for raster covariates          | \[ \]  |
+| 0.5.4.1   | Create downloads scripts for Köppen Geiger climate grid | \[ \]  |
+| 0.5.4.2   | Create downloads scripts for USDA Plant Hardiness Zones | \[ \]  |
+| 0.5.4.3   | Create downloads scripts for PRISM 30-yr normals (800m) | \[ \]  |
+| 0.5.4.4   | Create downloads scripts for NLCD Land Cover 2016       | \[ \]  |
+| 0.5.4.5   | Create downloads scripts for NED Slope                  | \[ \]  |
+| 0.5.4.6   | Create downloads scripts for MODIS NDVI 2016            | \[ \]  |
+| 0.5.4.7   | Create downloads scripts for STATSGO2                   | \[ \]  |
+| 0.5.4.8   | Create downloads scripts for NED Elevation              | \[ \]  |
+| **0.5.5** | QAQC for downloads                                      | \[ \]  |
+| 0.5.5.1   | Validate spatial coverage, resolution, and CRS          | \[ \]  |
+| 0.5.5.2   | Standardize and validate metadata for downloads         | \[ \]  |
+| 0.5.5.3   | Validate chunk headers in .Rmd files ({r name, eval=} ) | \[ \]  |
+| 0.5.5.4   | Make README-style notes for scripts in milestone folder | \[ \]  |
+| 0.5.5.5   | Add file size / resolution audit to .Rmd                | \[ \]  |
+| 0.5.5.6   | Add ref. links to documentation e.g., PRISM, USGS, NLCD | \[ \]  |
+| **0.5.6** | Knit milestone and data dictionary .Rmd files to PDF    | \[ \]  |
+| **0.5.7** | Document changes in 01_download README.Rmd              | \[ \]  |
+| **0.5.8** | Commit and tag `v0.5-download-scripts`                  | \[ \]  |
 
 ### Step 0.5.1 — Refine the Covariate Inventory
 
@@ -387,15 +415,57 @@ checklist for spatial data preparation.
 - Standardized covariate metadata for reproducibility, audit tracking,
   and use in subsequent milestones
 
-### Step 0.5.2 — Update folder structure for data/
+### Step 0.5.2 — Update folder structure for utils/ and data/
 
 **Actions**
 
-- Backed up entire project
+- Backed up the full project prior to restructuring
 
-**Reason (Before):**
+- Added new data folders:
 
-**Result (After):**
+-  data/intermediate/
+
+-  data/log/
+
+-  data/meta/
+
+-  data/processed/
+
+-  data/raw/
+
+- Created new folders to organize utility scripts by domain
+
+- Updated folder structure under R/utils/ to include:
+
+-  metadata/ – functions for documenting datasets
+
+-  spatial/ – functions for working with shapefiles and rasters
+
+-  qaqc/ – validation and audit helpers
+
+-  paths/ – reusable path constructors
+
+-  plotting/ – clean, project-specific plot functions
+
+**Reason (Before):** All utility functions were either embedded inline
+or scattered across script files, making them harder to test, reuse, or
+document. There was no consistent structure for distinguishing between
+spatial, metadata, or QAQC-related functions.
+
+**Result (After):** Created reusable, well-scoped functions organized by
+purpose within R/utils/. This structure improves script readability,
+supports test-driven development, and makes it easier to debug or teach
+from individual components.
+
+**Code Used to Create Folder Structure**
+
+``` bash
+
+cd "$(git rev-parse --show-toplevel)"   # get to top level from anywhere
+
+mkdir -p R/utils/{metadata,spatial,qaqc,paths,plotting} # make directories
+ 
+```
 
 ### Step 0.5.3 — Create downloads scripts for each domain and covariate
 
@@ -405,7 +475,63 @@ checklist for spatial data preparation.
 
 **Result (After):**
 
-- Update any hardcoded paths in scripts
+# NEXT STEPS
+
+## ├── gp_eco_levels.gpkg
+
+# CREATE CUSTOM MACROREGIONS
+
+# Load Site Locations
+
+sites \<- read_csv(here(“data/clean/sites_pk_gt_20.csv”)) %\>%
+distinct(site_no, dec_lat_va, dec_long_va) %\>% drop_na(dec_lat_va,
+dec_long_va)
+
+sites_sf \<- sites %\>% st_as_sf(coords = c(“dec_long_va”,
+“dec_lat_va”), crs = 4326)
+
+# ——————————————————————————
+
+# Make PRISM metadata
+
+# accessed from <https://prism.oregonstate.edu/fetchData.php>
+
+# and fed into ChatGPT
+
+prism_metadata \<- tribble( ~variable, ~time_period, ~resolution,
+~units, ~description, ~source,
+
+“Precipitation”, “1991-2020 Annual”, “4km”, “Millimeters”, “Average
+annual total precipitation derived from monthly grids.”,
+“<https://prism.oregonstate.edu/normals/>”,
+
+“Precipitation”, “1991-2020 Monthly”, “4km”, “Millimeters”, “Monthly
+total precipitation normals.”,
+“<https://prism.oregonstate.edu/normals/>”,
+
+“Temperature (Mean)”, “1991-2020 Annual”, “4km”, “Degrees C”, “Average
+annual mean temperature derived from monthly grids.”,
+“<https://prism.oregonstate.edu/normals/>”,
+
+“Temperature (Mean)”, “1991-2020 Monthly”, “4km”, “Degrees C”, “Monthly
+mean temperature normals.”, “<https://prism.oregonstate.edu/normals/>” )
+
+prism_metadata_spatial \<- tribble( ~attribute, ~value,
+
+“Variable”, “Precipitation & Temperature”, “Time Period”, “1991-2020
+Normals”, “Resolution”, “4km (~0.04166667 degrees)”, “Projection”,
+“Geographic Coordinate System (Lat/Long)”, “Datum”, “North American
+Datum 1983 (NAD83)”, “Ellipsoid”, “Geodetic Reference System 80
+(GRS80)”, “Cell Size”, “0.04166667 degrees”, “Extent West”,
+“-125.0208333”, “Extent East”, “-66.4791667”, “Extent North”, “49.9375”,
+“Extent South”, “24.0625”, “Units Precipitation”, “Millimeters”, “Units
+Temperature”, “Degrees Celsius”, “Source”,
+“<https://prism.oregonstate.edu/normals/>”, “Method”, “PRISM model -
+Parameter-elevation Regressions on Independent Slopes Model (Daly et
+al. 2008, 2015)” )
+
+- Updated hardcoded paths in scripts where possible
+- Completed Ecoreg dkl –\> Projected to Albers, NAD83
 
 ### Step 0.5.4 — Standardize and validate metadata for downloads
 

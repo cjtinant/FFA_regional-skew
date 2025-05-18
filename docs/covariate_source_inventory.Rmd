@@ -23,10 +23,13 @@ See 'Skew Covariates Metadata Schema' and spatial_data_preparation_checklist.md 
 | Koppen Geiger        | [gloh2o](https://www.gloh2o.org/koppen/) | `.tif` | acquire | 20250513 |
 | Plant Hardiness Zone | [PHZM](https://prism.oregonstate.edu/projects/plant_hardiness_zones.php) | `.bil` | acquire | 20250514 |
 | PRISM Normals        | [PRISM](https://prism.oregonstate.edu)   | `.bil` | acquire | 20250513 |
-
-| USGS NHDPlus Catchments | [USGS](https://www.usgs.gov/) | `.shp` | Check | check|
 | NLCD Land Cover 2016  | [MRLC](https://www.mrlc.gov/) | `.tif` | Needed  | check |
 | NED Elevation | [National Map](https://apps.nationalmap.gov/) | `.tif` | Needed | ned_elevation |
+
+| MODIS | [National Map](https://apps.nationalmap.gov/) | `.tif` | Needed | ned_elevation |
+| 
+
+| USGS NHDPlus Catchments | [USGS](https://www.usgs.gov/) | `.shp` | Check | check|
 | USGS Stations  | GET           | `.csv` | reproj   |       |
  
 

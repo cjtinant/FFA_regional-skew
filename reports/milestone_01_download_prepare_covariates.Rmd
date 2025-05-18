@@ -354,19 +354,34 @@ FFA_regional-skew/
 # `r params$version` Tasklist
 | Step    | Task                                                      | Status |
 |---------|-----------------------------------------------------------|--------|
-| 0.5.1   | Refine the Covariate Inventory                            |  [X]   |
-| 0.5.1.5 | Document inputs, outputs, assumptions                     |  [X]   |
-| 0.5.2   | Update folder structure for data/                         |  [ ]   |
-| 0.5.3   | Create downloads scripts for each domain and covariate    |  [ ]   |
-| 0.5.3.5 | Validate chunk headers in .Rmd files ({r name, eval=} )   |  [ ]   |
-| 0.5.4   | Standardize and validate metadata for downloads           |  [ ]   |
-| 0.5.4.5 | Validate spatial coverage and CRS for covariates          |  [ ]   |
-| 0.5.5   | Create README-style notes for scripts in milestone folder |  [ ]   |
-| 0.5.5.5 | Add file size / resolution audit to .Rmd                  |  [ ]   |
-| 0.5.6   | Add ref. links to documentation e.g., PRISM, USGS, NLCD   |  [ ]   |
-| 0.5.7   | Knit milestone and data dictionary .Rmd files to PDF      |  [ ]   |
-| 0.5.8   | Document changes in 01_download README.Rmd                |  [ ]   |
-| 0.5.9   | Commit and tag `v0.5-download-scripts`                    |  [ ]   |
+| **0.5.1** | Refine the Covariate Inventory                          |  [X]   |
+| 0.5.1.5   | Document inputs, outputs, assumptions                   |  [X]   |
+| **0.5.2** | Update folder structure                                 |  [ ]   |
+| 0.5.2.1   | Update folder structure for data/                       |  [ ]   |
+| 0.5.2.2   | Update folder structure for utilities scripts           |  [ ]   |
+| **0.5.3** | Create downloads scripts for vector and point data      |  [ ]   |
+| 0.5.3.1   | Create downloads scripts for EPA ecoregions shapefiles  |  [ ]   |
+| 0.5.3.2   | Create downloads scripts for NHD+ data                  |  [ ]   |
+| 0.5.3.3   | Create downloads scripts for USGS Station data          |  [ ]   |
+| **0.5.4** | Create downloads scripts for raster covariates          |  [ ]   |
+| 0.5.4.1   | Create downloads scripts for Köppen Geiger climate grid |  [ ]   |
+| 0.5.4.2   | Create downloads scripts for USDA Plant Hardiness Zones |  [ ]   |
+| 0.5.4.3   | Create downloads scripts for PRISM 30-yr normals (800m) |  [ ]   |
+| 0.5.4.4   | Create downloads scripts for NLCD Land Cover 2016       |  [ ]   |
+| 0.5.4.5   | Create downloads scripts for NED Slope                  |  [ ]   |
+| 0.5.4.6   | Create downloads scripts for MODIS NDVI 2016            |  [ ]   |
+| 0.5.4.7   | Create downloads scripts for STATSGO2                   |  [ ]   |
+| 0.5.4.8   | Create downloads scripts for NED Elevation              |  [ ]   |
+| **0.5.5** | QAQC for downloads                                      |  [ ]   |
+| 0.5.5.1   | Validate spatial coverage, resolution, and CRS          |  [ ]   |
+| 0.5.5.2   | Standardize and validate metadata for downloads         |  [ ]   |
+| 0.5.5.3   | Validate chunk headers in .Rmd files ({r name, eval=} ) |  [ ]   |
+| 0.5.5.4   | Make README-style notes for scripts in milestone folder |  [ ]   |
+| 0.5.5.5   | Add file size / resolution audit to .Rmd                |  [ ]   |
+| 0.5.5.6   | Add ref. links to documentation e.g., PRISM, USGS, NLCD |  [ ]   |
+| **0.5.6** | Knit milestone and data dictionary .Rmd files to PDF    |  [ ]   |
+| **0.5.7** | Document changes in 01_download README.Rmd              |  [ ]   |
+| **0.5.8** | Commit and tag `v0.5-download-scripts`                  |  [ ]   |
 
 ### Step 0.5.1 — Refine the Covariate Inventory
 
@@ -392,18 +407,33 @@ The covariate inventory lacked a unified, versioned reference for dataset origin
 
 -   Standardized covariate metadata for reproducibility, audit tracking, and use in subsequent milestones
 
-### Step 0.5.2 — Update folder structure for utils/
+### Step 0.5.2 — Update folder structure for utils/ and data/
 
 **Actions** 
 
+-   Backed up the full project prior to restructuring
+-   Added new data folders:
+-      data/intermediate/
+-      data/log/
+-      data/meta/
+-      data/processed/
+-      data/raw/
+-   Created new folders to organize utility scripts by domain
 
+-   Updated folder structure under R/utils/ to include:
+-      metadata/ – functions for documenting datasets
+-      spatial/ – functions for working with shapefiles and rasters
+-      qaqc/ – validation and audit helpers
+-      paths/ – reusable path constructors
+-      plotting/ – clean, project-specific plot functions
 
 **Reason (Before):** 
+All utility functions were either embedded inline or scattered across script files, making them harder to test, reuse, or document. There was no consistent structure for distinguishing between spatial, metadata, or QAQC-related functions.
 
-**Result (After):** Created reusable, well-scoped functions in utils/ and stored them in domain-specific folders (like metadata/, spatial/, qaqc/) will make your scripts easier to maintain, debug, and teach from.
+**Result (After):** 
+Created reusable, well-scoped functions organized by purpose within R/utils/. This structure improves script readability, supports test-driven development, and makes it easier to debug or teach from individual components.
 
--   Backed up entire project 
--   Made folders to organize scripts
+**Code Used to Create Folder Structure**
 ```{bash make-utils-folders, eval=FALSE}
 
 cd "$(git rev-parse --show-toplevel)"   # get to top level from anywhere
