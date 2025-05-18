@@ -1,16 +1,15 @@
 # ==============================================================================
-# Script Name:    01_get-spatial-data.R
+# Script Name:    01a_download_epa_regions.R
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-04-15
-# Last Updated:   2025-05-15      # update script header
+# Last Updated:   2025-05-18      # update script header
 #
 # Purpose:        This script downloads, processes, and prepares EPA/CEC 
 #                 Level I-IV ecoregion data.
 #
-#
 # Data URLs:
 # -   
-# 
+#
 # Workflow Summary:
 # 1.   Download zipped archives, extract data and organize raster data
 # 2.   Reproject shapefiles to a common CRS (US Albers Equal Area – EPSG:5070) 
@@ -19,10 +18,8 @@
 # 5.   Recalculate area in sq-km using a common CRS
 # 6.   Export reprojected, clipped, cleaned data as a gpkg for downstream use.
 #
-#
 # Output:
 # -    Clean Ecoregion Level I - Level IV clipped to CONUS and in a common CRS.
-#
 #
 # Folder structure:
 #     data/raw
@@ -33,7 +30,6 @@
 #             └── us_eco_l4_no_st.shp/
 #     data/processed
 #       └── us_eco_levels.gpkg
-#
 #
 # Dependencies:
 # -    tidyverse: general data wrangling
@@ -54,8 +50,6 @@ library(glue)
 library(here)
 library(sf)
 library(units)       # to convert from m² to km²
-
-# library(xml2)        # Provides a simple interface to work with XML data
 
 # Load function definitions
 source(here("R/utils/download_data/download_ecoregion_resources.R"))
