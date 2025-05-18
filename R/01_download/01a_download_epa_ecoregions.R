@@ -11,7 +11,7 @@
 # -   
 #
 # Workflow Summary:
-# 1.   Download zipped archives, extract data and organize raster data
+# 1.   Download zipped archives, extract and organize data.
 # 2.   Reproject shapefiles to a common CRS (US Albers Equal Area – EPSG:5070) 
 # 3.   Clip Levels I–III to the spatial extent of Level IV (CONUS boundary) 
 # 4.   Validate and repair geometries and coerce to consistent geometry type.
