@@ -12,6 +12,7 @@ data/processed/prism
 data/processed/*.gpkg
 
 
+
 # Raster Grid (PRISM / PHZM)
 data/raw/raster_raw/phzm_us_grid_2023/phzm_us_grid_2023.bil
 data/raw/raster_raw/koppen-climate-classification/koppen_classification.tif
@@ -23,6 +24,9 @@ data/raw/vector_raw/ecoregions_orig2/phzm_us_zones_shp_2023/phzm_us_zones_shp_20
 data/raw/vector_raw/us_eco_lev03/us_eco_l3.shp
 data/raw/vector_raw/us_eco_lev02/us_eco_l2.shp
 data/raw/vector_raw/us_eco_lev01/us_eco_l1.shp
+
+/data/raw/vector_raw/ecoregions_unprojected/us_eco_lev4_GreatPlains_geographic.gpkg
+
 
 
 # Output Data (Generated or Large Files)
@@ -54,6 +58,12 @@ docs/skew_covariates_metadata_v*.xlsx
 docs/delete_later/
 docs/_old_versions/
 docs/tmp/
+# =======================
+
+# =======================
+# Ignore files not yet in production
+CHANGELOG.Rmd
+RELEASE_CHECKLIST.Rmd
 # =======================
 
 # =======================
