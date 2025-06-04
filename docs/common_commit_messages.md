@@ -49,7 +49,7 @@ CJ Tinant
 
 - Update docs: – for improving clarity or formatting of documentation
 
-✅ Common Commit Message Prefixes
+## ✅ Common Commit Message Prefixes
 
 - chore: – general project maintenance (most common for .gitignore)
 
