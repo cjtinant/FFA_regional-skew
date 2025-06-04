@@ -1,7 +1,7 @@
 Milestone 01 — Download and Prepare Covariates
 ================
 C.J. Tinant
-May 18, 2025
+June 04, 2025
 
 - [Overview of v0.5](#overview-of-v05)
 - [Goals](#goals)
@@ -16,11 +16,6 @@ May 18, 2025
   - [├── gp_eco_levels.gpkg](#-gp_eco_levelsgpkg)
 - [CREATE CUSTOM MACROREGIONS](#create-custom-macroregions)
 - [Load Site Locations](#load-site-locations)
-- [——————————————————————————](#section)
-- [Make PRISM metadata](#make-prism-metadata)
-- [accessed from
-  https://prism.oregonstate.edu/fetchData.php](#accessed-from-httpsprismoregonstateedufetchdataphp)
-- [and fed into ChatGPT](#and-fed-into-chatgpt)
 
 ## Overview of v0.5
 
@@ -28,51 +23,36 @@ This document outlines the setup, documentation, and reproducibility
 scaffolding established for **Milestone v0.5**, focused on acquiring and
 validating spatial covariates for regional skew modeling.
 
+This milestone builds on `v0.3-structure-refactor`
+
 ### Summary
 
 Initiate acquisition, validation, and preparation of climate, terrain,
 and location-based covariates for use in regional skew estimation
 models.
 
-See
-[`spatial_data_preparation_checklist.md`](../docs/spatial_data_preparation_checklist.md)
-for a reusable checklist used to guide and document preprocessing steps
-across spatial layers.
-
 ## Goals
 
 **Update the covariate source inventory**
 
-- Downloading and staging spatial datasets (ecoregions, PRISM, NED,
-  etc.)
+- Write or refactor download scripts.
 
-- Documenting file sources and formats in `metadata/` and `docs/`
+- Document file sources and formats.
+  [`covariate_source_inventory.md`](../docs/covariate_source_inventory.md)
 
-- Conducting initial QA checks on file completeness and coordinate
-  reference systems
+- Prepare spatial data
+  [`spatial_data_preparation_checklist.md`](../docs/spatial_data_preparation_checklist.md)
 
-- Acquire, check, and document all raw covariate datasets
+- Acquire and clean ,etadata [`metadata`](../data/meta)
 
-- Write or Refactor Download Scripts
-
-- Spatial File QA + Metadata Logging
-
-- Version Control & Tagging
+- Apply version control & tagging
 
 ## Notes
-
-- This milestone builds on `v0.3-structure-refactor`
 
 - README-style documentation will be embedded in this .Rmd file for
   reproducibility
 
 ## Standardized Script Naming Conventions
-
-To improve clarity and reproducibility, scripts follow a standardized
-naming format.
-
-See: `R/00_setup/` and `data/raw/` for implementation scripts and
-acquired data.
 
 ### Subdirectory Naming Convention:
 
@@ -88,23 +68,18 @@ Subdirectory naming follows the format: `[stage]/[source]_[category]/`
   `interim`)
 
 - `[source]` – Data provider or system (e.g., `epa`, `prism`, `usgs`,
-  `ned`, `nlcd`)
+  `ned`, `nlcd`) *(optional)*
 
 - `[category]` – Broad data content or theme (e.g., `ecoregions`,
-  `30yrnormals`, `landcover`, `elev`, `catchments`
+  `30yrnormals`, `landcover`, `elev`, `catchments` *(optional)*
 
 ### Example Subdirectory Names
 
 | Folder Path | Description |
-|----|----|
+|:--:|:--:|
+| `data/raw/prism/PRISM_ppt_30yr_normal_800mM4_annual_bil` | Raw PRISM 30-yr precipitation normals at ~800m resolution at the annual scale in .bil format |
 | `data/meta/epa_ecoregions/` | Metadata or schema for EPA ecoregions shapefiles |
-
-`data/raw/prism_30yrnormals/` \| Raw PRISM precipitation normals \|  
-`data/processed/usgs_catchments/` \| Processed USGS NHDPlus catchments
-\|
-
-`data/interim/ned_elev/` \| Intermediate elevation surfaces (clipped or
-reprojected) \|
+| `data/processed/koppen_climate/` | Processed koppen climate data |
 
 ### Script Naming Convention
 
@@ -144,19 +119,18 @@ automation, and chronological sequencing within the workflow.
 ### Data Naming Convention
 
 - Data naming follows:
-  \[source\]*\[layer\]*\[year\|version\]\_\[status\].\[ext\].
+  \[layer\]*\[date\|year\]*\[type\|unit\]\_\[status\].\[ext\].
 
-**Where:**
+**Where:** - `[layer]` – Thematic content or variable (e.g., ppt,
+catchments, landcover, eco_l1)
 
-- `[source]` – Data provider or domain (e.g., prism, usgs, epa)
+- `[date|year]` – Date represented, publication year, or climatology
+  period dataset (e.g., 0101, 2016)
 
-- `[layer]` – Thematic content or variable (e.g., ppt, catchments,
-  landcover, eco_l1)
-
-- `[year|version]` – Dataset version, publication year, or climatology
-  period (e.g., 2021, v21, 30yrnormals)
+- `[type]` – Data type or unit (v21, mm) *(optional)*
 
 - `[status]` – Workflow stage (e.g., raw, clean, clipped, joined)
+  *(optional)*
 
 - `[ext]`– File extension (e.g., .shp, .tif, .bil, .csv)
 
@@ -168,12 +142,6 @@ automation, and chronological sequencing within the workflow.
 | prism_ppt_30yrnormals_raw.bil | PRISM precipitation 30-year normals, raw raster |
 | usgs_nhdplus_catchments_v21_raw.shp | UUSGS NHDPlus V2.1 catchments, raw shapefile |
 | usgs_nlcd_2016_raw.tif | USGS NLCD land cover for 2016, raw raster |
-
-prism_tmean_2020_clipped.tif \| PRISM 2020 mean temperature, clipped to
-study area  
-ned_elev_2023_clean.tif \| NED elevation, cleaned and reprojected \|
-
-        |        └── prism_ppt_30yrnormals_raw.bil
 
 <!--
 &#10;    Commit & Tag When Stable
@@ -188,8 +156,6 @@ Step    Action
 3.  Buffer or simplify zone boundaries to reflect their 1:250,000-scale fidelity, especially if comparing to higher-res zones.
 4.  Use weighted stats when a raster cell overlaps multiple zones (e.g., exactextractr::exact_extract() in R).
 5.  Document the mismatch in scale/resolution in metadata: users should know the raster is finer than the zones.
-&#10;
-&#10;
 &#10;    🔲 Validate reproducibility with here(), glue(), and httr::GET() or download.file()
 &#10;    🔲 Save logs or hash summaries to /log/ or /data/meta/
 &#10;🔹 03. Spatial File QA + Metadata Logging
@@ -244,29 +210,17 @@ FFA_regional-skew/
 ├── .gitignore                    # Prevents sensitive/local files from being pushed
 ├── arcgis_project/               # Stores `.aprx` and layer files from ArcGIS 
                                   #   Pro workflows
-
 ├── data/ 
-    ├── meta/                     # Metadata
+    ├── intermediate/             # temporary storage for data processing
+    ├── log/                      # log files of downloads / processing steps
+    ├── meta/                     # Metadata of datasets
+    ├── processed/                # Cleaned, derived datasets
+        ├── koppen_climate/
         ├── prism/
-        |   └── ppt_30yrnormals/
-        |        └── prism_ppt_30yrnormals_raw.bil
-        ├── epa/
-        |    └── nlcd_2016/
-        │       └── epa_nlcd_2016_raw.tif
-        └── usgs/
-            └── nhdplus/
-            |   └── usgs_nhdplus_catchments_v21_raw.shp
-            └── waterdata/
-                ├── sites_all_in_bb.csv
-                └── sites_all_peak_in_bb.csv
+        |   └── ppt_0101_mm.tif 
+        ├── us_eco_levels.gpkg
 
-    ├── processed/               # Cleaned, derived datasets
-        ├── prism/
-        |   └── ppt_30yrnormals/
-        |        └── prism_ppt_30yrnormals_raw.bil
-        ├── epa/
-        |    └── nlcd_2016/
-        │       └── epa_nlcd_2016_raw.tif
+
         └── usgs/
             └── nhdplus/
             |   └── usgs_nhdplus_catchments_v21_raw.shp
@@ -275,11 +229,10 @@ FFA_regional-skew/
                 └── sites_all_peak_in_bb.csv
 
     ├── raw/                      # Unmodified input data 
-        ├── epa/
-        |    └── nlcd_2021/
-        │       └── epa_nlcd_2021_raw.tif
-        |    └── nlcd_2021/
-        │       └── epa_nlcd_2021_raw.tif
+        ├── epa_ecoregions/
+        ├── koppen_climate/
+        ├── modis_2016
+        
         └── usgs/
             └── nhdplus/
             |   └── usgs_nhdplus_catchments_v21_raw.shp
@@ -289,6 +242,9 @@ FFA_regional-skew/
             └── waterdata/
                 ├── sites_all_in_bb.csv
                 └── sites_all_peak_in_bb.csv
+                
+                
+
 
 ├── docs/                     # Project documentation, e.g., final reports, 
                               #   manuscripts, proposal materials. 
@@ -356,17 +312,17 @@ FFA_regional-skew/
 |-----------|---------------------------------------------------------|--------|
 | **0.5.1** | Refine the Covariate Inventory                          | \[X\]  |
 | 0.5.1.5   | Document inputs, outputs, assumptions                   | \[X\]  |
-| **0.5.2** | Update folder structure                                 | \[ \]  |
-| 0.5.2.1   | Update folder structure for data/                       | \[ \]  |
-| 0.5.2.2   | Update folder structure for utilities scripts           | \[ \]  |
+| **0.5.2** | Update folder structure                                 | \[X\]  |
+| 0.5.2.1   | Update folder structure for data/                       | \[X\]  |
+| 0.5.2.2   | Update folder structure for utilities scripts           | \[X\]  |
 | **0.5.3** | Create downloads scripts for vector and point data      | \[ \]  |
-| 0.5.3.1   | Create downloads scripts for EPA ecoregions shapefiles  | \[ \]  |
+| 0.5.3.1   | Create downloads scripts for EPA ecoregions shapefiles  | \[X\]  |
 | 0.5.3.2   | Create downloads scripts for NHD+ data                  | \[ \]  |
 | 0.5.3.3   | Create downloads scripts for USGS Station data          | \[ \]  |
 | **0.5.4** | Create downloads scripts for raster covariates          | \[ \]  |
-| 0.5.4.1   | Create downloads scripts for Köppen Geiger climate grid | \[ \]  |
-| 0.5.4.2   | Create downloads scripts for USDA Plant Hardiness Zones | \[ \]  |
-| 0.5.4.3   | Create downloads scripts for PRISM 30-yr normals (800m) | \[ \]  |
+| 0.5.4.1   | Create downloads scripts for Köppen Geiger climate grid | \[X\]  |
+| 0.5.4.2   | Create downloads scripts for USDA Plant Hardiness Zones | \[X\]  |
+| 0.5.4.3   | Create downloads scripts for PRISM 30-yr normals (800m) | \[X\]  |
 | 0.5.4.4   | Create downloads scripts for NLCD Land Cover 2016       | \[ \]  |
 | 0.5.4.5   | Create downloads scripts for NED Slope                  | \[ \]  |
 | 0.5.4.6   | Create downloads scripts for MODIS NDVI 2016            | \[ \]  |
@@ -467,9 +423,176 @@ mkdir -p R/utils/{metadata,spatial,qaqc,paths,plotting} # make directories
  
 ```
 
+🎯 Goal
+
+Establish reusable, scriptable methods for downloading and preparing
+NHDPlusV2 data to support both:
+
+    Regional-scale stream network analysis, and
+
+    Local-scale spatial aggregation of covariates
+
+🔁 Dual Use of NHDPlusV2 🔹 1. Regional-Scale Stream Network Analysis
+
+Purpose: Analyze hydrologic connectivity, Strahler stream order, and
+network topology across large watersheds (e.g., the Northern Great
+Plains).
+
+Common Use Cases:
+
+    Delineating upstream networks
+
+    Tracing mainstem river paths
+
+    Filtering by stream order
+
+Data Used:
+
+    NHDFlowlineVAA.dbf — value-added stream attributes
+
+    PlusFlowlineVAA.dbf — hierarchical flow routing
+
+    catchment.shp — linkage to contributing area
+
+Tools & Functions:
+
+    nhdplusTools::get_nhdplus()
+
+    navigate_nldi() for upstream/downstream traversal
+
+    subset_nhdplus() for filtered downloads
+
+Advantages:
+
+    Precomputed topological relationships (e.g., HydroSeq, LevelPathI)
+
+    Reliable stream order values
+
+    National consistency across hydrologic units
+
+🔹 2. Local-Scale Covariate Aggregation
+
+Purpose: Use NHDPlus catchments as spatial units for summarizing
+high-resolution environmental data (e.g., climate, terrain, land cover).
+
+Common Use Cases:
+
+    Zonal statistics from PRISM, NED, and NLCD
+
+    Freeze–thaw frequency
+
+    Stream power estimation
+
+Data Used:
+
+    catchment.shp polygons (geometry + COMID)
+
+    Optional rasterized versions (catchment_grid.tif) for pixel-level overlay
+
+Tools & Functions:
+
+    terra::extract() for zonal means
+
+    exactextractr::exact_extract() for fast pixel-wise stats
+
+Advantages:
+
+    Hydrologically aligned units
+
+    Seamless integration with PRISM/NED workflows
+
+    Consistent COMID key used across vector and tabular layers
+
+🧠 Strategic Benefit
+
+NHDPlusV2 provides a unified framework where:
+
+    Flowlines support large-scale hydrologic modeling (stream networks, routing, flow hierarchy)
+
+    Catchments support localized environmental analysis (climate, topography, land cover)
+
+Both use a shared COMID identifier, enabling you to:
+
+    Navigate upstream from a single point
+
+    Join spatial summaries back to the network model
+
+🛠️ Script Functionality Summary
+
+This script:
+
+    Downloads and clips NHDPlusV2 data to a buffered Great Plains boundary
+
+    Saves flowlines and catchments as GeoPackages for both regional and local use
+
+    Provides the spatial foundation for upcoming covariate extraction scripts (e.g., terrain, PRISM, land use)
+
 ### Step 0.5.3 — Create downloads scripts for each domain and covariate
 
-**Actions**
+**Dual Use of NHDPlus** 1. Regional-Scale Stream Network Analysis
+
+- Using NHDPlusV2 flowlines and attributes to analyze hydrologic
+  connectivity, stream order, and network topology across large
+  watersheds or the entire CONUS.
+
+- Common Use: Strahler stream order, upstream drainage area, mainstem
+  trace, flow accumulation
+
+- Data Used:
+
+-   NHDFlowlineVAA.dbf (value-added attributes)
+
+-   PlusFlowlineVAA.dbf and catchment.shp
+
+- Advantages:
+
+-  Built-in HydroSeq, StreamOrder, LevelPathI
+
+-  Optimized for network navigation and hierarchical stream ordering
+
+- Tools: nhdplusTools::get_nhdplus(), navigate_nldi(), subset_nhdplus()
+
+2.  Local-Scale Spatial Aggregation
+
+- Using NHDPlus catchments as units to summarize high-resolution data
+  (e.g., NED elevation, PRISM climate, NLCD land cover) for hydrologic
+  modeling.
+
+- Common Use: Zonal stats (mean elevation, slope, rainfall), freeze–thaw
+  counts, stream power
+
+- Data Used:
+
+-  Catchment.shp polygons
+
+-  Optionally: rasterized catchment_grid.tif for pixel-level aggregation
+
+- Advantages:
+
+-  Consistent, hydrologically meaningful spatial units
+
+-  Pre-aligned with flowlines, NHD IDs, and COMIDs
+
+- Tools: terra::extract(), exactextractr::exact_extract()
+
+**Strategic Benefit**
+
+Because NHDPlus uses the same COMID keys across both VAA tables and
+catchment shapefiles, you can:
+
+- Do network-level modeling (e.g., identify all upstream COMIDs above a
+  point)
+- Then summarize local conditions within each associated catchment
+
+This duality makes NHDPlus a powerful backbone for multi-scale
+hydrologic analysis — exactly what you’re doing.
+
+This script downloads, processes, and prepares USGS NDH+ data \#
+Regional Scale: Use NHDPlusV2 flowlines and attributes to \# analyze
+hydrologic connectivity, stream order, and network \# topology across
+the Northern Great Plains. \# Local Scale: Using NHDPlus catchments as
+units to summarize \# high-resolution data (e.g., NED elevation, PRISM
+climate, \# NLCD land cover) for hydrologic modeling. \# **Actions**
 
 **Reason (Before):**
 
@@ -489,49 +612,6 @@ dec_long_va)
 
 sites_sf \<- sites %\>% st_as_sf(coords = c(“dec_long_va”,
 “dec_lat_va”), crs = 4326)
-
-# ——————————————————————————
-
-# Make PRISM metadata
-
-# accessed from <https://prism.oregonstate.edu/fetchData.php>
-
-# and fed into ChatGPT
-
-prism_metadata \<- tribble( ~variable, ~time_period, ~resolution,
-~units, ~description, ~source,
-
-“Precipitation”, “1991-2020 Annual”, “4km”, “Millimeters”, “Average
-annual total precipitation derived from monthly grids.”,
-“<https://prism.oregonstate.edu/normals/>”,
-
-“Precipitation”, “1991-2020 Monthly”, “4km”, “Millimeters”, “Monthly
-total precipitation normals.”,
-“<https://prism.oregonstate.edu/normals/>”,
-
-“Temperature (Mean)”, “1991-2020 Annual”, “4km”, “Degrees C”, “Average
-annual mean temperature derived from monthly grids.”,
-“<https://prism.oregonstate.edu/normals/>”,
-
-“Temperature (Mean)”, “1991-2020 Monthly”, “4km”, “Degrees C”, “Monthly
-mean temperature normals.”, “<https://prism.oregonstate.edu/normals/>” )
-
-prism_metadata_spatial \<- tribble( ~attribute, ~value,
-
-“Variable”, “Precipitation & Temperature”, “Time Period”, “1991-2020
-Normals”, “Resolution”, “4km (~0.04166667 degrees)”, “Projection”,
-“Geographic Coordinate System (Lat/Long)”, “Datum”, “North American
-Datum 1983 (NAD83)”, “Ellipsoid”, “Geodetic Reference System 80
-(GRS80)”, “Cell Size”, “0.04166667 degrees”, “Extent West”,
-“-125.0208333”, “Extent East”, “-66.4791667”, “Extent North”, “49.9375”,
-“Extent South”, “24.0625”, “Units Precipitation”, “Millimeters”, “Units
-Temperature”, “Degrees Celsius”, “Source”,
-“<https://prism.oregonstate.edu/normals/>”, “Method”, “PRISM model -
-Parameter-elevation Regressions on Independent Slopes Model (Daly et
-al. 2008, 2015)” )
-
-- Updated hardcoded paths in scripts where possible
-- Completed Ecoreg dkl –\> Projected to Albers, NAD83
 
 ### Step 0.5.4 — Standardize and validate metadata for downloads
 
