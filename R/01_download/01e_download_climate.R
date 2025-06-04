@@ -71,46 +71,98 @@
 library(tidyverse)
 library(here)
 library(fs)
-library(here)
 library(glue)
 library(httr)
 library(prism)
 library(terra)
+library(sf)
 
 # Load function definitions
 source(here("R/utils/qaqc/verify_prism_archive.R"))
-source(here("R/utils/metadata/check_crs.R"))
-source(here("R/utils/spatial/check_crs.R"))
+#source(here("R/utils/metadata/check_crs.R"))           # moved?
+# source(here("R/utils/spatial/check_crs.R"))
+
+
 
 # ==============================================================================
 # Download Koppen Geiger data
 # 1a) Setup
- 
-file_path  <- "data/raw"                  # top-level folder for spatial data
-dir_name   <- "koppen_climate"            # subfolder for koppen data
-zip_name   <- "koppen_geiger.zip"
 
 # URLs for shapefile (ZIP), metadata (HTML), and layer file (LYR)
-zip_url <- "https://figshare.com/ndownloader/files/45057352"
+#zip_url <- "https://figshare.com/ndownloader/files/45057352"
 
 # Local file paths
 target_dir <- glue("{here()}/{file_path}/{dir_name}")
 zip_path   <- glue("{target_dir}/{zip_name}")
+file_path  <- "data/raw"                  # top-level folder for spatial data
+dir_name   <- "koppen_climate"            # subfolder for koppen data
+zip_name   <- "koppen_geiger.zip"
 
-# 1b) Create target directory if it doesn't exist
-dir_create(target_dir, recurse = TRUE)
+# START HERE
+# koppen_geiger_0p1.tif
+# out_path   <- "data/processed"
+# out_dir    <- glue("{here()}/{out_path}/{dir_name}")
+# 
+# 
+# # 1b) Create target directory if it doesn't exist
+# dir_create(target_dir, recurse = TRUE)
+# 
+# # 1c) Download ZIP if it doesn't already exist
+# if (!file_exists(zip_path)) {
+#   message("Downloading Köppen-Geiger data...")
+#   GET(zip_url, write_disk(zip_path, overwrite = TRUE))
+# } else {
+#   message("ZIP file already exists: ", zip_path)
+# }
+# 
+# # 1d) Unzip the contents
+# koppen_geiger <- unzip(zip_path, exdir = target_dir)
+# message("Unzipped to: ", target_dir)
+# 
+# # Load and check current CRS (should be GCS WGS84)
+# r <- rast("data/raw/koppen_climate/1991_2020/koppen_geiger_0p1.tif")
+# crs_original <- crs(r)
+# 
+# # Check if it's already in EPSG:5070
+# is_proj_5070 <- grepl("5070", crs_original) || grepl("Conus Albers", crs_original)
+# 
+# # Reproject and check if EPSG:5070
+# r_proj <- project(r, "EPSG:5070", method = "bilinear")
+# crs_proj <- crs(r_proj)
+# 
+# is_proj_5070 <- grepl("5070", crs_proj) || grepl("Conus Albers", crs_original)
+# 
+# # qeurw
+# writeRaster(r_proj, filename = out_path, overwrite = TRUE)
+# 
+# # Output path
+# #fname_out <- path_file(f)
+# fname_out <- path_ext_set(fname_out, "tif")
+# #out_path <- file.path(out_dir, fname_out)
+# 
+# # Reproject if needed
+# if (!is_proj_5070) {
+#   cat("Reprojecting:", fname_out, "\n")
+#   r_proj <- project(r, "EPSG:5070", method = "bilinear")
+# 
+#   crs_new <- crs(r_proj)
+# } else {
+#   cat("Already EPSG:5070:", fname_out, "\n")
+#   file_copy(f, out_path, overwrite = TRUE)
+#   crs_new <- crs(r)
+# }
+# 
+# tibble(
+#   file = f,
+#   output = out_path,
+#   original_crs = crs_original,
+#   new_crs = crs_new
+# )
+# })
 
-# 1c) Download ZIP if it doesn't already exist
-if (!file_exists(zip_path)) {
-  message("Downloading Köppen-Geiger data...")
-  GET(zip_url, write_disk(zip_path, overwrite = TRUE))
-} else {
-  message("ZIP file already exists: ", zip_path)
-}
 
-# 1d) Unzip the contents
-koppen_geiger <- unzip(zip_path, exdir = target_dir)
-message("Unzipped to: ", target_dir)
+
+
 
 # ==============================================================================
 # Download PHZ data
@@ -346,3 +398,6 @@ if (length(missing_files) == 0) {
 fs::dir_delete(here::here("data/intermediate/prism_epsg5070"))
 
 # ==============================================================================
+
+
+
