@@ -1,4 +1,4 @@
-Spatial Data Preparation Checklist
+Common Commit Messages
 ================
 CJ Tinant
 2025-06-04
@@ -51,11 +51,11 @@ CJ Tinant
 
 ✅ Common Commit Message Prefixes
 
-    chore: – general project maintenance (most common for .gitignore)
+- chore: – general project maintenance (most common for .gitignore)
 
-    build: – related to build processes or tools
+- build: – related to build processes or tools
 
-    refactor: – for reorganizing structure (less common for ignore updates)
+- refactor: – for reorganizing structure
 
 ✅ Sample Commit Messages
 

@@ -1,5 +1,5 @@
 ---
-title: "Spatial Data Preparation Checklist"
+title: "Common Commit Messages"
 author: "CJ Tinant"
 date: "`r Sys.Date()`"
 output:
@@ -56,11 +56,11 @@ output:
 
 ✅ Common Commit Message Prefixes
 
-    chore: – general project maintenance (most common for .gitignore)
+*   chore: – general project maintenance (most common for .gitignore)
 
-    build: – related to build processes or tools
+*   build: – related to build processes or tools
 
-    refactor: – for reorganizing structure (less common for ignore updates)
+*   refactor: – for reorganizing structure
 
 ✅ Sample Commit Messages
 
