@@ -2,35 +2,33 @@
 # Script Name:    01c_download_nhdplus_v2.R
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-05-19
-# Last Updated:   NA
+# Last Updated:   2025-06-04
 #
 # Purpose:        Download NHDPlusV2 flowlines and catchments clipped to the 
 #                 Great Plains
-#
-# Data URLs:
-# -   
 # 
 # Workflow Summary:
 # 1.   Load Great Plains Level IV Ecoregions and keep only external boundary
 # 2.   Move datum from WGS84 to NAD83 and buffer.
-# 3.   Download NHDPlusV2 (1:100,000) data 
+# 3.   Download NHDPlusV2.1 (1:100,000) data 
 # 4.   Validate and repair geometries and coerce to consistent geometry type.
 # 5.   Reproject to a common CRS (US Albers Equal Area – EPSG:5070) 
 # 5.   -- TO DO --Recalculate area in sq-km using a common CRS
 # 6.   Export reprojected, clipped, cleaned data as a gpkg for downstream use.
 #
-#
 # Output:
-# -    Clean Ecoregion Level I - Level IV clipped to CONUS and in a common CRS.
+# -    NHDplus v2.1 flowlines and catchment boundaries for the Great Plains
+#      Ecoregion
 #
 # Dependencies:
 # -    dplyr
 # -    fs
 # -    ggplot2
-# -    here:      consistent relative path
-# -    nhdplusTools
-# -    sf:        handling spatial data
-# -    units      unit conversion
+# -    here:                 # consistent relative path
+# -    nhdplusTools          # Tools for working with National Hydrography 
+#                                 Dataset Plus (NHDPlus) data.
+# -    sf:                   # handling spatial data
+# -    units                 # unit conversion
 #
 # Notes:
 # -
