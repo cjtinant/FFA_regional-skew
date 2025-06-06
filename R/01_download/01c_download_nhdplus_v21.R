@@ -4,7 +4,7 @@
 # Date Created:   2025-05-19
 # Last Updated:   2025-06-04
 #
-# Purpose:        Download NHDPlusV2 flowlines and catchments clipped to the 
+# Purpose:        Download NHDPlusV2.1 flowlines and catchments clipped to the 
 #                 Great Plains
 # 
 # Workflow Summary:
@@ -17,7 +17,7 @@
 # 6.   Export reprojected, clipped, cleaned data as a gpkg for downstream use.
 #
 # Output:
-# -    NHDplus v2.1 flowlines and catchment boundaries for the Great Plains
+# -    NHDPlusV2.1 flowlines and catchment boundaries for the Great Plains
 #      Ecoregion
 #
 # Dependencies:
