@@ -4,36 +4,22 @@
 # Date Created:   2025-05-19
 # Last Updated:   2025-06-06
 #
-# Purpose:         Download NHDPlus HR (1:24k) tiles by HUC4, clipped to 
-#                  Great Plains
+# Purpose:         Download NHDPlus HR (1:24k) flowlines and catchment boundaries
+#                  clipped to Great Plains
 #
 # Data URLs: https://www.usgs.gov/national-hydrography/nhdplus-high-resolution
 #
 # Workflow Summary:
-# 1.   Load Great Plains Level IV Ecoregions and keep only external boundary
-# 2.   Move datum from WGS84 to NAD83 and buffer.
-# 3.   Download 1:124,000 scale HR data by L4 ecoregion (file sizes >50 mb)
-
-
-# 2.   Reproject shapefiles to a common CRS (US Albers Equal Area – EPSG:5070) 
-# 3.   Clip Levels I–III to the spatial extent of Level IV (CONUS boundary) 
-# 4.   Validate and repair geometries and coerce to consistent geometry type.
-# 5.   Recalculate area in sq-km using a common CRS
-# 6.   Export reprojected, clipped, cleaned data as a gpkg for downstream use.
+# 1.   Load Great Plains Level IV Ecoregions.
+# 2.   Get AOI for each
+# 3.   Individually download as a batch
+# 4.   Use an iteratively created function to handle edge cases
 #
 # Output:
-# -    NHDplus v2.1 flowlines and catchment boundaries for the Great Plains
-#      Ecoregion
+# -    NHDplus flowlines and *****catchment boundaries**** for the Great Plains
+#      Ecoregion for each level IV ecoregion.
 #
-# Dependencies: UPDATE THIS
-# -    dplyr
-# -    fs
-# -    ggplot2
-# -    here:                 # consistent relative path
-# -    nhdplusTools          # Tools for working with National Hydrography 
-#                                 Dataset Plus (NHDPlus) data.
-# -    sf:                   # handling spatial data
-# -    units                 # unit conversion
+# Dependencies: UPDATE THIS SOON
 #
 # Notes: See the bottom of the script for a test-run that explains some of the
 # functions used.
