@@ -1,0 +1,99 @@
+field,description
+Enabled,Participates in geometric network
+FCode,Five-digit feature code (type + subtype)
+FDate,Date of last modification
+FType,Three-digit feature type code
+FlowDir,Flow direction relative to geometry order
+GNIS_ID,GNIS ID for named feature
+GNIS_Name,GNIS name of feature
+InNetwork,Included in NHDPlus navigable network
+LengthKM,Length in kilometers
+MainPath,Identifier for main stem
+NHDPlusID,NHDPlus feature ID
+Permanent_Identifier,GUID from The National Map
+ReachCode,Reach code (HUC8 + 6)
+VPUID,Vector Processing Unit ID
+VisibilityFilter,Scale display filter
+WBArea_Permanent_Identifier,GUID for associated waterbody
+arbolatesu,Total upstream length (km)
+areasqkm,Catchment area (sq km)
+arqnavma,Area-weighted routed flow value (cms)
+avgqadjma,Average gage-adjusted model output (cms)
+comid,NHD COMID (Catchment Object ID)
+divdasqkm,Divergence-adjusted drainage area (sq km)
+divergence,Divergence from main path
+dndraincou,Downstream connections count
+dnhydroseq,Downstream hydroseq
+dnlevel,Downstream level
+dnlevelpat,Downstream levelpath ID
+dnminorhyd,Downstream minor hydroseq
+ecoregion,Ecoregion name (added during processing)
+elevfixed,Fixed elevation adjustment flag
+featureid,Feature ID in source data
+frommeas,Start position (0–100)
+fromnode,Start node ID
+gageadjma,Flag: gage-adjusted model used
+gageidma,USGS gage ID for the flowline
+gageqma,Annual mean flow at gage (cms)
+geom,Geometry column (LINESTRING)
+gridcode,Grid code (often from rasterized source)
+hwnodesqkm,Headwater node density (nodes/sq km)
+hwtype,Headwater type code
+hydroseq,Hydrologic sequence number
+lakefract,Fraction of area covered by lakes in catchment
+levelpathi,Levelpath ID
+maxelevraw,Maximum elevation from raw DEM (cm)
+maxelevsmo,Maximum elevation from smoothed DEM (cm)
+minelevraw,Minimum elevation from raw DEM (cm)
+minelevsmo,Minimum elevation from smoothed DEM (cm)
+pathlength,Distance to outlet (km)
+pathtimema,Estimated time to reach outlet (hr)
+petma,Potential evapotranspiration (mm/year)
+qama,Mean annual flow (cms)
+qbma,Mean flow for scenario B (cms)
+qcma,Mean flow for scenario C (cms)
+qdma,Mean flow for scenario D (cms)
+qema,Mean flow for scenario E (cms)
+qfma,Mean flow for scenario F (cms)
+qgadjma,Gage-adjusted flow (cms)
+qgnavma,"Gage-adjusted flow, navigable network only (cms)"
+qincrama,Incremental annual flow (cms)
+qincrbma,Incremental flow for scenario B (cms)
+qincrcma,Incremental flow for scenario C (cms)
+qincrdma,Incremental flow for scenario D (cms)
+qincrema,Incremental flow for scenario E (cms)
+qincrfma,Incremental flow for scenario F (cms)
+qlossma,Loss in flow (cms) due to human alterations
+rareahload,Rare species habitat load score (if available)
+resolution,"Data resolution: 1 = Local, 2 = High"
+rpuid,Reach Processing Unit ID
+rtndiv,"Return divergence flag (0 = no, 1 = yes)"
+shape_area,Polygon area (square meters or km²)
+slope,Mean slope (m/m)
+slopelenkm,Slope length (km)
+sourcefc,Source feature class
+startflag,Flag: headwater start
+statusflag,"Status flag for flowline (e.g., active, historic)"
+streamcalc,Stream order (alternative calculation)
+streamleve,Stream segment level in dendritic tree
+streamorde,Stream order (Strahler)
+surfarea,Catchment surface area (sq km)
+terminalfl,Flag: terminal outlet
+terminalpa,Hydroseq of terminal outlet
+thinner,Thinner stream flag (1 = true)
+tidal,Flag indicating tidal influence
+tomeas,End position (0–100)
+tonode,End node ID
+totdasqkm,Total upstream drainage area (sq km)
+totma,Total modeled area (km²)
+uphydroseq,Upstream hydroseq
+uplevelpat,Upstream levelpath ID
+vama,Mean annual velocity (m/s)
+vbma,Mean velocity for scenario B (m/s)
+vcma,Mean velocity for scenario C (m/s)
+vdma,Mean velocity for scenario D (m/s)
+vema,Mean velocity for scenario E (m/s)
+vpuin,Vector Processing Unit (VPU) input ID
+vpuout,Vector Processing Unit (VPU) output ID
+wbareacomi,Associated COMID for waterbody
+wbareatype,Waterbody area type classification
