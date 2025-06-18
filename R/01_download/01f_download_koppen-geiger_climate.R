@@ -37,23 +37,20 @@ library(httr)
 library(sf)
 library(terra)
 # ==============================================================================
-# Download Koppen Geiger data
-# 1a) Setup
-
-# URLs for shapefile (ZIP), metadata (HTML), and layer file (LYR)
-#zip_url <- "https://figshare.com/ndownloader/files/45057352"
-
-# Local file paths
+# -----------------------------------------------------------------------------
+# 1) Download Koppen Geiger data
+# -----------------------------------------------------------------------------
+# Set up local file paths
 file_path  <- "data/raw"                  # top-level folder for raw data
 dir_name   <- "koppen_climate"            # subfolder for koppen data
 zip_name   <- "koppen_geiger.zip"
 target_dir <- glue("{here()}/{file_path}/{dir_name}")
 zip_path   <- glue("{target_dir}/{zip_name}")
 
-# 1b) Create target directory if it doesn't exist
+# Create target directory if it doesn't exist
 dir_create(target_dir, recurse = TRUE)
 
-# 1c) Download ZIP if it doesn't already exist
+# Download ZIP if it doesn't already exist
 if (!file_exists(zip_path)) {
   message("Downloading Köppen-Geiger data...")
   GET(zip_url, write_disk(zip_path, overwrite = TRUE))
@@ -61,11 +58,11 @@ if (!file_exists(zip_path)) {
   message("ZIP file already exists: ", zip_path)
 }
 
-# 1d) Unzip the contents
+# Unzip the contents
 koppen_geiger <- unzip(zip_path, exdir = target_dir)
 message("Unzipped to: ", target_dir)
 
-# 1e) Project and save the data
+# Project and save the data
 # Load and check current CRS (should be GCS WGS84)
 #   note: 1991_2020 refers to temporal resolution
 #         0p1 refers to 0.1 decimal degrees or 36 arcsec
