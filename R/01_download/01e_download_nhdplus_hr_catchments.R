@@ -21,31 +21,31 @@
 #      the level IV ecoregion scale.
 #
 # Dependencies:
-# -   sf           -   Support for simple feature access, a standardized way to 
-#                      encode and analyze spatial vector data. Binds to 'GDAL'
 # -   dplyr        -   Data manipulation
-# -   purrr        -   Functional programming toolkit
-# -   readr        -   Reads rectangular data
-# -   stringr      -   Wrappers for string operations
-# -   glue         -   Formats strings
 # -   fs           -   File system operations
+# -   glue         -   Formats strings
 # -   here         -   Locates files relative to a project root
+# -   mapview      -   Interactive viewing of spatial data
 # -   nhdplusTools -   Tools for traversing and working with National 
 #                      Hydrography Dataset Plus (NHDPlus) data. 
-# -   mapview      -   Interactive viewing of spatial data
+# -   purrr        -   Functional programming toolkit
+# -   readr        -   Reads rectangular data
+# -   sf           -   Support for simple feature access, a standardized way to 
+#                      encode and analyze spatial vector data. Binds to 'GDAL'
+# -   stringr      -   Wrappers for string operations
 # ==============================================================================
 
 suppressPackageStartupMessages({
-  library(sf)
   library(dplyr)
-  library(purrr)
-  library(readr)
-  library(stringr)
   library(glue)
   library(fs)
   library(here)
+  library(mapview) 
   library(nhdplusTools)
-  library(mapview)
+  library(purrr)
+  library(readr)
+  library(sf)
+  library(stringr)
 })
 
 # ------------------------------------------------------------------------------
@@ -85,11 +85,13 @@ eco_list <- eco_lev4 %>%
 #    "Lake Agassiz Plain",
 #    	"Nebraska Sand Hills",
 #    "Northern Glaciated Plains",
-#    "Northwestern Glaciated Plains"
-    "Northwestern Great Plains"
-    
-    
-#    "Southwestern Tablelands"
+#    "Northwestern Glaciated Plains",
+#    "Northwestern Great Plains",
+#    "Southern Texas Plains",
+#    "Southwestern Tablelands",
+#   "Texas Blackland Prairies",
+   "Western Corn Belt Plains",
+   "Western Gulf Coastal Plain"
     )) %>%
   st_drop_geometry() %>%
   distinct(us_l4name) %>%
@@ -181,21 +183,6 @@ walk2(eco_list, seq_along(eco_list), function(l4name, i) {
   })
 })
 
-
-log_row <- tibble(
-  us_l4name = l4name,
-  status = "success",
-  message = NA_character_,
-  timestamp = as.character(Sys.time())
-)
-
-write_csv(
-  log_row,
-  log_file,
-  append = file.exists(log_file),
-  col_names = !file.exists(log_file)  # write headers only once
-)
-
 # ------------------------------------------------------------------------------
 # 3. Optional Preview of All Successful Downloads
 # ------------------------------------------------------------------------------
@@ -237,19 +224,5 @@ if (interactive()) {
   
   mapview::mapview(catchments["FEATUREID"])
 }
-
-
-
-
-
-
-
-log_tbl <- log_tbl %>%
-  rename(
-    us_l4name = 1,
-    status = 2,
-    message = 3,
-    timestamp = 4
-  )
 
 
