@@ -5,12 +5,12 @@
 # Last Updated:   2025-06-04
 #
 # Purpose:        Download NHDPlusV2.1 flowlines and catchments clipped to the 
-#                 Great Plains
-# 
+#                 Great Plains. The data are at a regional scale (1:100,000) 
+#
 # Workflow Summary:
 # 1.   Load Great Plains Level IV Ecoregions and keep only external boundary
 # 2.   Move datum from WGS84 to NAD83 and buffer.
-# 3.   Download NHDPlusV2.1 (1:100,000) data 
+# 3.   Download NHDPlusV2.1 data 
 # 4.   Validate and repair geometries and coerce to consistent geometry type.
 # 5.   Reproject to a common CRS (US Albers Equal Area – EPSG:5070) 
 # 5.   -- TO DO --Recalculate area in sq-km using a common CRS
