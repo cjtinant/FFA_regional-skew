@@ -1,6 +1,0 @@
-Terms of Use:
-
-Under the terms of a Specific Cooperative Agreement between the US Department of Agriculture and Oregon State University (OSU), OSU retains ownership of the GIS datasets underlying the official 2023 USDA Plant Hardiness Zone Map. These datasets may be freely reproduced and redistributed, subject to the following conditions: (1) Both the USDA-ARS logo and OSU logo must be prominently displayed on any maps derived from the GIS datasets. (2) The data may not be altered in any way unless (a) there is an explicit and prominently displayed disclaimer that the map is not the official USDA Plant Hardiness Zone Map, and (b) the USDA-ARS and OSU logos are eliminated.
-
-USDA-ARS logo:  https://prism.oregonstate.edu/inc/images/usda-ars_logo.png
-OSU logo:  https://prism.oregonstate.edu/inc/images/oregonstate_logo.png
