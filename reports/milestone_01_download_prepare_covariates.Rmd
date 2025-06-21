@@ -321,6 +321,43 @@ FFA_regional-skew/
                                  # and clearing regularly.
 ```
 
+
+#
+# Folder structure:
+#    data/raw/
+#      ├── epa_ecoregions/
+#            ├── NA_CEC_Eco_Level1.shp
+#            ├── NA_CEC_Eco_Level2.shp
+#            ├── NA_CEC_Eco_Level3.shp
+#            └── us_eco_l4_no_st.shp/
+#
+#      ├── koppen_climate/
+#                ├── 1901_1930/
+#                ├── 1931_1960/
+#                ├── 1961_1990/
+#                ├── 1991_2020/
+#                ├── 2041_2070/
+#                └── 2071_2099/
+#
+#      ├── phzm/
+#      ├── prism/
+#
+#    data/intermediate/                          # intermediate processing
+#
+# data/processed/                                # clean and in common crs
+#      ├── us_eco_levels.gpkg
+#      └── prism/
+
+
+
+
+
+
+
+
+
+
+
 # `r params$version` – Download and Prepare Covariates
 
 # `r params$version` Tasklist
@@ -331,10 +368,10 @@ FFA_regional-skew/
 | **0.5.2** | Update folder structure                                 |  [X]   |
 | 0.5.2.1   | Update folder structure for data/                       |  [X]   |
 | 0.5.2.2   | Update folder structure for utilities scripts           |  [X]   |
-| **0.5.3** | Create downloads scripts for vector and point data      |  [ ]   |
+| **0.5.3** | Create / update download scripts for vector data        |  [-]   |
 | 0.5.3.1   | Create downloads scripts for EPA ecoregions shapefiles  |  [X]   |
-| 0.5.3.2   | Create downloads scripts for NHD+ data                  |  [ ]   |
-| 0.5.3.3   | Create downloads scripts for USGS Station data          |  [ ]   |
+| 0.5.3.2   | Create downloads scripts for NHD+ data                  |  [X]   |
+| 0.5.3.3   | Update download script for USGS Station data            |  [ ]   |
 | **0.5.4** | Create downloads scripts for raster covariates          |  [ ]   |
 | 0.5.4.1   | Create downloads scripts for Köppen Geiger climate grid |  [X]   |
 | 0.5.4.2   | Create downloads scripts for USDA Plant Hardiness Zones |  [X]   |
@@ -414,173 +451,28 @@ mkdir -p R/utils/{metadata,spatial,qaqc,paths,plotting} # make directories
  
 ```
 
+### Step 0.5.3 — Update folder structure for utils/ and data/
 
-🎯 Goal
-
-Establish reusable, scriptable methods for downloading and preparing NHDPlusV2 data to support both:
-
-    Regional-scale stream network analysis, and
-
-    Local-scale spatial aggregation of covariates
-
-🔁 Dual Use of NHDPlusV2
-🔹 1. Regional-Scale Stream Network Analysis
-
-Purpose: Analyze hydrologic connectivity, Strahler stream order, and network topology across large watersheds (e.g., the Northern Great Plains).
-
-Common Use Cases:
-
-    Delineating upstream networks
-
-    Tracing mainstem river paths
-
-    Filtering by stream order
-
-Data Used:
-
-    NHDFlowlineVAA.dbf — value-added stream attributes
-
-    PlusFlowlineVAA.dbf — hierarchical flow routing
-
-    catchment.shp — linkage to contributing area
-
-Tools & Functions:
-
-    nhdplusTools::get_nhdplus()
-
-    navigate_nldi() for upstream/downstream traversal
-
-    subset_nhdplus() for filtered downloads
-
-Advantages:
-
-    Precomputed topological relationships (e.g., HydroSeq, LevelPathI)
-
-    Reliable stream order values
-
-    National consistency across hydrologic units
-
-🔹 2. Local-Scale Covariate Aggregation
-
-Purpose: Use NHDPlus catchments as spatial units for summarizing high-resolution environmental data (e.g., climate, terrain, land cover).
-
-Common Use Cases:
-
-    Zonal statistics from PRISM, NED, and NLCD
-
-    Freeze–thaw frequency
-
-    Stream power estimation
-
-Data Used:
-
-    catchment.shp polygons (geometry + COMID)
-
-    Optional rasterized versions (catchment_grid.tif) for pixel-level overlay
-
-Tools & Functions:
-
-    terra::extract() for zonal means
-
-    exactextractr::exact_extract() for fast pixel-wise stats
-
-Advantages:
-
-    Hydrologically aligned units
-
-    Seamless integration with PRISM/NED workflows
-
-    Consistent COMID key used across vector and tabular layers
-
-🧠 Strategic Benefit
-
-NHDPlusV2 provides a unified framework where:
-
-    Flowlines support large-scale hydrologic modeling (stream networks, routing, flow hierarchy)
-
-    Catchments support localized environmental analysis (climate, topography, land cover)
-
-Both use a shared COMID identifier, enabling you to:
-
-    Navigate upstream from a single point
-
-    Join spatial summaries back to the network model
-
-🛠️ Script Functionality Summary
-
-This script:
-
-    Downloads and clips NHDPlusV2 data to a buffered Great Plains boundary
-
-    Saves flowlines and catchments as GeoPackages for both regional and local use
-
-    Provides the spatial foundation for upcoming covariate extraction scripts (e.g., terrain, PRISM, land use)
-
-### Step 0.5.3 — Create downloads scripts for each domain and covariate
-
-**Dual Use of NHDPlus**
-1. Regional-Scale Stream Network Analysis
-
--   Using NHDPlusV2 flowlines and attributes to analyze hydrologic connectivity, stream order, and network topology across large watersheds or the entire CONUS.
-
--   Common Use: Strahler stream order, upstream drainage area, mainstem trace, flow accumulation
-
--   Data Used:
--       NHDFlowlineVAA.dbf (value-added attributes)
--       PlusFlowlineVAA.dbf and catchment.shp
-
--   Advantages:
--      Built-in HydroSeq, StreamOrder, LevelPathI
--      Optimized for network navigation and hierarchical stream ordering
-
--   Tools: nhdplusTools::get_nhdplus(), navigate_nldi(), subset_nhdplus()
-
-2. Local-Scale Spatial Aggregation
-
--   Using NHDPlus catchments as units to summarize high-resolution data (e.g., NED elevation, PRISM climate, NLCD land cover) for hydrologic modeling.
-
--   Common Use: Zonal stats (mean elevation, slope, rainfall), freeze–thaw counts, stream power
-
--   Data Used:
--      Catchment.shp polygons
--      Optionally: rasterized catchment_grid.tif for pixel-level aggregation
-
--   Advantages:
--      Consistent, hydrologically meaningful spatial units
--      Pre-aligned with flowlines, NHD IDs, and COMIDs
-
--   Tools: terra::extract(), exactextractr::exact_extract()
-
-**Strategic Benefit**
-
-Because NHDPlus uses the same COMID keys across both VAA tables and catchment shapefiles, you can:
-
--   Do network-level modeling (e.g., identify all upstream COMIDs above a point)
--   Then summarize local conditions within each associated catchment
-
-This duality makes NHDPlus a powerful backbone for multi-scale hydrologic analysis — exactly what you're doing.
-
-
-This script downloads, processes, and prepares USGS NDH+ data 
-#                 Regional Scale: Use NHDPlusV2 flowlines and attributes to 
-#                 analyze hydrologic connectivity, stream order, and network 
-#                 topology across the Northern Great Plains.
-#                 Local Scale: Using NHDPlus catchments as units to summarize 
-#                 high-resolution data (e.g., NED elevation, PRISM climate, 
-#                 NLCD land cover) for hydrologic modeling.
-#
 **Actions** 
 
 **Reason (Before):** 
 
 **Result (After):** 
 
-# NEXT STEPS
-##       ├── gp_eco_levels.gpkg
-# CREATE CUSTOM MACROREGIONS
 
 
 
+
+
+
+
+
+
+
+
+| 0.5.3.3   | Create downloads scripts for USGS Station data          |  [ ]   |
+
+🎯 Goal
 # Load Site Locations
 sites <- read_csv(here("data/clean/sites_pk_gt_20.csv")) %>%
   distinct(site_no, dec_lat_va, dec_long_va) %>%
@@ -648,4 +540,78 @@ git push origin v0.5-download-scripts
 **Reason (Before):** 
 
 **Result (After):** 
+
+### Next Steps NHDPlus data
+Data Used:
+
+    catchment.shp polygons (geometry + COMID)
+
+    Optional rasterized versions (catchment_grid.tif) for pixel-level overlay
+
+Tools & Functions:
+
+    terra::extract() for zonal means
+
+    exactextractr::exact_extract() for fast pixel-wise stats
+
+Advantages:
+
+    Hydrologically aligned units
+
+    Seamless integration with PRISM/NED workflows
+
+    Consistent COMID key used across vector and tabular layers
+
+🧠 Strategic Benefit
+
+NHDPlusV2 provides a unified framework where:
+
+    Flowlines support large-scale hydrologic modeling (stream networks, routing, flow hierarchy)
+
+    Catchments support localized environmental analysis (climate, topography, land cover)
+
+Both use a shared COMID identifier, enabling you to:
+
+    Navigate upstream from a single point
+
+    Join spatial summaries back to the network model
+
+🛠️ Script Functionality Summary
+
+2. Local-Scale Spatial Aggregation
+
+-   Using NHDPlus catchments as units to summarize high-resolution data (e.g., NED elevation, PRISM climate, NLCD land cover) for hydrologic modeling.
+
+-   Common Use: Zonal stats (mean elevation, slope, rainfall), freeze–thaw counts, stream power
+
+-   Data Used:
+-      Catchment.shp polygons
+-      Optionally: rasterized catchment_grid.tif for pixel-level aggregation
+
+-   Advantages:
+-      Consistent, hydrologically meaningful spatial units
+-      Pre-aligned with flowlines, NHD IDs, and COMIDs
+
+-   Tools: terra::extract(), exactextractr::exact_extract()
+
+**Strategic Benefit**
+
+Because NHDPlus uses the same COMID keys across both VAA tables and catchment shapefiles, you can:
+
+-   Do network-level modeling (e.g., identify all upstream COMIDs above a point)
+-   Then summarize local conditions within each associated catchment
+
+This duality makes NHDPlus a powerful backbone for multi-scale hydrologic analysis — exactly what you're doing.
+
+Tools & Functions:
+
+    nhdplusTools::get_nhdplus()
+
+    navigate_nldi() for upstream/downstream traversal
+
+    subset_nhdplus() for filtered downloads
+
+# NEXT STEPS
+##       ├── gp_eco_levels.gpkg
+# CREATE CUSTOM MACROREGIONS
 
