@@ -1,6 +1,8 @@
 # Git Commit Message Reference Card for FFA_regional-skew Project
 
-This guide helps maintain clear, consistent, and expressive commit messages using conventional prefixes and best practices for documenting changes in hydrologic modeling and data science projects.
+This guide helps maintain clear, consistent, and expressive commit messages 
+using conventional prefixes and best practices for documenting changes in 
+hydrologic modeling and data science projects.
 
 ---
 
@@ -63,7 +65,16 @@ Chore: update .gitignore with large file exclusions for GitHub limits
 
 ---
 
+# Git Push Summary Table:
+
+| Command                  | When to Use |
+| git push                 | On an active branch after upstream set |
+| git push origin main     | Explicit first time push; mult remotes or branches |
+| git push -u origin main	 | 1st push of new branch; automate future git push |
+
 # ✅ When to Create a GitHub Issue Comment or Changelog Entry
+
+---
 
 | Change Type                        | GitHub Issue Comment | Changelog Entry |
 | Major feature or milestone         | ✅ Yes               | ✅ Yes           |
