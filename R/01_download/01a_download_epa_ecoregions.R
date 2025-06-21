@@ -2,13 +2,15 @@
 # Script Name:    01a_download_epa_regions.R
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-04-15
-# Last Updated:   2025-05-18      # update script header
+# Last Updated:   2025-06-20      # update script header / output location
 #
 # Purpose:        This script downloads, processes, and prepares EPA/CEC 
 #                 Level I-IV ecoregion data.
 #
 # Data URLs:
-# -   
+# -   https://www.epa.gov/eco-research/ecoregions  
+# -   https://www.epa.gov/eco-research/level-iii-and-iv-ecoregions-continental-united-states
+# -   https://www.epa.gov/eco-research/ecoregions-north-america
 #
 # Workflow Summary:
 # 1.   Download zipped archives, extract and organize data.
@@ -20,16 +22,6 @@
 #
 # Output:
 # -    Clean Ecoregion Level I - Level IV clipped to CONUS and in a common CRS.
-#
-# Folder structure:
-#     data/raw
-#       └── epa_ecoregions
-#             ├── NA_CEC_Eco_Level1.shp
-#             ├── NA_CEC_Eco_Level2.shp
-#             ├── NA_CEC_Eco_Level3.shp
-#             └── us_eco_l4_no_st.shp/
-#     data/processed
-#       └── us_eco_levels.gpkg
 #
 # Dependencies:
 # -    tidyverse: general data wrangling
@@ -300,7 +292,7 @@ level4_conus <- level4_conus %>%
 # 6.   Export reprojected, clipped, cleaned data as a gpkg for downstream use.
 
 # Directory to store data as a geopackage
-output_dir <- here("data/processed")
+output_dir <- here("data/processed/us_ecoregions")
 
 
 # Write as GeoPackage (UTF-8, clean field names)
