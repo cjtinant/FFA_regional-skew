@@ -17,7 +17,7 @@ data/meta/check_metadata_files
 # Ignore folders used for processing or outputs
 data/delete/
 data/spatial/*
-data/raw/prism/
+data/raw/*
 
 # =======================
 # Ignore ArcGIS Pro Artifacts
