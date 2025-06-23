@@ -2,6 +2,7 @@
 # Script Name: 01b_download-gage-data.R
 # Author: Charles Jason Tinant
 # Date Created: April 2025
+# Last update: June 21, 2025           # update script to fit with folder struct
 #
 # Purpose:
 # This script downloads, processes, and filters USGS peak flow gage data within 
@@ -40,56 +41,63 @@
 
 # ------------------------------------------------------------------------------
 # libraries
-library(tidyverse)      # Load 'Tidyverse' packages: ggplot2, dplyr, tidyr, 
-#                                 readr, purrr, tibble, stringr, forcats
+library(dataRetrieval)  # Retrieval functions for USGS and EPA hydro & wq data
+library(dplyr)
 library(glue)           # For string interpolation
 library(here)           # A simpler way to find files
+library(purrr)
 library(sf)             # Simple features for R
-library(dataRetrieval)  # Retrieval functions for USGS and EPA hydro & wq data
-
-# scripts:
-source("R/utils/f_process_geometries.R")
 
 # ------------------------------------------------------------------------------
-# 1) Load ecoregion data and transform to geographic
+# 1) Load level 1 ecoregion
 
-file_path  <- "data/spatial"     # top-level folder for spatial data
-dir_name   <- "us_eco_lev01"     # subfolder for level 1 ecoregions
-file_name <- "us_eco_l1.shp"
+file_path  <- "data/processed"     # top-level folder for spatial data
+dir_name   <- "ecoregions"     # subfolder for level 1 ecoregions
+file_name <- "us_eco_levels.gpkg"
 target_file <- glue("{here()}/{file_path}/{dir_name}/{file_name}")
 
-eco_lev1 <- st_read(target_file)
+# make a check of layers in us_eco_levels
+st_layers(target_file)
+
+message("Reading Level 1 ecoregions from: ", target_file)
+eco_lev1 <- st_read(target_file, layer = "us_eco_l1")
+
+# (optional) check the file -- which shows the CONUS
+# head(eco_lev1)
 
 # set coordinate system for transform
 crs_new <- 4326     # WGS 84 Geographic; Unit: degree
 
-# transform and keep only the great plains
-eco_lev1_gp_geo <- eco_lev1 %>%
-  st_transform(crs = {crs_new}) %>%
-  process_geometries() %>%
+# Transform projection to geographic
+eco_lev1_geo <- st_transform(eco_lev1, crs = crs_new)
+
+# Filter to just GREAT PLAINS before processing geometry
+eco_lev1_gp_only <- eco_lev1_geo %>%
   janitor::clean_names() %>%
   filter(na_l1name == "GREAT PLAINS")
 
-# ---------------------------------------------------------
-# 2) Define a Bounding Box
+# (optional) check results
+# glimpse(eco_lev1_gp_only)
 
-bbox_orig <- st_bbox(eco_lev1_gp_geo)
+# -----------------------------------------------------------------------------
+# 2) Download peakflow data
+# -----------------------------------------------------------------------------
 
-# Set resolution for horizontal (lon) and vertical (lat) splits
+# -- Define a Bounding Box ----------------------------------------------------
+bbox_gp <- st_bbox(eco_lev1_gp_only)
+
+# --- Set resolution for horizontal (lon) and vertical (lat) splits -----------
 max_width <- 1.0    # degrees longitude
 max_height <- 2.5   # degrees latitude
 
-# Compute bbox
-bbox_orig <- st_bbox(eco_lev1_gp_geo)
+# --- Create sequences of breakpoints -----------------------------------------
+xmin_seq <- seq(bbox_gp["xmin"], bbox_gp["xmax"] - max_width, by = max_width)
+xmax_seq <- pmin(xmin_seq + max_width, bbox_gp["xmax"])
 
-# Create sequences of breakpoints
-xmin_seq <- seq(bbox_orig["xmin"], bbox_orig["xmax"] - max_width, by = max_width)
-xmax_seq <- pmin(xmin_seq + max_width, bbox_orig["xmax"])
+ymin_seq <- seq(bbox_gp["ymin"], bbox_gp["ymax"] - max_height, by = max_height)
+ymax_seq <- pmin(ymin_seq + max_height, bbox_gp["ymax"])
 
-ymin_seq <- seq(bbox_orig["ymin"], bbox_orig["ymax"] - max_height, by = max_height)
-ymax_seq <- pmin(ymin_seq + max_height, bbox_orig["ymax"])
-
-# Create all combinations of xmin/xmax and ymin/ymax
+# --- Create all combinations of xmin/xmax and ymin/ymax ----------------------
 grid_boxes <- expand.grid(
   xmin = xmin_seq,
   ymin = ymin_seq
@@ -132,132 +140,77 @@ for (i in seq_len(nrow(grid_boxes))) {
   Sys.sleep(0.5)
 }
 
-# Combine all site data into a single data frame
+# --- Combine all site data into a single data frame --------------------------
 sites_all_in_bb <- bind_rows(sites_data_list)
 
-# Export all sites data
-write_csv(sites_all_in_bb, "data/sites_all_in_bb.csv")
+# --- Export all sites data ---------------------------------------------------
+# Ensure output folder exists
+output_dir <- here("data", "raw", "peakflow_gages")
+fs::dir_create(output_dir)
 
-# ---------------------------------------------------------
-# Drop canal ditch sites
+write_csv(sites_all_in_bb, here("data", 
+                                "raw", 
+                                "peakflow_gages",
+                                "sites_all_in_bb.csv"))
 
+# (optional) read in saved data
+# sites_all_in_bb <- read_csv(here("data",
+#                                  "raw",
+#                                  "peakflow_gages",
+#                                  "sites_all_in_bb.csv"))
+
+# -----------------------------------------------------------------------------
+# 3) Filter peakflow data
+# -----------------------------------------------------------------------------
+
+# --- Drop canal ditch sites --------------------------------------------------
 sites_st_only_in_bb <- sites_all_in_bb %>%
   filter(site_tp_cd == "ST")
 
 ck_sites_st_only <- anti_join(sites_all_in_bb, sites_st_only_in_bb)
 
 # ---------------------------------------------------------
-# Get all peakflow data in bounding box
-
-# Set batch size
-batch_size <- 1000
-
-# Split your sites into batches
-site_batches <- split(sites_st_only_in_bb$site_no, 
-                      ceiling(
-                        seq_along(sites_st_only_in_bb$site_no) / batch_size))
-
-# Initialize list to store results
-pk_data_list <- vector("list", length(site_batches))
-
-# Loop over each batch and query peak flow data
-for (i in seq_along(site_batches)) {
-  message("Processing batch ", i, " of ", length(site_batches))
-  
-  pk_data_list[[i]] <- tryCatch(
-    {
-      whatNWISdata(
-        siteNumber = site_batches[[i]],
-        service = "pk"
-      )
-    },
-    error = function(e) {
-      message("Error in batch ", i, ": ", e$message)
-      NULL
-    }
-  )
-  
-  # Be kind to the API
-  Sys.sleep(0.5)
-}
-
-# Combine all batches into one data frame
-sites_all_pk_in_bb <- bind_rows(pk_data_list)
-
-# Export all peakflow sites
-write_csv(sites_all_pk_in_bb, "data/sites_all_peak_in_bb.csv")
-
-# ---------------------------------------------------------
-# Drop canal ditch sites
-sites_st_only_in_bb <- sites_all_pk_in_bb %>%
-  filter(site_tp_cd == "ST")
-
-ck_sites_st_only <- anti_join(sites_all_in_bb, sites_st_only_in_bb,
-                              by = join_by(agency_cd, site_no, station_nm, 
-                                           site_tp_cd, dec_lat_va, dec_long_va)
-                              )
-
-# ---------------------------------------------------------
-# Get all peakflow data in the bounding box
-
-# Set batch size
-batch_size <- 1000
-
-# Split your sites into batches
-site_batches <- split(sites_st_only_data$site_no, 
-                      ceiling(seq_along(
-                        sites_st_only_in_bb$site_no) / batch_size))
-
-# Initialize list to store results
-pk_data_list <- vector("list", length(site_batches))
-
-# Loop over each batch and query peak flow data
-for (i in seq_along(site_batches)) {
-  message("Processing batch ", i, " of ", length(site_batches))
-  
-  pk_data_list[[i]] <- tryCatch(
-    {
-      whatNWISdata(
-        siteNumber = site_batches[[i]],
-        service = "pk"
-      )
-    },
-    error = function(e) {
-      message("Error in batch ", i, ": ", e$message)
-      NULL
-    }
-  )
-  
-  # Be kind to the API
-  Sys.sleep(0.5)
-}
-
-# Combine all batches into one data frame
-sites_all_pk_in_bb <- bind_rows(pk_data_list)
-
-# Export all peakflow sites
-write_csv(sites_all_pk_in_bb, "data/sites_all_peak_in_bb")
-
-# clean up Global environment
-rm(batch_size,
-   site_batches,
-   pk_data_list,
-   sites_data_list,
-   i
-)
-
-# ---------------------------------------------------------
 # keep sites inside Great Plains ecoregion
 
 # convert stations into a spatial format (sf) object
-sites_all_pk_in_bb <- st_as_sf(sites_all_pk_in_bb,
+sites_all_in_bb_geo <- st_as_sf(sites_all_in_bb,
                          coords = c("dec_long_va",        # note x goes first
                                     "dec_lat_va"),
                          crs = {crs_new},     # WGS 84 Geographic; Unit: degree
                          remove = FALSE)      # don't remove lat/lon cols
 
-sites_pk_eco_only <- st_intersection(sites_all_pk_in_bb, eco_lev1_gp_geo)
+sites_pk_eco_only <- st_intersection(sites_all_in_bb_geo, eco_lev1_gp_only)
 
-# Export all peakflow sites
-write_csv(sites_pk_eco_only, "data/raw/sites_pk_eco_only.csv")
+# ------------------------------------------------------------------------------
+# EXPORT — Great Plains Peakflow Sites (filtered spatial + tabular)
+# ------------------------------------------------------------------------------
 
+# 2. Drop geometry and write tabular CSV
+write_csv(
+  st_drop_geometry(sites_pk_eco_only),
+  file.path(output_dir, "sites_pk_eco_only.csv")
+)
+
+# 3. Write spatial version to GeoPackage
+st_write(
+  sites_pk_eco_only,
+  dsn = file.path(output_dir, "sites_pk_eco_only.gpkg"),
+  layer = "sites_pk_eco_only",
+  delete_layer = TRUE,    # overwrite if rerun
+  quiet = TRUE
+)
+
+# 4. QA Messages
+message("✅ Export complete:")
+message(" - Tabular:   ", file.path(output_dir, "sites_pk_eco_only.csv"))
+message(" - Spatial:   ", file.path(output_dir, "sites_pk_eco_only.gpkg"))
+message(" - Count of sites inside Great Plains: ", nrow(sites_pk_eco_only))
+
+# Optional: check for missing coordinates (shouldn’t happen, but just in case)
+n_missing_coords <- sites_pk_eco_only %>%
+  filter(is.na(dec_lat_va) | is.na(dec_long_va)) %>%
+  nrow()
+
+if (n_missing_coords > 0) {
+  warning("⚠️  Missing lat/lon coordinates in ", n_missing_coords, " rows.")
+}

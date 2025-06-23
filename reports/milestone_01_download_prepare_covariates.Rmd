@@ -440,7 +440,7 @@ The covariate inventory lacked a unified, versioned reference for dataset origin
 All utility functions were either embedded inline or scattered across script files, making them harder to test, reuse, or document. There was no consistent structure for distinguishing between spatial, metadata, or QAQC-related functions.
 
 **Result (After):** 
-Created reusable, well-scoped functions organized by purpose within R/utils/. This structure improves script readability, supports test-driven development, and makes it easier to debug or teach from individual components.
+Created reusable, well-scoped functions organized by purpose within R/utils/. This structure improves script readability, supports test-driven development, and makes it easier to debug.
 
 **Code Used to Create Folder Structure**
 ```{bash make-utils-folders, eval=FALSE}
@@ -451,15 +451,55 @@ mkdir -p R/utils/{metadata,spatial,qaqc,paths,plotting} # make directories
  
 ```
 
-### Step 0.5.3 — Update folder structure for utils/ and data/
+### Step 0.5.3 — Create / update download scripts for vector data
+
+**Actions Taken**
+
+-    Updated the ecoregion download script to output Level I–IV ecoregions:
+
+-       Reprojected to a common CRS (NAD83 / CONUS Albers — EPSG:5070)
+
+-       Clipped to the CONUS boundary
+
+-       Saved to a geopackage format (.gpkg) following the updated folder structure (data/processed/ecoregions/)
+
+-   Refactored the gage download script to align with the new folder structure, improving consistency and portability.
+
+-   Created new scripts to download NHDPlus V2 and High-Resolution NHD (flowlines and catchments), organized under the updated data/ and R/utils/ directories.
+
+**Reason (Before)**
+
+-   The previous file structure was inconsistent across scripts and data types.
+
+-   Vector data downloads (e.g., NHDPlus) were not yet implemented.
+
+-   Spatial reference systems varied or were not well-documented.
+
+**Result (After)**
+
+-   Scripts for downloading and preparing key vector datasets (ecoregions, gages, NHDPlus) now follow a consistent, modular folder structure:
+
+-      data/raw/ for unfiltered original data
+
+-      data/processed/ for cleaned and reprojected spatial layers
+
+-      R/utils/ for reusable helper functions
+
+-   CRS is standardized across spatial datasets (EPSG:5070), improving compatibility for later spatial joins and modeling.
+
+-   Project now supports reproducible downloads, preprocessing, and storage of core hydrologic and geographic datasets.
+
+### 0.5.4 - Create downloads scripts for raster covariates
 
 **Actions** 
 
 **Reason (Before):** 
 
 **Result (After):** 
-
-
+| 0.5.4.1   | Create downloads scripts for Köppen Geiger climate grid |  [X]   |
+| 0.5.4.2   | Create downloads scripts for USDA Plant Hardiness Zones |  [X]   |
+| 0.5.4.3   | Create downloads scripts for PRISM 30-yr normals (800m) |  [X]   |
+| 0.5.4.4   | Create downloads scripts for NLCD Land Cover 2016       |  [ ]   |
 
 
 
