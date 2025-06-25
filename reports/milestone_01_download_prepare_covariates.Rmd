@@ -14,6 +14,10 @@ editor_options:
     wrap: 72
 ---
 
+# TO DO
+CLEAN DATA/INTERMEDIATE
+
+
 ## Overview of `r params$version`
 
 This document outlines the setup, documentation, and reproducibility scaffolding established for **Milestone `r params$version`**, focused on acquiring and validating spatial covariates for regional skew modeling.
@@ -232,18 +236,16 @@ FFA_regional-skew/
     ├── log/                      # log files of downloads / processing steps
     ├── meta/                     # Metadata of datasets
     ├── processed/                # Cleaned, derived datasets
+        ├── ecoregions/
+        |       ├── us_eco_levels.gpkg
         ├── koppen_climate/
+        |       ├── koppen_geiger.tif
+        ├── nhdplus/
+        ├── phzm/
+        |       ├── phzm.tif
         ├── prism/
-        |   └── ppt_0101_mm.tif 
-        ├── us_eco_levels.gpkg
 
 
-        └── usgs/
-            └── nhdplus/
-            |   └── usgs_nhdplus_catchments_v21_raw.shp
-            └── waterdata/
-                ├── sites_all_in_bb.csv
-                └── sites_all_peak_in_bb.csv
 
     ├── raw/                      # Unmodified input data 
         ├── epa_ecoregions/
@@ -368,19 +370,19 @@ FFA_regional-skew/
 | **0.5.2** | Update folder structure                                 |  [X]   |
 | 0.5.2.1   | Update folder structure for data/                       |  [X]   |
 | 0.5.2.2   | Update folder structure for utilities scripts           |  [X]   |
-| **0.5.3** | Create / update download scripts for vector data        |  [-]   |
-| 0.5.3.1   | Create downloads scripts for EPA ecoregions shapefiles  |  [X]   |
-| 0.5.3.2   | Create downloads scripts for NHD+ data                  |  [X]   |
-| 0.5.3.3   | Update download script for USGS Station data            |  [ ]   |
-| **0.5.4** | Create downloads scripts for raster covariates          |  [ ]   |
-| 0.5.4.1   | Create downloads scripts for Köppen Geiger climate grid |  [X]   |
-| 0.5.4.2   | Create downloads scripts for USDA Plant Hardiness Zones |  [X]   |
-| 0.5.4.3   | Create downloads scripts for PRISM 30-yr normals (800m) |  [X]   |
-| 0.5.4.4   | Create downloads scripts for NLCD Land Cover 2016       |  [ ]   |
-| 0.5.4.5   | Create downloads scripts for NED Slope                  |  [ ]   |
-| 0.5.4.6   | Create downloads scripts for MODIS NDVI 2016            |  [ ]   |
-| 0.5.4.7   | Create downloads scripts for STATSGO2                   |  [ ]   |
-| 0.5.4.8   | Create downloads scripts for NED Elevation              |  [ ]   |
+| **0.5.3** | Create / update download scripts for vector data        |  [X]   |
+| 0.5.3.1   | Create downloads script for EPA ecoregions shapefiles   |  [X]   |
+| 0.5.3.2   | Create downloads script for NHD+ data                   |  [X]   |
+| 0.5.3.3   | Update download script for USGS Station data            |  [X]   |
+| **0.5.4** | Create downloads script  for raster covariates          |  [ ]   |
+| 0.5.4.1   | Create downloads script for Köppen Geiger climate grid  |  [X]   |
+| 0.5.4.2   | Create downloads script for USDA Plant Hardiness Zones  |  [X]   |
+| 0.5.4.3   | Create downloads script for PRISM 30-yr normals (800m)  |  [X]   |
+| 0.5.4.4   | Create downloads script for NLCD Land Cover 2016        |  [X]   |
+| 0.5.4.5   | Create downloads script for NED Elevation               |  [X]   |
+| 0.5.4.6   | Create script to calculate NED Slope                    |  [X]   |
+| 0.5.4.7   | Create downloads scripts for MODIS NDVI 2016            |  [ ]   |
+| 0.5.4.8   | Create downloads scripts for STATSGO2                   |  [ ]   |
 | **0.5.5** | QAQC for downloads                                      |  [ ]   |
 | 0.5.5.1   | Validate spatial coverage, resolution, and CRS          |  [ ]   |
 | 0.5.5.2   | Standardize and validate metadata for downloads         |  [ ]   |
