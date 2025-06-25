@@ -1,12 +1,10 @@
 # ==============================================================================
-# Script Name:    01c_download_climate.R
+# Script Name:    01j_download_prism_climate.R
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-04-15
 # Last Updated:   2025-06-20      # update script header
 #
 # Purpose: Download, processes, and prepare climate rasters:
-# -   Köppen Geiger climate, 
-# -   gridded USDA Plant Hardiness Zone Map (PHZM), and 
 # -   PRISM 30-year normals at 800m resolution
 #       -  annual tmax
 #       - annual tmean
