@@ -209,9 +209,12 @@ target_file <- glue("{here()}/{file_path}/{dir_name}/{file_name}")
 
 # 2b) Read in ecoregions
       # Read in the Level 4 shapefile (the "CONUS" extent/boundary)
-level4 <- st_read(target_file)
+level4_usgs_albers <- st_read(target_file)
 
-     # Read Level 1–3 ecoregions
+terra::crs(level4_usgs_albers)
+level4_albers <- st_transform(level4_usgs_albers, 5070)
+
+# Read Level 1–3 ecoregions
 file_name  <- "NA_CEC_Eco_Level1.shp"
 target_file <- glue("{here()}/{file_path}/{dir_name}/{file_name}")
 level1 <- st_read(target_file)
@@ -225,22 +228,22 @@ target_file <- glue("{here()}/{file_path}/{dir_name}/{file_name}")
 level3 <- st_read(target_file)
 
 # 2c) Check the CRS to ensure they match; if not, reproject
-crs_level4 <- st_crs(level4)$input
-# e.g. might show EPSG:5070 or a PROJ string for Albers
+crs_level4 <- st_crs(level4_albers)$input
+# e.g. might show EPSG:5070
 
 crs_level1 <- st_crs(level1)$input
 # e.g. might show a Lambert Azimuthal 
 
 # 2d) Transform levels 1–3 into Level 4’s Albers
-level1_albers <- st_transform(level1, st_crs(level4))
-level2_albers <- st_transform(level2, st_crs(level4))
-level3_albers <- st_transform(level3, st_crs(level4))
+level1_albers <- st_transform(level1, st_crs(level4_albers))
+level2_albers <- st_transform(level2, st_crs(level4_albers))
+level3_albers <- st_transform(level3, st_crs(level4_albers))
 
 # ============================================================================== 
 # 3. Clip Levels I–III to the spatial extent of Level IV (CONUS boundary) 
 
 # 3a) Merge Level 4 to prepare for clip
-level4_merged <- st_union(level4)
+level4_merged <- st_union(level4_albers)
 
 # 3b) Clip Level 1 to 3 ecoregions by Level 4 extent
 level1_conus <- st_intersection(level1_albers, level4_merged)
@@ -270,10 +273,10 @@ level3_conus <- st_cast(level3_conus, "MULTIPOLYGON")
 # 5.   Recalculate area in sq-km using a common CRS
 
 # Drop length and area
-level1_conus <- level1_conus %>% select(-c(Shape_Leng, Shape_Area))
-level2_conus <- level2_conus %>% select(-c(Shape_Leng, Shape_Area))
-level3_conus <- level3_conus %>% select(-c(Shape_Leng, Shape_Area))
-level4_conus <- level4  %>% select(-c(Shape_Leng, Shape_Area))
+level1_conus <- level1_conus  %>% select(-c(Shape_Leng, Shape_Area))
+level2_conus <- level2_conus  %>% select(-c(Shape_Leng, Shape_Area))
+level3_conus <- level3_conus  %>% select(-c(Shape_Leng, Shape_Area))
+level4_conus <- level4_albers %>% select(-c(Shape_Leng, Shape_Area))
 
 # recalculate area
 level1_conus <- level1_conus %>%
@@ -292,7 +295,7 @@ level4_conus <- level4_conus %>%
 # 6.   Export reprojected, clipped, cleaned data as a gpkg for downstream use.
 
 # Directory to store data as a geopackage
-output_dir <- here("data/processed/us_ecoregions")
+output_dir <- here("data/processed/ecoregions")
 
 
 # Write as GeoPackage (UTF-8, clean field names)
