@@ -244,27 +244,16 @@ FFA_regional-skew/
         ├── phzm/
         |       ├── phzm.tif
         ├── prism/
-
-
-
     ├── raw/                      # Unmodified input data 
         ├── epa_ecoregions/
-        ├── koppen_climate/
-        ├── modis_2016
-        
-        └── usgs/
-            └── nhdplus/
-            |   └── usgs_nhdplus_catchments_v21_raw.shp
+        ├── koppen_climate/ 
+        ├── ned_elev/
+        ├── nhdplus/
+        ├── nlcd/
+        ├── peakflow_gages/
+        ├── phzm/
         ├── prism/
-        |   └── ppt_30yrnormals/
-        |        └── prism_ppt_30yrnormals_raw.bil
-            └── waterdata/
-                ├── sites_all_in_bb.csv
-                └── sites_all_peak_in_bb.csv
-                
-                
-
-
+        ├── statsgo2/
 ├── docs/                     # Project documentation, e.g., final reports, 
                               #   manuscripts, proposal materials. 
                               # Reference documentation like README-style guides. 
@@ -373,7 +362,8 @@ FFA_regional-skew/
 | **0.5.3** | Create / update download scripts for vector data        |  [X]   |
 | 0.5.3.1   | Create downloads script for EPA ecoregions shapefiles   |  [X]   |
 | 0.5.3.2   | Create downloads script for NHD+ data                   |  [X]   |
-| 0.5.3.3   | Update download script for USGS Station data            |  [X]   |
+| 0.5.3.3   | Create downloads scripts for STATSGO2                   |  [X ]   |
+| 0.5.3.4   | Update download script for USGS Station data            |  [X]   |
 | **0.5.4** | Create downloads script  for raster covariates          |  [ ]   |
 | 0.5.4.1   | Create downloads script for Köppen Geiger climate grid  |  [X]   |
 | 0.5.4.2   | Create downloads script for USDA Plant Hardiness Zones  |  [X]   |
@@ -381,8 +371,7 @@ FFA_regional-skew/
 | 0.5.4.4   | Create downloads script for NLCD Land Cover 2016        |  [X]   |
 | 0.5.4.5   | Create downloads script for NED Elevation               |  [X]   |
 | 0.5.4.6   | Create script to calculate NED Slope                    |  [X]   |
-| 0.5.4.7   | Create downloads scripts for MODIS NDVI 2016            |  [ ]   |
-| 0.5.4.8   | Create downloads scripts for STATSGO2                   |  [ ]   |
+| 0.5.4.7   | Create downloads scripts for MODIS NDVI 2016            |  [X]   |
 | **0.5.5** | QAQC for downloads                                      |  [ ]   |
 | 0.5.5.1   | Validate spatial coverage, resolution, and CRS          |  [ ]   |
 | 0.5.5.2   | Standardize and validate metadata for downloads         |  [ ]   |
@@ -421,7 +410,6 @@ The covariate inventory lacked a unified, versioned reference for dataset origin
 ### Step 0.5.2 — Update folder structure for utils/ and data/
 
 **Actions** 
-
 -   Backed up the full project prior to restructuring
 -   Added new data folders:
 -      data/intermediate/
@@ -457,78 +445,144 @@ mkdir -p R/utils/{metadata,spatial,qaqc,paths,plotting} # make directories
 
 **Actions Taken**
 
--    Updated the ecoregion download script to output Level I–IV ecoregions:
+-   Ecoregions: Updated the ecoregion download script to output Level I–IV ecoregions:
 
 -       Reprojected to a common CRS (NAD83 / CONUS Albers — EPSG:5070)
 
 -       Clipped to the CONUS boundary
 
--       Saved to a geopackage format (.gpkg) following the updated folder structure (data/processed/ecoregions/)
+-       Saved as a GeoPackage in data/processed/ecoregions/
 
--   Refactored the gage download script to align with the new folder structure, improving consistency and portability.
+-   USGS Gages: Refactored the gage download script to align with the new folder structure, improving consistency and portability.
 
--   Created new scripts to download NHDPlus V2 and High-Resolution NHD (flowlines and catchments), organized under the updated data/ and R/utils/ directories.
+-   NHDPlus: Created new scripts to download NHDPlus V2 and High-Resolution NHD (flowlines and catchments), organized under the updated data/ and R/utils/ directories.
+
+-   STATSGO2: Developed a new download script (01m_download_statsgo2.R) that:
+
+-       Loads and unifies the Great Plains Level I ecoregion AOI
+
+-       Uses chunked SDA_spatialQuery() calls across a 3×3 grid to avoid query size limits
+
+-       Repairs invalid geometries using st_make_valid() and combines chunked results
+
+-       Joins mukey values to full mapunit attributes via get_mapunit_from_SDA()
+
+-       Saves output to:
+
+-           CSV: mupolygon_statsgo2_great_plains.csv and mapunit_statsgo2_great_plains.csv
+
+-           GPKG (WGS84): mupolygon_statsgo2_great_plains.gpkg
+
+-           GPKG (EPSG:5070): mupolygon_statsgo2_albers.gpkg
+
+-       Verifies joinability between geometry and tabular data by checking mukey alignment
 
 **Reason (Before)**
 
 -   The previous file structure was inconsistent across scripts and data types.
 
--   Vector data downloads (e.g., NHDPlus) were not yet implemented.
+-   Vector data downloads (e.g., NHDPlus, STATSGO2) were not yet implemented or standardized.
 
--   Spatial reference systems varied or were not well-documented.
+-   STATSGO2 spatial queries were prone to failure due to geometry complexity and SDA size limits.
 
 **Result (After)**
 
--   Scripts for downloading and preparing key vector datasets (ecoregions, gages, NHDPlus) now follow a consistent, modular folder structure:
+-   All vector download scripts (ecoregions, gages, NHDPlus, STATSGO2) now follow a consistent, modular folder structure:
 
--      data/raw/ for unfiltered original data
+-       data/raw/ for unfiltered original data
 
--      data/processed/ for cleaned and reprojected spatial layers
+-       data/processed/ for cleaned, clipped, and reprojected spatial layers
 
--      R/utils/ for reusable helper functions
+-       R/utils/ for reusable helper functions
 
--   CRS is standardized across spatial datasets (EPSG:5070), improving compatibility for later spatial joins and modeling.
+-   CRS is standardized across spatial datasets (EPSG:5070) for seamless integration.
 
--   Project now supports reproducible downloads, preprocessing, and storage of core hydrologic and geographic datasets.
+-   STATSGO2 data are now reproducibly retrieved, spatially filtered to the Great Plains, and exported in both CSV and GPKG formats for use in mapping and modeling.
+
+-   The project now supports spatial joins between vector features and mapunit attributes using verified mukey keys.
+
 
 ### 0.5.4 - Create downloads scripts for raster covariates
 
-**Actions** 
+**Actions Taken**
 
-**Reason (Before):** 
+-   Köppen-Geiger Climate Zones: Created a download script for the Köppen-Geiger 1-km climate classification raster:
 
-**Result (After):** 
-| 0.5.4.1   | Create downloads scripts for Köppen Geiger climate grid |  [X]   |
-| 0.5.4.2   | Create downloads scripts for USDA Plant Hardiness Zones |  [X]   |
-| 0.5.4.3   | Create downloads scripts for PRISM 30-yr normals (800m) |  [X]   |
-| 0.5.4.4   | Create downloads scripts for NLCD Land Cover 2016       |  [ ]   |
+-       Manually downloaded and extracted .tif from official source
 
+-       Reprojected to EPSG:5070 for spatial compatibility
 
+-       Clipped to the CONUS Great Plains region using ecoregions Level I–IV
 
+-       Exported as koppen_geiger_zones_5070.tif in data/processed/
 
+-   USDA Plant Hardiness Zones: Created a script to download and convert the Plant Hardiness Zones raster:
 
+-       Converted source .img to GeoTIFF
 
+-       Reprojected to EPSG:5070
 
+-       Exported to data/processed/ as plant_hardiness_zones_5070.tif
 
+-   PRISM Climate Normals (800m resolution):
 
+-       Used the {prism} R package to automate download of 30-year normals (1981–2010) for precipitation and temperature
 
-| 0.5.3.3   | Create downloads scripts for USGS Station data          |  [ ]   |
+-       Organized by month and annual average
 
-🎯 Goal
-# Load Site Locations
-sites <- read_csv(here("data/clean/sites_pk_gt_20.csv")) %>%
-  distinct(site_no, dec_lat_va, dec_long_va) %>%
-  drop_na(dec_lat_va, dec_long_va)
+-       Saved original .bil files to data/raw/prism/ and stacked .tif rasters to data/processed/prism/
 
-sites_sf <- sites %>%
-  st_as_sf(coords = c("dec_long_va", "dec_lat_va"), crs = 4326)
+-       Generated metadata on raster resolution, extent, and units in data/meta/
 
+-   NLCD 2016 Land Cover:
 
+-       Manually downloaded NLCD 2016 land cover data from the MRLC repository
 
+-       Clipped to Great Plains ecoregion boundary
 
+-       Reprojected to EPSG:5070
 
+-       Saved output to data/processed/nlcd_2016_landcover_5070.tif
 
+-   NED Elevation and Slope:
 
+-       Downloaded NED 1-arc-second elevation tiles for the Great Plains
+
+-       Merged, reprojected, and clipped the tiles
+
+-       Created a slope raster using the {terra} package
+
+-       Saved both elevation and slope rasters in data/processed/ned/ with EPSG:5070
+
+-   MODIS NDVI 2016:
+
+-       Developed a new script using {MODISTools} and {terra} for reproducible NDVI downloads
+
+-       Replaced legacy MODIStsp workflow with scriptable R-based pipeline
+
+-       Downloaded MOD13Q1 NDVI for 2016 and processed monthly raster stacks
+
+-       Clipped and reprojected rasters to the Great Plains in EPSG:5070
+
+-       Saved outputs to data/processed/modis/ndvi_2016/
+
+Reason (Before)
+
+-   Raster covariate data was scattered, manually downloaded, or inconsistently projected
+
+-   No standardized method existed for clipping, reprojecting, or saving raster layers across covariate domains
+
+Result (After)
+
+-   Created dedicated scripts to automate download, clipping, projection, and export of key raster covariates
+
+-   All final rasters are reprojected to EPSG:5070 for modeling compatibility
+
+-   Raster outputs are cleanly saved in data/processed/ with harmonized filenames and formats (.tif)
+
+-   Scripts are modular and reproducible, supporting future re-runs and audits
+
+-   Raster metadata (resolution, projection, source) is logged in data/meta/ and ready for QAQC in Step 0.5.5
 
 ### Step 0.5.4 — Standardize and validate metadata for downloads
 
