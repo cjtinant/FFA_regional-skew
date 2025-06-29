@@ -35,8 +35,10 @@ library(readr)
 
 # Define output directories
 in_dir  <- here("data", "raw", "statsgo2")
+intermed_dir <- here("data", "intermediate", "statsgo2")
 out_dir <- here("data", "processed", "statsgo2")
 dir_create(in_dir)
+dir_create(intermed_dir)
 dir_create(out_dir)
 
 # Load AOI: Great Plains Level I Ecoregion
@@ -129,7 +131,7 @@ message("🎉 STATSGO2 download complete.")
 message("🗺️ Saving spatial outputs for GIS...")
 
 # Save WGS84 GeoPackage
-gpkg_out_wgs84 <- path(out_dir, "mupolygon_statsgo2_great_plains.gpkg")
+gpkg_out_wgs84 <- path(intermed_dir, "mupolygon_statsgo2_great_plains.gpkg")
 st_write(mu_geom, gpkg_out_wgs84, delete_dsn = TRUE, quiet = TRUE)
 message("📁 Saved WGS84 GeoPackage: ", gpkg_out_wgs84)
 
