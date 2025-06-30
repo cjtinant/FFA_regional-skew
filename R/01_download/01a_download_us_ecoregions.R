@@ -1,8 +1,8 @@
 # ==============================================================================
-# Script Name:    01a_download_epa_regions.R
+# Script Name:    01a_download_us_ecoregions.R
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-04-15
-# Last Updated:   2025-06-20      # update script header / output location
+# Last Updated:   2025-06-29      # update ecoregions naming
 #
 # Purpose:        This script downloads, processes, and prepares EPA/CEC
 #                 Level I-IV Ecoregion data.
@@ -13,11 +13,11 @@
 # -   https://www.epa.gov/eco-research/ecoregions-north-america
 #
 # Workflow Summary:
-# 1.   Download zipped archives, extract and organize data.
-# 2.   Reproject shapefiles to a common CRS (US Albers Equal Area – EPSG:5070) 
-# 3.   Clip Levels I–III to the spatial extent of Level IV (CONUS boundary) 
-# 4.   Validate and repair geometries and coerce to consistent geometry type.
-# 5.   Recalculate area in sq-km using a common CRS
+# 1. Download zipped archives, extract and organize data.
+# 2. Reproject shapefiles to a common CRS (US Albers Equal Area – EPSG:5070) 
+# 3. Clip Levels I–III to the spatial extent of Level IV (CONUS boundary) 
+# 4. Validate and repair geometries and coerce to consistent geometry type.
+# 5. Recalculate area in sq-km using a common CRS
 # 6.   Export reprojected, clipped, cleaned data as a gpkg for downstream use.
 #
 # Output:
@@ -28,7 +28,7 @@
 # -    glue:      string interpolation
 # -    here:      consistent relative paths
 # -    sf:        handling spatial data
-# -    units      unit conversion
+# -    units      unit conversion -- to convert from m² to km²
 
 # Notes:
 # - Original metadata & layer files for each level are downloaded for reference.
@@ -41,7 +41,7 @@ library(tidyverse)
 library(glue)
 library(here)
 library(sf)
-library(units)       # to convert from m² to km²
+library(units)
 
 # Load function definitions
 source(here("R/utils/download_data/download_ecoregion_resources.R"))
