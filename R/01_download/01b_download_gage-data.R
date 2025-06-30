@@ -1,14 +1,14 @@
 # ==============================================================================
-# Script Name: 01b_download-gage-data.R
-# Author: Charles Jason Tinant
-# Date Created: April 2025
-# Last update: June 21, 2025           # update script to fit with folder struct
+# Script Name:     01b_download-gage-data.R
+# Author:          Charles Jason Tinant
+# Date Created:    April 2025
+# Last update:     June 21, 2025      # update script to fit with folder struct
 #
 # Purpose:
-# This script downloads, processes, and filters USGS peak flow gage data within
-# the Great Plains Level 1 Ecoregion. It uses spatial data to define the area
-# of interest and queries USGS National Water Information System (NWIS) services
-# for site and peak flow data.
+#                  This script downloads, processes, and filters USGS peak flow 
+#                  gage data within the GP Level 1 Ecoregion. It uses spatial 
+#                  data to define the AOI and queries USGS National Water 
+#                  Information System (NWIS) services for peak flow site data.
 #
 # Workflow Summary:
 # 1. Load Level 1 Ecoregion shapefile and isolate Great Plains extent
@@ -26,12 +26,21 @@
 # - data/sites_pk_eco_only.csv      → Peak flow sites within GP Ecoregion
 #
 # Dependencies:
-# - tidyverse     → Data wrangling & visualization
-# - glue          → String interpolation
-# - here          → File paths
-# - sf            → Spatial data (simple features)
-# - dataRetrieval → Access USGS NWIS data
-# - process_geometries.R → Custom helper functions for cleaning sf geometries
+# - dataRetrieval: Access USGS NWIS data
+# - dplyr:         Data manipulation
+# - glue:          String interpolation
+# - here:          Consistent relative paths
+# - purrr:         Functional programming toolkit
+# - sf:            Support for simple feature access, a standardized way to
+#                    encode and analyze spatial vector data. Binds to 'GDAL'
+# - process_geometries.R:     Custom helper functions for cleaning sf geometries
+
+# - tidyverse: Data wrangling & visualization
+# - units           Unit conversion -- to convert from m² to km²
+# - nhdplusTools    Tools for traversing and working with National
+#                     Hydrography Dataset Plus (NHDPlus) data.
+# - readr        -   Reads rectangular data
+# - stringr      -   Wrappers for string operations
 #
 # Notes:
 # - Requires internet access to download data from USGS NWIS
