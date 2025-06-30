@@ -4,8 +4,8 @@
 # Date Created:   2025-06-28
 # Last Updated:   2025-06-28
 #
-# Purpose:        Download STATSGO2 (national soil database) mapunit data 
-#                 clipped to the Great Plains ecoregion using Soil Data Access (SDA).
+# Purpose:        Download STATSGO2 (national soil database) mapunit data
+#                 clipped to GP Ecoregion using Soil Data Access (SDA).
 #
 # Workflow Summary:
 # ------------------------------------------------------------------------------
@@ -23,7 +23,7 @@
 #
 # ==============================================================================
 
-# 1. Setup ----------------------------------------------------------------------
+# 1. Setup ---------------------------------------------------------------------
 
 library(soilDB)
 library(sf)
@@ -156,6 +156,7 @@ if (!"mukey" %in% names(mu_attribs)) {
   if (length(unmatched) == 0) {
     message("✅ All mukeys in geometry are present in attribute table.")
   } else {
-    warning("⚠️ ", length(unmatched), " mukeys in geometry are missing from attribute table.")
+    warning("⚠️ ", length(unmatched),
+    " mukeys in geometry are missing from attribute table.")
   }
 }

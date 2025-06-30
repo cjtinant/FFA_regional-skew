@@ -5,24 +5,25 @@
 # Last update: June 21, 2025           # update script to fit with folder struct
 #
 # Purpose:
-# This script downloads, processes, and filters USGS peak flow gage data within 
-# the Great Plains Level 1 Ecoregion. It uses spatial data to define the area 
-# of interest and queries USGS National Water Information System (NWIS) services 
+# This script downloads, processes, and filters USGS peak flow gage data within
+# the Great Plains Level 1 Ecoregion. It uses spatial data to define the area
+# of interest and queries USGS National Water Information System (NWIS) services
 # for site and peak flow data.
 #
 # Workflow Summary:
 # 1. Load Level 1 Ecoregion shapefile and isolate Great Plains extent
 # 2. Generate bounding box grid tiles across Great Plains extent
-# 3. Download USGS site data within each tile (siteType = "ST", parameterCd = "00060")
+# 3. Download USGS site data within each tile
+(siteType = "ST" parameterCd = "00060")
 # 4. Filter to remove canals, ditches, and sites without peak flow records
 # 5. Download peak flow records for filtered sites (service = "pk")
 # 6. Convert sites to spatial format and clip to Great Plains extent
-# 7. Export multiple CSV outputs for all sites, peakflow-only sites, and clipped sites
+# 7. Export CSV outputs for all sites, peakflow-only sites, and clipped sites
 #
 # Output Files:
 # - data/sites_all_in_bb.csv        → All USGS sites within bounding box
 # - data/sites_all_peak_in_bb.csv   → Sites with peak flow data in bounding box
-# - data/sites_pk_eco_only.csv      → Peak flow sites within Great Plains ecoregion
+# - data/sites_pk_eco_only.csv      → Peak flow sites within GP Ecoregion
 #
 # Dependencies:
 # - tidyverse     → Data wrangling & visualization
@@ -37,7 +38,7 @@
 # - Bounding box grid helps avoid request size limitations in NWIS queries
 # - Uses a batch download approach for peak flow data retrieval
 # - Great Plains extent is defined using EPA Level 1 Ecoregion shapefiles
-# ============================================================================== 
+# ==============================================================================
 
 # ------------------------------------------------------------------------------
 # libraries
@@ -49,10 +50,10 @@ library(purrr)
 library(sf)             # Simple features for R
 
 # ------------------------------------------------------------------------------
-# 1) Load level 1 ecoregion
+# 1) Load Level 1 Ecoregion
 
 file_path  <- "data/processed"     # top-level folder for spatial data
-dir_name   <- "ecoregions"     # subfolder for level 1 ecoregions
+dir_name   <- "us_ecoregions"     # subfolder for level 1 ecoregions
 file_name <- "us_eco_levels.gpkg"
 target_file <- glue("{here()}/{file_path}/{dir_name}/{file_name}")
 
@@ -114,7 +115,9 @@ sites_data_list <- vector("list", nrow(grid_boxes))
 # go and get umm!!!
 for (i in seq_len(nrow(grid_boxes))) {
   bbox_row <- grid_boxes[i, ]
-  bbox_vector <- paste(bbox_row$xmin, bbox_row$ymin, bbox_row$xmax, bbox_row$ymax, sep = ",")
+  bbox_vector <- paste(
+    bbox_row$xmin, bbox_row$ymin, bbox_row$xmax, bbox_row$ymax, sep = ","
+    )
   
   message("Trying grid tile ", i, " with bbox: ", bbox_vector)
   
@@ -148,8 +151,8 @@ sites_all_in_bb <- bind_rows(sites_data_list)
 output_dir <- here("data", "raw", "peakflow_gages")
 fs::dir_create(output_dir)
 
-write_csv(sites_all_in_bb, here("data", 
-                                "raw", 
+write_csv(sites_all_in_bb, here("data",
+                                "raw",
                                 "peakflow_gages",
                                 "sites_all_in_bb.csv"))
 
@@ -170,7 +173,7 @@ sites_st_only_in_bb <- sites_all_in_bb %>%
 ck_sites_st_only <- anti_join(sites_all_in_bb, sites_st_only_in_bb)
 
 # ---------------------------------------------------------
-# keep sites inside Great Plains ecoregion
+# keep sites inside Great Plains Ecoregion
 
 # convert stations into a spatial format (sf) object
 sites_all_in_bb_geo <- st_as_sf(sites_all_in_bb,

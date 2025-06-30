@@ -19,13 +19,13 @@
 
 # After download completes:
 # ------------------------------------------------------------------------------
-# • Locate your downloaded folder (e.g., ~/Downloads/MOD13Q1_061-YYYYMMDD_HHMMSS/)
+# • Locate your downloaded folder: ~/Downloads/MOD13Q1_061-YYYYMMDD_HHMMSS/
 # • Move all .hdf files from that folder to:
 #     data/raw/modis/mod13q1_hdf/
 
 # Output:
 # ------------------------------------------------------------------------------
-# This script does NOT download rasters directly but documents the full workflow.
+# This script does NOT download rasters directly but documents workflow.
 # Rasters will be processed in:
 #     02_process_modis_ndvi_rasters.R
 
@@ -179,7 +179,7 @@ cat("\nReprojecting, clipping, and writing rasters...")
 
 # Read and buffer AOI again for cropping
 aoi_proj <- st_read("data/processed/ecoregions/us_eco_levels.gpkg",
-                    layer = "us_eco_l1", 
+                    layer = "us_eco_l1",
                     quiet = TRUE
                     ) %>%
   filter(NA_L1NAME == "GREAT PLAINS") %>%
@@ -192,8 +192,8 @@ for (i in seq_len(nrow(ndvi_stacks))) {
     project("EPSG:5070") %>%
     crop(vect(aoi_proj))
   
-  r <- classify(r, cbind(0, NA)) * 0.0001        # scale the NDVI values 
-                                                 # and set fill values to NA, 
+  r <- classify(r, cbind(0, NA)) * 0.0001        # scale the NDVI values
+                                                 # and set fill values to NA
   
   out_path <- here(dir_processed, glue("ndvi_{d}.tif"))
   writeRaster(r, 

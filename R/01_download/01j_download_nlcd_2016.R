@@ -2,7 +2,7 @@
 # Script Name:    01j_download_nlcd_2016.R
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-06-23
-# Last Updated:   
+# Last Updated: 
 #
 # Purpose: Download NLCD 2016 Land Cover raster clipped to Great Plains
 #
@@ -18,7 +18,7 @@
 # Output:
 # Clipped and masked raster projected to a common CRS
 #
-# Dependencies:   
+# Dependencies:
 # -   fs
 # -   here
 # -   sf
@@ -28,17 +28,16 @@
 # Received over 100–200 MB per tile, but not enough to complete the download.
 # Then FedData::get_nlcd() tried to crop those partial files → 💥 crash.
 #
-# crop() -- Trims the raster extent down to the bounding box of the vector 
-#    geometry (shape). Keeps all raster cells that intersect the box — even if 
+# crop() -- Trims the raster extent down to the bounding box of the vector
+#    geometry (shape). Keeps all raster cells that intersect the box — even if
 #    they fall outside the exact shape.
 # Inputs: raster: a SpatRaster (e.g., the full NLCD)
 #         shape:  a SpatVector (e.g., Great Plains boundary)
-# mask() -- Replaces all raster cells outside the exact shape with NA. Keeps 
+# mask() -- Replaces all raster cells outside the exact shape with NA. Keeps
 #   only values within the actual polygon boundary.
 # Inputs: r_crop: a raster that has already been spatially subset (cropped)
 #         shape:  the same or overlapping SpatVector
 
-# here("data/raw/nlcd/NLCD_2016_Land_Cover_L48_20210604.img")
 
 # ==============================================================================
 
@@ -50,7 +49,7 @@ library(terra)
 
 # --- Define file paths -------------------------------------------------------
 nlcd_file <- here("data", "raw", "nlcd", "Annual_NLCD_LndCov_2016_CU_C1V0.tif")
-gpkg_file <- here("data", "processed", "ecoregions", "us_eco_levels.gpkg")
+gpkg_file <- here("data", "processed", "us_ecoregions", "us_eco_levels.gpkg")
 
 # --- Read raster and vector --------------------------------------------------
 r_nlcd <- rast(nlcd_file)

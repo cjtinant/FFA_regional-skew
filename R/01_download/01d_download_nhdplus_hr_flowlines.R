@@ -4,8 +4,8 @@
 # Date Created:   2025-05-19
 # Last Updated:   2025-06-06
 #
-# Purpose:         Download NHDPlus HR (1:24k) flowlines and catchment boundaries
-#                  clipped to Great Plains
+# Purpose:         Download NHDPlus HR (1:24k) flowlines and catchment
+                   boundaries clipped to Great Plains
 #
 # Data URLs: https://www.usgs.gov/national-hydrography/nhdplus-high-resolution
 #
@@ -17,7 +17,7 @@
 #
 # Output:
 # -    NHDplus flowlines and *****catchment boundaries**** for the Great Plains
-#      Ecoregion for each level IV ecoregion.
+#      Ecoregion for each Level IV Ecoregion.
 #
 # Dependencies:
 # -   dplyr        -   Data manipulation
@@ -25,17 +25,17 @@
 # -   ggplot2      -   Data visualization
 # -   glue         -   Formats strings
 # -   here         -   Locates files relative to a project root
-# -   nhdplusTools -   Tools for traversing and working with National 
-#                      Hydrography Dataset Plus (NHDPlus) data. 
+# -   nhdplusTools -   Tools for traversing and working with National
+#                      Hydrography Dataset Plus (NHDPlus) data.
 # -   purrr        -   Functional programming toolkit
 # -   readr        -   Reads rectangular data
-# -   sf           -   Support for simple feature access, a standardized way to 
+# -   sf           -   Support for simple feature access, a standardized way to
 #                      encode and analyze spatial vector data. Binds to 'GDAL'
 # -   stringr      -   Wrappers for string operations
 
 # Notes: See the bottom of the script for a test-run that explains some of the
 # functions used.
-# ============================================================================== 
+# =============================================================================
 
 # Load libraries
 suppressPackageStartupMessages(c(
@@ -61,32 +61,31 @@ suppressPackageStartupMessages(c(
 # 🔍 Likely Reasons the Main Loop (below) Might Not Work (works mostly)
 # 1. ❌ Missing or Improper CRS
 #     get_nhdphr() expects input in EPSG:4326 (WGS 84).
-#     If your AOI was still in EPSG:5070 or unprojected, the request silently 
+#     If your AOI was still in EPSG:5070 or unprojected, the request silently
 #       failed or produced invalid tiles.
-# ✔️ Fix that worked: You manually reprojected to 4326 before calling get_nhdphr().
+# ✔️ Fix that worked: manually reprojected to 4326 before calling get_nhdphr().
 #
 # 2. ❌ Geometry too complex or fragmented
-#       Some AOIs have lots of tiny polygons or complex slivers (e.g., 
+#       Some AOIs have lots of tiny polygons or complex slivers (e.g.,
 #         river corridors).
-#       This can overwhelm the NHDPlus web service or cause excessive tile requests.
-# ✔️ Fix that worked: You simplified by using st_union() and buffering the 
+#       This can overwhelm NHDPlus web service or cause excessive tile requests.
+# ✔️ Fix that worked: You simplified by using st_union() and buffering the
 #        result to create a clean boundary.
 # 3. ❌ Too many tiles requested
-#     get_nhdphr() queries by tile chunks. Some ecoregions with narrow but 
-#       long shapes (like "Platte River Valley and Terraces") span a huge number 
-#       of tiles even if their area is small.
-# ✔️ Fix that worked: You buffered only slightly and isolated a single AOI, 
+#     get_nhdphr() queries by tile chunks. Some ecoregions with narrow but
+#       long shapes (e.g. "Platte River Valley and Terraces") span a huge
+#       number of tiles even if their area is small.
+# ✔️ Fix that worked: You buffered only slightly and isolated a single AOI,
 #       dramatically reducing the request size.
 # 4. ❌ Retry not properly handled
-#     In batch mode, retries on NULL or 504 (timeout) responses may not be 
+#     In batch mode, retries on NULL or 504 (timeout) responses may not be
 #        triggered or logged.
-#     And, if the error is "no applicable method for st_write on class 'NULL'," 
+#     And, if the error is "no applicable method for st_write on class 'NULL',"
 #        it’s because you skipped checking if the download succeeded.
-# ✔️ Fix that worked: You explicitly guarded the st_write() with a !is.null() 
+# ✔️ Fix that worked: You explicitly guarded the st_write() with a !is.null()
 #        check.
-#
 # 5. ❌ Missing geometry column renaming
-#     Your early versions sometimes had geom, not geometry, which meant 
+#     Your early versions sometimes had geom, not geometry, which meant
 #       st_area() and get_nhdphr() could fail silently or give malformed inputs.
 # ✔️ Fix that worked: You explicitly renamed and reassigned the geometry column.
 #
@@ -143,12 +142,14 @@ retry_failed_aoi <- function(region_name, ecoregion_sf, buffer_dist = 1000) {
     } else {
       nhd_sf <- st_make_valid(nhd_sf)
       
- #     gpkg_path <- glue::glue("data/intermediate/nhdphr_by_ecoregion/{str_replace_all(region_name, ' ', '_')}.gpkg")
+ #     gpkg_path <- glue::glue(
+ "data/intermediate/nhdphr_by_ecoregion/{str_replace_all(region_name, ' ', '_')}.gpkg")
 
       safe_name <- region_name %>%
         stringr::str_replace_all("[ /]", "_")  # replace both space and slash
       
-      gpkg_path <- glue::glue("data/intermediate/nhdphr_by_ecoregion/{safe_name}.gpkg")
+      gpkg_path <- glue::glue(
+        "data/intermediate/nhdphr_by_ecoregion/{safe_name}.gpkg")
       
       
             if (file.exists(gpkg_path)) file.remove(gpkg_path)
@@ -181,10 +182,10 @@ retry_failed_aoi <- function(region_name, ecoregion_sf, buffer_dist = 1000) {
 #   st_union() %>%
 #   st_sf() %>%
 #   st_transform(4326)  # required CRS for get_nhdphr()
-# 
+#
 # aoi_broken_red_buf <- st_buffer(
 #   aoi_broken_red, dist = 1)  # buffer by 1 degree (~100 km)
-# 
+#
 # nhd_broken_red <- get_nhdphr(
 #   AOI = aoi_broken_red_buf,
 #   type = "networknhdflowline",   # or "catchmentsp", etc.
@@ -201,7 +202,8 @@ retry_failed_aoi <- function(region_name, ecoregion_sf, buffer_dist = 1000) {
 # --- Setup -------------------------------------------------------------------
 
 # Load EPA Level IV ecoregions (should be already subset to Great Plains)
-eco_lev4 <- st_read("data/raw/vector_raw/ecoregions_unprojected/us_eco_lev4_GreatPlains_geographic.gpkg")
+eco_lev4 <- st_read(
+  "data/raw/vector_raw/ecoregions_unprojected/us_eco_lev4_GreatPlains_geographic.gpkg")
 
 # Ensure folders exist
 dir_create("data/intermediate/nhdphr_by_ecoregion")
@@ -378,7 +380,8 @@ walk(failed_regions, function(l4name) {
 
 # --- Investigate NULL errors -------------------------------------------------
 # Load EPA Level IV ecoregions (should be already subset to Great Plains)
-eco_lev4 <- st_read("data/raw/vector_raw/ecoregions_unprojected/us_eco_lev4_GreatPlains_geographic.gpkg")
+eco_lev4 <- st_read(
+  "data/raw/vector_raw/ecoregions_unprojected/us_eco_lev4_GreatPlains_geographic.gpkg")
 
 #Load the log
 log_tbl <- read_csv("data/log/nhdphr_download_log.csv", 
@@ -390,7 +393,6 @@ log_tbl <- read_csv("data/log/nhdphr_download_log.csv",
 null_regions <- log_tbl %>%
   filter(status == "error" & str_detect
          (message, "no applicable method for 'st_write' applied to an object of class \"NULL\"")) %>%
-#  filter(status == "error" & str_detect(message, "Download returned NULL")) %>%  
   distinct(us_l4name) %>%
   pull(us_l4name)
 
@@ -455,9 +457,9 @@ ggplot() +
   )
 
 # save results
-ggsave("data/log/null_aois_diagnostics_facet_map.png", 
-       width = 10, 
-       height = 8, 
+ggsave("data/log/null_aois_diagnostics_facet_map.png",
+       width = 10,
+       height = 8,
        dpi = 300
        )
 
@@ -468,7 +470,7 @@ retry_failed_aoi("Des Moines Lobe", eco_lev4, buffer_dist = 1) # this fails --
 # the request found features that were outside of the buffer
 retry_failed_aoi("Des Moines Lobe", eco_lev4, buffer_dist = 2)# this fails --
 # the request found features that were outside of the buffer
-retry_failed_aoi("Des Moines Lobe", eco_lev4, buffer_dist = 3) # works -- 
+retry_failed_aoi("Des Moines Lobe", eco_lev4, buffer_dist = 3) # works --
 # updated function based on results.
 
 retry_failed_aoi("Flint Hills", eco_lev4) # worked at 1000 m
@@ -479,9 +481,9 @@ retry_failed_aoi("Osage Cuestas", eco_lev4) # worked at 1000 m
 retry_failed_aoi("Smoky Hills", eco_lev4) # worked at 1000 m
 
 # updated to handle multipolygons here
-retry_failed_aoi("Platte River Valley and Terraces", eco_lev4) 
+retry_failed_aoi("Platte River Valley and Terraces", eco_lev4)
 
-retry_failed_aoi("Sand Hills", eco_lev4) 
+retry_failed_aoi("Sand Hills", eco_lev4)
 
 # ------------------------------------------------------------------------------
 # 2.Validate results
@@ -489,7 +491,7 @@ retry_failed_aoi("Sand Hills", eco_lev4)
 
 # --- Check for missing regions -----------------------------------------------
 expected_names <- sort(unique(eco_lev4$us_l4name))
-downloaded_files <- fs::dir_ls("data/intermediate/nhdphr_by_ecoregion/", 
+downloaded_files <- fs::dir_ls("data/intermediate/nhdphr_by_ecoregion/",
                                glob = "*.gpkg")
 downloaded_names <- downloaded_files %>%
   fs::path_file() %>%
@@ -528,57 +530,57 @@ readr::write_csv(retry_results, "data/log/nhdphr_missing_download_attempts.csv")
 # eco_lev4 <- st_read(
 #   "data/raw/vector_raw/ecoregions_unprojected/us_eco_lev4_greatplains_geographic.gpkg"
 #   )
-# 
+#
 # # 1.2 Pick first distinct L4 name
 # eco_aoi_name <- eco_lev4 %>%
 #   st_drop_geometry() %>%
 #   select(us_l4name) %>%
 #   distinct() %>%
 #   slice(1) %>%
-#   pull(us_l4name)       # pull() is similar to $. It's mostly useful because 
+#   pull(us_l4name)       # pull() is similar to $. It's mostly useful because
 #                         #    it looks a little nicer in pipes.
-# 
+#
 # # Notes on `st_union()` below:
-# #    Unioning a set of overlapping polygons has the effect of merging the areas 
-# #    i.e. the same effect as iteratively unioning all individual polygons 
-# #    together. Unioning a set of LineStrings has the effect of fully noding and 
-# #    dissolving the input linework. In this context "fully noded" means that 
-# #    there will be a node or endpoint in the output for every endpoint or line 
-# #    segment crossing in the input. "Dissolved" means that any duplicate 
-# #    (e.g. coincident) line segments or portions of line segments will be reduced 
-# #    to a single line segment in the output. Unioning a set of Points has the 
+# #    Unioning a set of overlapping polygons has the effect of merging the areas
+# #    i.e. the same effect as iteratively unioning all individual polygons
+# #    together. Unioning a set of LineStrings has the effect of fully noding and
+# #    dissolving the input linework. In this context "fully noded" means that
+# #    there will be a node or endpoint in the output for every endpoint or line
+# #    segment crossing in the input. "Dissolved" means that any duplicate
+# #    (e.g. coincident) line segments or portions of line segments will be reduced
+# #    to a single line segment in the output. Unioning a set of Points has the
 # #    effect of merging all identical points (producing a set with no duplicates).
 # #   -- In this case, it creates a of nodes in lat long to feed to `st_sf()`
 # #
 # # Notes on `st_sf()` below:
 # #    Create sf, which extends data.frame-like objects with a simple feature list 
 # #    column.
-# 
-# 
+#
+#
 # # 1.3 filter ecoregions by that name
 # eco_aoi <- eco_lev4 %>%
 #   filter(us_l4name == eco_aoi_name) %>%
-#   st_union() %>% 
-#   st_sf(geometry = .) %>%         # Creates an sf, in other words extend 
-#                                   # data.frame-like objects with a simple 
+#   st_union() %>%
+#   st_sf(geometry = .) %>%         # Creates an sf, in other words extend
+#                                   # data.frame-like objects with a simple
 #                                   # feature list column (make geospatial)
 #   st_cast("POLYGON") %>%          # explicitly cast geometry of sf object
 #   mutate(area = st_area(.)) %>%   # compute area to extract largest object
-#       arrange(desc(area)) %>%     # necessary when combining objects to the 
-#   slice(1)                        # scale of the Great Plains 
-# 
+#       arrange(desc(area)) %>%     # necessary when combining objects to the
+#   slice(1)                        # scale of the Great Plains
+#
 # # 1.4 Check EPSG (should be WGS84 GCS -- EPSG:4326) then buffer and transform
 # epsg_ck <- st_crs(eco_aoi) %>%
 #   unlist()
-# 
+#
 # eco_aoi_buff <- eco_aoi %>%
 # st_buffer(1) %>%                  # buffers out 1 degree ~= 100 km
 #   st_transform(4269)
-# 
+#
 # # 1.5 Check EPSG (should be NAD83 GCS -- EPSG:4269)
 # epsg_buff_ck <- st_crs(eco_aoi_buff) %>%
 #   unlist()
-# 
+#
 # # Quick reality check (visually)
 # ggplot() +
 #   geom_sf(data = eco_aoi_buff,
@@ -587,7 +589,7 @@ readr::write_csv(retry_results, "data/log/nhdphr_missing_download_attempts.csv")
 #   geom_sf(data = eco_aoi,
 #           fill = "gray20",
 #           color = "white")
-# 
+#
 # nhdphr_gp_flowline <- get_nhdphr(
 #   AOI = eco_aoi_buff,
 #   type = "networknhdflowline",
