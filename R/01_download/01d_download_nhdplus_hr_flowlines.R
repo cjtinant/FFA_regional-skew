@@ -202,7 +202,9 @@ retry_failed_aoi <- function(region_name, ecoregion_sf, buffer_dist = 1000) {
 
 # Load EPA Level IV ecoregions (should be already subset to Great Plains)
 eco_lev4 <- st_read(
-  "data/raw/vector_raw/ecoregions_unprojected/us_eco_lev4_GreatPlains_geographic.gpkg")
+  "data/processed/us_ecoregions/us_eco_levels.gpkg",
+  layer = "us_eco_l4"
+  )
 
 # Ensure folders exist
 dir_create("data/intermediate/nhdphr_by_ecoregion")
@@ -380,7 +382,9 @@ walk(failed_regions, function(l4name) {
 # --- Investigate NULL errors -------------------------------------------------
 # Load EPA Level IV ecoregions (should be already subset to Great Plains)
 eco_lev4 <- st_read(
-  "data/raw/vector_raw/ecoregions_unprojected/us_eco_lev4_GreatPlains_geographic.gpkg")
+  "data/processed/us_ecoregions/us_eco_levels.gpkg",
+  layer = "us_eco_l4"
+  )
 
 #Load the log
 log_tbl <- read_csv("data/log/nhdphr_download_log.csv", 
@@ -527,8 +531,9 @@ readr::write_csv(retry_results, "data/log/nhdphr_missing_download_attempts.csv")
 # -- Test run to scale and generalize to batch download --
 # # 1.1 Read ecoregions
 # eco_lev4 <- st_read(
-#   "data/raw/vector_raw/ecoregions_unprojected/us_eco_lev4_greatplains_geographic.gpkg"
-#   )
+#  "data/processed/us_ecoregions/us_eco_levels.gpkg",
+#  layer = "us_eco_l4"
+# )
 #
 # # 1.2 Pick first distinct L4 name
 # eco_aoi_name <- eco_lev4 %>%

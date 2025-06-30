@@ -67,8 +67,8 @@ log_tbl <- if (file.exists(log_file)) {
 
 # --- get level 4 ecoregions --------------------------------------------------
 eco_lev4 <- st_read(
-  here("data", "raw", "vector_raw", "ecoregions_unprojected", 
-       "us_eco_lev4_GreatPlains_geographic.gpkg")
+  here("data", "processed", "us_ecoregions", "us_eco_levels.gpkg"),
+  layer = "us_eco_l4"
 )
 
 # --- prepare for download --- make a vector of level 4 ecoregions ------------

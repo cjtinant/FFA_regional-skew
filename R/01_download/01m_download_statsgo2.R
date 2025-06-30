@@ -49,7 +49,7 @@ dir_create(out_dir)
 
 # Load AOI: Great Plains Level I Ecoregion
 aoi_path <- here("data", "processed", "ecoregions", "us_eco_levels.gpkg")
-aoi <- st_read(aoi_path, 
+aoi <- st_read(aoi_path,
                layer = "us_eco_l1",
                quiet = TRUE) %>%
   filter(NA_L1NAME == "GREAT PLAINS") %>%

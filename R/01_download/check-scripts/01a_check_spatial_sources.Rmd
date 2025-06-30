@@ -11,8 +11,8 @@ This document supports QA of raw spatial inputs used for regional skew modeling.
 
 ## Goals
 
--   ✅ Identify and remove duplicate files from `data/raw/vector_raw`
--   ✅ Deduplicate and standardize raster inputs in `data/raw/raster_raw`
+-   ✅ Identify and remove duplicate files from `data/raw`
+-   ✅ Deduplicate and standardize raster inputs in `data/raw/`
 -   🗂️ Organize spatial datasets by relevance, format, and source
 -   📝 Document retained files in `data/meta/spatial_source_checklist.csv`
 
