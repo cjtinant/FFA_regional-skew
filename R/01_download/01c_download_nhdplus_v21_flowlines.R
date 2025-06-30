@@ -1,11 +1,11 @@
 # ==============================================================================
-# Script Name:    01c_download_nhdplus_v2.R
-# Author: Charles Jason Tinant — with ChatGPT 4o
-# Date Created:   2025-05-19
-# Last Updated:   2025-06-29           # update header
+# Script Name:     01c_download_nhdplus_v2.R
+# Author:          Charles Jason Tinant — with ChatGPT 4o
+# Date Created:    2025-05-19
+# Last Updated:    2025-06-29           # update header
 #
-# Purpose:        Download NHDPlusV2.1 flowlines and catchments clipped to the
-#                 Great Plains. The data are at a regional scale (1:100,000)
+# Purpose:         Download NHDPlusV2.1 flowlines and catchments clipped to the
+#                  Great Plains. The data are at a regional scale (1:100,000)
 #
 # Workflow Summary:
 # 1. Load Great Plains Level IV Ecoregions and keep only external boundary.

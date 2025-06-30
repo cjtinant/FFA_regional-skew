@@ -19,10 +19,21 @@
 # Clipped and masked raster projected to a common CRS
 #
 # Dependencies:
-# -   fs
-# -   here
-# -   sf
-# -   terra
+# - dplyr:         Data manipulation
+# - fs             File system operations
+# - sf             Support for simple feature access, a standardized way to
+#                    encode and analyze spatial vector data. Binds to 'GDAL'
+# - terra:         Spatial data analysis-- wector and raster data operations
+
+# - mapview        Interactive viewing of spatial data
+# - nhdplusTools   Tools for traversing and working with National
+#                  Hydrography Dataset Plus (NHDPlus) data.
+# - purrr          Functional programming toolkit
+# - readr          Reads rectangular data
+# - stringr      -   Wrappers for string operations
+# - tidyverse:     Data wrangling & visualization
+# - units           Unit conversion -- to convert from m² to km²
+# - dataRetrieval: Access USGS NWIS data
 #
 # Notes: Using {FedData} All tile requests timed out at ~30 seconds
 # Received over 100–200 MB per tile, but not enough to complete the download.

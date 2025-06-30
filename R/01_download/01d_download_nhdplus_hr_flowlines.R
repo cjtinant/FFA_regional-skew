@@ -5,8 +5,7 @@
 # Last Updated:   2025-06-06
 #
 # Purpose:         Download NHDPlus HR (1:24k) flowlines and catchment
-                   boundaries clipped to Great Plains
-#
+#                  boundaries clipped to Great Plains
 # Data URLs: https://www.usgs.gov/national-hydrography/nhdplus-high-resolution
 #
 # Workflow Summary:

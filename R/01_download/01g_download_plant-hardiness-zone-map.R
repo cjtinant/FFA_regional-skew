@@ -27,16 +27,27 @@
 #                          to encode and analyze spatial vector data. Binds to 
 #                          'GDAL'
 # -   terra            -   Vector and raster data operations
+
+# Dependencies:
+# - fs:            File system operations
+# - glue:          String interpolation
+# - here:          Consistent relative paths
+# - httr:          Makes http easy
+# - purrr:         Functional programming toolkit
+# - sf:            Support for simple feature access, a standardized way to
+#                    encode and analyze spatial vector data. Binds to 'GDAL'
+# - terra:         Spatial data analysis
+# - tidyverse:     Data wrangling & visualization
 # ==============================================================================
 # Load Libraries
-library(tidyverse)
-library(here)
 library(fs)
 library(glue)
+library(here)
 library(httr)
 library(prism)
-library(terra)
 library(sf)
+library(terra)
+library(tidyverse)
 # ==============================================================================
 # Download plant hardiness zone map (PHZM)
 # 1a) Setup

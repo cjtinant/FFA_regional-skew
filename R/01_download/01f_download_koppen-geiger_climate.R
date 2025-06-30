@@ -18,15 +18,28 @@
 # -   Validated climate rasters projected to a common CRS
 #
 # Dependencies:
-# -   tidyverse::dplyr -   Data manipulation
-# -   fs               -   File system operations
-# -   glue             -   Formats strings
-# -   here             -   Locates files relative to a project root
-# -   httr             -   Tools for working with URLs and HTTP
+# - dplyr:         Data manipulation
+# - fs:            File system operations
+# - glue:          String interpolation
+# - httr           Tools for working with URLs and HTTP
+
 # -   sf               -   Support for simple feature access, a standardized way
 #                          to encode and analyze spatial vector data. Binds to 
 #                          'GDAL'
 # -   terra            -   Vector and raster data operations
+
+
+
+# Dependencies:
+# - here:          Consistent relative paths: locate files relative to proj root
+# - mapview        Interactive viewing of spatial data
+# - nhdplusTools   Tools for traversing and working with National
+#                  Hydrography Dataset Plus (NHDPlus) data.
+# - purrr          Functional programming toolkit
+# - readr          Reads rectangular data
+# - sf             Support for simple feature access, a standardized way to
+#                    encode and analyze spatial vector data. Binds to 'GDAL'
+# - terra:         Spatial data analysis
 # ==============================================================================
 # Load Libraries
 library(tidyverse)

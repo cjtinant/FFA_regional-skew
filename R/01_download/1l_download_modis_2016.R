@@ -7,7 +7,18 @@
 # Purpose:         Document the process for downloading MODIS MOD13Q1 (NDVI/EVI)
 #                  raster data for the year 2016, clipped to the Great Plains
 #                  Level I Ecoregion.
-
+#
+# Dependencies:
+# - dplyr:         Data manipulation
+# - fs             File system operations
+# - glue           Formats strings
+# - here:          Consistent relative paths: locate files relative to proj root
+# - purrr          Functional programming toolkit
+# - readr          Reads rectangular data
+# - sf             Support for simple feature access, a standardized way to
+#                    encode and analyze spatial vector data. Binds to 'GDAL'
+# - terra:         Spatial data analysis-- wector and raster data operations
+#
 # Requirements:
 # ------------------------------------------------------------------------------
 # ✔ Create a NASA Earthdata Login account:
@@ -88,14 +99,14 @@
 # ==============================================================================
 
 # ---- Load packages ----
-library(fs)
-library(here)
 library(dplyr)
-library(sf)
+library(fs)
 library(glue)
-library(terra)
+library(here)
 library(purrr)
 library(readr)
+library(sf)
+library(terra)
 
 # ---- Setup folders ----
 dir_raw <- here("data", "raw", "modis", "mod13q1_hdf")

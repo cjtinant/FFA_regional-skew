@@ -26,15 +26,21 @@
 # Output:
 # Clipped and masked raster projected to a common CRS
 #
-# Dependencies: elevatr, sf, terra, fs, here
+# Dependencies: 
+# - elevatr:       Access to elevation data from various APIs
+# - fs             File system operations
+# - here:          Consistent relative paths: locate files relative to proj root
+# - sf             Support for simple feature access, a standardized way to
+#                    encode and analyze spatial vector data. Binds to 'GDAL'
+# - terra:         Spatial data analysis-- wector and raster data operations
 #
 # Notes:
 # Used neighbors = 4 for smoother slope -- good for prairie landscapes
 # Used expand = 1000 for buffer to help prevent clipping artifacts near edges
 # ==============================================================================
+library(elevatr)
 library(fs)
 library(here)
-library(elevatr)
 library(sf)
 library(terra)
 

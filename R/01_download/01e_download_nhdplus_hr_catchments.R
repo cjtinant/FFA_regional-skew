@@ -21,18 +21,18 @@
 #      the Level IV Ecoregion scale.
 #
 # Dependencies:
-# -   dplyr        -   Data manipulation
-# -   fs           -   File system operations
-# -   glue         -   Formats strings
-# -   here         -   Locates files relative to a project root
-# -   mapview      -   Interactive viewing of spatial data
-# -   nhdplusTools -   Tools for traversing and working with National
-#                      Hydrography Dataset Plus (NHDPlus) data.
-# -   purrr        -   Functional programming toolkit
-# -   readr        -   Reads rectangular data
-# -   sf           -   Support for simple feature access, a standardized way to
-#                      encode and analyze spatial vector data. Binds to 'GDAL'
-# -   stringr      -   Wrappers for string operations
+# - dplyr:         Data manipulation
+# - glue:          String interpolation
+# - fs:            File system operations
+# - here:          Consistent relative paths: locate files relative to proj root
+# - mapview        Interactive viewing of spatial data
+# - nhdplusTools   Tools for traversing and working with National
+#                  Hydrography Dataset Plus (NHDPlus) data.
+# - purrr          Functional programming toolkit
+# - readr          Reads rectangular data
+# - sf             Support for simple feature access, a standardized way to
+#                    encode and analyze spatial vector data. Binds to 'GDAL'
+# - stringr        Wrappers for string operations
 # ==============================================================================
 
 suppressPackageStartupMessages({

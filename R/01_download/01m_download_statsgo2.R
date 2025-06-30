@@ -19,19 +19,25 @@
 # -   STATSGO2 mapunit attributes for Great Plains Level I area
 #
 # Dependencies:
-# -   soilDB, sf, dplyr, purrr, here, fs, readr
-#
+# - dplyr:         Data manipulation
+# - fs             File system operations
+# - here:          Consistent relative paths: locate files relative to proj root
+# - purrr          Functional programming toolkit
+# - readr          Reads rectangular data
+# - sf             Support for simple feature access, a standardized way to
+#                    encode and analyze spatial vector data. Binds to 'GDAL'
+# - soilDb         Soil database interface
 # ==============================================================================
 
 # 1. Setup ---------------------------------------------------------------------
-
-library(soilDB)
-library(sf)
 library(dplyr)
-library(purrr)
-library(here)
 library(fs)
+library(here)
+library(purrr)
 library(readr)
+library(sf)
+library(soilDB)
+
 
 # Define output directories
 in_dir  <- here("data", "raw", "statsgo2")
