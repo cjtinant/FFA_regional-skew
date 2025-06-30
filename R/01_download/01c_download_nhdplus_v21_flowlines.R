@@ -2,36 +2,30 @@
 # Script Name:    01c_download_nhdplus_v2.R
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-05-19
-# Last Updated:   2025-06-04
+# Last Updated:   2025-06-29           # update header
 #
 # Purpose:        Download NHDPlusV2.1 flowlines and catchments clipped to the
 #                 Great Plains. The data are at a regional scale (1:100,000)
 #
 # Workflow Summary:
-# 1.   Load Great Plains Level IV Ecoregions and keep only external boundary
-# 2.   Move datum from WGS84 to NAD83 and buffer.
-# 3.   Download NHDPlusV2.1 data
-# 4.   Validate and repair geometries and coerce to consistent geometry type.
-# 5.   Reproject to a common CRS (US Albers Equal Area – EPSG:5070)
-# 5.   -- TO DO --Recalculate area in sq-km using a common CRS
-# 6.   Export reprojected, clipped, cleaned data as a gpkg for downstream use.
+# 1. Load Great Plains Level IV Ecoregions and keep only external boundary.
+# 2. Move datum from WGS84 to NAD83 and buffer.
+# 3. Download NHDPlusV2.1 data.
+# 4. Validate and repair geometries and coerce to consistent geometry type.
+# 5. Reproject to a common CRS (US Albers Equal Area – EPSG:5070).
+# 6. Export reprojected, clipped, cleaned data as a gpkg for downstream use.
 #
 # Output:
-# -    NHDPlusV2.1 flowlines and catchment boundaries for the Great Plains
-#      Ecoregion
+# - NHDPlusV2.1 flowlines and catchment boundaries for the GP Ecoregion.
 #
 # Dependencies:
-# -    dplyr
-# -    fs
-# -    ggplot2
-# -    here:                 # consistent relative path
-# -    nhdplusTools          # Tools for working with National Hydrography
-#                                 Dataset Plus (NHDPlus) data.
-# -    sf:                   # handling spatial data
-# -    units                 # unit conversion
-#
-# Notes:
-# -
+# - dplyr
+# - fs
+# - ggplot2
+# - here
+# - nhdplusTools
+# - sf
+# - units
 # =============================================================================
 
 # Load libraries
@@ -48,14 +42,19 @@ library(fs)
 # ------------------------------------------------------------------------------
 
 # Load EPA Level IV Ecoregions (should be already subset to Great Plains)
-# UPDDATE THIS FILE PATH
-eco_lev4 <- st_read("data/raw/vector_raw/ecoregions_unprojected/us_eco_lev4_GreatPlains_geographic.gpkg")
+
+# check levels
+st_layers("data/processed/us_ecoregions/us_eco_levels.gpkg")
+
+eco_lev4 <- st_read(
+  "data/processed/us_ecoregions/us_eco_levels.gpkg",
+  layer = "us_eco_l4"
+  )
 
 # Filter and dissolve all polygons for Great Plains (Level I)
 eco_lev4_gp_union <- eco_lev4 %>%
-  filter(na_l1name == "GREAT PLAINS") %>%
-  st_union() %>%
-  st_sf(geometry = .)
+  filter(NA_L1NAME == "GREAT PLAINS") %>%
+  summarise()
 
 # Check EPSG (should be WGS84 / EPSG:4326)
 epsg_ck1 <- st_crs(eco_lev4_gp_union)$epsg

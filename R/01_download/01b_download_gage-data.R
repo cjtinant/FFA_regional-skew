@@ -14,7 +14,7 @@
 # 1. Load Level 1 Ecoregion shapefile and isolate Great Plains extent
 # 2. Generate bounding box grid tiles across Great Plains extent
 # 3. Download USGS site data within each tile
-(siteType = "ST" parameterCd = "00060")
+#    (siteType = "ST" parameterCd = "00060")
 # 4. Filter to remove canals, ditches, and sites without peak flow records
 # 5. Download peak flow records for filtered sites (service = "pk")
 # 6. Convert sites to spatial format and clip to Great Plains extent
