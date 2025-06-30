@@ -1,11 +1,11 @@
 # ==============================================================================
-# Script Name:    01a_download_us_ecoregions.R
-# Author: Charles Jason Tinant — with ChatGPT 4o
-# Date Created:   2025-04-15
-# Last Updated:   2025-06-29      # update ecoregions naming
+# Script Name:     01a_download_us_ecoregions.R
+# Author: Charles  Jason Tinant — with ChatGPT 4o
+# Date Created:    2025-04-15
+# Last Updated:    2025-06-29      # update ecoregions naming
 #
-# Purpose:        This script downloads, processes, and prepares EPA/CEC
-#                 Level I-IV Ecoregion data.
+# Purpose:         This script downloads, processes, and prepares EPA/CEC
+#                  Level I-IV Ecoregion data.
 #
 # Data URLs:
 # -   https://www.epa.gov/eco-research/ecoregions
@@ -18,17 +18,17 @@
 # 3. Clip Levels I–III to the spatial extent of Level IV (CONUS boundary) 
 # 4. Validate and repair geometries and coerce to consistent geometry type.
 # 5. Recalculate area in sq-km using a common CRS
-# 6.   Export reprojected, clipped, cleaned data as a gpkg for downstream use.
+# 6. Export reprojected, clipped, cleaned data as a gpkg for downstream use.
 #
 # Output:
-# -    Clean Ecoregion Level I - Level IV clipped to CONUS and in a common CRS.
+# - Clean Ecoregion Level I - Level IV clipped to CONUS and in a common CRS.
 #
 # Dependencies:
-# -    tidyverse: general data wrangling
-# -    glue:      string interpolation
-# -    here:      consistent relative paths
-# -    sf:        handling spatial data
-# -    units      unit conversion -- to convert from m² to km²
+# - glue:           string interpolation
+# - here:           consistent relative paths
+# - sf:             handling spatial data
+# - tidyverse:      general data wrangling
+# - units           unit conversion -- to convert from m² to km²
 
 # Notes:
 # - Original metadata & layer files for each level are downloaded for reference.
@@ -37,10 +37,11 @@
 # =============================================================================
 
 # load libraries
-library(tidyverse)
+
 library(glue)
 library(here)
 library(sf)
+library(tidyverse)
 library(units)
 
 # Load function definitions
