@@ -1,12 +1,12 @@
 # ==============================================================================
-# Script Name:    download_modis_ndvi_2016.R
-# Author:         Charles Jason Tinant — with ChatGPT 4o
-# Date Created:   2025-06-26
-# Last Updated:   2025-06-28         # stack rasters, add index csv
+# Script Name:     download_modis_ndvi_2016.R
+# Author:          Charles Jason Tinant — with ChatGPT 4o
+# Date Created:    2025-06-26
+# Last Updated:    2025-06-28         # stack rasters, add index csv
 #
-# Purpose:        Document the process for downloading MODIS MOD13Q1 (NDVI/EVI)
-#                 raster data for the year 2016, clipped to the Great Plains
-#                 Level I Ecoregion.
+# Purpose:         Document the process for downloading MODIS MOD13Q1 (NDVI/EVI)
+#                  raster data for the year 2016, clipped to the Great Plains
+#                  Level I Ecoregion.
 
 # Requirements:
 # ------------------------------------------------------------------------------
