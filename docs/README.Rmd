@@ -1,0 +1,59 @@
+---
+title: "README"
+author: "CJ Tinant"
+date: "`r Sys.Date()`"
+output: 
+  github_document:
+    toc: true
+    toc_depth: 3
+---
+
+
+# 📁 Project Documentation (`docs/`)
+
+This folder contains supporting documents, workflow references, and metadata guides related to the **Regional Skew Estimation** project. Materials here are designed to be human-readable, versioned, and referenceable in publications, milestone reports, or modeling scripts.
+
+---
+
+## 📚 Folder Purpose
+
+The `docs/` directory serves as a centralized archive for:
+
+- Project workflows and process documentation
+  
+- Metadata crosswalks and data dictionaries
+
+- Proposal materials and final report drafts
+
+- README-style files that describe the contents or purpose of other folders
+
+- Files referenced in `.Rmd`, Quarto, or PDF outputs
+
+This folder complements the `reports/` folder, which contains milestone-specific logs, exploratory notes, and in-progress `.Rmd` analysis files.
+
+---
+
+## 📄 Key Contents (as of v1.3.0)
+
+| File / Subfolder                          | Description |
+|-------------------------------------------|-------------|
+| `git_changelog_workflow_reference.Rmd`    | Versioning, tagging, and changelog conventions |
+| `spatial_validation_summary.csv`          | CRS/resolution audit results for all spatial layers |
+| `regional_skew_covariates_metadata_by_scale_v01.csv` | Climate and terrain covariate metadata |
+| `proposal_summary_draft.Rmd` *(optional)* | Summary draft for NSF or internal proposal |
+
+---
+
+## 🗂️ Suggested Subfolders (Optional)
+
+You may organize `docs/` into the following logical groups:
+
+```plaintext
+
+docs/
+├── workflows/         # Commit, versioning, modeling, data QAQC scaffolds
+├── metadata/          # Variable definitions, units, and crosswalks
+├── proposals/         # Proposal text, figures, letters
+├── release_notes/     # Tagged version notes or publication summaries
+
+```
