@@ -1,7 +1,7 @@
 Covariate Source Inventory
 ================
 Charles Tinant
-2025-06-04
+2025-06-30
 
 - [Spatial Data Preparation
   Checklist](#spatial-data-preparation-checklist)
@@ -17,40 +17,52 @@ Tables below list datasets used in the regional skew estimation project.
 All datasets are publicly available, spatially referenced, and selected
 for their hydrologic relevance.
 
-Additional covariate information is located in the [Skew Covariates
-Metadata
-Schema](data/meta/covariates_metadata_split/covariates_covariate_metadata_schema.csv).
+Additional covariate information is located in the **FIX THIS** **[Skew
+Covariates Metadata
+Schema](data/meta/covariates_metadata_split/covariates_covariate_metadata_schema.csv).**
+
+<!-- This will only render as a clickable link in HTML output or GitHub. If you’re rendering to .md, make sure the path is relative to the knit directory. -->
+
+<!-- ✅ Optionally: -->
+
+<!--     Render to .md from the project root, or -->
+
+<!--     Use here::here() in code chunks for full path control if rendering with inline R -->
 
 ### Table 1: Data sources, Formats, and Resolution
 
-| Dataset Name | Description URL | Orig Format | Resolution | Version / Year | CRS |
-|:--:|:--:|:--:|:--:|:--:|:--:|
-| Ecoregions | [EPA Ecoregions](https://www.epa.gov/eco-research) | `.shp` | 1:250k | 2010 | NA |
-| NHDPlusV21 | [NHDPlusV2](https://nhdplus.com/NHDPlus/) | `.gdb` | 1:100k | NA | NA |
-| NHDPlusHD | [NHDPlusHD](https://www.usgs.gov/national-hydrography/nhdplus-high-resolution) | `.gdb` | 1:24k | NA | NA |
-| Koppen Geiger | [gloh2o](https://www.gloh2o.org/koppen/) | `.tif` | 36 arcsec | 1991-2020 | NA |
-| Plant Hardiness Zone | [PHZM](https://prism.oregonstate.edu/projects/plant_hardiness_zones.php) | `.bil` | 30 arcsec | 1991-2020 | NA |
-| NLCD Land Cover | [Multi-Resolution Land Characteristics (MRLC)](https://www.mrlc.gov/) | NA | NA | 2016 | NA |
-| NED Elevation | [National Map](https://apps.nationalmap.gov/) | NA | NA | NA | NA |
-| PRISM Normals | [PRISM normals](https://prism.oregonstate.edu/normals/) | `.bil` | 30 arcsec | 1991-2020 | NA |
-| MODIS | [Land Processes Distributed Active Archive Center (LP DAAC)](https://lpdaac.usgs.gov/) | NA | 2016 | NA | NA |
-| STATSGO2 | [STATSGO2 Dataset](https://water.usgs.gov/catalog/datasets/c33ccf12-aede-4c2f-9a46-147cbf0e2ab8/) | NA | 2016 | 1:250k | NA |
+| Dataset Name | Description URL | Orig Format | Resolution | Version / Year |
+|:--:|:--:|:--:|:--:|:--:|
+| Ecoregions | [EPA Ecoregions](https://www.epa.gov/eco-research) | `.shp` | 1:250k | 2010 |
+| NHDPlusV21 | [NHDPlusV2](https://nhdplus.com/NHDPlus/) | `.gdb` | 1:100k | NA |
+| NHDPlusHD | [NHDPlusHD](https://www.usgs.gov/national-hydrography/nhdplus-high-resolution) | `.gdb` | 1:24k | NA |
+| Koppen Geiger | [gloh2o](https://www.gloh2o.org/koppen/) | `.tif` | 36 arcsec | 1991-2020 |
+| Plant Hardiness Zone | [PHZM](https://prism.oregonstate.edu/projects/plant_hardiness_zones.php) | `.bil` | 30 arcsec | 1991-2020 |
+| NLCD Land Cover | [Multi-Resolution Land Characteristics (MRLC)](https://www.mrlc.gov/) | NA | NA | 2016 |
+| NED Elevation | [National Map](https://apps.nationalmap.gov/) | NA | NA | NA |
+| PRISM Normals | [PRISM normals](https://prism.oregonstate.edu/normals/) | `.bil` | 30 arcsec | 1991-2020 |
+| MODIS | [Land Processes Distributed Active Archive Center (LP DAAC)](https://lpdaac.usgs.gov/) | NA | 2016 | NA |
+| STATSGO2 | [STATSGO2 Dataset](https://water.usgs.gov/catalog/datasets/c33ccf12-aede-4c2f-9a46-147cbf0e2ab8/) | NA | 2016 | 1:250k |
 
-### Table 1: Folder Names and Status
+### Table 2: Folder Names and Status
 
-|     Dataset Name     |     Folder Name     | Status Code | Last Update | Notes |
-|:--------------------:|:-------------------:|:-----------:|:-----------:|:-----:|
-|    EPA Ecoregions    |   epa_ecoregions    |     05      |  20250512   |  NA   |
-|   USGS NHDPlusV2.1   |         NA          |     00      |     NA      |  NA   |
-|    USGS NHDPlusHD    |         NA          |     00      |     NA      |  NA   |
-|    Koppen Geiger     |   koppen_climate    |     02      |  20250513   |  NA   |
-| Plant Hardiness Zone |        phzm         |     05      |  20250514   |  NA   |
-|   NLCD Land Cover    | nlcd_landcover_2016 |     00      |     NA      |  NA   |
-|    NED Elevation     |      ned_elev       |     00      |     NA      |  NA   |
-|    PRISM Normals     |        prism        |     05      |  20250513   |  NA   |
-|        MODIS         |     modis_2016      |     00      |     NA      |  NA   |
-|       STATSGO2       |      statsgo2       |     00      |     NA      |  NA   |
-|    USGS Stations     |         NA          |     04      |     NA      |  NA   |
+Status codes track the current stage of preparation for each dataset
+listed above. Values range from “00 — Not Started” to “10 — Used in
+Modeling”.
+
+|     Dataset Name     |  Folder Name   | Status Code | Last Update | Notes |
+|:--------------------:|:--------------:|:-----------:|:-----------:|:-----:|
+|    EPA Ecoregions    |   ecoregions   |     05      |  20250512   |  NA   |
+|   USGS NHDPlusV2.1   |    nhdplus     |     02      |  20250604   |  NA   |
+|    USGS NHDPlusHD    |    nhdplus     |     02      |     NA      |  NA   |
+|    Koppen Geiger     | koppen_climate |     02      |  20250513   |  NA   |
+| Plant Hardiness Zone |      phzm      |     05      |  20250514   |  NA   |
+|   NLCD Land Cover    |      nlcd      |     00      |  20250624   |  NA   |
+|    NED Elevation     |    ned_elev    |     02      |  20250626   |  NA   |
+|    PRISM Normals     |     prism      |     05      |  20250513   |  NA   |
+|        MODIS         |   modis_2016   |     00      |     NA      |  NA   |
+|       STATSGO2       |    statsgo2    |     00      |     NA      |  NA   |
+|    USGS Stations     |       NA       |     04      |  20250626   |  NA   |
 
 ### Table 3: Common Status Levels for Data Workflow
 
@@ -61,7 +73,7 @@ Schema](data/meta/covariates_metadata_split/covariates_covariate_metadata_schema
 | 02 | ⬇️ Downloaded | Data successfully downloaded. No prep has started yet. |
 | 03 | 🔍 Verified Raw Files | File format, integrity, and metadata validated. |
 | 04 | 🧹 Cleaned / Filtered | Unwanted data removed; NA handling, format consistency applied. |
-| 05 | 📐 Reprojected | Spatial data reprojected to standard CRS (e. |
+| 05 | 📐 Reprojected | Spatial data reprojected to standard CRS (e.g., NAD83). |
 | 06 | 🧮 Feature Extraction | Covariates or metrics calculated (e.g., slope, mean temp). |
 | 07 | 🧱 Joined to Site Data | Covariates or values joined with site records (e.g., gage locations). |
 | 08 | 🧾 Metadata Documented | Dataset and processing steps documented in metadata or data dictionary. |
@@ -79,3 +91,11 @@ Schema](data/meta/covariates_metadata_split/covariates_covariate_metadata_schema
 
 - **Note:** Control + Command + Spacebar opens the Emoji & Symbols
   viewer
+
+------------------------------------------------------------------------
+
+### 🔗 Related Scripts and Metadata Files
+
+- `01_download/` scripts for each dataset
+- `data/meta/spatial_validation_summary.csv`
+- `data/meta/covariates_metadata_split/`
