@@ -1,7 +1,7 @@
 README
 ================
 CJ Tinant
-2025-06-30
+2025-07-01
 
 - [📁 Project Documentation
   (`docs/`)](#file_folder-project-documentation-docs)
@@ -46,9 +46,9 @@ analysis files.
 | File / Subfolder | Description |
 |----|----|
 | `git_changelog_workflow_reference.Rmd` | Versioning, tagging, and changelog conventions |
-| `spatial_validation_summary.csv` | CRS/resolution audit results for all spatial layers |
+| `methods_covariate-selection.Rmd` | Covariate domains, stratification, and macrozone delineation methods |
 | `regional_skew_covariates_metadata_by_scale_v01.csv` | Climate and terrain covariate metadata |
-| `proposal_summary_draft.Rmd` *(optional)* | Summary draft for NSF or internal proposal |
+| `spatial_validation_summary.csv` | CRS/resolution audit results for all spatial layers |
 
 ------------------------------------------------------------------------
 
