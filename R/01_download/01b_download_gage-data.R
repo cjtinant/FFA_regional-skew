@@ -155,6 +155,17 @@ for (i in seq_len(nrow(grid_boxes))) {
 # --- Combine all site data into a single data frame --------------------------
 sites_all_in_bb <- bind_rows(sites_data_list)
 
+# (optional) read in saved data
+# library(readr)
+# sites_all_in_bb <- read_csv(here("data",
+#                                  "raw",
+#                                  "peakflow_gages",
+#                                  "sites_all_in_bb.csv"))
+
+# --- drop unneeded fields ---
+sites_all_in_bb <- sites_all_in_bb %>%
+  select(-tile_id)
+
 # --- Export all sites data ---------------------------------------------------
 # Ensure output folder exists
 output_dir <- here("data", "raw", "peakflow_gages")
@@ -191,32 +202,31 @@ sites_all_in_bb_geo <- st_as_sf(sites_all_in_bb,
                          crs = {crs_new},     # WGS 84 Geographic; Unit: degree
                          remove = FALSE)      # don't remove lat/lon cols
 
-sites_pk_eco_only <- st_intersection(sites_all_in_bb_geo, eco_lev1_gp_only)
+sites_pk_eco_only_geo <- st_intersection(sites_all_in_bb_geo, eco_lev1_gp_only)
 
 # ------------------------------------------------------------------------------
 # EXPORT — Great Plains Peakflow Sites (filtered spatial + tabular)
 # ------------------------------------------------------------------------------
 
-# 2. Drop geometry and write tabular CSV
-write_csv(
-  st_drop_geometry(sites_pk_eco_only),
-  file.path(output_dir, "sites_pk_eco_only.csv")
-)
-
-# 3. Write spatial version to GeoPackage
+# 2. Write spatial version to GeoPackage
 st_write(
-  sites_pk_eco_only,
+  sites_pk_eco_only_geo,
   dsn = file.path(output_dir, "sites_pk_eco_only.gpkg"),
   layer = "sites_pk_eco_only",
   delete_layer = TRUE,    # overwrite if rerun
   quiet = TRUE
-)
+  )
 
-# 4. QA Messages
-message("✅ Export complete:")
-message(" - Tabular:   ", file.path(output_dir, "sites_pk_eco_only.csv"))
-message(" - Spatial:   ", file.path(output_dir, "sites_pk_eco_only.gpkg"))
-message(" - Count of sites inside Great Plains: ", nrow(sites_pk_eco_only))
+# 3. Drop geometry and write tabular CSV
+sites_pk_eco_only <- sites_pk_eco_only_geo %>%
+  st_drop_geometry(sites_pk_eco_only) %>%
+  select(-starts_with("na")) %>%
+  select(-queryTime) %>%
+  select(-starts_with("area"))
+
+sites_pk_eco_only %>%
+write_csv(file.path(output_dir, "sites_pk_eco_only.csv"))
+
 
 # Optional: check for missing coordinates (shouldn’t happen, but just in case)
 n_missing_coords <- sites_pk_eco_only %>%
