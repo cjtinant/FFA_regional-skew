@@ -217,6 +217,15 @@ st_write(
   quiet = TRUE
   )
 
+# Optional: check for missing coordinates (shouldn’t happen, but just in case)
+n_missing_coords <- sites_pk_eco_only %>%
+  filter(is.na(dec_lat_va) | is.na(dec_long_va)) %>%
+  nrow()
+
+if (n_missing_coords > 0) {
+  warning("⚠️  Missing lat/lon coordinates in ", n_missing_coords, " rows.")
+}
+
 # 3. Drop geometry and write tabular CSV
 sites_pk_eco_only <- sites_pk_eco_only_geo %>%
   st_drop_geometry(sites_pk_eco_only) %>%
@@ -227,12 +236,3 @@ sites_pk_eco_only <- sites_pk_eco_only_geo %>%
 sites_pk_eco_only %>%
 write_csv(file.path(output_dir, "sites_pk_eco_only.csv"))
 
-
-# Optional: check for missing coordinates (shouldn’t happen, but just in case)
-n_missing_coords <- sites_pk_eco_only %>%
-  filter(is.na(dec_lat_va) | is.na(dec_long_va)) %>%
-  nrow()
-
-if (n_missing_coords > 0) {
-  warning("⚠️  Missing lat/lon coordinates in ", n_missing_coords, " rows.")
-}
