@@ -1,0 +1,142 @@
+Changelog
+================
+CJ Tinant
+2025-07-06
+
+- [Changelog](#changelog)
+  - [\[Unreleased\]](#unreleased)
+  - [\[v1.3.0\] - 2025-06-30](#v130---2025-06-30)
+  - [\[v1.2.5\] - 2025-05-08](#v125---2025-05-08)
+  - [\[v1.2.0\] - 2025-05-08](#v120---2025-05-08)
+
+# Changelog
+
+This changelog tracks all notable updates to the Regional Skew
+Estimation project.
+
+*This project strives to follow [Semantic
+Versioning](https://semver.org) and the [Keep a
+Changelog](https://keepachangelog.com/) format.*
+
+------------------------------------------------------------------------
+
+## \[Unreleased\]
+
+### Added
+
+- Created `git_changelog_workflow_reference.Rmd` to document versioning
+  and commit practices
+
+- Drafted structured README content for `docs/` folder organization and
+  contents
+
+- Converted `spatial_data_preparation_checklist.md` to RMarkdown with
+  interactive checkboxes
+
+- Added YAML header with `github_document` output and floating TOC for
+  checklist rendering
+
+- Added 01c_download_usgs_site_metadata.R to query and export detailed
+  metadata for USGS peak flow gages filtered within the Great Plains
+  Level I Ecoregion.
+
+### Changed
+
+- Changed 01b_download-gage-data.R outputs: Removed tile_id, queryTime,
+  ecoregion level, and fields from final CSVs
+
+- Updated `docs/README.md` to include spatial checklist as a key
+  reference
+
+- Started reviewing and inventorying `reports/` folder for milestone
+  logs and modeling notes
+
+- Grouped finalized `.Rmd` logs and narrative summaries by milestone in
+  `reports/`
+
+### In Progress
+
+- Began migrating internal process documentation and QA/QC templates
+  into `docs/`
+
+- Inventorying all `.Rmd`, `.md`, and `.txt` files in `docs/` and
+  `reports/` by date, topic, and milestone
+
+- Auditing for duplicate or outdated files across documentation folders
+
+- Integrating finalized workflow references and logs into a shared index
+  or dashboard-style README
+
+- Tagging report `.Rmd` files with chunk header cleanup
+  (`{r name, eval=}`) for reproducibility
+
+- Auto-generate a CSV tracker from your 01_download script names
+
+- Draft a corresponding Git commit message
+
+## \[v1.3.0\] - 2025-06-30
+
+### Added
+
+- Created modular download scripts under `R/01_download/`:
+  - `01a_download_us_ecoregions.R`
+  - `01b_download_gage-data.R`
+  - `01c`–`01e` for NHDPlus v2 and HR flowlines and catchments
+  - `01f`–`01g` for Köppen-Geiger and Plant Hardiness Zones
+  - `01h`–`01m` for raster datasets: PRISM, NLCD 2016, NED, MODIS NDVI,
+    STATSGO2
+- Standardized naming conventions and folder structure for `data/raw/`,
+  `data/processed/`, and `data/intermediate/`
+- Created MODIS HDF tile overlay grids for spatial clipping and download
+  coordination
+
+### Changed
+
+- Renamed and refactored download scripts into alphabetical modular
+  format
+- Reorganized folder hierarchy for clarity and reproducibility
+- Updated milestone tracker to reflect completion status for vector
+  (0.5.3) and raster (0.5.4) download tasks
+
+### Fixed
+
+- Resolved `st_layers()` and `st_read()` issues with geopackage inputs
+  (e.g., ecoregions)
+- Corrected CRS and clipping mismatches for MODIS NDVI and NED elevation
+  inputs
+
+## \[v1.2.5\] - 2025-05-08
+
+### Added
+
+- PRISM metadata extraction for spatial extent and resolution
+- Standardized variable names for climate covariates
+- Section on covariate metadata in `README.Rmd`
+
+### Changed
+
+- Reorganized milestone folder structure
+- Renumbered Milestone 13 → Milestone 12c for consistency
+
+### Fixed
+
+- Silenced UTF-8 encoding warnings in `.Rmd` rendering
+
+------------------------------------------------------------------------
+
+## \[v1.2.0\] - 2025-05-08
+
+### Added
+
+- Cleaned PRISM climate normals and extracted values to site locations
+- Created `regional_skew_covariates_metadata_by_scale_v01.csv`
+- LaTeX export of covariate metadata tables with `kableExtra`
+
+### Changed
+
+- Reprojected all site and covariate data to NAD83
+- Improved visual maps with consistent basemap and coordinate systems
+
+### Fixed
+
+- Alignment issue in elevation raster extraction
