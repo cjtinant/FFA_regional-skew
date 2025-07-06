@@ -1,0 +1,21 @@
+attr_name,description,source,domain
+FID,Internal feature number,esri,0
+Shape,Feature Geometry,esri,defines feature type
+US_L4CODE,Code for Level IV Ecoregion (US),USEPA,unique code
+US_L4NAME,Name for Level IV Ecoregion (US),USEPA,unique name
+US_L3CODE,Code for Level III Ecoregion (US),USEPA,unique code
+US_L3NAME,Name for Level III Ecoregion (US),USEPA,unique name
+NA_L3CODE,Code for Level III Ecoregion (North America/CEC),CEC,unique code
+NA_L3NAME,Name for Level III Ecoregion (North America/CEC),CEC,unique name
+NA_L2CODE,Code for Level II Ecoregion (North America/CEC),CEC,unique code
+NA_L2NAME,Name for Level II Ecoregion (North America/CEC),CEC,unique name
+NA_L1CODE,Code for Level I Ecoregion (North America/CEC),CEC,unique code
+NA_L1NAME,Name for Level I Ecoregion (North America/CEC),CEC,unique name
+STATE_NAME,Name of State (US),esri,unique name
+EPA_REGION,EPA Administrative Region,USEPA,1
+L4_KEY,"US Level IV Code and Name for Legend, color layer/style",USEPA,unique code plus name
+L3_KEY,"US Level III Code and Name for Legend, color layer/style file",USEPA,unique code plus name
+L2_KEY,"NA Level II Code and Name for Legend, color layer/style file",USEPA,unique code plus name
+L1_KEY,"NA Level I Code and Name for Legend, color layer/style file",USEPA,unique code plus name
+Shape_Leng,NA,NA,NA
+Shape_Area,Area of feature in internal units squared.,Esri,Positive real numbers that are automatically generated.

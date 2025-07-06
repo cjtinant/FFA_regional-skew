@@ -1,0 +1,2 @@
+file,datum,ellipsoid,semi_major_axis,inverse_flattening,planar_units,abs_res,ord_res,west,east,north,south
+us_eco_l4_no_st,D North American 1983,GRS 1980,6378137.0,298.257222101,Meter,0.0000000037527980722984474,0.0000000037527980722984474,-127.886770,-65.345754,51.604869,22.896808
