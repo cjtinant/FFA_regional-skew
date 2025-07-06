@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:    01m_download_statsgo2.R
+# Script Name:    01o_download_statsgo2.R
 # Author:         Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-06-28
 # Last Updated:   2025-06-28

@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:    01d_download_nhdplus_HR.R
+# Script Name:    01f_download_nhdplus_HR.R
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-05-19
 # Last Updated:   2025-06-06

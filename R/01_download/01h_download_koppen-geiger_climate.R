@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:    01f_download_koppen-geiger_climate.R
+# Script Name:    01h_download_koppen-geiger_climate.R
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-04-15
 # Last Updated:   2025-06-18      # split climate raster data downloads

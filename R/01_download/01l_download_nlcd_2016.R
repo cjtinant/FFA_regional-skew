@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:    01j_download_nlcd_2016.R
+# Script Name:    01l_download_nlcd_2016.R
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-06-23
 # Last Updated: 

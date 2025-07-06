@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:    01d_download_nhdplus_hr.R
+# Script Name:    01g_download_nhdplus_hr.R
 # Author:         Charles Jason Tinant — with ChatGPT
 # Purpose:        Download NHDPlus HR catchments by Level IV Ecoregion
 # Date Created:   2025-06-06

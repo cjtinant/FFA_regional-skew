@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:    01j_download_prism_climate.R
+# Script Name:    01k_download_prism_climate.R
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-04-15
 # Last Updated:   2025-06-20      # update script header

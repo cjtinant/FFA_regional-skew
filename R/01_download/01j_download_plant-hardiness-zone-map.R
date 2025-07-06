@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:    01g_download_plant-hardiness-zone-map.R
+# Script Name:    01j_download_plant-hardiness-zone-map.R
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-04-15
 # Last Updated:   2025-06-18      # split climate download scripts
