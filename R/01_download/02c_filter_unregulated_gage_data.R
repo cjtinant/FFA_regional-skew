@@ -1,6 +1,6 @@
 # ==============================================================================
 # Title:    Query and Clean Site Metadata from WQP and NWIS
-# Script Name: 04_find_clean_export_site_summaries.R
+# Script Name: 02c_find_clean_export_site_summaries.R
 # Author: Charles Jason Tinant using ChatGPT 4o
 # Date Created: April 2025
 # Purpose:  Automate retrieval, cleaning and export of site metadata for unregulated 

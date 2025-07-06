@@ -1,5 +1,5 @@
 # =============================================================================
-# Script Name:    02c_extract_metadata_from_script_names.R
+# Script Name:    02f_extract_metadata_from_script_names.R
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-07-01
 # Last Updated:   2025-07-01

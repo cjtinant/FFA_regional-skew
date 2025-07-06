@@ -1,7 +1,8 @@
 # ==============================================================================
-# Script Name: 03_filter_unregulated_gage_data.R
-# Author: Charles Jason Tinant
+# Script Name: 02b_filter_unregulated_gage_data.R
+# Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created: April 2025
+# Last Update: 2025-07-04
 #
 # Purpose:
 # This script filters peak flow gage data within the Great Plains Level 1 
@@ -19,11 +20,11 @@
 # 7. Export filtered sites and peak flow observations for analysis
 #
 # Output Files:
-# - data/sites_pk_eco_gt_20.csv        → Sites in Great Plains with ≥20 years of record
-# - data/data_pk_gt_20.csv             → All peak flow data for these sites
-# - data/sites_reg_or_lt_20.csv        → Sites regulated or with <20 years of unregulated data
-# - data/sites_pk_unreg_gt_20.csv      → Final unregulated sites with ≥20 years of record
-# - data/data_pk_unreg_gt_20.csv       → Final unregulated peak flow data
+# - data/sites_pk_eco_gt_20.csv    sites in Great Plains with ≥20 years of record
+# - data/data_pk_gt_20.csv          All peak flow data for these sites
+# - data/sites_reg_or_lt_20.csv    ites regulated or with <20 years of unregulated data
+# - data/sites_pk_unreg_gt_20.csv  Final unregulated sites with ≥20 years of record
+# - data/data_pk_unreg_gt_20.csv   Final unregulated peak flow data
 #
 # Dependencies:
 # - tidyverse       → Data wrangling & visualization
@@ -45,7 +46,7 @@
 
 # ---------------------------------------------------------
 # libraries
-library(tidyverse)      # Load 'Tidyverse' packages: ggplot2, dplyr, tidyr, 
+library(tidyverse)      # Load 'Tidyverse' packages: ggplot2, dplyr, tidyr,
 #                                 readr, purrr, tibble, stringr, forcats
 library(glue)           # For string interpolation
 library(here)           # A simpler way to find files
@@ -54,7 +55,7 @@ library(dataRetrieval)  # Retrieval functions for USGS and EPA hydro & wq data
 
 # ---------------------------------------------------------
 # Load sites in Great Plains ecoregion from local storage
-sites_eco_only <- read_csv("data/clean/sites_pk_eco_only.csv")
+sites_eco_only <- read_csv("data/raw/peakflow_gages/sites_pk_eco_only.csv")
 
 # drop sites with l.t 20 observations
 sites_gt_20 <- sites_eco_only %>%

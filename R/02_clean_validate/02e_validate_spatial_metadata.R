@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:    02b_validate_spatial_metadata.R
+# Script Name:    02e_validate_spatial_metadata.R
 # Author:         Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-06-28
 #
