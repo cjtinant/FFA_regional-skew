@@ -302,7 +302,7 @@ modeling across datasets and scales.
 
 To ensure statistical robustness in regional analyses, polygons smaller
 than 1,000 km² or containing fewer than 30 stream gages were merged with
-the most ecologically similar adjacent Level III ecoregions. The merging
+the most ecologically similar adjacent Level III Ecoregions. The merging
 process followed a hierarchical decision rule:
 
 - Primary criterion: adjacency with a unit sharing the same Level II
@@ -366,8 +366,8 @@ Hydrologically, this zone exhibits strong vegetation–soil feedbacks:
 
 - and extended baseflow.
 
-Level III and IV ecoregions in the Tallgrass Prairie macrozone include
-U.S portions of Level II ecoregions, the Temperate Prairies (9.2),
+Level III and IV Ecoregions in the Tallgrass Prairie macrozone include
+U.S portions of Level II Ecoregions, the Temperate Prairies (9.2),
 western portions of the South Central Semiarid Plains (9.4), and the
 Texas-Louisiana Coastal Plain (9.5).
 
@@ -412,8 +412,8 @@ Hydrologic behavior in this macrozone is a spatially heterogeneous
 hydrologically dynamic system with moderate infiltration and runoff, and
 variable soil texture.
 
-Level III and IV ecoregions in the Mixed-Grass Prairie macrozone include
-U.S portions of Level II ecoregions: the West Central Semi-Arid Prairies
+Level III and IV Ecoregions in the Mixed-Grass Prairie macrozone include
+U.S portions of Level II Ecoregions: the West Central Semi-Arid Prairies
 (9.3), central portions of the South Central Semiarid Prairies (9.4),
 and uplands portions of the Tamaulipas-Texas Semi-Arid Plain (9.6).
 
@@ -455,8 +455,8 @@ characterized by:
 
 - Shallow soils and limited infiltration
 
-Level III and IV ecoregions in the Shortgrass Prairie macrozone include
-portions of Level II ecoregions: western portions of the South Central
+Level III and IV Ecoregions in the Shortgrass Prairie macrozone include
+portions of Level II Ecoregions: western portions of the South Central
 Semiarid Prairies (9.4), and lowlands portions of the Tamaulipas-Texas
 Semi-Arid Plain (9.6).
 

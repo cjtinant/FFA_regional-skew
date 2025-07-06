@@ -13,7 +13,6 @@ library(knitr)
 library(kableExtra)
 library(ggforce)
 
-
 ```
 
 # Project Overview
@@ -261,7 +260,7 @@ By standardizing on 2016, this project supports consistent, comparable modeling 
 
 ## Spatial Unit Merging Procedure
 
-To ensure statistical robustness in regional analyses, polygons smaller than 1,000 km² or containing fewer than 30 stream gages were merged with the most ecologically similar adjacent Level III ecoregions. The merging process followed a hierarchical decision rule:
+To ensure statistical robustness in regional analyses, polygons smaller than 1,000 km² or containing fewer than 30 stream gages were merged with the most ecologically similar adjacent Level III Ecoregions. The merging process followed a hierarchical decision rule:
 
 -   Primary criterion: adjacency with a unit sharing the same Level II ecoregion classification
 
@@ -307,7 +306,7 @@ Hydrologically, this zone exhibits strong vegetation–soil feedbacks:
 
 -   and extended baseflow.
 
-Level III and IV ecoregions in the Tallgrass Prairie macrozone include U.S portions of Level II ecoregions, the Temperate Prairies (9.2), western portions of the South Central Semiarid Plains (9.4), and the Texas-Louisiana Coastal Plain (9.5).
+Level III and IV Ecoregions in the Tallgrass Prairie macrozone include U.S portions of Level II Ecoregions, the Temperate Prairies (9.2), western portions of the South Central Semiarid Plains (9.4), and the Texas-Louisiana Coastal Plain (9.5).
 
 -   9.2.1 Northern Glaciated Plains (US 46): Flat to gently rolling landscape composed of glacial till,
 
@@ -341,7 +340,7 @@ The Mixed-Grass Prairie macrozone is a transitional zone between the wetter Tall
 
 Hydrologic behavior in this macrozone is a spatially heterogeneous hydrologically dynamic system with moderate infiltration and runoff, and variable soil texture.
 
-Level III and IV ecoregions in the Mixed-Grass Prairie macrozone include U.S portions of Level II ecoregions: the West Central Semi-Arid Prairies (9.3), central portions of the South Central Semiarid Prairies (9.4), and uplands portions of the Tamaulipas-Texas Semi-Arid Plain (9.6).
+Level III and IV Ecoregions in the Mixed-Grass Prairie macrozone include U.S portions of Level II Ecoregions: the West Central Semi-Arid Prairies (9.3), central portions of the South Central Semiarid Prairies (9.4), and uplands portions of the Tamaulipas-Texas Semi-Arid Plain (9.6).
 
 -   9.3.1 Northwestern Glaciated Plains (US 42): a transitional region between Northern Glaciated Plains and the Northwestern Great Plains with a moderately high concentration of Prairie Potholes
 
@@ -377,7 +376,7 @@ The Shortgrass Prairie macrozone marks the xeric end of the gradient, characteri
 
 -   Shallow soils and limited infiltration
 
-Level III and IV ecoregions in the Shortgrass Prairie macrozone include portions of Level II ecoregions: western portions of the South Central Semiarid Prairies (9.4), and lowlands portions of the Tamaulipas-Texas Semi-Arid Plain (9.6).
+Level III and IV Ecoregions in the Shortgrass Prairie macrozone include portions of Level II ecoregions: western portions of the South Central Semiarid Prairies (9.4), and lowlands portions of the Tamaulipas-Texas Semi-Arid Plain (9.6).
 
 -   9.4.1 Western High Plains (US 25) western subregions (25a, 25c, 25e to 25l)
 
