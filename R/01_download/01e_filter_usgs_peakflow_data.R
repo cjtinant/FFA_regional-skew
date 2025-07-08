@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:    01e_filter_peakflow_data.R
+# Script Name:    01e_filter_usgs_peakflow_data.R
 # Author:         Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   April 2025
 # Last Updated:   2025-07-07
