@@ -44,7 +44,6 @@ docs/tmp/
 
 # =======================
 # Ignore files not yet in production
-CHANGELOG.Rmd
 RELEASE_CHECKLIST.Rmd
 # =======================
 
