@@ -231,29 +231,52 @@ FFA_regional-skew/
 ├── CHANGELOG.Rmd             # Human-readable record of project updates
 |                             #   (follows semantic versioning)
 ├── data/
-    ├── raw/                      # Unmodified input data 
-        ├── koppen_climate/
-        ├── modis/
-        ├── ned_elev/             # empty
-        ├── nhdplus/
-        ├── nlcd/
-        ├── peakflow_gages/
-        ├── phzm/
-        ├── prism/
-        ├── statsgo2/
-        ├── us_ecoregions/
-    ├── processed/                # Cleaned, derived datasets
-        ├── ecoregions/
-        |       ├── us_eco_levels.gpkg
-        ├── koppen_climate/
-        |       ├── koppen_geiger.tif
-        ├── nhdplus/
-        ├── phzm/
-        |       ├── phzm.tif
-        ├── prism/
     ├── intermediate/             # temporary storage for data processing
     ├── log/                      # log files of downloads / processing steps
     ├── meta/                     # Metadata of datasets
+
+
+    ├── raw/                      # Unmodified input data 
+        ├── koppen_climate/       # Köppen Geiger climate rasters
+        |       ├── 1901_1930
+        |       ├── 1931_1960
+        |       ├── 1961_1990
+        |       ├── 1991_2020
+        |       ├── 2041_2070
+        |       ├── 2071_2099
+        ├── modis/                # MODIS Terra Vegetation Indices, 
+        |       ├── mod13q1_hdf
+        ├── nhdplus/              # NHDPlus flowlines and catchments
+        ├── nlcd/                 # National Land Cover Dataset (NLCD)
+        ├── peakflow_gages/       # USGS peakflow gage data
+        ├── phzm/                 # Plant Hardiness Zone Map (PHZM)
+        ├── prism/                # Parameter-elevation Regressions on
+        |                         #   Independent Slopes Model (PRISM)
+        |       ├── PRISM_ppt_30yr_normal_800mD1_mmdd_bil
+        |       ├── PRISM_ppt_30yr_normal_800mM4_mm_bil
+        |       ├── PRISM_ppt_30yr_normal_800mM4_annual_bil
+        |       ├── PRISM_tmax_30yr_normal_800mD1_mmdd_bil
+        |       ├── PRISM_tmax_30yr_normal_800mM5_annual_bil
+        |       ├── PRISM_tmin_30yr_normal_800mD1_mmdd_bil
+        |       ├── PRISM_tmin_30yr_normal_800mM5_annual_bil
+        ├── statsgo2/             # Digital General Soil Map of the US (STATSGO2)
+        ├── us_ecoregions/        # US Ecoregions
+    ├── processed/                # Cleaned, derived datasets
+        ├── ecoregions/
+        |       ├── us_eco_levels.gpkg    # US Ecoregions Levels 1-4
+        ├── koppen_climate/
+        |       ├── koppen_geiger.tif   # Köppen Geiger climate raster 1991-2020
+        ├── ned/                        # National Elevation Database (NED)
+        |       ├── elev_30m_gp.tif     #   elevation raster NEED TO FIX
+        |       ├── slope_30m_gp.tif    #   slope raster NEED TO FIX
+        ├── nhdplus/    # NEED TO FIX
+        ├── nlcd/
+        |       ├── nlcd_2016_gp.tif   # National Land Cover Dataset (NLCD)
+        ├── phzm/
+        |       ├── phzm.tif
+        ├── prism/
+
+
 ├── docs/                     # Project documentation:
                               #   final reports, manuscripts, proposals,
                               #   README-style guides, metadata crosswalks, and
