@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:    01f_download_nhdplus_HR.R
+# Script Name:    01g_download_nhdplus_hr_flowlines.R
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-05-19
 # Last Updated:   2025-06-06
@@ -15,8 +15,7 @@
 # 4.   Use an iteratively created function to handle edge cases
 #
 # Output:
-# -    NHDplus flowlines and *****catchment boundaries**** for the Great Plains
-#      Ecoregion for each Level IV Ecoregion.
+# -    NHDplus HR flowlines for the Great Plains Ecoregion.
 #
 # Dependencies:
 # -   dplyr        -   Data manipulation
