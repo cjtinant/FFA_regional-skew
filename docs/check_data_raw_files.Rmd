@@ -1,8 +1,11 @@
 ---
-title: "Spatial Data Source Validation — Level I"
+title: "Check Raw Data Files"
 author: "CJ Tinant"
-date: "r format(Sys.Date(), '%Y-%m-%d')"
-output: html_document
+output:
+  github_document:
+    toc: true
+    toc_depth: 3
+date: "`r format(Sys.time(), '%Y-%m-%d %H:%M:%S')`"
 ---
 
 ## Overview
@@ -18,7 +21,7 @@ within the data/raw/ directory prior to covariate extraction.
 -   🗂️ Organize spatial datasets by relevance, format, and source
 -   📝 Document retained files in data/meta/spatial_source_checklist.csv
 
-## Workflow: Deduplication of Vector Spatial Files
+## Workflow Part 1: Deduplication of Vector Spatial Files
 
 ### 1. Inventory Vector Files
 
@@ -48,6 +51,67 @@ within the data/raw/ directory prior to covariate extraction.
 - Tag major cleanup step as v0.3.1-dedup-raw-vector
 - Append to milestone_02_documentation.Rmd
 
+```{r setup_raster, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(sf)              # simple features in R
+library(fs)              # file system operations
+library(here)            # find files
+library(tidyverse)
+
+file.exists(here("R/utils/clean_organize_spatial_data/dedup_vector_inventory.R"))
+file.exists(here("R/utils/clean_organize_spatial_data/dedup_vector_inventory.R"))
+
+source(here("R/utils/clean_organize_spatial_data/dedup_vector_inventory.R"))
+source(here("R/utils/clean_organize_spatial_data/move_low_priority_duplicates.R"))
+
+```
+
+### Run Vector Deduplication Inventory Function
+
+```{r run-dedup-vector-function}
+
+result <- dedup_vector_inventory()
+
+```
+
+### Move Zipped Files to Archives
+
+```{r run-zipped-to-archives-function}
+
+source(here("R/utils/clean_organize_spatial_data/move_zip_to_archives.R"))
+move_zip_to_archives()
+
+```
+
+## Workflow Part 2: Deduplication of Vector Spatial Files
+
+### 1. Inventory Raster Files
+
+- Search .bil, .tif, .img, .zip, .hdr, .stx
+
+- Flag files with same name and different sizes
+
+- Group by basename and detect variations
+
+### 2. Save Results to CSV
+
+**Exported outputs:**
+- to_check/raster_file_inventory.csv – full file list with duplicate flags
+- to_check/duplicate_vector_summary.csv – filtered table of same-name files
+
+### 3. Draft Cleanup Plan
+
+- Move lower-priority duplicates to to_check/duplicates/
+- Confirm projections and attribute consistency before deletion
+
+### 4. Documentation
+
+- Add exploratory summaries and notes on retained files
+- Optionally create data/meta/spatial_source_checklist.csv
+- Tag major cleanup step as v0.3.1-dedup-raw-vector
+- Append to milestone_02_documentation.Rmd
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
@@ -64,20 +128,12 @@ source(here("R/utils/clean_organize_spatial_data/move_low_priority_duplicates.R"
 
 ```
 
-### Run Deduplication Inventory Function
+### Run Raster Deduplication Inventory Function
 
-```{r run-dedup-function}
+```{r run-dedup-raster-function}
 
-result <- dedup_vector_inventory()
+source(here("R/utils/clean_organize_spatial_data/dedup_raster_inventory.R"))
 
-```
-
-### Move Zipped Files to Archives
-
-```{r run-zipped-to-archives-function}
-
-source(here("R/utils/clean_organize_spatial_data/move_zip_to_archives.R"))
-move_zip_to_archives()
+result_ras <- dedup_raster_inventory()
 
 ```
-

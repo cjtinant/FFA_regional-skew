@@ -6,7 +6,7 @@
 # Last Updated: 2025-07-08
 # ==============================================================================
 
-dedup_raster_inventory <- function(input_dir = "data/raw/raster_raw",
+dedup_raster_inventory <- function(input_dir = "data/raw",
                                    output_dir = "to_check",
                                    archive_zips = TRUE,
                                    zip_subdir = "archives/raster_zips") {
@@ -18,6 +18,9 @@ dedup_raster_inventory <- function(input_dir = "data/raw/raster_raw",
   
   # Define full paths
   input_path <- here(input_dir)
+  
+
+  
   output_path <- here(output_dir)
   zip_path <- here(output_dir, zip_subdir)
   
@@ -32,7 +35,7 @@ dedup_raster_inventory <- function(input_dir = "data/raw/raster_raw",
   raster_files <- dir_info(
     path = input_path,
     recurse = TRUE,
-    regexp = "\\.(bil|tif|img|zip|hdr|stx)$"
+    regexp = "\\.(bil|tif|img|hdr|stx)$"
   ) %>%
     mutate(
       file_type = tools::file_ext(path),
@@ -54,21 +57,7 @@ dedup_raster_inventory <- function(input_dir = "data/raw/raster_raw",
   write_csv(raster_files, file.path(output_path, "raster_file_inventory.csv"))
   write_csv(duplicates, file.path(output_path, "duplicate_raster_summary.csv"))
   cli::cli_alert_success("✅ Inventory and duplicates written to {.file {output_path}}")
-  
-  # Optionally archive .zip files
-  if (archive_zips) {
-    zip_files <- raster_files %>%
-      filter(file_type == "zip") %>%
-      pull(path)
-    
-    if (length(zip_files) > 0) {
-      file_move(zip_files, file.path(zip_path, path_file(zip_files)))
-      cli::cli_alert_success("📦 Archived {length(zip_files)} .zip files to {.file {zip_path}}")
-    } else {
-      cli::cli_alert_info("No .zip files found to archive.")
-    }
-  }
-  
+
   # Return result invisibly
   invisible(list(raster_files = raster_files, duplicates = duplicates))
 }
