@@ -62,7 +62,7 @@ library(sf)             # Simple features for R
 # 1) Load Level 1 Ecoregion
 
 file_path  <- "data/processed"     # top-level folder for spatial data
-dir_name   <- "us_ecoregions"     # subfolder for level 1 ecoregions
+dir_name   <- "ecoregions"     # subfolder for level 1 ecoregions
 file_name <- "us_eco_levels.gpkg"
 target_file <- glue("{here()}/{file_path}/{dir_name}/{file_name}")
 

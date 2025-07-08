@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:     01a_download_us_ecoregions.R
+# Script Name:     01a_download_ecoregions.R
 # Author: Charles  Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-04-15
 # Last Updated:    2025-06-29      # update ecoregions naming
@@ -52,7 +52,7 @@ source(here("R/utils/download_data/download_ecoregion_resources.R"))
 # 1a) Setup
 
 file_path  <- "data/raw"     # top-level folder for spatial data
-dir_name   <- "us_ecoregions"            # subfolder for ecoregions
+dir_name   <- "ecoregions"            # subfolder for ecoregions
 zip_name   <- "na_eco_lev01.zip"
 html_name  <- "NA_CEC_Eco_Level1.html"
 lyr_name   <- "NA_CEC_Eco_Level1.lyr"
@@ -72,9 +72,9 @@ meta_path  <- glue("{target_dir}/{html_name}")
 # 1b) Create directory, download unzip sf, remove ZIP, download metadata + layer
 
 log_summary <- download_ecoregion_resources(
-  target_dir = here::here("data/raw/us_ecoregions"),
+  target_dir = here::here("data/raw/ecoregions"),
   zip_url    = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/na_cec_eco_l1.zip",
-  zip_path   = here::here("data/raw/us_ecoregions/na_eco_lev01.zip"),
+  zip_path   = here::here("data/raw/ecoregions/na_eco_lev01.zip"),
   meta_url   = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level1.htm",
   meta_path  = here::here("data/raw/epa_ecoregions/NA_CEC_Eco_Level1.htm"),
   lyr_url    = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level1.lyr",
@@ -90,7 +90,7 @@ log_summary
 # 1d) Setup
 
 file_path  <- "data/raw"     # top-level folder for spatial data
-dir_name   <- "us_ecoregions"            # subfolder for ecoregions
+dir_name   <- "ecoregions"            # subfolder for ecoregions
 zip_name   <- "na_eco_lev02.zip"
 html_name  <- "NA_CEC_Eco_Level2.html"
 lyr_name   <- "NA_CEC_Eco_Level2.lyr"
@@ -118,13 +118,13 @@ download_ecoregion_resources(target_dir,
 
 # 2c) check summary
 log_summary <- download_ecoregion_resources(
-  target_dir = here::here("data/raw/us_ecoregions"),
+  target_dir = here::here("data/raw/ecoregions"),
   zip_url    = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/na_cec_eco_l1.zip",
-  zip_path   = here::here("data/raw/us_ecoregions/na_eco_lev01.zip"),
+  zip_path   = here::here("data/raw/ecoregions/na_eco_lev01.zip"),
   meta_url   = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level1.htm",
-  meta_path  = here::here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.htm"),
+  meta_path  = here::here("data/raw/ecoregions/NA_CEC_Eco_Level1.htm"),
   lyr_url    = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level1.lyr",
-  lyr_path   = here::here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.lyr"),
+  lyr_path   = here::here("data/raw/ecoregions/NA_CEC_Eco_Level1.lyr"),
   remove_zip = TRUE
 )
 
@@ -136,7 +136,7 @@ log_summary
 
 # 1g) Setup
 file_path  <- "data/raw"     # top-level folder for spatial data
-dir_name   <- "us_ecoregions"            # subfolder for ecoregions
+dir_name   <- "ecoregions"            # subfolder for ecoregions
 zip_name   <- "na_eco_lev03.zip"
 html_name  <- "NA_CEC_Eco_Level3.html"
 lyr_name   <- "NA_CEC_Eco_Level3.lyr"
@@ -170,7 +170,7 @@ log_summary
 
 # 1j) Setup
 file_path  <- "data/raw"     # top-level folder for spatial data
-dir_name   <- "us_ecoregions"            # subfolder for ecoregions
+dir_name   <- "ecoregions"            # subfolder for ecoregions
 zip_name <- "us_eco_lev04.zip"
 html_name  <- "us_epa_Eco_Level4.htm"
 lyr_name   <- "us_epa_Eco_Level4.lyr"
@@ -204,7 +204,7 @@ log_summary
 
 # 2a) Setup
 file_path  <- "data/raw"     # top-level folder for spatial data
-dir_name   <- "us_ecoregions"
+dir_name   <- "ecoregions"
 file_name  <- "us_eco_l4_no_st.shp"
 target_file <- glue("{here()}/{file_path}/{dir_name}/{file_name}")
 

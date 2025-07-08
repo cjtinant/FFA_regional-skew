@@ -260,7 +260,7 @@ FFA_regional-skew/
         |       ├── PRISM_tmin_30yr_normal_800mD1_mmdd_bil
         |       ├── PRISM_tmin_30yr_normal_800mM5_annual_bil
         ├── statsgo2/             # Digital General Soil Map of the US (STATSGO2)
-        ├── us_ecoregions/        # US Ecoregions
+        ├── ecoregions/           # US Ecoregions
     ├── processed/                # Cleaned, derived datasets
         ├── ecoregions/
         |       ├── us_eco_levels.gpkg    # US Ecoregions Levels 1-4
@@ -296,7 +296,7 @@ FFA_regional-skew/
 ├── R/                        # Analysis scripts (milestone-organized)
 │   ├── 01_download/             # Get data
 |      ├── _latex_preamble.tex            # CHECK
-|      ├── 01a_download_us_ecoregions.R   # Download US Ecoregions data
+|      ├── 01a_download_ecoregions.R   # Download US Ecoregions data
 |      ├── 01b_download_gage-data.R`      # Download raw `peakflow gage` data
 |      ├── 01c_download_nhdplus_v21_flowlines.R   # Download NHDPlusV2.1 
 |      |                                          # flowlines and catchments

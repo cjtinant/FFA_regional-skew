@@ -67,7 +67,7 @@ log_tbl <- if (file.exists(log_file)) {
 
 # --- get level 4 ecoregions --------------------------------------------------
 eco_lev4 <- st_read(
-  here("data", "processed", "us_ecoregions", "us_eco_levels.gpkg"),
+  here("data", "processed", "ecoregions", "us_eco_levels.gpkg"),
   layer = "us_eco_l4"
 )
 

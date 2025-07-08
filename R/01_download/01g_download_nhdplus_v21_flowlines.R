@@ -44,10 +44,10 @@ library(fs)
 # Load EPA Level IV Ecoregions (should be already subset to Great Plains)
 
 # check levels
-st_layers("data/processed/us_ecoregions/us_eco_levels.gpkg")
+st_layers("data/processed/ecoregions/us_eco_levels.gpkg")
 
 eco_lev4 <- st_read(
-  "data/processed/us_ecoregions/us_eco_levels.gpkg",
+  "data/processed/ecoregions/us_eco_levels.gpkg",
   layer = "us_eco_l4"
   )
 

@@ -3,21 +3,17 @@ Covariate Source Inventory
 CJ Tinant
 2025-07-03 16:31:08
 
-- [Overview](#overview)
 - [Covariate Source Inventory](#covariate-source-inventory)
-  - [Table 1: Common Status Levels for Data
-    Workflow](#table-1-common-status-levels-for-data-workflow)
-  - [Table 2: In-Progress Modifiers](#table-2-in-progress-modifiers)
-  - [Table 3: Folder Names and Status](#table-3-folder-names-and-status)
-  - [Table 4: Data sources, Formats, and
-    Resolution](#table-4-data-sources-formats-and-resolution)
-  - [Table 5: Download Scripts and Dataset
-    Tracking](#table-5-download-scripts-and-dataset-tracking)
-  - [Table 6: Metadata and Documentation
-    Tracking](#table-6-metadata-and-documentation-tracking)
+  - [Overview](#overview)
+  - [Covariate Source Inventory](#covariate-source-inventory-1)
+    - [Table 1: Common Status Levels for Data Workflow](#table-1-common-status-levels-for-data-workflow)
+    - [Table 2: In-Progress Modifiers](#table-2-in-progress-modifiers)
+    - [Table 3: Folder Names and Status](#table-3-folder-names-and-status)
+    - [Table 4: Data sources, Formats, and Resolution](#table-4-data-sources-formats-and-resolution)
+    - [Table 5: Download Scripts and Dataset Tracking](#table-5-download-scripts-and-dataset-tracking)
+    - [Table 6: Metadata and Documentation Tracking](#table-6-metadata-and-documentation-tracking)
 - [References](#references)
-  - [🔗 Related Scripts and Metadata
-    Files](#link-related-scripts-and-metadata-files)
+  - [🔗 Related Scripts and Metadata Files](#-related-scripts-and-metadata-files)
 
 ## Overview
 
@@ -122,7 +118,7 @@ status.
 
 | script | step_id | dataset | last_modified |
 |:---|:---|:---|:---|
-| 01a_download_us_ecoregions.R | 01a | Ecoregions | 2025-06-30 01:23:02 |
+| 01a_download_ecoregions.R | 01a | Ecoregions | 2025-06-30 01:23:02 |
 | 01b_download_gage-data.R | 01b | USGS Stations | 2025-06-30 01:34:09 |
 | 01c_download_nhdplus_v21_flowlines.R | 01c | NHDPlusV21 | 2025-06-30 01:26:16 |
 | 01d_download_nhdplus_hr_flowlines.R | 01d | NHDPlusHD | 2025-06-30 22:02:34 |

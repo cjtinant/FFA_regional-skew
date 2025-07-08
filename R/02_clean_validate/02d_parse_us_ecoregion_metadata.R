@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:    02d_parse_us_ecoregion_metadata.R
+# Script Name:    02d_parse_ecoregion_metadata.R
 # Author:         Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-07-01
 #

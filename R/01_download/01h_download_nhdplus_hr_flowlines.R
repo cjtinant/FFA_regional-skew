@@ -202,7 +202,7 @@ retry_failed_aoi <- function(region_name, ecoregion_sf, buffer_dist = 1000) {
 
 # Load EPA Level IV ecoregions (should be already subset to Great Plains)
 eco_lev4 <- st_read(
-  "data/processed/us_ecoregions/us_eco_levels.gpkg",
+  "data/processed/ecoregions/us_eco_levels.gpkg",
   layer = "us_eco_l4"
   )
 
@@ -382,7 +382,7 @@ walk(failed_regions, function(l4name) {
 # --- Investigate NULL errors -------------------------------------------------
 # Load EPA Level IV ecoregions (should be already subset to Great Plains)
 eco_lev4 <- st_read(
-  "data/processed/us_ecoregions/us_eco_levels.gpkg",
+  "data/processed/ecoregions/us_eco_levels.gpkg",
   layer = "us_eco_l4"
   )
 
@@ -527,11 +527,11 @@ retry_final <- purrr::map_dfr(failed_names, ~ retry_failed_aoi(.x, eco_lev4))
 readr::write_csv(retry_results, "data/log/nhdphr_missing_download_attempts.csv")
 
 
-# ============================================================================== 
+# =============================================================================
 # -- Test run to scale and generalize to batch download --
 # # 1.1 Read ecoregions
 # eco_lev4 <- st_read(
-#  "data/processed/us_ecoregions/us_eco_levels.gpkg",
+#  "data/processed/ecoregions/us_eco_levels.gpkg",
 #  layer = "us_eco_l4"
 # )
 #
@@ -545,20 +545,21 @@ readr::write_csv(retry_results, "data/log/nhdphr_missing_download_attempts.csv")
 #                         #    it looks a little nicer in pipes.
 #
 # # Notes on `st_union()` below:
-# #    Unioning a set of overlapping polygons has the effect of merging the areas
-# #    i.e. the same effect as iteratively unioning all individual polygons
-# #    together. Unioning a set of LineStrings has the effect of fully noding and
-# #    dissolving the input linework. In this context "fully noded" means that
-# #    there will be a node or endpoint in the output for every endpoint or line
-# #    segment crossing in the input. "Dissolved" means that any duplicate
-# #    (e.g. coincident) line segments or portions of line segments will be reduced
-# #    to a single line segment in the output. Unioning a set of Points has the
-# #    effect of merging all identical points (producing a set with no duplicates).
-# #   -- In this case, it creates a of nodes in lat long to feed to `st_sf()`
-# #
-# # Notes on `st_sf()` below:
-# #    Create sf, which extends data.frame-like objects with a simple feature list 
-# #    column.
+#    Unioning a set of overlapping polygons has the effect of merging the
+#    areas i.e. the same effect as iteratively unioning all individual polygons
+#    together. Unioning a set of LineStrings has the effect of fully noding and
+#    dissolving the input linework. In this context "fully noded" means that
+#    there will be a node or endpoint in the output for every endpoint or line
+#    segment crossing in the input. "Dissolved" means that any duplicate
+#    (e.g. coincident) line segments or portions of line segments will be
+#    reduced to a single line segment in the output. Unioning a set of Points
+#    has the effect of merging all identical points (producing a set with no
+#    duplicates).
+#   -- In this case, it creates a of nodes in lat long to feed to `st_sf()`
+#
+# Notes on `st_sf()` below:
+#    Create sf, which extends data.frame-like objects with a simple feature
+#    list column.
 #
 #
 # # 1.3 filter ecoregions by that name

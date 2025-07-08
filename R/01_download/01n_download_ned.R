@@ -45,7 +45,7 @@ library(sf)
 library(terra)
 
 # --- Read Great Plains vector ------------------------------------------------
-gpkg_file <- here("data", "processed", "us_ecoregions", "us_eco_levels.gpkg")
+gpkg_file <- here("data", "processed", "ecoregions", "us_eco_levels.gpkg")
 
 gp_sf <- st_read(gpkg_file, layer = "us_eco_l1", quiet = TRUE) %>%
   dplyr::filter(NA_L1NAME == "GREAT PLAINS")
