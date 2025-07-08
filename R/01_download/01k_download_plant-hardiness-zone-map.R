@@ -8,7 +8,8 @@
 # -   gridded USDA Plant Hardiness Zone Map (PHZM)
 #
 # Data URLs:
-# -   Plant Hardiness Zones -- https://prism.oregonstate.edu/projects/plant_hardiness_zones.php
+# -   Plant Hardiness Zones -- 
+#       https://prism.oregonstate.edu/projects/plant_hardiness_zones.php
 #
 # Workflow Summary:
 # 1.   Download zipped archives, extract data and organize raster data
