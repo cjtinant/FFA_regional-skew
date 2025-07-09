@@ -26,15 +26,15 @@
 # - data/sites_pk_eco_only.csv      → Peak flow sites within GP Ecoregion
 #
 # Dependencies:
-# - dataRetrieval: Access USGS NWIS data
-# - dplyr:         Data manipulation
-# - glue:          String interpolation
-# - here:          Consistent relative paths
-# - purrr:         Functional programming toolkit
-# - sf:            Support for simple feature access, a standardized way to
-#                    encode and analyze spatial vector data. Binds to 'GDAL'
-# - process_geometries.R:     Custom helper functions for cleaning sf geometries
-# 
+# - dataRetrieval:         Access USGS NWIS data
+# - dplyr:                 Data manipulation
+# - glue:                  String interpolation
+# - here:                  Consistent relative paths
+# - purrr:                 Functional programming toolkit
+# - sf:                    Support for simple feature access, a standardized way
+#                            to encode and analyze vector data. Binds to 'GDAL'.
+# - process_geometries.R:  Custom helper functions for cleaning sf geometries
+#
 # Notes:
 # - Requires internet access to download data from USGS NWIS
 # - Bounding box grid helps avoid request size limitations in NWIS queries
@@ -43,23 +43,23 @@
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
-# libraries
-library(dataRetrieval)  # Retrieval functions for USGS and EPA hydro & wq data
-library(dplyr)
-library(glue)           # For string interpolation
-library(here)           # A simpler way to find files
-library(purrr)
-library(sf)             # Simple features for R
-
+# 1) Setup -- Load libraries and Level 1 Ecoregion data
 # ------------------------------------------------------------------------------
-# 1) Load Level 1 Ecoregion
 
+library(dataRetrieval)
+library(dplyr)
+library(glue)
+library(here)
+library(purrr)
+library(sf)
+
+# --- set up to load ecoregion data ---
 file_path  <- "data/processed"     # top-level folder for spatial data
 dir_name   <- "ecoregions"     # subfolder for level 1 ecoregions
 file_name <- "us_eco_levels.gpkg"
 target_file <- glue("{here()}/{file_path}/{dir_name}/{file_name}")
 
-# make a check of layers in us_eco_levels
+# --- make a check of layers in us_eco_levels ---
 st_layers(target_file)
 
 message("Reading Level 1 ecoregions from: ", target_file)
@@ -86,14 +86,14 @@ eco_lev1_gp_only <- eco_lev1_geo %>%
 # 2) Download peakflow data
 # -----------------------------------------------------------------------------
 
-# -- Define a Bounding Box ----------------------------------------------------
+# -- Define a Bounding Box ---
 bbox_gp <- st_bbox(eco_lev1_gp_only)
 
-# --- Set resolution for horizontal (lon) and vertical (lat) splits -----------
+# --- Set resolution for horizontal (lon) and vertical (lat) splits ---
 max_width <- 1.0    # degrees longitude
 max_height <- 2.5   # degrees latitude
 
-# --- Create sequences of breakpoints -----------------------------------------
+# --- Create sequences of breakpoints ---
 xmin_seq <- seq(bbox_gp["xmin"], bbox_gp["xmax"] - max_width, by = max_width)
 xmax_seq <- pmin(xmin_seq + max_width, bbox_gp["xmax"])
 
@@ -111,10 +111,10 @@ grid_boxes <- expand.grid(
     index = row_number()
   )
 
-# initialize a list
+# --- initialize a list ---
 sites_data_list <- vector("list", nrow(grid_boxes))
 
-# go and get umm!!!
+# --- go and get umm!!! ---
 for (i in seq_len(nrow(grid_boxes))) {
   bbox_row <- grid_boxes[i, ]
   bbox_vector <- paste(
@@ -145,7 +145,7 @@ for (i in seq_len(nrow(grid_boxes))) {
   Sys.sleep(0.5)
 }
 
-# --- Combine all site data into a single data frame --------------------------
+# --- Combine all site data into a single data frame ---
 sites_all_in_bb <- bind_rows(sites_data_list)
 
 # (optional) read in saved data
@@ -159,8 +159,11 @@ sites_all_in_bb <- bind_rows(sites_data_list)
 sites_all_in_bb <- sites_all_in_bb %>%
   select(-tile_id)
 
-# --- Export all sites data ---------------------------------------------------
-# Ensure output folder exists
+# -----------------------------------------------------------------------------
+# 3) Export all sites in bounding box
+# -----------------------------------------------------------------------------
+
+# --- Ensure output folder exists ---
 output_dir <- here("data", "raw", "peakflow_gages")
 fs::dir_create(output_dir)
 
@@ -176,17 +179,16 @@ write_csv(sites_all_in_bb, here("data",
 #                                  "sites_all_in_bb.csv"))
 
 # -----------------------------------------------------------------------------
-# 3) Filter peakflow data
+# 4) Filter sites to only stream (ST) and within GP ecoregion
 # -----------------------------------------------------------------------------
 
-# --- Drop canal ditch sites --------------------------------------------------
+# --- Drop canal ditch sites ---
 sites_st_only_in_bb <- sites_all_in_bb %>%
   filter(site_tp_cd == "ST")
 
 ck_sites_st_only <- anti_join(sites_all_in_bb, sites_st_only_in_bb)
 
-# ---------------------------------------------------------
-# keep sites inside Great Plains Ecoregion
+# --- keep sites inside Great Plains Ecoregion ---
 
 # convert stations into a spatial format (sf) object
 sites_all_in_bb_geo <- st_as_sf(sites_all_in_bb,
@@ -198,10 +200,10 @@ sites_all_in_bb_geo <- st_as_sf(sites_all_in_bb,
 sites_pk_eco_only_geo <- st_intersection(sites_all_in_bb_geo, eco_lev1_gp_only)
 
 # ------------------------------------------------------------------------------
-# EXPORT — Great Plains Peakflow Sites (filtered spatial + tabular)
+# 5) Export filtered sites (filtered spatial + tabular)
 # ------------------------------------------------------------------------------
 
-# 2. Write spatial version to GeoPackage
+# --- Write spatial version to GeoPackage ---
 st_write(
   sites_pk_eco_only_geo,
   dsn = file.path(output_dir, "sites_pk_eco_only.gpkg"),
@@ -210,7 +212,7 @@ st_write(
   quiet = TRUE
   )
 
-# Optional: check for missing coordinates (shouldn’t happen, but just in case)
+# --- Check for missing coordinates (shouldn’t happen, but just in case) --- 
 n_missing_coords <- sites_pk_eco_only %>%
   filter(is.na(dec_lat_va) | is.na(dec_long_va)) %>%
   nrow()
@@ -219,7 +221,7 @@ if (n_missing_coords > 0) {
   warning("⚠️  Missing lat/lon coordinates in ", n_missing_coords, " rows.")
 }
 
-# 3. Drop geometry and write tabular CSV
+# --- Drop geometry and write tabular CSV --- 
 sites_pk_eco_only <- sites_pk_eco_only_geo %>%
   st_drop_geometry(sites_pk_eco_only) %>%
   select(-starts_with("na")) %>%
