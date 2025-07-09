@@ -27,11 +27,13 @@
 # 8. Export cleaned datasets, summary tables, and metadata
 #
 # Output Files:
-# - data/processed/peakflow_gages/data_pk_core.csv             → modeling-ready core data
-# - data/processed/peakflow_gages/data_pk_blended.csv          → alternative dataset w/ suspect
-# - data/meta/peakflow_sites_dropped_in_core.csv               → sites lost in core-only analysis
-# - data/meta/peakflow_sites_dropped_summary.csv               → summary of dropped site count
-# - data/meta/summary_pk_by_site.csv                           → site-year counts (for 20-yr filter)
+# data/processed/peakflow_gages/
+# - peakflow_gages/data_pk_core.csv          modeling-ready core data
+# - alternative dataset w/ suspect gages     data_pk_blended.csv
+# data/meta/
+# - peakflow_sites_dropped_in_core.csv       sites lost in core-only analysis
+# - peakflow_sites_dropped_summary.csv       summary of dropped site count
+# - data/meta/summary_pk_by_site.csv         site-year counts (for 20-yr filter)
 #
 # Dependencies:
 # - tidyverse     → dplyr, purrr, readr, stringr, etc.
@@ -88,7 +90,8 @@ data_pk_tagged <- data_pk_fill_date %>%
     is_regulated = has_peak_flag(peak_cd, codes$regulated),
     is_suspect   = has_peak_flag(peak_cd, codes$suspect)
   ) %>%
-  mutate(across(c(is_break, is_regulated, is_suspect), ~replace_na(.x, FALSE)))
+  mutate(across(c(is_break, is_regulated, is_suspect), 
+                ~replace_na(.x, FALSE)))
 
 # ---------------------------------------------------------
 # 5. Remove dam break and regulated codes
@@ -132,7 +135,8 @@ site_risk_tbl <- site_counts_blended %>%
   left_join(site_counts_core, by = "site_no") %>%
   mutate(
     n_years_core = replace_na(n_years_core, 0),
-    dropped_in_core = n_years_blended >= min_record_years & n_years_core < min_record_years
+    dropped_in_core = n_years_blended >= min_record_years &
+      n_years_core < min_record_years
   ) %>%
   filter(dropped_in_core)
 
@@ -147,7 +151,10 @@ site_risk_summary <- site_risk_tbl %>%
 print(site_risk_summary)
 
 filter_summary <- tibble::tibble(
-  step = c("Raw", "Drop NA discharge", "Fill dates", "Remove regulated/break", "Core (no suspect)"),
+  step = c("Raw", "Drop NA discharge", 
+           "Fill dates", 
+           "Remove regulated/break", 
+           "Core (no suspect)"),
   n_records = c(
     nrow(data_pk),
     nrow(data_pk_drop_na),
@@ -165,7 +172,21 @@ filter_summary <- tibble::tibble(
 )
 
 # ---------------------------------------------------------
-# 9. Export datasets and metadata
+# 9. Project to Albers Conic
+# ---------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+# ---------------------------------------------------------
+# 10. Export datasets and metadata
 # ---------------------------------------------------------
 # Create a folder named "peakflow_gages" inside data/processed
 dir_create(here("data", "processed", "peakflow_gages"))
