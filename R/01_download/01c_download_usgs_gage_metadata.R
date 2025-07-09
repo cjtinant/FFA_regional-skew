@@ -2,6 +2,7 @@
 # Script Name:    01c_download_usgs_gage_metadata.R
 # Author:         Charles Jason Tinant — with ChatGPT
 # Date Created:   2025-07-05
+# Last Update:    2025-07-09      Update output file path to data/processed
 #
 # Purpose:        Download detailed site metadata for filtered USGS peak flow
 #                 gages located inside the Great Plains Ecoregion.
@@ -130,6 +131,11 @@ dict_output <- here("data", "meta", "usgs_site_metadata_dictionary.csv")
 write_csv(site_meta_vars, dict_output)
 
 # --- write results ---
-output_file <- here("data", "raw", "peakflow_gages", "usgs_site_metadata.csv")
+output_file <- here("data",
+                    "raw",
+                    "peakflow_gages",
+                    "usgs_site_metadata.csv"
+                    )
+
 write_csv(site_metadata_st, output_file)
 message("✅ Cleaned site metadata saved to: ", output_file)
