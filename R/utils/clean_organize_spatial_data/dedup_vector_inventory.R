@@ -26,7 +26,7 @@ dedup_vector_inventory <- function(input_dir = "data/raw",
   vector_files <- dir_info(
     path = input_path,
     recurse = TRUE,
-    regexp = "\\.(shp|gpkg|geojson|kml|gdb|sqlite|json|zip)$"
+    regexp = "\\.(shp|gpkg|geojson|kml|gdb|sqlite|json|zip|csv)$"
   ) %>%
     # Exclude auxiliary shapefile components
     filter(!str_detect(path_file(path), "\\.(shx|dbf|prj|cpg|sbn|sbx)$")) %>%
