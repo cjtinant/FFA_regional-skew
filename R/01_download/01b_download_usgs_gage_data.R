@@ -34,14 +34,7 @@
 # - sf:            Support for simple feature access, a standardized way to
 #                    encode and analyze spatial vector data. Binds to 'GDAL'
 # - process_geometries.R:     Custom helper functions for cleaning sf geometries
-
-# - tidyverse: Data wrangling & visualization
-# - units           Unit conversion -- to convert from m² to km²
-# - nhdplusTools    Tools for traversing and working with National
-#                     Hydrography Dataset Plus (NHDPlus) data.
-# - readr        -   Reads rectangular data
-# - stringr      -   Wrappers for string operations
-#
+# 
 # Notes:
 # - Requires internet access to download data from USGS NWIS
 # - Bounding box grid helps avoid request size limitations in NWIS queries
