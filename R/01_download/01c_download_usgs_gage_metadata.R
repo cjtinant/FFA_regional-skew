@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:    01c_download_usgs_site_metadata.R
+# Script Name:    01c_download_usgs_gage_metadata.R
 # Author:         Charles Jason Tinant — with ChatGPT
 # Date Created:   2025-07-05
 #

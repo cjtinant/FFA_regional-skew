@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:     01b_download-gage-data.R
+# Script Name:     01b_download_USGS_gage_data.R
 # Author:          Charles Jason Tinant
 # Date Created:    April 2025
 # Last update:     June 21, 2025      # update script to fit with folder struct
@@ -8,7 +8,7 @@
 #                  This script downloads, processes, and filters USGS peak flow 
 #                  gage data within the GP Level 1 Ecoregion. It uses spatial 
 #                  data to define the AOI and queries USGS National Water 
-#                  Information System (NWIS) services for peak flow site data.
+#                  Information System (NWIS) services for peak flow gage data.
 #
 # Workflow Summary:
 # 1. Load Level 1 Ecoregion shapefile and isolate Great Plains extent
