@@ -2,13 +2,38 @@
 # Script Name:    01c_download_usgs_gage_metadata.R
 # Author:         Charles Jason Tinant — with ChatGPT
 # Date Created:   2025-07-05
-# Last Update:    2025-07-09      Update output file path to data/processed
 #
-# Purpose:        Download detailed site metadata for filtered USGS peak flow
-#                 gages located inside the Great Plains Ecoregion.
+# Purpose:        This script retrieves and cleans metadata for a set of USGS
+#                 stream gaging stations for filtered USGS peak flow gages
+#                 located inside the Great Plains Ecoregion.
 #
-# Input:          sites_pk_eco_only.csv (tabular output from 01b script)
-# Output:         usgs_site_metadata.csv with extended attributes
+# Workflow Summary:
+#
+# 1. Read a list of stream gage site numbers from a previously prepared CSV file
+#    (sites_pk_eco_only.csv). This includes flags for potentially colocated
+#    sites.
+# 2. Retrieve Metadata from the National Water Information System (NWIS) and
+#    consolidates the results into a single metadata table.
+# 3. Clean and De-duplicate Results:
+#    - Identify sites with missing metadata.
+#    - Check for any unexpected site numbers returned by the API.
+#    - Remove duplicate records, prioritizing sites with agency code USGS.
+# 4. Filter Relevant Site Types
+#    - Join site types with human-readable descriptions.
+#    - Filter the metadata to retain only standard stream sites
+#      (site_tp_cd == "ST"), excluding tidal streams, canals, ditches,
+#      estuaries, and facilities.
+# 5. Export Results and Metadata Dictionary
+#    - Write a variable dictionary (usgs_site_metadata_vars.csv) listing all
+#      columns in the cleaned metadata.
+#    - Save the cleaned, filtered site data to usgs_sites_pk_ST_only.csv
+#      for downstream use.
+#
+# Input:
+# - sites_pk_eco_only.csv (tabular output from 01b script)
+# Output:
+# - usgs_site_metadata_vars.csv
+# - usgs_sites_pk_ST_only.csv
 #
 # Dependencies:
 # - dataRetrieval: To retrieve USGS site metadata
@@ -92,11 +117,8 @@ site_metadata_clean <- site_metadata %>%
   ungroup() %>%
   select(-priority)          # clean up
 
-
-
 # --- Extract variable names ---
 site_meta_vars <- tibble(variable = colnames(site_metadata_clean))
-
 
 # ------------------------------------------------------------------------------
 # 3. Drop tidal streams, ditches, canals
@@ -127,14 +149,17 @@ site_metadata_st <- site_metadata_clean %>%
 # 5. --- write results ---
 # ------------------------------------------------------------------------------
 # --- write metadata results ---
-dict_output <- here("data", "meta", "usgs_site_metadata_dictionary.csv")
+dict_output <- here("data",
+                    "raw",
+                    "peakflow_gages",
+                    "usgs_site_metadata_vars.csv")
 write_csv(site_meta_vars, dict_output)
 
 # --- write results ---
 output_file <- here("data",
                     "raw",
                     "peakflow_gages",
-                    "usgs_site_metadata.csv"
+                    "usgs_sites_pk_ST_only.csv"
                     )
 
 write_csv(site_metadata_st, output_file)
