@@ -2,7 +2,7 @@
 # Script Name:    01e_filter_usgs_peakflow_data.R
 # Author:         Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   April 2025
-# Last Updated:   2025-07-07
+# Last Updated:   2025-07-09
 #
 # Purpose:
 # Filters and tags raw USGS peak flow records for reliability and modeling use.
@@ -55,7 +55,7 @@ library(fs)
 
 # ---------------------------------------------------------
 # 1. Load peak flow data
-data_pk <- read_csv(here("data/raw/peakflow_gages/data_pk_all.csv")) 
+data_pk <- read_csv(here("data/raw/peakflow_gages/usgs_data_pk_all.csv")) 
 
 # ---------------------------------------------------------
 # 2. Drop NA discharge
