@@ -5,9 +5,10 @@
 #
 # Author:   Charles Jason Tinant — revised with ChatGPT 4o
 # Date Created: 2025-07-08
-# Last Updated: 2025-07-10
+# Last Updated: 2025-07-11
 #
 # Change Log:
+# - 2025-07-11: Added support for MODIS HDF files
 # - 2025-07-10: Renamed function to inventory_raster_data(); generalized paths,
 #               added optional ZIP archive subfolder, consistent output naming
 # - 2025-07-08: Initial version with raster inventory and duplicate detection
@@ -38,7 +39,7 @@ inventory_raster_data <- function(input_dir = "data/raw",
   raster_files <- dir_info(
     path = input_path,
     recurse = TRUE,
-    regexp = "\\.(bil|tif|img|hdr|stx)$"
+    regexp = "\\.(bil|tif|img|hdr|stx|hdf)$"
   ) %>%
     mutate(
       file_type = tools::file_ext(path),
@@ -47,13 +48,20 @@ inventory_raster_data <- function(input_dir = "data/raw",
       folder = path_split(relative_path) %>% map_chr(~ .x[[1]]),
       size_mb = round(as.numeric(size) / 1e6, 2),
       last_modified = modification_time,
-      possible_duplicate = duplicated(basename) | duplicated(basename, fromLast = TRUE),
+      data_status = case_when(
+        str_detect(input_path, "data/raw") ~ "raw",
+        str_detect(input_path, "data/processed") ~ "processed",
+        TRUE ~ "unknown"
+      ),
+      possible_duplicate = duplicated(basename) | duplicated(basename, 
+                                                             fromLast = TRUE),
       description = case_when(
         file_type == "tif"  ~ "GeoTIFF raster",
         file_type == "bil"  ~ "PRISM binary raster",
         file_type == "img"  ~ "Erdas Imagine raster",
         file_type == "hdr"  ~ "ENVI-style header",
         file_type == "stx"  ~ "Raster stats sidecar",
+        file_type == "hdf"  ~ "Hierarchical Data Format raster",
         TRUE                ~ "Other raster format"
       )
     )
