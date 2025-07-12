@@ -1,0 +1,246 @@
+---
+title: "Review and Inventory of Spatial and Tabular Data"
+author: "CJ Tinant"
+output:
+  github_document:
+    toc: true
+    toc_depth: 3
+date: "`r format(Sys.time(), '%Y-%m-%d %H:%M:%S')`"
+---
+
+## Overview
+
+The goal is to inventory, validate, and document feature (vector and tabular)
+and raster datasets stored in the data/ directory, with a focus on identifying 
+duplicates, standardizing file structure, and preparing inputs for covariate 
+extraction in the regional skew model.
+
+## Goals
+
+-   ✅ Identify and remove duplicate files from data/raw
+-   ✅ Deduplicate and standardize raster inputs in data/raw/
+-   🗂️ Organize spatial datasets by relevance, format, and source
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(sf)
+library(fs)
+library(here)
+
+# Load reusable functions
+source(here("R/utils/clean_organize_spatial_data/inventory_feature_data.R"))
+source(here("R/utils/clean_organize_spatial_data/move_low_priority_duplicates.R"))
+source(here("R/utils/clean_organize_spatial_data/move_zip_to_archives.R"))
+source(here("R/utils/clean_organize_spatial_data/inventory_raster_data.R"))
+```
+
+## Part 1: Inventory Files in data/raw
+
+### 1.1. Run Feature Inventory Script
+
+This step recursively lists vector and CSV files, flags potential duplicates, and summarizes file characteristics by folder.
+
+Feature files are grouped by their basename to identify possible version conflicts. Files with the same name but differing in size are flagged for further review, as these discrepancies may indicate distinct versions or incomplete copies. Preferred formats such as `.gpkg` and `.csv` are prioritized for retention, while others (e.g., `.shp`) are reviewed for relevance and redundancy.
+
+The full inventory is saved to `to_check/vector_file_inventory.csv`, while a filtered summary of files with shared names is exported to `to_check/duplicate_vector_summary.csv`. Lower-priority duplicates are moved to `to_check/duplicates/` for archival and manual review.
+
+```{r run_inventory-feature-data-function_data_raw}
+knitr::opts_chunk$set(echo = TRUE)
+
+result_feat_raw <- inventory_feature_data(
+  input_dir = here("data/raw"),
+  output_dir = here("to_check")
+)
+
+```
+
+This step inventories raster files with common geospatial formats, including `.bil`, `.tif`, `.img`, `.hdr`, and `.stx`. Files are grouped by their basename to detect potential duplicates, particularly those with the same name but differing file sizes—an indication of possible version mismatches or incomplete downloads.
+
+The full inventory of raster files is saved to `to_check/raster_file_inventory.csv`, with duplicate flags for QA. A filtered summary of raster files with matching names is prepared for manual review as  `to_check/duplicate_raster_summary.csv`.
+
+### 1.2. Run Raster Inventory Script
+```{r run_inventory-raster-data-function_data_raw}
+
+result_rast_raw <- inventory_raster_data(
+  input_dir = here("data/raw"),
+  output_dir = here("to_check")
+)
+
+```
+
+### 1.3. Move Archived ZIPs
+
+This step relocates .zip files from subdirectories of data/raw/ to data/archives, preserving original filenames. This ensures that archived download packages are stored separately from unzipped raster inputs.
+
+```{r run-zipped-to-archives-function}
+
+move_zip_to_archives()
+
+```
+
+### 1.4. Check Results
+
+UPDATE
+
+```{r read_data_raw_inventory}
+
+# get feature results
+files_raw_vec <- read_csv(here("to_check", "feature_file_inventory.csv"),
+                          show_col_types = FALSE) %>%
+  select(file_type, relative_path, possible_duplicate) %>%
+  separate(
+    col  = relative_path, 
+    into = c("folder", "file"),
+    sep = "/",           # delimiter
+    extra = "merge",     # merge any additional parts into last column
+    fill = "right"       # if no slash, leave second column NA
+  ) %>%
+  arrange(file_type, folder) %>%
+  mutate(data_type = "vector")
+
+# get raster results
+files_raw_rast <- read_csv(here("to_check", "raster_data_inventory.csv"),
+                          show_col_types = FALSE) %>%
+  select(file_type, relative_path, possible_duplicate) %>%
+  separate(
+    col  = relative_path, 
+    into = c("folder", "file"),
+    sep = "/",           # delimiter
+    extra = "merge",     # merge any additional parts into last column
+    fill = "right"       # if no slash, leave second column NA
+  ) %>%
+  arrange(file_type, folder) %>%
+  mutate(data_type = "raster")
+
+# combine and summarise results
+files_raw_all <- bind_rows(files_raw_vec, files_raw_rast) %>%
+  relocate(data_type, file_type, folder, file)
+
+
+files_raw_summary <- files_raw_all %>%
+  count(data_type, folder, file_type, possible_duplicate) %>%
+  arrange(folder)
+
+write_csv(files_raw_summary,
+          here("data/log/summary_raw_data_files.csv"))
+
+
+```
+
+### 1.5. Remove Unneeded Climate Rasters
+
+The following step identifies legacy koppen_climate rasters representing time periods prior to 1990. These files are not used in the current modeling workflow and may be removed following QA and confirmation.
+
+```{r remove_unneeded_climate rasters, eval=FALSE}
+
+# This step removes `koppen_climate` raster files for the periods **1901–1930**, # **1931–1960**, and **1961–1990** because the regional skew modeling targets 
+# modern climate normals (1990–2020).
+
+# Identify outdated Koppen-Geiger rasters
+# koppen_rasters_to_remove <- files_raw_rast %>%
+#   filter(
+#     folder == "koppen_climate",
+#     !str_detect(file, "1990|2000|2010|2020")
+#   ) %>%
+#   mutate(remove_reason = "outside_target_period")
+
+# (Run Once) Log files marked for removal
+# write_csv(koppen_rasters_to_remove,
+#          here("data/log/koppen_climate_files_removed.csv"))
+
+
+```
+
+## Part 2: Inventory Files in data/processed
+
+### 2.1. Run Feature Inventory Script
+
+This step inventories feature data in `data/processed/`, including vector files (e.g., `.gpkg`, .shp) and tabular outputs (e.g., `.csv`, `.rds`). The goal is to ensure outputs from earlier data processing stages are well organized, free of duplicates, and ready for use in modeling workflows.
+
+As with `data/raw`, files are grouped by basename to identify duplicates. Files with the same name but different sizes are flagged for manual review. Preferred formats such as `.gpkg`, `.csv`, and `.rds` are retained; others are reviewed or archived if redundant.
+
+```{r run_inventory-feature-data-function_data_processed}
+
+result_feat_processed <- inventory_feature_data(
+  input_dir = here("data/processed"),
+  output_dir = here("to_check/processed_feature")
+)
+
+```
+
+### 2.2. Run Raster Inventory Script
+
+This step inventories raster outputs in data/processed/, including .tif, .bil, .img, and associated header/sidecar files. These may include climate normals, terrain rasters, or derived surfaces used as covariates.
+
+
+```{r run_inventory-raster-data-function_data_processed}
+
+result_rast_processed <- inventory_raster_data(
+  input_dir = here("data/processed"),
+  output_dir = here("to_check/processed_raster")
+)
+
+```
+
+### 1.4. Check Results
+
+UPDATE
+
+```{r read_data_processed_inventory}
+
+# Load feature results
+files_processed_vec <- read_csv(here("to_check", "processed_feature", "feature_file_inventory.csv"),
+                                show_col_types = FALSE) %>%
+  select(file_type, relative_path, possible_duplicate) %>%
+  separate(
+    col = relative_path,
+    into = c("folder", "file"),
+    sep = "/",
+    extra = "merge",
+    fill = "right"
+  ) %>%
+  arrange(file_type, folder) %>%
+  mutate(data_type = "vector")
+
+# Load raster results
+files_processed_rast <- read_csv(here("to_check", "processed_raster", "raster_data_inventory.csv"),
+                                 show_col_types = FALSE) %>%
+  select(file_type, relative_path, possible_duplicate) %>%
+  separate(
+    col = relative_path,
+    into = c("folder", "file"),
+    sep = "/",
+    extra = "merge",
+    fill = "right"
+  ) %>%
+  arrange(file_type, folder) %>%
+  mutate(data_type = "raster")
+
+# Combine and summarize
+files_processed_all <- bind_rows(files_processed_vec, files_processed_rast) %>%
+  relocate(data_type, file_type, folder, file)
+
+files_processed_summary <- files_processed_all %>%
+  count(data_type, folder, file_type, possible_duplicate) %>%
+  arrange(folder)
+
+# Save summary
+write_csv(files_processed_summary,
+          here("data/log/summary_processed_data_files.csv"))
+
+```
+
+
+```{r}
+
+test <- full_join(files_raw_summary, files_processed_summary, 
+                  by = join_by(data_type, folder),
+                  suffix = c(".raw", ".processed")
+                  )%>%
+  select(-starts_with("possible"))
+
+
+```
+
