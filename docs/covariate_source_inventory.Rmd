@@ -58,6 +58,8 @@ All datasets are publicly available, spatially referenced, and selected for thei
 
 ---
 
+
+
 ### Table 3: Folder Names and Status
 
 Status codes track the current stage of preparation for each dataset listed above. Values range from "00 — Not Started" to "10 — Used in Modeling".
