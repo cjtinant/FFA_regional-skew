@@ -226,8 +226,15 @@ files_processed_summary <- files_processed_all %>%
   count(data_type, folder, file_type, possible_duplicate) %>%
   arrange(folder)
 
+full_summary <- full_join(files_raw_summary, files_processed_summary, 
+                  by = join_by(data_type, folder),
+                  suffix = c(".raw", ".processed"),
+                  relationship = "many-to-many"
+                  ) %>%
+  select(-starts_with("possible"))
+
 # Save summary
-write_csv(files_processed_summary,
+write_csv(full_summary,
           here("data/log/summary_processed_data_files.csv"))
 
 ```
@@ -235,12 +242,6 @@ write_csv(files_processed_summary,
 
 ```{r}
 
-test <- full_join(files_raw_summary, files_processed_summary, 
-                  by = join_by(data_type, folder),
-                  suffix = c(".raw", ".processed")
-                  )%>%
-  select(-starts_with("possible"))
-
-
 ```
+
 
