@@ -234,9 +234,29 @@ FFA_regional-skew/
     ├── intermediate/             # temporary storage for data processing
     ├── log/                      # log files of downloads / processing steps
     ├── meta/                     # Metadata of datasets
-
-
-    ├── raw/                      # Unmodified input data 
+    ├── processed/                # Cleaned, derived datasets
+        ├── ecoregions/
+        |       ├── us_eco_levels.gpkg    # US Ecoregions Levels 1-4
+        ├── koppen_climate/
+        |       ├── koppen_geiger.tif   # Köppen Geiger climate raster 1991-2020
+        ├── ned/                        # National Elevation Database (NED)
+        |       ├── elev_30m_gp.tif     #   elevation raster NEED TO FIX
+        |       ├── slope_30m_gp.tif    #   slope raster NEED TO FIX
+        ├── nhdplus/    # NEED TO FIX
+        ├── nlcd/
+        |       ├── nlcd_2016_gp.tif   # National Land Cover Dataset (NLCD)
+        ├── peakflow_gages/       # 
+        |       ├── data_pk_blended.csv    # USGS peakflow gage data - inclusive
+        |       ├── data_pk_core.csv       # USGS peakflow gage data - exclusive
+        ├── phzm/
+        |       ├── phzm.tif
+        ├── prism/
+        |       ├── ppt_MMDD_mm.tif   # PRISM daily precip in mm
+        |       ├── ppt_ann_mm_stack.tif   # PRISM daily precip in mm
+        |       ├── ppt_ann_mm_stack.tif   # PRISM daily precip in mm
+        |       ├── ppt_MMDD_mm.tif   # PRISM daily temp in mm
+    ├── raw/                      # Unmodified input data
+        ├── ecoregions/           # US EPA NA CEC Ecoregions
         ├── koppen_climate/       # Köppen Geiger climate rasters
         |       ├── 1901_1930
         |       ├── 1931_1960
@@ -260,21 +280,7 @@ FFA_regional-skew/
         |       ├── PRISM_tmin_30yr_normal_800mD1_mmdd_bil
         |       ├── PRISM_tmin_30yr_normal_800mM5_annual_bil
         ├── statsgo2/             # Digital General Soil Map of the US (STATSGO2)
-        ├── ecoregions/           # US Ecoregions
-    ├── processed/                # Cleaned, derived datasets
-        ├── ecoregions/
-        |       ├── us_eco_levels.gpkg    # US Ecoregions Levels 1-4
-        ├── koppen_climate/
-        |       ├── koppen_geiger.tif   # Köppen Geiger climate raster 1991-2020
-        ├── ned/                        # National Elevation Database (NED)
-        |       ├── elev_30m_gp.tif     #   elevation raster NEED TO FIX
-        |       ├── slope_30m_gp.tif    #   slope raster NEED TO FIX
-        ├── nhdplus/    # NEED TO FIX
-        ├── nlcd/
-        |       ├── nlcd_2016_gp.tif   # National Land Cover Dataset (NLCD)
-        ├── phzm/
-        |       ├── phzm.tif
-        ├── prism/
+
 
 
 ├── docs/                     # Project documentation:
@@ -288,46 +294,30 @@ FFA_regional-skew/
 ├── notes/                    # Personal or team notes, meeting logs,
                               #   brainstorms. Transition to Markdown or Quarto as
                               #   the project matures
-├── notes/                    #
-├── output/                   #
-├── R/                        #
-├── output/                   #
-
 ├── R/                        # Analysis scripts (milestone-organized)
 │   ├── 01_download/             # Get data
-|      ├── _latex_preamble.tex            # CHECK
+|      ├── _latex_preamble.tex            # LaTeX preamble for PDF reports
 |      ├── 01a_download_ecoregions.R   # Download US Ecoregions data
-|      ├── 01b_download_gage-data.R`      # Download raw `peakflow gage` data
-|      ├── 01c_download_nhdplus_v21_flowlines.R   # Download NHDPlusV2.1 
-|      |                                          # flowlines and catchments
-|      ├── 01d_download_nhdplus_hr_flowlines.R    # Download NHDPlus HR
-|      |                                          # flowlines
-|      ├── 01e_download_nhdplus_hr_catchments.R   # Download NHDPlus HR
-|      |                                          # catchment boundaries
-|      ├── 01f_download_koppen-geiger_climate.R   # Download, processes, and
-|      |                                          # prepare Köppen Geiger
-|      |                                          # climate rasters
-|      ├── 01g_download_plant-hardiness-zone-map.R   # Download and processes
-                                                     # climate rasters
-
-
-
+|      ├── 01b_download_USGS_gage_data.R`       # DL raw peakflow site data
+|      ├── 01c_download_usgs_gage_metadata.R    # Download USGS site metadata
+|      ├── 01d_download_usgs_peakflow_data.R    # Download peakflow gage data
+|      ├── 01e_filter_usgs_peakflow_data.R      # Filter peakflow gage data
+|      ├── 01f_download_nhdplus_v21_flowlines.R
+|      ├── 01g_download_nhdplus_hr_catchments.R
+|      ├── 01h_download_nhdplus_hr_flowlines.R
+|      ├── 01j_download_koppen-geiger_climate.R
+|      ├── 01k_download_plant-hardiness-zone-map.R
+|      ├── 01l_download_prism_climate.R
+|      ├── 01m_download_nlcd_2016.R
+|      ├── 01n_download_ned.R
+|      ├── 01o_download_modis_2016.R
+|      └── 01p_download_statsgo2.R
 │   ├── 02_clean_validate/    # QA
 │   ├── 03_covariates/        # Climate, topography, land cover
 │   ├── 04_modeling/          # GAMs, Elastic Net, correlation
 │   ├── 05_modeling/          # GAMs, Elastic Net, correlation
 │   ├── 06_eval/              # Model diagnostics, residuals, validation
 │   └── utils/                # Reusable functions
-│       └── f_process_geometries.R
-
-
-├── log/                      # For shell logs or targets progress reports 
-├── output/                   # Intermediate outputs (e.g., `.Rds`, `.csv`, `.tif`)
-                              # Next Steps: Add subfolders like `extracted/`,
-                              #   `joined/`, or date-stamped folders |
-│   ├── figs/                 # Plots and maps
-│   ├── models/               # Model objects (.rds)
-│   └── tables/               # Summary tables (.csv, .html)
 ├── README.md                     # Rendered Markdown output.  GitHub-compatible
                                   #   plain-text overview. Use for quick 
                                   #   navigation, build instructions, etc. 
@@ -356,42 +346,6 @@ FFA_regional-skew/
 ```
 
 
-#
-# Folder structure:
-#    data/raw/
-#      ├── epa_ecoregions/
-#            ├── NA_CEC_Eco_Level1.shp
-#            ├── NA_CEC_Eco_Level2.shp
-#            ├── NA_CEC_Eco_Level3.shp
-#            └── us_eco_l4_no_st.shp/
-#
-#      ├── koppen_climate/
-#                ├── 1901_1930/
-#                ├── 1931_1960/
-#                ├── 1961_1990/
-#                ├── 1991_2020/
-#                ├── 2041_2070/
-#                └── 2071_2099/
-#
-#      ├── phzm/
-#      ├── prism/
-#
-#    data/intermediate/                          # intermediate processing
-#
-# data/processed/                                # clean and in common crs
-#      ├── us_eco_levels.gpkg
-#      └── prism/
-
-
-
-
-
-
-
-
-
-
-
 # `r params$version` – Download and Prepare Covariates
 
 # `r params$version` Tasklist
@@ -416,8 +370,8 @@ FFA_regional-skew/
 | 0.5.4.6   | Create script to calculate NED Slope                    |  [X]   |
 | 0.5.4.7   | Create downloads scripts for MODIS NDVI 2016            |  [X]   |
 | **0.5.5** | QAQC for downloads                                      |  [ ]   |
-| 0.5.5.1   | Validate spatial coverage, resolution, and CRS          |  [X]   |
-| 0.5.5.2   | Inspect folders for untracked or duplicate files        |  [ ]   |
+| 0.5.5.1   | Inspect folders for untracked or duplicate files        |  [ ]   |
+| 0.5.5.2   | Validate spatial coverage, resolution, and CRS          |  [ ]   |
 | 0.5.5.3   | Standardize and validate metadata for downloads         |  [ ]   |
 | 0.5.5.4   | Review chunk headers in .Rmd files ({r name, eval=} )   |  [ ]   |
 | 0.5.5.5   | Write README-style notes - scripts in milestone folder  |  [ ]   |
@@ -489,37 +443,32 @@ mkdir -p R/utils/{metadata,spatial,qaqc,paths,plotting} # make directories
 
 **Actions Taken**
 
--   Ecoregions: Updated the ecoregion download script to output Level I–IV ecoregions:
+- Ecoregions: Updated download script to output Level I–IV ecoregions:
+-     Reprojected to a common CRS (NAD83 / CONUS Albers — EPSG:5070)
+-     Clipped to the CONUS boundary
+-     Saved as a GeoPackage in data/processed/ecoregions/
 
--       Reprojected to a common CRS (NAD83 / CONUS Albers — EPSG:5070)
+- USGS Gages: Refactored the gage download script to align with the new folder
+              structure, improving consistency and portability.
 
--       Clipped to the CONUS boundary
+- NHDPlus: Created new scripts to download NHDPlus V2 and High-Resolution NHD
+(flowlines and catchments), organized under the updated data/ and R/utils/
+directories.
 
--       Saved as a GeoPackage in data/processed/ecoregions/
-
--   USGS Gages: Refactored the gage download script to align with the new folder structure, improving consistency and portability.
-
--   NHDPlus: Created new scripts to download NHDPlus V2 and High-Resolution NHD (flowlines and catchments), organized under the updated data/ and R/utils/ directories.
-
--   STATSGO2: Developed a new download script (01m_download_statsgo2.R) that:
-
--       Loads and unifies the Great Plains Level I ecoregion AOI
-
--       Uses chunked SDA_spatialQuery() calls across a 3×3 grid to avoid query size limits
-
--       Repairs invalid geometries using st_make_valid() and combines chunked results
-
--       Joins mukey values to full mapunit attributes via get_mapunit_from_SDA()
-
--       Saves output to:
-
--           CSV: mupolygon_statsgo2_great_plains.csv and mapunit_statsgo2_great_plains.csv
-
--           GPKG (WGS84): mupolygon_statsgo2_great_plains.gpkg
-
--           GPKG (EPSG:5070): mupolygon_statsgo2_albers.gpkg
-
--       Verifies joinability between geometry and tabular data by checking mukey alignment
+- STATSGO2: Developed a new download script (01m_download_statsgo2.R) that:
+-     Loads and unifies the Great Plains Level I ecoregion AOI
+-     Uses chunked SDA_spatialQuery() calls across a 3×3 grid to avoid 
+        query size limits
+-     Repairs invalid geometries using st_make_valid() and combines chunked
+        results
+-     Joins mukey values to full mapunit attributes via get_mapunit_from_SDA()
+-     Saves output to:
+-         mupolygon_statsgo2_great_plains.csv,
+-         mapunit_statsgo2_great_plains.csv,
+-         (WGS84): mupolygon_statsgo2_great_plains.gpkg
+-         (EPSG:5070): mupolygon_statsgo2_albers.gpkg
+-     Verifies joinability between geometry and tabular data by checking 
+          mukey alignment
 
 **Reason (Before)**
 
