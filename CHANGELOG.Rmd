@@ -10,7 +10,7 @@ output:
 
 # Changelog
 
-This changelog tracks all notable updates to the Regional Skew Estimation project.
+This changelog tracks notable updates to the Regional Skew Estimation project.
 
 _This project strives to follow [Semantic Versioning](https://semver.org) and the [Keep a Changelog](https://keepachangelog.com/) format._
 
@@ -19,68 +19,82 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 ## [Unreleased]
 ### Added
 
-    Created git_changelog_workflow_reference.Rmd to document versioning and commit practices
+Created git_changelog_workflow_reference.Rmd to document versioning and commit practices
 
-    Drafted structured README content for docs/ folder organization and contents
+Drafted structured README content for docs/ folder organization and contents
 
-    Converted spatial_data_preparation_checklist.md to RMarkdown with interactive checkboxes
+Converted spatial_data_preparation_checklist.md to RMarkdown with interactive checkboxes
 
-    Added YAML header with github_document output and floating TOC for checklist rendering
+Added YAML header with github_document output and floating TOC for checklist rendering
 
-    Added 01c_download_usgs_site_metadata.R to query and export detailed metadata for USGS peak flow gages filtered within the Great Plains Level I Ecoregion
+Added 01c_download_usgs_site_metadata.R to query and export detailed metadata for USGS peak flow gages filtered within the Great Plains Level I Ecoregion
 
-    Added 01e_filter_peakflow_data.R script to apply staged filtering of peak flow data, including:
+Added 01e_filter_peakflow_data.R script to apply staged filtering of peak flow data, including:
 
-        Exclusion of dam break and regulated flows
+-  Exclusion of dam break and regulated flows
 
-        Dual analysis paths (Core vs. Blended)
+-  Dual analysis paths (Core vs. Blended)
 
-        Site-level record length filtering
+-  Site-level record length filtering
 
-        Export of cleaned datasets and metadata:
+-  Export of cleaned datasets and metadata:
 
-            peakflow_filter_summary.csv
+-  peakflow_filter_summary.csv
 
-            peakflow_peak_cd_flags.csv
+-  peakflow_peak_cd_flags.csv
 
-            peakflow_sites_dropped_in_core.csv
+-  peakflow_sites_dropped_in_core.csv
 
-            peakflow_sites_dropped_summary.csv
+-  peakflow_sites_dropped_summary.csv
 
-            summary_pk_by_site.csv
+-  summary_pk_by_site.csv
+
+Added/renamed docs/review_data_files to inventory downloads data/raw and 
+compare with data/processed to flag missing processing steps and unused files
+
+- Combine and validate NHDPlus HR catchments with chunked geometry repair
 
 ### Changed
 
-    Changed 01b_download-gage-data.R outputs: Removed tile_id, queryTime,
-    ecoregion level, and fields from final CSVs
+Changed 01b_download-gage-data.R outputs: Removed tile_id, queryTime,
+ecoregion level, and fields from final CSVs
 
-    Updated docs/README.md to include spatial checklist as a key reference
+Updated docs/README.md to include spatial checklist as a key reference
 
-    Started reviewing and inventorying reports/ folder for milestone logs and modeling notes
+Started reviewing and inventorying reports/ folder for milestone logs and modeling notes
 
-    Grouped finalized .Rmd logs and narrative summaries by milestone in reports/
+Grouped finalized .Rmd logs and narrative summaries by milestone in reports/
+
+* Moved zipped files to raw/archives
+
+
 
 ### In Progress
 
-    Began migrating internal process documentation and QA/QC templates into docs/
+FIND NHDHD FLOWLINES DOWNLOAD SCRIPT AND RESTORE DATA
 
-    Inventorying all .Rmd, .md, and .txt files in docs/ and reports/ by date, topic, and milestone
+Continue audit for duplicate or outdated files across documentation folders
+*    data/raw
+*    data/intermediate
+*    data/processed
 
-    Auditing for duplicate or outdated files across documentation folders
+Began migrating internal process documentation and QA/QC templates into docs/
 
-    Integrating finalized workflow references and logs into a shared index or dashboard-style README
+Inventorying all .Rmd, .md, and .txt files in docs/ and reports/ by date, topic, and milestone
 
-    Tagging report .Rmd files with chunk header cleanup ({r name, eval=}) for reproducibility
+Integrating finalized workflow references and logs into a shared index or dashboard-style README
 
-    Auto-generate a CSV tracker from your 01_download script names
+Tagging report .Rmd files with chunk header cleanup ({r name, eval=}) for reproducibility
 
-    Draft a corresponding Git commit message
+Auto-generate a CSV tracker from your 01_download script names
+
+Draft a corresponding Git commit message
 
 ## [v1.3.0] - 2025-06-30
 
 ### Added
 - Created modular download scripts under `R/01_download/`:
-  - `01a_download_us_ecoregions.R`
+  - `01a_download_ecoregions.R`
   - `01b_download_gage-data.R`
   - `01c`–`01e` for NHDPlus v2 and HR flowlines and catchments
   - `01f`–`01g` for Köppen-Geiger and Plant Hardiness Zones
