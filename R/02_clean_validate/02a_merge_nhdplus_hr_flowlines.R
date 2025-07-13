@@ -2,20 +2,26 @@
 # Script Name:    02a_merge_nhdplus_hr_flowlines.R
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-06-07
-# Last Updated:   
+# Last Updated:   2025-07-13
 #
 # Purpose: Merge NHDPlus HR flowlines into a single GeoPackage
 #
 # Data URLs: https://www.usgs.gov/national-hydrography/nhdplus-high-resolution
 # Data Dictionary: https://www.usgs.gov/ngp-standards-and-specifications/national-hydrography-dataset-nhd-data-dictionary-feature-classes
 #
+# Changelog:
+# 2025-07-13 -- Update name and folder path to fit with naming conventions.
+#               Update metadata in script header
+#
 # Workflow Summary:
-# 1. List files in /data/intermediate/
+# 1. List files in /data/raw/nhdphr_flowlines/
 # 2. QA check on 
 # 2. Read each file
 # 3. Combine all into one sf object
 #
-# Output: flowlines 
+# Input:  Individual nhdphr flowlines (~3,405,000 obs x 178 vars) saved as .gpkg
+#         and aggregated by Level Ecoregion (N =171) in raw/nhdphr_flowlines/
+# Output: A single .gpkg in processed/raw/nhdphr_flowlines/
 #
 # Dependencies:
 # -    tidyverse: general data wrangling
@@ -24,10 +30,7 @@
 # -    here:      consistent relative paths
 # -    sf:        handling spatial data
 # -    units      unit conversion
-#
-# Notes: inputs flowlines from 171 L4 Ecoregions and merges to ~3,405,000 obs
-# of 178 variables
-#
+
 # ============================================================================== 
 
 # Load libraries
@@ -43,8 +46,8 @@ library(units)
 # ------------------------------------------------------------------------------
 
 # --- 1a. get list of file names ----------------------------------------------
-file_path  <- "data/intermediate"      # top-level folder for intermediate data
-dir_name   <- "nhdphr_by_ecoregion/"   # subfolder for NHDPlus HR flowlines
+file_path  <- "data/raw"      # top-level folder for intermediate data
+dir_name   <- "nhdphr_flowlines/"   # subfolder for NHDPlus HR flowlines
 
 gpkg_files <- dir_ls(glue("{here()}/{file_path}/{dir_name}/", glob = "*.gpkg"))
 
@@ -257,11 +260,12 @@ flowlines_vars_sub <- flowlines_vars %>%
 
 # --- 4c. write merged results ------------------------------------------------
 # close any open processes prior to writing
-unlink(here("data/processed/flowlines_combined_clean.gpkg"))
+unlink(here("data/processed/nhdphr_flowlines/nhdhr_flowlines_combined.gpkg"))
 
 # --- 4b. write merged results ------------------------------------------------
 sf::write_sf(flowlines_all[, flowlines_vars_sub$var_names], 
-             here("data/processed/flowlines_combined_clean.gpkg"))
+             here(
+               "data/processed/nhdphr_flowlines/nhdhr_flowlines_combined.gpkg"))
 
 # -----------------------------------------------------------------------------
 # 5. Make data dictionary
