@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:    02x_join_nhdphr_catchments.R
+# Script Name:    02b_join_nhdphr_catchments.R
 # Purpose:        Combine and clean NHDPlus HR catchments by Level IV ecoregion
 # Author:         Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-07-12
