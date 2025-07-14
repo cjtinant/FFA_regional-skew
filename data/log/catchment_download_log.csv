@@ -180,3 +180,64 @@ Lower Platte Alluvial Plain,success,NA,2025-06-19 12:50:55.215943
 Northeastern Nebraska Loess Hills,success,NA,2025-06-19 12:52:50.779528
 Transitional Sandy Plain,success,NA,2025-06-19 12:53:32.573156
 Western Loess Hills,success,NA,2025-06-19 12:55:59.706897
+"Caprock Canyons, Badlands, and Breaks",error,object 'eco_lev4' not found,2025-07-13 13:59:14.513164
+Lower St. Croix and Vermillion Valleys,error,object 'eco_lev4' not found,2025-07-13 13:59:14.517003
+Mid-Coast Barrier Islands and Coastal Marshes,error,object 'eco_lev4' not found,2025-07-13 13:59:14.519906
+Missouri Breaks Woodland-Scrubland,error,object 'eco_lev4' not found,2025-07-13 13:59:14.5224
+Non-calcareous Foothill Grassland,error,object 'eco_lev4' not found,2025-07-13 13:59:14.525014
+Pine-Oak Woodlands,error,object 'eco_lev4' not found,2025-07-13 13:59:14.528882
+Pinyon-Juniper Woodlands and Savannas,error,object 'eco_lev4' not found,2025-07-13 13:59:14.531864
+Pryor-Bighorn Foothills,error,object 'eco_lev4' not found,2025-07-13 13:59:14.53444
+Shield-Smith Valleys,error,object 'eco_lev4' not found,2025-07-13 13:59:14.537074
+Texas-Louisiana Coastal Marshes,error,object 'eco_lev4' not found,2025-07-13 13:59:14.539763
+Texas-Tamaulipan Thornscrub,error,object 'eco_lev4' not found,2025-07-13 13:59:14.542305
+"Caprock Canyons, Badlands, and Breaks",error,In argument: `us_l4name == l4name`.,2025-07-13 13:59:43.117179
+Lower St. Croix and Vermillion Valleys,error,In argument: `us_l4name == l4name`.,2025-07-13 13:59:43.127998
+Mid-Coast Barrier Islands and Coastal Marshes,error,In argument: `us_l4name == l4name`.,2025-07-13 13:59:43.137522
+Missouri Breaks Woodland-Scrubland,error,In argument: `us_l4name == l4name`.,2025-07-13 13:59:43.147062
+Non-calcareous Foothill Grassland,error,In argument: `us_l4name == l4name`.,2025-07-13 13:59:43.15707
+Pine-Oak Woodlands,error,In argument: `us_l4name == l4name`.,2025-07-13 13:59:43.167525
+Pinyon-Juniper Woodlands and Savannas,error,In argument: `us_l4name == l4name`.,2025-07-13 13:59:43.178065
+Pryor-Bighorn Foothills,error,In argument: `us_l4name == l4name`.,2025-07-13 13:59:43.188764
+Shield-Smith Valleys,error,In argument: `us_l4name == l4name`.,2025-07-13 13:59:43.199024
+Texas-Louisiana Coastal Marshes,error,In argument: `us_l4name == l4name`.,2025-07-13 13:59:43.210355
+Texas-Tamaulipan Thornscrub,error,In argument: `us_l4name == l4name`.,2025-07-13 13:59:43.229011
+"Caprock Canyons, Badlands, and Breaks",error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:29:32.636434
+Lower St. Croix and Vermillion Valleys,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:29:32.651855
+Mid-Coast Barrier Islands and Coastal Marshes,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:29:32.662951
+Missouri Breaks Woodland-Scrubland,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:29:32.674866
+Non-calcareous Foothill Grassland,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:29:32.686856
+Pine-Oak Woodlands,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:29:32.699011
+Pinyon-Juniper Woodlands and Savannas,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:29:32.710515
+Pryor-Bighorn Foothills,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:29:32.722745
+Shield-Smith Valleys,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:29:32.784672
+Texas-Louisiana Coastal Marshes,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:29:32.798532
+Texas-Tamaulipan Thornscrub,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:29:32.811115
+"Caprock Canyons, Badlands, and Breaks",error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:32:40.616099
+Lower St. Croix and Vermillion Valleys,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:32:40.634252
+Mid-Coast Barrier Islands and Coastal Marshes,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:32:40.652021
+Missouri Breaks Woodland-Scrubland,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:32:40.670469
+Non-calcareous Foothill Grassland,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:32:40.688038
+Pine-Oak Woodlands,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:32:40.706866
+Pinyon-Juniper Woodlands and Savannas,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:32:40.726854
+Pryor-Bighorn Foothills,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:32:40.743636
+Shield-Smith Valleys,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:32:40.793921
+Texas-Louisiana Coastal Marshes,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:32:40.816264
+Texas-Tamaulipan Thornscrub,error,In argument: `str_trim(us_l4name) == str_trim(l4name)`.,2025-07-13 14:32:40.833948
+"Caprock Canyons, Badlands, and Breaks",error,"In argument: `str_detect(us_l4name, fixed(l4name, ignore_case = TRUE))`.",2025-07-13 14:34:10.991464
+Lower St. Croix and Vermillion Valleys,error,"In argument: `str_detect(us_l4name, fixed(l4name, ignore_case = TRUE))`.",2025-07-13 14:34:11.02076
+Mid-Coast Barrier Islands and Coastal Marshes,error,"In argument: `str_detect(us_l4name, fixed(l4name, ignore_case = TRUE))`.",2025-07-13 14:34:11.03967
+Missouri Breaks Woodland-Scrubland,error,"In argument: `str_detect(us_l4name, fixed(l4name, ignore_case = TRUE))`.",2025-07-13 14:34:11.058509
+Non-calcareous Foothill Grassland,error,"In argument: `str_detect(us_l4name, fixed(l4name, ignore_case = TRUE))`.",2025-07-13 14:34:11.078563
+Pine-Oak Woodlands,error,"In argument: `str_detect(us_l4name, fixed(l4name, ignore_case = TRUE))`.",2025-07-13 14:34:11.09815
+Pinyon-Juniper Woodlands and Savannas,error,"In argument: `str_detect(us_l4name, fixed(l4name, ignore_case = TRUE))`.",2025-07-13 14:34:11.116837
+Pryor-Bighorn Foothills,error,"In argument: `str_detect(us_l4name, fixed(l4name, ignore_case = TRUE))`.",2025-07-13 14:34:11.136783
+Shield-Smith Valleys,error,"In argument: `str_detect(us_l4name, fixed(l4name, ignore_case = TRUE))`.",2025-07-13 14:34:11.155089
+Texas-Louisiana Coastal Marshes,error,"In argument: `str_detect(us_l4name, fixed(l4name, ignore_case = TRUE))`.",2025-07-13 14:34:11.174001
+Texas-Tamaulipan Thornscrub,error,"In argument: `str_detect(us_l4name, fixed(l4name, ignore_case = TRUE))`.",2025-07-13 14:34:11.19258
+"Caprock Canyons, Badlands, and Breaks",error,"Creation failed.
+",2025-07-13 14:55:39.975965
+"Caprock Canyons, Badlands, and Breaks",error,Creation failed for Caprock_Canyons_Badlands_and_Breaks: [ENOENT] Failed to copy '/var/folders/3t/z382nspd7pxbmqb5bhbl_89c0000gn/T/RtmpcRXsCr/file232e553b05bb.gpkg' to '/Users/cjtinant/Documents/Rprojects_not-class/FFA_regional-skew/data/intermediate/nhdphr_catchments_by_ecoregion/Caprock_Canyons_Badlands_and_Breaks.gpkg': no such file or directory,2025-07-13 15:00:35.900488
+Lower St. Croix and Vermillion Valleys,error,Creation failed for Lower_St_Croix_and_Vermillion_Valleys: [ENOENT] Failed to copy '/var/folders/3t/z382nspd7pxbmqb5bhbl_89c0000gn/T/RtmpcRXsCr/file232e15f563b4.gpkg' to '/Users/cjtinant/Documents/Rprojects_not-class/FFA_regional-skew/data/intermediate/nhdphr_catchments_by_ecoregion/Lower_St_Croix_and_Vermillion_Valleys.gpkg': no such file or directory,2025-07-13 15:01:24.109416
+Mid-Coast Barrier Islands and Coastal Marshes,error,Creation failed for Mid_Coast_Barrier_Islands_and_Coastal_Marshes: [ENOENT] Failed to copy '/var/folders/3t/z382nspd7pxbmqb5bhbl_89c0000gn/T/RtmpcRXsCr/file232e2164c9af.gpkg' to '/Users/cjtinant/Documents/Rprojects_not-class/FFA_regional-skew/data/intermediate/nhdphr_catchments_by_ecoregion/Mid_Coast_Barrier_Islands_and_Coastal_Marshes.gpkg': no such file or directory,2025-07-13 15:02:10.524307
+Missouri Breaks Woodland-Scrubland,error,Creation failed for Missouri_Breaks_Woodland_Scrubland: [ENOENT] Failed to copy '/var/folders/3t/z382nspd7pxbmqb5bhbl_89c0000gn/T/RtmpcRXsCr/file232e5ff51149.gpkg' to '/Users/cjtinant/Documents/Rprojects_not-class/FFA_regional-skew/data/intermediate/nhdphr_catchments_by_ecoregion/Missouri_Breaks_Woodland_Scrubland.gpkg': no such file or directory,2025-07-13 15:07:31.555949
