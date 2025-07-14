@@ -1,7 +1,7 @@
 Review and Inventory of Spatial and Tabular Data
 ================
 CJ Tinant
-2025-07-14 10:54:45
+2025-07-14 12:11:57
 
 - [Overview](#overview)
 - [Goals](#goals)
@@ -111,7 +111,8 @@ UPDATE
 
 ``` r
 # get feature results
-files_raw_vec <- read_csv(here("data/log", "feature_file_inventory.csv"),
+files_raw_vec <- read_csv(here("data/log/raw_feature",
+                               "feature_file_inventory.csv"),
                           show_col_types = FALSE) %>%
   select(file_type, relative_path, possible_duplicate) %>%
   separate(
@@ -125,7 +126,8 @@ files_raw_vec <- read_csv(here("data/log", "feature_file_inventory.csv"),
   mutate(data_type = "vector")
 
 # get raster results
-files_raw_rast <- read_csv(here("data/log", "raster_data_inventory.csv"),
+files_raw_rast <- read_csv(here("data/log/raw_raster",
+                                "raster_data_inventory.csv"),
                           show_col_types = FALSE) %>%
   select(file_type, relative_path, possible_duplicate) %>%
   separate(
@@ -281,27 +283,17 @@ write_csv(full_summary,
 USE KABLE HERE
 
 ``` r
-print(full_summary)
+flowlines <- files_raw_vec %>%
+  filter(folder == "nhdphr_flowlines") %>%
+  select(file)
+
+catchments <- files_raw_vec %>%
+  filter(folder == "nhdphr_catchments")  %>%
+  select(file)
+
+dups <- anti_join(flowlines, catchments)
 ```
 
-    ## # A tibble: 16 × 6
-    ##    data_type folder          file_type.raw n.raw file_type.processed n.processed
-    ##    <chr>     <chr>           <chr>         <int> <chr>                     <int>
-    ##  1 vector    ecoregions      gpkg              1 gpkg                          1
-    ##  2 raster    koppen_climate  tif               1 tif                           1
-    ##  3 raster    modis           tif              25 tif                          25
-    ##  4 vector    modis           csv               1 csv                           1
-    ##  5 raster    ned             tif               2 tif                           2
-    ##  6 vector    nhdphr_catchme… gpkg              1 gpkg                          1
-    ##  7 vector    nhdphr_flowlin… gpkg              1 gpkg                          1
-    ##  8 vector    nhdplus_v21     gpkg              2 gpkg                          2
-    ##  9 raster    nlcd            tif               1 tif                           1
-    ## 10 vector    peakflow_gages  csv               2 csv                           2
-    ## 11 raster    phzm            tif               1 tif                           1
-    ## 12 raster    prism           tif            1101 tif                        1101
-    ## 13 vector    statsgo2        csv               2 csv                           2
-    ## 14 vector    statsgo2        csv               2 gpkg                          1
-    ## 15 vector    statsgo2        gpkg              1 csv                           2
-    ## 16 vector    statsgo2        gpkg              1 gpkg                          1
+    ## Joining with `by = join_by(file)`
 
 CHECK THE CSV DATA – there is a difference in the numbers

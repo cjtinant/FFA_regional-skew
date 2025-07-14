@@ -90,7 +90,8 @@ UPDATE
 ```{r read_data_raw_inventory}
 
 # get feature results
-files_raw_vec <- read_csv(here("data/log", "feature_file_inventory.csv"),
+files_raw_vec <- read_csv(here("data/log/raw_feature",
+                               "feature_file_inventory.csv"),
                           show_col_types = FALSE) %>%
   select(file_type, relative_path, possible_duplicate) %>%
   separate(
@@ -104,7 +105,8 @@ files_raw_vec <- read_csv(here("data/log", "feature_file_inventory.csv"),
   mutate(data_type = "vector")
 
 # get raster results
-files_raw_rast <- read_csv(here("data/log", "raster_data_inventory.csv"),
+files_raw_rast <- read_csv(here("data/log/raw_raster",
+                                "raster_data_inventory.csv"),
                           show_col_types = FALSE) %>%
   select(file_type, relative_path, possible_duplicate) %>%
   separate(
@@ -248,7 +250,16 @@ write_csv(full_summary,
 USE KABLE HERE
 ```{r}
 
-print(full_summary)
+flowlines <- files_raw_vec %>%
+  filter(folder == "nhdphr_flowlines") %>%
+  select(file)
+
+catchments <- files_raw_vec %>%
+  filter(folder == "nhdphr_catchments")  %>%
+  select(file)
+
+dups <- anti_join(flowlines, catchments)
+
 ```
 
 CHECK THE CSV DATA -- there is a difference in the numbers
