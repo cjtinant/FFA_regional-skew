@@ -18,6 +18,8 @@
 # 5. Attempt date parsing; retain raw strings for diagnostics
 # 6. Export the combined dataset for further processing
 #
+# Input Files:
+# - data/raw/peakflow_gages/usgs_sites_pk_ST_only.csv
 # Output Files:
 # - data/raw/peakflow_gages/data_pk_all.csv — all retrieved peak flow records
 #
