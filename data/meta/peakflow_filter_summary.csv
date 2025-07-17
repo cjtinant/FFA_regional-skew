@@ -1,6 +1,0 @@
-step,n_records,n_sites
-Initial records (raw),110655,3035
-Remove NA peak_va,109220,3011
-Remove dam failure (code 3),23,22
-Remove regulated (code 6),30025,777
-Remove sites with <20 years,14685,323
