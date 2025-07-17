@@ -29,7 +29,8 @@
 # - dataRetrieval   → Access USGS NWIS data
 #
 # Notes:
-# - This script does not apply filtering on regulation, dam failure, or record length.
+# - This script does not apply filtering on regulation, dam failure, or
+#   record length.
 #   Filtering occurs in the subsequent script.
 # - Site list is derived from `usgs_site_metadata.csv` (script 01c).
 # ==============================================================================
@@ -39,7 +40,6 @@
 library(tidyverse)      # Includes dplyr, purrr, readr, etc.
 library(glue)           # For dynamic string construction
 library(here)           # Robust relative file paths
-library(sf)             # Spatial feature support (not used here, but included for project consistency)
 library(dataRetrieval)  # Functions to access USGS NWIS data
 
 # ---------------------------------------------------------
@@ -74,9 +74,12 @@ data_pk_raw <- bind_rows(peak_data_list)
 # Step 6 — Retain raw date strings, attempt parsing, and flag any failures
 data_pk <- data_pk_raw %>%
   mutate(
-    peak_dt_raw = peak_dt,                                      # preserve original raw date string
-    peak_dt = suppressWarnings(lubridate::ymd(peak_dt_raw)),    # attempt to parse as Date
-    date_parse_failed = is.na(peak_dt) & !is.na(peak_dt_raw)    # flag records where parsing failed
+    # preserve original raw date string
+    peak_dt_raw = peak_dt,
+    # attempt to parse as Date
+    peak_dt = suppressWarnings(lubridate::ymd(peak_dt_raw)),
+    # flag records where parsing failed
+    date_parse_failed = is.na(peak_dt) & !is.na(peak_dt_raw)    
   )
 
 # Step 7 — Export full dataset (with raw and parsed dates) to CSV

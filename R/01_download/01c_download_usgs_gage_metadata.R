@@ -12,7 +12,7 @@
 # 1. Read a list of stream gage site numbers from a previously prepared CSV file
 #    (sites_pk_eco_only.csv). This includes flags for potentially colocated
 #    sites.
-# 2. Retrieve Metadata from the National Water Information System (NWIS) and
+# 2. Retrieve metadata from the National Water Information System (NWIS) and
 #    consolidates the results into a single metadata table.
 # 3. Clean and De-duplicate Results:
 #    - Identify sites with missing metadata.
