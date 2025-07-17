@@ -36,34 +36,23 @@ for USGS peak flow gages filtered within the Great Plains Level I Ecoregion
 * Added 01e_filter_peakflow_data.R script to apply staged filtering of peak flow
 data, including:
 
+*     Filtered USGS peak flow data for usable records (≥10 years)
 
+*     Applied MGBT to flag and remove PILFs
 
+*     Tiered sites into 3 categories based on regulation and record length
 
+*     Calculated LP3-compatible sample skewness per Bulletin 17C
 
+*     Cleaned and joined gage attributes; removed unused/constant fields
 
-*     Exclusion of dam break and regulated flows
-
-*     Dual analysis paths (Core vs. Blended)
-
-*     Site-level record length filtering
-
-* Export of cleaned datasets and metadata:
-
-*     peakflow_filter_summary.csv
-
-*     peakflow_peak_cd_flags.csv
-
-*     peakflow_sites_dropped_in_core.csv
-
-*     peakflow_sites_dropped_summary.csv
-
-*     summary_pk_by_site.csv
+*     Exported results to GeoPackage (gage_summary_skew.gpkg), CSV, and metadata dictionary
 
 * Added/renamed docs/review_data_files to inventory downloads in data/raw/ and compare with data/processed/ to flag missing processing steps and unused files
 
 * Combined and validated NHDPlus HR catchments with chunked geometry repair
 
-* ✅ Recreated and enhanced 01h_download_nhdplus_hr_flowlines.R to download and QA NHDPlus HR flowlines for Great Plains L4 Ecoregions:
+* Recreated and enhanced 01h_download_nhdplus_hr_flowlines.R to download and QA NHDPlus HR flowlines for Great Plains L4 Ecoregions:
 
 *     Restored functionality from deleted prior version
 
@@ -85,23 +74,28 @@ data, including:
 
 * Updated docs/README.md to include spatial checklist as a key reference
 
-* Started reviewing and inventorying reports/ folder for milestone logs and modeling notes
+* Started reviewing and inventorying reports/ folder for milestone logs and 
+modeling notes
 
-* Grouped finalized .Rmd logs and narrative summaries by milestone in reports/
+* Grouped finalized .Rmd logs and narrative summaries by milestone in `reports/`
 
 * Moved zipped files to data/raw/archives/
 
+* Updated `inventory_feature_data.R output` to permanently log results to
+`data/log`
+
+* Moved possible duplicate flowlines files from `/data/raw/` to data to
+`to_check/nhdphd_flowlines_dups/`
+
+* Moved `data/intermediate` to `to_check/`
+
 #In Progress
 
-* [Resolved] FIND NHD+ HR flowlines download script and restore data
+* check metadata for files not reading in validate data
+
+* check spatial extent by domain
 
 * Continue audit for duplicate or outdated files across documentation folders:
-
-*     data/raw
-
-*     data/intermediate
-
-*     data/processed
 
 * Began migrating internal process documentation and QA/QC templates into docs/
 
