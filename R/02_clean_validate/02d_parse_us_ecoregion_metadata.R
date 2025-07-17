@@ -1,7 +1,8 @@
 # ==============================================================================
-# Script Name:    02d_parse_ecoregion_metadata.R
+# Script Name:    02d_parse_metadata.R
 # Author:         Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-07-01
+# Last Update:    2025-07014
 #
 # Purpose:        Loop through multiple FGDC metadata XML files and extract:
 #                   1. Attribute definitions
@@ -19,13 +20,20 @@ library(fs)
 library(stringr)
 library(purrr)
 
+# ------------------------------------------------------------------------------
+# 1. Check Raw Data
+# ------------------------------------------------------------------------------
 # Directory with .xml metadata files
 xml_dir <- "data/raw"
-meta_out_dir <- "data/meta"
+meta_out_dir <- "data/meta/raw_xml"
+
+stopifnot(dir_exists(xml_dir))
+if (!dir_exists(meta_out_dir)) dir_create(meta_out_dir, recurse = TRUE)
 
 # Recursively find all .shp.xml files in nested folders
 xml_files <- dir_ls(xml_dir, recurse = TRUE, regexp = "\\.shp\\.xml$")
 
+# ------------------------------------------------------------------------------
 # Function to parse one file
 parse_fgdc <- function(file_path) {
   message("📄 Parsing: ", basename(file_path))
@@ -41,7 +49,8 @@ parse_fgdc <- function(file_path) {
     domain = xml_text(xml_find_first(attrs, "attrdomv/udom | attrdomv/rdom/udom | attrdomv/rdom/rdommin"))
   ) %>%
     mutate(across(everything(), ~ na_if(.x, "")))
-  
+
+# ------------------------------------------------------------------------------
   # 2. Extract spatial metadata
   crs_info <- tibble(
     file = name_root,
@@ -72,3 +81,5 @@ parse_fgdc <- function(file_path) {
 
 # Apply to all xml files
 walk(xml_files, parse_fgdc)
+
+
