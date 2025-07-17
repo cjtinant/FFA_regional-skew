@@ -82,7 +82,7 @@ writeLines(c(
 ```{r get_data}
 
 metadata <- read_csv(here(
-  "docs/regional_skew_covariates_metadata_by_scale_v022.csv")) %>%
+  "docs/metadata/regional_skew_covariates_metadata_by_scale_v022.csv")) %>%
   sanitize_metadata() %>%
  mutate(
    Description = str_wrap(Description, 70),
