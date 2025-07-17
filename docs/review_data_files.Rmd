@@ -191,7 +191,7 @@ result_rast_processed <- inventory_raster_data(
 
 ## Part 3: Check Results
 
-UPDATE
+This section loads saved logs and summarises results
 
 ```{r read_data_processed_inventory}
 
@@ -247,22 +247,61 @@ write_csv(full_summary,
 
 ```
 
-USE KABLE HERE
+## Part 4: Validate Metadata
+### Validate Spatial Data
+This step validates CRS, resolution, and spatial extent of raster and vector
+files in `data/processed/`. The script that creates the output is 
+`02e_validate_spatial_metadata.R`
+
 ```{r}
 
-flowlines <- files_raw_vec %>%
-  filter(folder == "nhdphr_flowlines") %>%
-  select(file)
+# Get vector validation summary
+vec_spatial_summary <- read_csv(here("data/meta",
+                                     "vector_validation_summary.csv"),
+                                show_col_types = FALSE)
 
-catchments <- files_raw_vec %>%
-  filter(folder == "nhdphr_catchments")  %>%
-  select(file)
+# Get raster validation summary
+# rast_spatial_summary <- read_csv(here("data/meta",
+#                                      "vector_validation_summary.csv"),
+#                                 show_col_types = FALSE)
 
-dups <- anti_join(flowlines, catchments)
+
+# Get bb for ecoregions
 
 ```
 
-CHECK THE CSV DATA -- there is a difference in the numbers
+### Validate Other Metadata
+
+**Definitions:**
+*Attribute data* refers to the actual values associated with each record or
+feature in a dataset. In a spatial dataset, these are typically the values in
+the attribute table (e.g., names, measurements, categories).
+
+A *Data Dictionary* A data dictionary is metadata — it describes the structure,
+meaning, and units of the fields in your dataset. It helps humans understand
+what each field represents. It can be saved as:
+
+*  A separate file (e.g., Excel, CSV, JSON, R script)
+
+*  As a documentation section in an RMarkdown or README
+
+*  Embedded in metadata for shapefiles (e.g., .xml files) or GeoPackages
+
+Example (corresponding to above):
+| Field Name | Description            | Unit    | Data Type |
+|:----------:|:----------------------:|:-------:|:---------:|
+| STATE_NAME | Name of the U.S. state | NA      | Text      |
+| POP_2020   | Population in 2020     | Persons | Integer   |
+| AREA_SQKM  | Area of the state      | sqkm    | Float     |
+
+```{r}
+
+# EPA files -- use join
+
+
+```
+
+
 
 
 
