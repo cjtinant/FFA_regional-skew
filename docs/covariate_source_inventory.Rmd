@@ -54,23 +54,23 @@ For detailed field descriptions and spatial resolution, see the
 [Skew Covariates Metadata Schema](../data/meta/covariates_metadata_split/covariates_covariate_metadata_schema.csv).
 
 Tables below list datasets used in the regional skew estimation project. 
-All datasets are publicly available, spatially referenced, and selected for their hydrologic relevance. 
+All datasets are publicly available, spatially referenced, and selected for
+their hydrologic relevance. 
 
 ---
 
-
-
 ### Table 3: Folder Names and Status
 
-Status codes track the current stage of preparation for each dataset listed above. Values range from "00 — Not Started" to "10 — Used in Modeling".
+Status codes track the current stage of preparation for each dataset listed
+above. Values range from "00 — Not Started" to "10 — Used in Modeling".
 
 | Dataset Name | Folder Name | Status Code | Notes |
 |:------------:|:-----------:|:-----------:|:-----:|
 | EPA Ecoregions   | ecoregions      | 05   | NA    |
-| USGS Stations    | peakflow_gages  | 02   | NA    |
-| USGS NHDPlusV2.1 | nhdplus         | 02   | NA    |
-| USGS NHDPlusHD   | nhdplus         | 02   | NA    |
-| Koppen Geiger    | koppen_climate  | 02   | NA    |
+| USGS Stations        | peakflow_gages  | 02   | NA    |
+| USGS NHDPlusV2.1     | nhdplus         | 02   | NA    |
+| USGS NHDPlusHD       | nhdplus         | 02   | NA    |
+| Koppen Geiger        | koppen_climate  | 02   | NA    |
 | Plant Hardiness Zone | phzm        | 05   | NA    |
 | NLCD Land Cover  | nlcd            | 02   | NA    |
 | NED Elevation    | ned_elev        | 02   | NA    |
