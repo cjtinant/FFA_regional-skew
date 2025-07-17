@@ -26,6 +26,13 @@ FFA_regional-skew Project
   Entry](#white_check_mark-when-to-create-a-github-issue-comment-or-changelog-entry)
 - [✅ Release Checklist (Markdown or Issue
   Template)](#white_check_mark-release-checklist-markdown-or-issue-template)
+- [Don’t Repeat Yourself (DRY) Principles for
+  Docs](#dont-repeat-yourself-dry-principles-for-docs)
+  - [✅ DRY Benefits](#white_check_mark-dry-benefits)
+  - [Rule of Thumb: “Single Source of
+    Truth”](#rule-of-thumb-single-source-of-truth)
+    - [Suggested Division of Labor](#suggested-division-of-labor)
+  - [Should I use a .csv or an .xlxs?](#should-i-use-a-csv-or-an-xlxs)
 
 ------------------------------------------------------------------------
 
@@ -282,3 +289,51 @@ Use this to ensure every release is polished and complete.
     ## 📦 Optional Extras
     - [ ] Archive important rasters or scripts to `release/vX.Y.Z/`
     - [ ] Create reproducibility snapshot (e.g., via `renv::snapshot()` in R)
+
+# Don’t Repeat Yourself (DRY) Principles for Docs
+
+## ✅ DRY Benefits
+
+- Avoid double edits — update once in .csv, it’s reflected in .Rmd
+
+- Facilitates plotting, filtering, joining in modeling scripts
+
+- Keeps narrative lighter and cleaner
+
+## Rule of Thumb: “Single Source of Truth”
+
+- Keep the data in the spreadsheet (.csv.xlsx)
+
+- Reference and summarize it in the RMarkdown file (.Rmd), with clear
+  sourcing.
+
+### Suggested Division of Labor
+
+| Task | .csv or .xlsx | .Rmd |
+|:--:|:--:|:--:|
+| Store raw metadata | ✅ Yes | ❌ No |
+| Include scale, units, description, notes | ✅ Yes | selectively |
+| Discuss rationale, sources, assumptions | ❌ No | ✅ Yes |
+| List variables by modeling role (e.g., climate, terrain) | ✅ Yes (structured) | ✅ Yes (narrative/justified) |
+| Drive reproducibility | ✅ Yes | ✅ Yes |
+| Long-term editable source | ✅ Yes | ❌ Only generated from spreadsheet |
+
+## Should I use a .csv or an .xlxs?
+
+- ✅ Use CSV as your primary format when:
+
+- You're working with R scripts, RMarkdown, or version control (Git) ✅
+
+- You want portable, long-term, cross-platform storage
+
+- You need clean diffs in Git (XLSX is binary, CSV is plaintext)
+
+- You’re scripting data loads (readr::read_csv(), fread(), data.table, etc.)
+
+- 🚫 Avoid XLSX when:
+
+- You don’t need multiple sheets, formatting, or formulas
+
+- You're trying to maintain reproducibility and auditability
+
+- You're storing version-controlled data (XLSX is not Git-friendly)

@@ -89,15 +89,14 @@ modeling notes
 
 * Moved `data/intermediate` to `to_check/`
 
+* Moved human-readable metadata to docs/metadata/
+
 #In Progress
-
-* check metadata for files not reading in validate data
-
-* check spatial extent by domain
-
 * Continue audit for duplicate or outdated files across documentation folders:
 
 * Began migrating internal process documentation and QA/QC templates into docs/
+
+* check spatial extent by domain
 
 * Inventorying all .Rmd, .md, and .txt files in docs/ and reports/ by date, topic, and milestone
 
@@ -108,71 +107,6 @@ modeling notes
 * Auto-generate a CSV tracker from your 01_download script names
 
 * Draft a corresponding Git commit message
-
-
-
-
-
-
-
-<!-- -  Exclusion of dam break and regulated flows -->
-
-<!-- -  Dual analysis paths (Core vs. Blended) -->
-
-<!-- -  Site-level record length filtering -->
-
-<!-- -  Export of cleaned datasets and metadata: -->
-
-<!-- -  peakflow_filter_summary.csv -->
-
-<!-- -  peakflow_peak_cd_flags.csv -->
-
-<!-- -  peakflow_sites_dropped_in_core.csv -->
-
-<!-- -  peakflow_sites_dropped_summary.csv -->
-
-<!-- -  summary_pk_by_site.csv -->
-
-<!-- Added/renamed docs/review_data_files to inventory downloads data/raw and  -->
-<!-- compare with data/processed to flag missing processing steps and unused files -->
-
-<!-- - Combine and validate NHDPlus HR catchments with chunked geometry repair -->
-
-<!-- ### Changed -->
-
-<!-- Changed 01b_download-gage-data.R outputs: Removed tile_id, queryTime, -->
-<!-- ecoregion level, and fields from final CSVs -->
-
-<!-- Updated docs/README.md to include spatial checklist as a key reference -->
-
-<!-- Started reviewing and inventorying reports/ folder for milestone logs and modeling notes -->
-
-<!-- Grouped finalized .Rmd logs and narrative summaries by milestone in reports/ -->
-
-<!-- * Moved zipped files to raw/archives -->
-
-
-
-<!-- ### In Progress -->
-
-<!-- FIND NHDHD FLOWLINES DOWNLOAD SCRIPT AND RESTORE DATA -->
-
-<!-- Continue audit for duplicate or outdated files across documentation folders -->
-<!-- *    data/raw -->
-<!-- *    data/intermediate -->
-<!-- *    data/processed -->
-
-<!-- Began migrating internal process documentation and QA/QC templates into docs/ -->
-
-<!-- Inventorying all .Rmd, .md, and .txt files in docs/ and reports/ by date, topic, and milestone -->
-
-<!-- Integrating finalized workflow references and logs into a shared index or dashboard-style README -->
-
-<!-- Tagging report .Rmd files with chunk header cleanup ({r name, eval=}) for reproducibility -->
-
-<!-- Auto-generate a CSV tracker from your 01_download script names -->
-
-<!-- Draft a corresponding Git commit message -->
 
 ## [v1.3.0] - 2025-06-30
 
