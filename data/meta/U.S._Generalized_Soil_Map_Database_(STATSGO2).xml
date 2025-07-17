@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ornl:metadata xmlns:ornl="http://purl.org/ornl/schema/mercury/terms/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/ornl/schema/mercury/terms/v1.0 mercury-ornl-v1.xsd">
+  <idinfo>
+    <citation>
+      <citeinfo>
+        <origin><![CDATA[National Resource Conservation Service (NRCS)]]></origin>
+        <title><![CDATA[U.S. Generalized Soil Map Database (STATSGO2)]]></title>
+        <onlink><![CDATA[http://daac.ornl.gov/metadata/bluangel_harvest/RGED/VF/soils/statsgo.xml]]></onlink>
+        <alt_onlink><![CDATA[http://daac.ornl.gov/metadata/bluangel_harvest/RGED/VF/soils/statsgo.xml]]></alt_onlink>
+        <onlink><![CDATA[http://www.soils.usda.gov/survey/geography/statsgo/]]></onlink>
+        <onlink><![CDATA[http://www.soils.usda.gov/survey/geography/statsgo/description.html]]></onlink>
+        <onlink />
+      </citeinfo>
+    </citation>
+    <descript>
+      <abstract><![CDATA[The United States Department of Agriculture, Natural Resource Conservation Service (USDA, NRCS) has developed the U.S. General Soil Map (STATSGO2) Database (formerly known as the State Soil Geographic (STATSGO) database).  Data are available for all 50 states as well as for Puerto Rico. Soil maps for the STATSGO2 database are made by generalizing detailed soil survey data. The mapping scale for STATSGO2 map is 1:250,000 (with the exception of Alaska, which is 1:1,000,000). The level of mapping is designed to be used for broad planning and management uses covering state, regional, and multi-state areas. STATSGO2 data are designed for use in a geographic information system (GIS).
+
+Digitizing is done by line segment (vector) format in accordance with Natural Resources Conservation Service (NRCS) digitizing standards. The base map used is the U.S. Geological Survey 1:250,000 topographic quadrangles. The number of soil polygons per quadrangle map is between 100 and 400. The minimum area mapped is about 1,544 acres.
+
+STATSGO2 data are collected in 1:250,000 quadrangle units. Map unit delineations match at state boundaries. States have been joined as one complete seamless data base to form statewide coverage. Composition of soil map units was coordinated across state boundaries, so that component identities and relative extents would match.
+
+Each STATSGO2 map is linked to the Soil Interpretations Record (SIR) attribute database. The attribute database gives the proportionate extent of the component soils and their properties for each map unit. The STATSGO map units consist of 1 to 21 components each. The Soil Interpretations Record database includes over 25 physical and chemical soil properties, interpretations, and productivity. Examples of information that can be queried from the database are available water capacity, soil reaction, salinity, flooding, water table, bedrock, and interpretations for engineering uses, cropland, woodland, rangeland, pastureland, wildlife, and recreation development.
+
+STATSGO2 data are available in the USGS Digital Line Graph (DLG-3) Optional distribution format. NRCS soil map symbols are not normally carried within the DLG-3 file; however, these map symbols are made available as a unique ascii file when NRCS soils data are distributed in the DLG-3 format. STATSGO2 data are also available in ArcInfo 7.0 coverage and GRASS 4.13 vector formats.  Both DOS/Windows and UNIX compatible file formats are available. Data are available via ftp by state including Puerto Rico. The complete data set is also available on CD-ROM for a fee.]]></abstract>
+      <supplinf />
+    </descript>
+    <timeperd>
+      <timeinfo>
+        <rngdates>
+          <begdate><![CDATA[19600101]]></begdate>
+          <enddate />
+        </rngdates>
+      </timeinfo>
+    </timeperd>
+    <status>
+      <progress><![CDATA[Final]]></progress>
+      <update><![CDATA[As appropriate]]></update>
+    </status>
+    <spdom>
+      <bounding>
+        <westbc>-180</westbc>
+        <eastbc>-61.48</eastbc>
+        <northbc>76.63</northbc>
+        <southbc>13.71</southbc>
+      </bounding>
+    </spdom>
+    <keywords>
+      <theme>
+        <themekt><![CDATA[Parameter_Sensor_Source]]></themekt>
+        <themekey><![CDATA[SOIL TYPES|ANALYSIS|SOIL SURVEY]]></themekey>
+        <themekey><![CDATA[SALTWATER INTRUSION|ANALYSIS|FIELD INVESTIGATION]]></themekey>
+        <themekey><![CDATA[WATER TABLE|WATER LEVEL GAUGE|FIELD INVESTIGATION]]></themekey>
+        <themekey><![CDATA[HYDRAULIC CONDUCTIVITY|ANALYSIS|SOIL SURVEY]]></themekey>
+        <themekey><![CDATA[SOIL CHEMISTRY|ANALYSIS|SOIL SURVEY]]></themekey>
+        <themekey><![CDATA[SOIL HORIZONS/PROFILE|ANALYSIS|SOIL SURVEY]]></themekey>
+        <themekey><![CDATA[SOIL POROSITY|ANALYSIS|SOIL SURVEY]]></themekey>
+        <themekey><![CDATA[SOIL PRODUCTIVITY|ANALYSIS|SOIL SURVEY]]></themekey>
+        <themekey><![CDATA[SOIL STRUCTURE|ANALYSIS|SOIL SURVEY]]></themekey>
+        <themekey><![CDATA[LANDFORMS|DIGITIZER|TOPOGRAPHIC MAP]]></themekey>
+      </theme>
+      <theme>
+        <themekt><![CDATA[Parameter]]></themekt>
+        <themekey><![CDATA[SOIL TYPES]]></themekey>
+      </theme>
+      <theme>
+        <themekt><![CDATA[Source]]></themekt>
+        <themekey><![CDATA[SOIL SURVEY]]></themekey>
+      </theme>
+      <theme>
+        <themekt><![CDATA[Sensor]]></themekt>
+        <themekey><![CDATA[ANALYSIS]]></themekey>
+      </theme>
+      <place>
+        <placekt><![CDATA[Place Keywords]]></placekt>
+        <placekey><![CDATA[United States]]></placekey>
+        <placekey><![CDATA[Puerto Rico]]></placekey>
+      </place>
+    </keywords>
+    <ptcontac>
+      <cntinfo>
+        <cntperp>
+          <cntper><![CDATA[National Resource Conservation Service (NRCS)]]></cntper>
+        </cntperp>
+        <cntfax><![CDATA[6.1.10.8 Contact Electronic Mail: INTERNET &gt; nrcs data@ftw.nrcs.usda.gov]]></cntfax>
+      </cntinfo>
+    </ptcontac>
+  </idinfo>
+  <distinfo>
+    <distrib>
+      <cntinfo>
+        <cntperp>
+          <cntorg><![CDATA[U.S. Department of Agriculture, Natural Resources Conservation Service, National Cartography and Geospatial Center, Fort Worth, Texas, USA]]></cntorg>
+          <cntper><![CDATA[Prochnow, Kimberly]]></cntper>
+        </cntperp>
+        <cntvoice><![CDATA[+1-817-334-5559]]></cntvoice>
+        <cntfax><![CDATA[6.1.10.8 Contact Electronic Mail: INTERNET &gt; nrcs data@ftw.nrcs.usda.gov]]></cntfax>
+        <cntemail><![CDATA[kprochnow@ftw.nrcs.usda.gov]]></cntemail>
+      </cntinfo>
+    </distrib>
+    <stdorder>
+      <digform>
+        <digtopt>
+          <onlinopt>
+            <computer><![CDATA[http://www.ncgc.nrcs.usda.gov]]></computer>
+            <accinstr><![CDATA[Public]]></accinstr>
+          </onlinopt>
+        </digtopt>
+      </digform>
+    </stdorder>
+    <resdesc><![CDATA[Soil Survey Staff, Natural Resources Conservation Service, United States Department of Agriculture. U.S. General Soil Map (STATSGO2) for [State]. Available online at http://soildatamart.nrcs.usda.gov accessed [month/day/year].]]></resdesc>
+  </distinfo>
+  <metainfo>
+    <metd><![CDATA[20100504 061803]]></metd>
+    <metc>
+      <cntinfo>
+        <cntorgp>
+          <cntper><![CDATA[Curtis, Carroll]]></cntper>
+        </cntorgp>
+        <cntperp>
+          <cntper><![CDATA[Curtis, Carroll]]></cntper>
+        </cntperp>
+        <cntvoice><![CDATA[+1-804-769-2495]]></cntvoice>
+        <cntemail><![CDATA[cncurtis@crosslink.net]]></cntemail>
+      </cntinfo>
+    </metc>
+    <metstdn><![CDATA[FGDC Content Standard for Digital Geospatial Metadata]]></metstdn>
+  </metainfo>
+  <mercury>
+    <begdate>19600101</begdate>
+    <enddate>2014924</enddate>
+    <Site_Information>
+      <Site><![CDATA[United States]]></Site>
+      <Westernmost_Longitude><![CDATA[-180]]></Westernmost_Longitude>
+      <Easternmost_Longitude><![CDATA[-61.48]]></Easternmost_Longitude>
+      <Northernmost_Latitude><![CDATA[76.63]]></Northernmost_Latitude>
+      <Southernmost_Latitude><![CDATA[13.71]]></Southernmost_Latitude>
+    </Site_Information>
+    <Site_Information>
+      <Site><![CDATA[Puerto Rico]]></Site>
+      <Westernmost_Longitude><![CDATA[-67.08]]></Westernmost_Longitude>
+      <Easternmost_Longitude><![CDATA[-65.45]]></Easternmost_Longitude>
+      <Northernmost_Latitude><![CDATA[18.64]]></Northernmost_Latitude>
+      <Southernmost_Latitude><![CDATA[17.88]]></Southernmost_Latitude>
+    </Site_Information>
+    <Keywords><![CDATA[Agriculture security]]></Keywords>
+    <Keywords><![CDATA[Bedrock]]></Keywords>
+    <Keywords><![CDATA[Digital maps]]></Keywords>
+    <Keywords><![CDATA[Ecological mapping]]></Keywords>
+    <Keywords><![CDATA[EOSDIS]]></Keywords>
+    <Keywords><![CDATA[Flooding]]></Keywords>
+    <Keywords><![CDATA[Food security]]></Keywords>
+    <Keywords><![CDATA[Freshwater resources]]></Keywords>
+    <Keywords><![CDATA[Land resources]]></Keywords>
+    <Keywords><![CDATA[Land resource regions]]></Keywords>
+    <Keywords><![CDATA[Leaching]]></Keywords>
+    <Keywords><![CDATA[NRCS]]></Keywords>
+    <Keywords><![CDATA[Pesticide leaching potentials]]></Keywords>
+    <Keywords><![CDATA[Pesticides]]></Keywords>
+    <Keywords><![CDATA[Puerto Rico]]></Keywords>
+    <Keywords><![CDATA[Salinity]]></Keywords>
+    <Keywords><![CDATA[Soil attributes]]></Keywords>
+    <Keywords><![CDATA[Soil characteristics]]></Keywords>
+    <Keywords><![CDATA[Soil Collections]]></Keywords>
+    <Keywords><![CDATA[Soil reactions]]></Keywords>
+    <Keywords><![CDATA[Soil series]]></Keywords>
+    <Keywords><![CDATA[Soil surveys]]></Keywords>
+    <Keywords><![CDATA[Soils]]></Keywords>
+    <Keywords><![CDATA[Soils maps]]></Keywords>
+    <Keywords><![CDATA[State Soil Geographic Database]]></Keywords>
+    <Keywords><![CDATA[STATSGO]]></Keywords>
+    <Keywords><![CDATA[United States]]></Keywords>
+    <Keywords><![CDATA[U.S. Department of Agriculture]]></Keywords>
+    <Parameter_Description>
+      <Parameter><![CDATA[SOIL TYPES]]></Parameter>
+      <Sensor><![CDATA[ANALYSIS]]></Sensor>
+      <Source><![CDATA[SOIL SURVEY]]></Source>
+      <Term><![CDATA[SOILS]]></Term>
+      <Topic><![CDATA[LAND SURFACE]]></Topic>
+    </Parameter_Description>
+    <Parameter_Description>
+      <Parameter><![CDATA[SALTWATER INTRUSION]]></Parameter>
+      <Sensor><![CDATA[ANALYSIS]]></Sensor>
+      <Source><![CDATA[FIELD INVESTIGATION]]></Source>
+      <Term><![CDATA[GROUND WATER]]></Term>
+      <Topic><![CDATA[HYDROSPHERE]]></Topic>
+    </Parameter_Description>
+    <Parameter_Description>
+      <Parameter><![CDATA[WATER TABLE]]></Parameter>
+      <Sensor><![CDATA[WATER LEVEL GAUGE]]></Sensor>
+      <Source><![CDATA[FIELD INVESTIGATION]]></Source>
+      <Term><![CDATA[GROUND WATER]]></Term>
+      <Topic><![CDATA[HYDROSPHERE]]></Topic>
+    </Parameter_Description>
+    <Parameter_Description>
+      <Parameter><![CDATA[HYDRAULIC CONDUCTIVITY]]></Parameter>
+      <Sensor><![CDATA[ANALYSIS]]></Sensor>
+      <Source><![CDATA[SOIL SURVEY]]></Source>
+      <Term><![CDATA[SOILS]]></Term>
+      <Topic><![CDATA[LAND SURFACE]]></Topic>
+    </Parameter_Description>
+    <Parameter_Description>
+      <Parameter><![CDATA[SOIL CHEMISTRY]]></Parameter>
+      <Sensor><![CDATA[ANALYSIS]]></Sensor>
+      <Source><![CDATA[SOIL SURVEY]]></Source>
+      <Term><![CDATA[SOILS]]></Term>
+      <Topic><![CDATA[LAND SURFACE]]></Topic>
+    </Parameter_Description>
+    <Parameter_Description>
+      <Parameter><![CDATA[SOIL HORIZONS/PROFILE]]></Parameter>
+      <Sensor><![CDATA[ANALYSIS]]></Sensor>
+      <Source><![CDATA[SOIL SURVEY]]></Source>
+      <Term><![CDATA[SOILS]]></Term>
+      <Topic><![CDATA[LAND SURFACE]]></Topic>
+    </Parameter_Description>
+    <Parameter_Description>
+      <Parameter><![CDATA[SOIL POROSITY]]></Parameter>
+      <Sensor><![CDATA[ANALYSIS]]></Sensor>
+      <Source><![CDATA[SOIL SURVEY]]></Source>
+      <Term><![CDATA[SOILS]]></Term>
+      <Topic><![CDATA[LAND SURFACE]]></Topic>
+    </Parameter_Description>
+    <Parameter_Description>
+      <Parameter><![CDATA[SOIL PRODUCTIVITY]]></Parameter>
+      <Sensor><![CDATA[ANALYSIS]]></Sensor>
+      <Source><![CDATA[SOIL SURVEY]]></Source>
+      <Term><![CDATA[SOILS]]></Term>
+      <Topic><![CDATA[LAND SURFACE]]></Topic>
+    </Parameter_Description>
+    <Parameter_Description>
+      <Parameter><![CDATA[SOIL STRUCTURE]]></Parameter>
+      <Sensor><![CDATA[ANALYSIS]]></Sensor>
+      <Source><![CDATA[SOIL SURVEY]]></Source>
+      <Term><![CDATA[SOILS]]></Term>
+      <Topic><![CDATA[LAND SURFACE]]></Topic>
+    </Parameter_Description>
+    <Parameter_Description>
+      <Parameter><![CDATA[LANDFORMS]]></Parameter>
+      <Sensor><![CDATA[DIGITIZER]]></Sensor>
+      <Source><![CDATA[TOPOGRAPHIC MAP]]></Source>
+      <Term><![CDATA[TOPOGRAPHY]]></Term>
+      <Topic><![CDATA[LAND SURFACE]]></Topic>
+    </Parameter_Description>
+    <Project />
+    <Navpath><![CDATA[SOIL SURVEY|ANALYSIS|SOIL TYPES]]></Navpath>
+    <Navpath><![CDATA[FIELD INVESTIGATION|ANALYSIS|SALTWATER INTRUSION]]></Navpath>
+    <Navpath><![CDATA[FIELD INVESTIGATION|WATER LEVEL GAUGE|WATER TABLE]]></Navpath>
+    <Navpath><![CDATA[SOIL SURVEY|ANALYSIS|HYDRAULIC CONDUCTIVITY]]></Navpath>
+    <Navpath><![CDATA[SOIL SURVEY|ANALYSIS|SOIL CHEMISTRY]]></Navpath>
+    <Navpath><![CDATA[SOIL SURVEY|ANALYSIS|SOIL HORIZONS/PROFILE]]></Navpath>
+    <Navpath><![CDATA[SOIL SURVEY|ANALYSIS|SOIL POROSITY]]></Navpath>
+    <Navpath><![CDATA[SOIL SURVEY|ANALYSIS|SOIL PRODUCTIVITY]]></Navpath>
+    <Navpath><![CDATA[SOIL SURVEY|ANALYSIS|SOIL STRUCTURE]]></Navpath>
+    <Navpath><![CDATA[TOPOGRAPHIC MAP|DIGITIZER|LANDFORMS]]></Navpath>
+    <Principal_Investigator>
+      <Name><![CDATA[National Resource Conservation Service (NRCS)]]></Name>
+      <Email><![CDATA[nrcs data@ftw.nrcs.usda.gov]]></Email>
+    </Principal_Investigator>
+    <Data_Set_Link>
+      <URL><![CDATA[http://datagateway.nrcs.usda.gov/]]></URL>
+      <Label><![CDATA[U.S. General Soil Map (STATSGO2) Database Download]]></Label>
+      <Link_Note><![CDATA[Download STATSGO2 from the USDA NRCS Geospatial Data Gateway. Click on Get Data, then select area and data layer of interest. Instructions are provided.]]></Link_Note>
+    </Data_Set_Link>
+    <Documentation_Link>
+      <URL><![CDATA[http://www.soils.usda.gov/survey/geography/statsgo/]]></URL>
+      <Label><![CDATA[U.S. General Soil Map (STATSGO2) Home Page]]></Label>
+      <Text />
+    </Documentation_Link>
+    <Documentation_Link>
+      <URL><![CDATA[http://www.soils.usda.gov/survey/geography/statsgo/description.html]]></URL>
+      <Label><![CDATA[U.S. General Soil Map (STATSGO2) Description]]></Label>
+      <Text />
+    </Documentation_Link>
+    <Documentation_Link>
+      <URL />
+      <Label />
+    </Documentation_Link>
+    <Alternate_Data_Access>
+      <Data_Set_Status />
+      <Data_Set_Restrictions />
+      <Data_Set_Location />
+      <Data_Contact_Person>
+        <Email />
+        <Name />
+        <Phone />
+        <Data_Center_URL />
+      </Data_Contact_Person>
+      <Data_Center_URL />
+      <Data_Set_Citation />
+      <Data_Set_Link>
+        <URL />
+        <Label />
+        <Link_Note />
+        <Data_Center_URL />
+      </Data_Set_Link>
+    </Alternate_Data_Access>
+    <OME_Software_Version><![CDATA[Version 4.7.5, Revision Date: 04 Apr 2006]]></OME_Software_Version>
+    <OME_DTD_Version><![CDATA[metadata24.dtd]]></OME_DTD_Version>
+    <Contact_Person>
+      <Email><![CDATA[kprochnow@ftw.nrcs.usda.gov]]></Email>
+      <Name><![CDATA[Prochnow, Kimberly]]></Name>
+      <Phone><![CDATA[+1-817-334-5559]]></Phone>
+    </Contact_Person>
+    <Temporal_Resolution />
+    <enddate_blank />
+    <File_ID><![CDATA[Created 100 5 17 16 25 37 by 144.92.44.76]]></File_ID>
+    <Spatial_Reference_Method><![CDATA[Vector]]></Spatial_Reference_Method>
+    <Spatial_Extent>7457.2784</Spatial_Extent>
+    <Search_Text_Link>
+      <URL><![CDATA[http://www.soils.usda.gov/survey/geography/statsgo/]]></URL>
+      <Label><![CDATA[U.S. General Soil Map (STATSGO2) Home Page]]></Label>
+    </Search_Text_Link>
+    <Search_Text_Link>
+      <URL><![CDATA[http://www.soils.usda.gov/survey/geography/statsgo/description.html]]></URL>
+      <Label><![CDATA[U.S. General Soil Map (STATSGO2) Description]]></Label>
+    </Search_Text_Link>
+    <Other_Link>
+      <URL />
+      <Label />
+    </Other_Link>
+    <Granule_Details />
+    <OGC_URL />
+  </mercury>
+  <sourceData><![CDATA[database]]></sourceData>
+</ornl:metadata>
