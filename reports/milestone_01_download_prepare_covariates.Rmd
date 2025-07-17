@@ -231,7 +231,6 @@ FFA_regional-skew/
 ├── CHANGELOG.Rmd             # Human-readable record of project updates
 |                             #   (follows semantic versioning)
 ├── data/
-    ├── intermediate/             # temporary storage for data processing
     ├── log/                      # log files of downloads / processing steps
     ├── meta/                     # Metadata of datasets
     ├── processed/                # Cleaned, derived datasets
@@ -370,9 +369,9 @@ FFA_regional-skew/
 | 0.5.4.6   | Create script to calculate NED Slope                    |  [X]   |
 | 0.5.4.7   | Create downloads scripts for MODIS NDVI 2016            |  [X]   |
 | **0.5.5** | QAQC for downloads                                      |  [ ]   |
-| 0.5.5.1   | Inspect folders for untracked or duplicate files        |  [ ]   |
-| 0.5.5.2   | Validate spatial coverage, resolution, and CRS          |  [ ]   |
-| 0.5.5.3   | Standardize and validate metadata for downloads         |  [ ]   |
+| 0.5.5.1   | Inspect folders for untracked or duplicate files        |  [X]   |
+| 0.5.5.2   | Validate spatial coverage, resolution, and CRS          |  [ip]   |
+| 0.5.5.3   | Standardize and validate metadata for processed files   |  [ip]   |
 | 0.5.5.4   | Review chunk headers in .Rmd files ({r name, eval=} )   |  [ ]   |
 | 0.5.5.5   | Write README-style notes - scripts in milestone folder  |  [ ]   |
 | 0.5.5.6   | Audit file size, dimensions, and resolution in .Rmd     |  [ ]   |
