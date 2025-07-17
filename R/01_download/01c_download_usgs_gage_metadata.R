@@ -29,9 +29,9 @@
 #    - Save the cleaned, filtered site data to usgs_sites_pk_ST_only.csv
 #      for downstream use.
 #
-# Input:
+# Input Files:
 # - sites_pk_eco_only.csv (tabular output from 01b script)
-# Output:
+# Output Files:
 # - usgs_site_metadata_vars.csv
 # - usgs_sites_pk_ST_only.csv
 #
@@ -39,7 +39,7 @@
 # - dataRetrieval: To retrieve USGS site metadata
 # - dplyr, readr:  For data manipulation and export
 # - here:          For consistent paths
-# - purrr:
+# - purrr:         Loop through download batches
 
 
 # ==============================================================================
