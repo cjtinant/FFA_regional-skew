@@ -1,0 +1,14 @@
+Step Num,Step,Question,Pass/Fail
+1,Check for Completeness,"Are all expected fields filled for each variable? (e.g., Units, Description, Notes)",Pass
+1.5,Check for Completeness,Any missing or placeholder entries?,Pass
+2,Validate value consistancy,Are ordinal levels and groupings unique?,Pass
+2.3,Validate logical consistancy,Does logical consistency exist across Group and ↔ Group Ordinal,Pass
+3,Check for Consistency,"Do unit formats follow consistent style? (e.g., proportion [0–1] vs proportion [0-1])",Pass
+3.3,Check for Consistency,"Does phrasing, and punctuation follow consistent style? (Description, Notes, Unit)",Pass
+3.6,Check for Consistency,"Do descriptions consistently follow a pattern? (e.g., “Zonal [stat] of [metric], aggregated to [unit]...”)",Pass
+4,Check for Redundancy or Ambiguity,Are any entries duplicative or vague?,Pass
+4.5,Check for Redundancy or Ambiguity,Any terms that may be misinterpreted or should be better defined?,Pass
+5,Check Conceptual Alignment,Does each variable’s: Scale match its Analytical Resolution?,Pass
+5.3,Check Conceptual Alignment,Does each variable’s: Concept Group reflect what it's truly measuring?,Pass
+5.6,Check Conceptual Alignment,Notes support the intended use or interpretation?,Pass
+6,Style and Clarity,"Are Notes and Descriptions clear, readable, and appropriate for technical documentation?",Pass
