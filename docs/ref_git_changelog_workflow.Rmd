@@ -313,4 +313,54 @@ Long-term editable source                | ✅ Yes       | ❌ Only generated fr
 
 *     You're storing version-controlled data (XLSX is not Git-friendly)
 
+## Should I use a .csv or a .txt?
 
+### ✅ Use .csv when:
+
+*     You’re working with tabular data (rows and columns)
+
+*     You need structured input for R, Python, Excel, GIS, or databases
+
+*     You want to join/merge datasets programmatically
+
+*     You’re using comma-separated values (or semicolons in some locales)
+
+*     You need to easily visualize or edit the data in spreadsheet tools
+
+### Examples:
+
+    * Covariate metadata for a model: regional_skew_covariates_metadata_v01.csv
+
+    * Climate class lookup table: koppen_geiger_class_legend.csv
+
+    * Peak flow summary: data_pk_summary.csv
+
+### ✅ Use .txt when:
+
+* You’re storing plain text, such as:
+
+    * Notes, READMEs, checklists, or citations
+
+    * Legends or lookups not meant for tabular use
+
+    * License or metadata files with flexible formatting
+
+    * The content doesn’t fit neatly into rows and columns
+
+    * You want the file to be human-readable, regardless of software
+
+    * You’re sharing instructions, documentation, or a log
+
+### Examples:
+
+    * README.txt, RELEASE_NOTES.txt
+
+    * license.txt
+
+    * koppen_geiger_legend.txt (if it’s just reference info)
+
+## 👓 Rule of Thumb
+
+* If it’s structured data, use .csv.
+
+* If it’s unstructured or semi-structured text, use .txt.
