@@ -22,9 +22,9 @@ library(waldo)
 # ------------------------------------------------------------------------------
 
 old_csv <- here("docs", "metadata", "covariates_metadata_split", 
-                "NA_CEC_Eco_Level2_attributes.csv")
+                "skew_covariates_metadata_v071.csv")
 new_csv <- here("docs", "metadata", "covariates_metadata_split", 
-                "NA_CEC_Eco_Level3_attributes.csv")
+                "skew_covariates_metadata_v081.csv")
 
 # ------------------------------------------------------------------------------
 # 2. Read and clean both CSV files
@@ -34,14 +34,44 @@ df_old <- read_csv(old_csv, show_col_types = FALSE) %>% clean_names()
 df_new <- read_csv(new_csv, show_col_types = FALSE) %>% clean_names()
 
 # ------------------------------------------------------------------------------
-# 3. Compare data frames using waldo (structural + value differences)
+# 3. Reorder and align df_old to match df_new's structure
+# ------------------------------------------------------------------------------
+
+# Identify all columns in df_new
+new_cols <- names(df_new)
+
+# Safely handle empty df_old
+if (nrow(df_old) < 1) {
+  message("⚠️ df_old has 0 rows. Creating NA-filled aligned version.")
+  
+  df_old_extended <- tibble(!!!setNames(rep(list(NA), length(new_cols)), new_cols)) %>%
+    slice(rep(1, nrow(df_new)))  # Match new's row count
+  
+} else {
+  # Identify any missing columns
+  missing_cols <- setdiff(new_cols, names(df_old))
+  
+  if (length(missing_cols) > 0) {
+    # Add NA columns matching row count
+    na_cols <- as_tibble(setNames(rep(list(NA), length(missing_cols)), missing_cols)) %>%
+      slice(rep(1, nrow(df_old)))
+    df_old <- bind_cols(df_old, na_cols)
+  }
+  
+  # Reorder to match df_new
+  df_old_extended <- df_old %>%
+    select(all_of(new_cols))
+}
+
+# ------------------------------------------------------------------------------
+# 4. Compare data frames using waldo (structural + value differences)
 # ------------------------------------------------------------------------------
 
 cat("\n--- Structural and Value Differences (waldo) ---\n")
-waldo::compare(df_old, df_new)
+waldo::compare(df_old_aligned, df_new)
 
 # ------------------------------------------------------------------------------
-# 4. Compare row-level differences using dplyr anti_join
+# 5. Compare row-level differences using dplyr anti_join
 # ------------------------------------------------------------------------------
 
 cat("\n--- Rows in NEW but not in OLD ---\n")
@@ -49,6 +79,34 @@ anti_join(df_new, df_old)
 
 cat("\n--- Rows in OLD but not in NEW ---\n")
 anti_join(df_old, df_new)
+
+# ------------------------------------------------------------------------------
+# 6. Compare row-level differences using dplyr anti_join
+# ------------------------------------------------------------------------------
+
+ck_var_new <- 
+
+
+
+# Save aligned old version for inspection
+write_csv(df_old_aligned, here("docs", "metadata", "covariates_metadata_split", 
+                               "skew_covariates_metadata_v071.csv"))
+
+
+# ==============================================================================
+# Script Section: check rows based on index
+# Purpose: 
+# ==============================================================================
+
+ck_new <- df_new %>%
+  select(variable_name, short_name)
+
+ck_old <- df_old %>%
+  select(variable_name, short_name)
+
+ck_cols <- full_join(ck_new, ck_old)
+
+
 
 # ==============================================================================
 # Script Section: Convert TXT to CSV
