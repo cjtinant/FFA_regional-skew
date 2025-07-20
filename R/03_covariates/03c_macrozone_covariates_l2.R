@@ -10,11 +10,11 @@ library(tidyverse)
 library(here)
 
 # 1. Load Level II ecoregions (North American extent)
-eco_l2_path <- here("data/raw/vector_raw/ecoregions_unprojected/NA_eco_lev2_GreatPlains_geographic.gpkg")
+eco_l2_path <- here("data/raw/vector_us_ecoregions_unprojected/NA_eco_lev2_GreatPlains_geographic.gpkg")
 eco_l2 <- sf::read_sf(eco_l2_path)
 
 # 2a. Load Level I ecoregions for masking
-us_l1_path <- here("data/raw/vector_raw/ecoregions_unprojected/NA_eco_lev1_GreatPlains_geographic.gpkg")
+us_l1_path <- here("data/raw/vector_us_ecoregions_unprojected/NA_eco_lev1_GreatPlains_geographic.gpkg")
 us_l1 <- sf::read_sf(us_l1_path)
 
 # 2b. Filter to CONUS Great Plains

@@ -11,7 +11,7 @@
 #   - Outputs a tidy summary for documentation or QA
 #
 # Input: 
-#   - XML metadata files (e.g., data/raw/epa_ecoregions/*.xml)
+#   - XML metadata files (e.g., data/metadata/us_ecoregions/*.xml)
 #
 # Output: 
 #   - A tibble with extracted metadata fields
@@ -35,7 +35,7 @@
 #' @return A tibble with standardized metadata fields (title, abstract, originator, date, etc.)
 #'
 #' @examples
-#' extract_full_metadata("data/raw/epa_ecoregions/us_eco_l4.xml")
+#' extract_full_metadata("data/metadata/us_ecoregions/us_eco_l4.xml")
 #'
 #' @export
 extract_full_metadata <- function(xml_path) {

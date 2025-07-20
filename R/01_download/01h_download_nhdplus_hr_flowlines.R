@@ -78,7 +78,7 @@ region_name_to_filename <- function(name) {
 }
 
 # --- Load ecoregion boundaries ------------------------------------------------
-eco_lev4 <- st_read("data/processed/ecoregions/us-eco-levels.gpkg",
+eco_lev4 <- st_read("data/processed/us_ecoregions/us-eco-levels.gpkg",
                     layer = "us_eco_l4", quiet = TRUE)
 
 log_tbl <- read_csv(log_file, show_col_types = FALSE)

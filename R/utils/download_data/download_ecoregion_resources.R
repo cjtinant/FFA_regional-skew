@@ -9,13 +9,13 @@
 #   - Provides safe checks using fs::dir_create() and file_exists() 
 #
 # Inputs with example usage: 
-#  target_dir = here("data/raw/epa_ecoregions"),
+#  target_dir = here("data/raw/us_ecoregions"),
 #  zip_url    = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/na_cec_eco_l1.zip",
-#  zip_path   = here("data/raw/epa_ecoregions/na_eco_lev01.zip"),
+#  zip_path   = here("data/raw/us_ecoregions/na_eco_lev01.zip"),
 #  meta_url   = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level1.htm",
-#  meta_path  = here("data/raw/epa_ecoregions/NA_CEC_Eco_Level1.htm"),
+#  meta_path  = here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.htm"),
 #  lyr_url    = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level1.lyr",
-#  lyr_path   = here("data/raw/epa_ecoregions/NA_CEC_Eco_Level1.lyr"),
+#  lyr_path   = here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.lyr"),
 #  remove_zip = TRUE
 #   - 
 # Outputs: 

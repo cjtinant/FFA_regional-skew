@@ -78,7 +78,7 @@ Subdirectory naming follows the format: `[stage]/[source]_[category]/`
 | Folder Path | Description |
 |:--:|:--:|
 | `data/raw/prism/PRISM_ppt_30yr_normal_800mM4_annual_bil` | Raw PRISM 30-yr precipitation normals at ~800m resolution at the annual scale in .bil format |
-| `data/meta/epa_ecoregions/` | Metadata or schema for EPA ecoregions shapefiles |
+| `data/meta/us_ecoregions/` | Metadata or schema for EPA ecoregions shapefiles |
 | `data/processed/koppen-climate/` | Processed koppen climate data |
 
 ### Script Naming Convention
@@ -103,7 +103,7 @@ automation, and chronological sequencing within the workflow.
 
 | Script Name | Description |
 |----|----|
-| `01a_download_epa_ecoregions.R` | Download raw `peakflow gage` data |
+| `01a_download_us_ecoregions.R` | Download raw `peakflow gage` data |
 | `01b_download_gage-data.R` | Download raw `peakflow gage` data |
 | `01a_download_prism.R` | Download raw `prism` data |
 | `01a_download_nlcd.R` | Download raw `nlcd` data |
@@ -229,7 +229,7 @@ FFA_regional-skew/
                 └── sites_all_peak_in_bb.csv
 
     ├── raw/                      # Unmodified input data 
-        ├── epa_ecoregions/
+        ├── us_ecoregions/
         ├── koppen-climate/
         ├── modis_2016
         

@@ -69,7 +69,7 @@ Subdirectory naming follows the format: `[stage]/[source]_[category]/`
 | Folder Path                       | Description |
 |:---------------------------------:|:-----------:|
 | `data/raw/prism/PRISM_ppt_30yr_normal_800mM4_annual_bil` | Raw PRISM 30-yr precipitation normals at ~800m resolution at the annual scale in .bil format 
-| `data/meta/epa_ecoregions/`       | Metadata or schema for EPA ecoregions shapefiles |
+| `data/meta/us_ecoregions/`       | Metadata or schema for EPA ecoregions shapefiles |
 | `data/processed/koppen-climate/` | Processed koppen climate data |
 
 ### Script Naming Convention
@@ -445,7 +445,7 @@ mkdir -p R/utils/{metadata,spatial,qaqc,paths,plotting} # make directories
 - Ecoregions: Updated download script to output Level I–IV ecoregions:
 -     Reprojected to a common CRS (NAD83 / CONUS Albers — EPSG:5070)
 -     Clipped to the CONUS boundary
--     Saved as a GeoPackage in data/processed/ecoregions/
+-     Saved as a GeoPackage in data/processed/us_ecoregions/
 
 - USGS Gages: Refactored the gage download script to align with the new folder
               structure, improving consistency and portability.

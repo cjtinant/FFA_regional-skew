@@ -1,5 +1,5 @@
 file,type,crs,resolution,xmin,xmax,ymin,ymax
-data/processed/ecoregions/us-eco-levels.gpkg,vector,NAD83 / Conus Albers,NA,-2356069.457800001,2258224.8306521834,272048.49571923865,3172577.045600001
+data/processed/us_ecoregions/us-eco-levels.gpkg,vector,NAD83 / Conus Albers,NA,-2356069.457800001,2258224.8306521834,272048.49571923865,3172577.045600001
 data/processed/nhdphr_catchments/nhdphr_catchments_combined.gpkg,vector,NAD83 / Conus Albers,NA,-1267045.000074419,444054.9999381866,370534.9999644502,2973524.9999588644
 data/processed/nhdphr_flowlines/nhd_flowlines_combined.gpkg,vector,NAD83 / Conus Albers,NA,-1287368.399670844,484367.79241142026,209669.09378445212,2994017.627836945
 data/processed/nhdplus_v21/nhdv21_catchments.gpkg,vector,NAD83 / Conus Albers,NA,-1305418.3358703833,501886.1401343705,209669.09378445212,3083376.045950762

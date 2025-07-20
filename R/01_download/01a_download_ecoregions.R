@@ -72,13 +72,13 @@ meta_path  <- glue("{target_dir}/{html_name}")
 # 1b) Create directory, download unzip sf, remove ZIP, download metadata + layer
 
 log_summary <- download_ecoregion_resources(
-  target_dir = here::here("data/raw/ecoregions"),
+  target_dir = here::here("data/raw/us_ecoregions"),
   zip_url    = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/na_cec_eco_l1.zip",
-  zip_path   = here::here("data/raw/ecoregions/na_eco_lev01.zip"),
+  zip_path   = here::here("data/raw/us_ecoregions/na_eco_lev01.zip"),
   meta_url   = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level1.htm",
-  meta_path  = here::here("data/raw/epa_ecoregions/NA_CEC_Eco_Level1.htm"),
+  meta_path  = here::here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.htm"),
   lyr_url    = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level1.lyr",
-  lyr_path   = here::here("data/raw/epa_ecoregions/NA_CEC_Eco_Level1.lyr"),
+  lyr_path   = here::here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.lyr"),
   remove_zip = TRUE
 )
 
@@ -118,13 +118,13 @@ download_ecoregion_resources(target_dir,
 
 # 2c) check summary
 log_summary <- download_ecoregion_resources(
-  target_dir = here::here("data/raw/ecoregions"),
+  target_dir = here::here("data/raw/us_ecoregions"),
   zip_url    = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/na_cec_eco_l1.zip",
-  zip_path   = here::here("data/raw/ecoregions/na_eco_lev01.zip"),
+  zip_path   = here::here("data/raw/us_ecoregions/na_eco_lev01.zip"),
   meta_url   = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level1.htm",
-  meta_path  = here::here("data/raw/ecoregions/NA_CEC_Eco_Level1.htm"),
+  meta_path  = here::here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.htm"),
   lyr_url    = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level1.lyr",
-  lyr_path   = here::here("data/raw/ecoregions/NA_CEC_Eco_Level1.lyr"),
+  lyr_path   = here::here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.lyr"),
   remove_zip = TRUE
 )
 
@@ -296,7 +296,7 @@ level4_conus <- level4_conus %>%
 # 6.   Export reprojected, clipped, cleaned data as a gpkg for downstream use.
 
 # Directory to store data as a geopackage
-output_dir <- here("data/processed/ecoregions")
+output_dir <- here("data/raw/us_ecoregions")
 
 
 # Write as GeoPackage (UTF-8, clean field names)

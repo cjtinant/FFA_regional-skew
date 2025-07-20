@@ -1,11 +1,14 @@
 README
 ================
 CJ Tinant
-2025-07-01
+2025-07-20
 
 - [📁 Project Documentation
   (`docs/`)](#file_folder-project-documentation-docs)
   - [📚 Folder Purpose](#books-folder-purpose)
+  - [Definitions](#definitions)
+  - [📄 Key Contents (as of
+    vX.X.0)](#page_facing_up-key-contents-as-of-vxx0)
   - [📄 Key Contents (as of
     v1.3.0)](#page_facing_up-key-contents-as-of-v130)
   - [🗂️ Suggested Subfolders
@@ -40,6 +43,45 @@ milestone-specific logs, exploratory notes, and in-progress `.Rmd`
 analysis files.
 
 ------------------------------------------------------------------------
+
+## Definitions
+
+- *Attribute data* refers to the actual values associated with each
+  record or feature in a dataset. In a spatial dataset, these are
+  typically the values in the attribute table (e.g., names,
+  measurements, categories).
+
+- *Data Dictionary* Describes the structure, meaning, and units of the
+  fields in a dataset. It helps humans understand what each field
+  represents. It can be saved as:
+
+- A separate file (e.g., Excel, CSV, JSON, R script)
+
+- As a documentation section in an RMarkdown or README
+
+- Embedded in metadata for shapefiles (e.g., .xml files) or GeoPackages
+
+Example (corresponding to above): \| Field Name \| Description \| Unit
+\| Data Type \| \|:———-:\|:———————-:\|:——-:\|:———:\| \| STATE_NAME \|
+Name of the U.S. state \| NA \| Text \| \| POP_2020 \| Population in
+2020 \| Persons \| Integer \| \| AREA_SQKM \| Area of the state \| sqkm
+\| Float \|
+
+## 📄 Key Contents (as of vX.X.0)
+
+| File / Subfolder | Description |
+|:--:|:--:|
+| `covariate_source_inventory` | Dataset status and sources |
+|  | links to metadata, QA/QC, documentation workflows |
+|  | integrates download script tracker (from R/01_download/) |
+| `data_dictionary` | Covariate metadata, data dictionary |
+| `ref_git_changelog_workflow` | Versioning, tagging, and changelog conventions |
+| `methods_covariate-selection` | Covariate domains, stratification, and macrozone delineation methods |
+
+**Check these** \| `regional_skew_covariates_metadata_by_scale_v01.csv`
+\| Climate and terrain covariate metadata \| \|
+`spatial_validation_summary.csv` \| CRS/resolution audit results for all
+spatial layers \|
 
 ## 📄 Key Contents (as of v1.3.0)
 
