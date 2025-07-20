@@ -152,7 +152,7 @@ FFA_regional-skew/
 │   │   │   ├── us_eco_lev02/
 │   │   │   ├── us_eco_lev03/
 │   │   │   ├── us_eco_lev04/
-│   │   │   ├── koppen_climate/
+│   │   │   ├── koppen-climate/
 │   │   │   ├── tl_state_boundaries/
 │   │   │   └── derived_products/
 │   └── meta/                    # CRS info, variable scaffold, project metadata

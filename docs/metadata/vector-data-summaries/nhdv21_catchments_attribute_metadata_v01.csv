@@ -1,8 +1,0 @@
-layer,field_name,data_type
-nhdv21_catchments,gridcode,integer
-nhdv21_catchments,featureid,integer
-nhdv21_catchments,sourcefc,character
-nhdv21_catchments,areasqkm,numeric
-nhdv21_catchments,shape_length,numeric
-nhdv21_catchments,shape_area,numeric
-nhdv21_catchments,geom,sfc_MULTIPOLYGON

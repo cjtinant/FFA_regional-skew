@@ -26,7 +26,7 @@ library(readr)
 library(terra)
 library(tibble)
 
-input_path  <- here("data", "processed", "koppen_climate")
+input_path  <- here("data", "processed", "koppen-climate")
 output_path <- here("docs", "metadata", "raster-data-summaries")
 if (!dir.exists(output_path)) dir.create(output_path, recursive = TRUE)
 

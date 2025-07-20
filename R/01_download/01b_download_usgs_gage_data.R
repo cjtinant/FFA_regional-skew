@@ -56,10 +56,10 @@ library(sf)
 # --- set up to load ecoregion data ---
 file_path  <- "data/processed"     # top-level folder for spatial data
 dir_name   <- "ecoregions"     # subfolder for level 1 ecoregions
-file_name <- "us_eco_levels.gpkg"
+file_name <- "us-eco-levels.gpkg"
 target_file <- glue("{here()}/{file_path}/{dir_name}/{file_name}")
 
-# --- make a check of layers in us_eco_levels ---
+# --- make a check of layers in us-eco-levels ---
 st_layers(target_file)
 
 message("Reading Level 1 ecoregions from: ", target_file)

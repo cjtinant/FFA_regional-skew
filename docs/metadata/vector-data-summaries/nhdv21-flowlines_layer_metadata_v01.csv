@@ -1,0 +1,2 @@
+file,layer,geometry_type,crs,extent,n_features,n_attributes,geometry_column,timestamp
+nhdv21_flowlines.gpkg,nhd_flowlines_v21,LINESTRING,NAD83 / Conus Albers,"-1302191.53292483, 310953.693570654, 494083.40754604, 3005734.65801347",177191,137,geom,2025-07-20T17:55:28Z

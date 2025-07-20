@@ -301,26 +301,26 @@ output_dir <- here("data/processed/ecoregions")
 
 # Write as GeoPackage (UTF-8, clean field names)
 st_write(level1_conus,
-         dsn = file.path(output_dir, "us_eco_levels.gpkg"),
+         dsn = file.path(output_dir, "us-eco-levels.gpkg"),
          layer = "us_eco_l1",
          delete_layer = FALSE)
 
 st_write(level2_conus,
-         dsn = file.path(output_dir, "us_eco_levels.gpkg"),
+         dsn = file.path(output_dir, "us-eco-levels.gpkg"),
          layer = "us_eco_l2",
          delete_layer = FALSE)
 
 st_write(level3_conus,
-         dsn = file.path(output_dir, "us_eco_levels.gpkg"),
+         dsn = file.path(output_dir, "us-eco-levels.gpkg"),
          layer = "us_eco_l3",
          delete_layer = FALSE)
 
 st_write(level4_conus,
-         dsn = file.path(output_dir, "us_eco_levels.gpkg"),
+         dsn = file.path(output_dir, "us-eco-levels.gpkg"),
          layer = "us_eco_l4",
          delete_layer = FALSE)
 
 st_write(level4_merged,
-         dsn = file.path(output_dir, "us_eco_levels.gpkg"),
+         dsn = file.path(output_dir, "us-eco-levels.gpkg"),
          layer = "us_eco_l4_merged",
          delete_layer = FALSE)

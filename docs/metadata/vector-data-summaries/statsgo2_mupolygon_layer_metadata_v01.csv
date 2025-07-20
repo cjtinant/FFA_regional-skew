@@ -1,0 +1,2 @@
+file,layer,geometry_type,crs,extent,n_features,n_attributes,geometry_column,timestamp
+statsgo2_mupolygon.gpkg,mupolygon_statsgo2_albers,MULTIPOLYGON,NAD83 / Conus Albers,"-1721775.02613542, 313057.220102944, 613697.02090134, 3006355.88978999",4879,2,geom,2025-07-20T18:19:59Z

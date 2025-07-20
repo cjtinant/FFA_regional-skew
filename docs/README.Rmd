@@ -44,8 +44,7 @@ feature in a dataset. In a spatial dataset, these are typically the values in
 the attribute table (e.g., names, measurements, categories).
 
 - *Data Dictionary* Describes the structure, meaning, and units of the fields in
-a dataset. It helps humans understand
-what each field represents. It can be saved as:
+a dataset. It helps humans understand what each field represents. It can be saved as:
 
 *  A separate file (e.g., Excel, CSV, JSON, R script)
 

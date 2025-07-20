@@ -1,0 +1,8 @@
+field_name,data_type
+areasqkm,numeric
+featureid,integer
+geom,sfc_MULTIPOLYGON
+gridcode,integer
+shape_area,numeric
+shape_length,numeric
+sourcefc,character

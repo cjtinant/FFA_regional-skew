@@ -48,7 +48,7 @@ dir_create(intermed_dir)
 dir_create(out_dir)
 
 # Load AOI: Great Plains Level I Ecoregion
-aoi_path <- here("data", "processed", "ecoregions", "us_eco_levels.gpkg")
+aoi_path <- here("data", "processed", "ecoregions", "us-eco-levels.gpkg")
 aoi <- st_read(aoi_path,
                layer = "us_eco_l1",
                quiet = TRUE) %>%
@@ -129,22 +129,22 @@ message("✅ Retrieved mapunit attributes.")
 
 message("💾 Writing results to: ", out_dir)
 
-write_csv(mu_geom,    file = path(out_dir, "mupolygon_statsgo2_great_plains.csv"))
-write_csv(mu_attribs, file = path(out_dir, "mapunit_statsgo2_great_plains.csv"))
+write_csv(mu_geom,    file = path(out_dir, "statsgo2_mupolygon.csv"))
+write_csv(mu_attribs, file = path(out_dir, "statsgo2_mapunit.csv"))
 
 message("🎉 STATSGO2 download complete.")
 
 message("🗺️ Saving spatial outputs for GIS...")
 
 # Save WGS84 GeoPackage
-gpkg_out_wgs84 <- path(intermed_dir, "mupolygon_statsgo2_great_plains.gpkg")
+gpkg_out_wgs84 <- path(intermed_dir, "statsgo2_mupolygon.gpkg")
 st_write(mu_geom, gpkg_out_wgs84, delete_dsn = TRUE, quiet = TRUE)
 message("📁 Saved WGS84 GeoPackage: ", gpkg_out_wgs84)
 
 # Reproject to CONUS Albers Equal Area (EPSG:5070)
 mu_geom_proj <- st_transform(mu_geom, crs = 5070)
 
-gpkg_out_albers <- path(out_dir, "mupolygon_statsgo2_albers.gpkg")
+gpkg_out_albers <- path(out_dir, "statsgo2_mupolygon.gpkg")
 st_write(mu_geom_proj, gpkg_out_albers, delete_dsn = TRUE, quiet = TRUE)
 message("📁 Saved projected GeoPackage (EPSG:5070): ", gpkg_out_albers)
 

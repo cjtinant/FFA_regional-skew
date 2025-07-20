@@ -124,7 +124,7 @@ dir_create(dir_processed)
 
 
 # ---- Load Bounding Box and Output SW/NW Corners ----
-gp_bbox_wgs84 <- st_read("data/processed/ecoregions/us_eco_levels.gpkg",
+gp_bbox_wgs84 <- st_read("data/processed/ecoregions/us-eco-levels.gpkg",
                          layer = "us_eco_l1") %>%
   filter(NA_L1NAME == "GREAT PLAINS") %>%
   st_transform(5070) %>%            # Project to meters
@@ -189,7 +189,7 @@ ndvi_stacks <- ndvi_tbl %>%
 cat("\nReprojecting, clipping, and writing rasters...")
 
 # Read and buffer AOI again for cropping
-aoi_proj <- st_read("data/processed/ecoregions/us_eco_levels.gpkg",
+aoi_proj <- st_read("data/processed/ecoregions/us-eco-levels.gpkg",
                     layer = "us_eco_l1",
                     quiet = TRUE
                     ) %>%

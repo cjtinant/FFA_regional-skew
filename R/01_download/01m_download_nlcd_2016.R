@@ -60,7 +60,7 @@ library(terra)
 
 # --- Define file paths -------------------------------------------------------
 nlcd_file <- here("data", "raw", "nlcd", "Annual_NLCD_LndCov_2016_CU_C1V0.tif")
-gpkg_file <- here("data", "processed", "ecoregions", "us_eco_levels.gpkg")
+gpkg_file <- here("data", "processed", "ecoregions", "us-eco-levels.gpkg")
 
 # --- Read raster and vector --------------------------------------------------
 r_nlcd <- rast(nlcd_file)

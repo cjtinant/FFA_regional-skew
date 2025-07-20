@@ -42,7 +42,7 @@ log_tbl <- if (file.exists(log_file)) read_csv(log_file, show_col_types = FALSE)
 
 # Load EPA Level IV Ecoregions
 eco_lev4 <- st_read(
-  here("data", "processed", "ecoregions", "us_eco_levels.gpkg"),
+  here("data", "processed", "ecoregions", "us-eco-levels.gpkg"),
   layer = "us_eco_l4",
   quiet = TRUE
 )

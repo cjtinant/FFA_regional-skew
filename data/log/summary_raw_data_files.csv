@@ -1,7 +1,7 @@
 data_type,folder,file_type,possible_duplicate,n
 vector,archives,zip,FALSE,8
 vector,ecoregions,shp,FALSE,7
-raster,koppen_climate,tif,FALSE,4
+raster,koppen-climate,tif,FALSE,4
 raster,modis,hdf,FALSE,288
 vector,nhdphr_catchments,gpkg,FALSE,161
 vector,nhdphr_flowlines,gpkg,FALSE,160

@@ -1,0 +1,64 @@
+﻿Variable Name,Short Name,Compact Plot Label
+longitude,Longitude,Longitude
+latitude,Latitude,Latitude
+altitude,Station Altitude,Station Altitude (m)
+wtsd_area,Watershed Area,Watershed Area (sq-km)
+climate_zone_kopp_geig,Climate Zone,Climate Zone
+phzm_zone_count,PHZM Zone Count,PHZM Zone Count
+phzm_zone_majority,PHZM Zone (Dominant),PHZM Zone
+frac_nlcd_cropland,Cropland Fraction,Pct Cropland NLCD
+frac_nlcd_forest,Forest Fraction,Pct Forest NLCD
+frac_nlcd_grassland,Grassland Fraction,Pct Grassland NLCD
+frac_nlcd_urban,Urban Fraction,Pct Urban NLCD
+slope_mean,Mean Slope,Mean Slope (deg)
+slope_median,Median Slope,Median Slope (deg)
+altitude_zone,Altitude Zone,Altitude Zone (m)
+prec_ann_med,Annual Precip (Median),Annual Precip (mm)
+temp_ann_med,Annual Temp (Median),Annual Temp (degC)
+prec_ann_pct_may_aug_mean,Pct Annual Precip May‚ÄìAug (Mean),Pct Precip May‚ÄìAug
+prec_ann_pct_may_aug_med,Pct Annual Precip May‚ÄìAug (Median),Pct Precip May‚ÄìAug
+ndvi_amplitude_2016_modis,NDVI Amplitude,NDVI Amplitude
+ndvi_iqr_2016_modis,NDVI IQR,NDVI IQR
+ndvi_len_grow_seas_2016_modis,Growing Season Length,Growing Season (days)
+ndvi_seas_pk_2016_modis,Peak NDVI,Peak NDVI
+slope_dist_mean,Mean Slope Distribution,Mean Slope Dist (deg)
+slope_dist_skew,Slope Skewness,Slope Skewness
+slope_variability_sd,Slope Variability (StDev),Slope Var SD (deg)
+slope_variability_iqr,Slope Variability (IQR),Slope Var IQR (deg)
+frac_clay,Clay Fraction,Pct Clay
+frac_silt,Silt Fraction,Pct Silt
+frac_sand,Sand Fraction,Pct Sand
+str_order_med,Median Stream Order,Median Stream Order
+str_order_max,Max Stream Order,Max Stream Order
+prec_seas_stdev,Seasonal Precip StDev,Seasonal Precip SD (mm)
+prec_seas_iqr,Seasonal Precip IQR,Seasonal Precip IQR (mm)
+prec_fall_med,Fall Precip (Median),Fall Precip (mm)
+prec_winter_med,Winter Precip (Median),Winter Precip (mm)
+prec_spring_med,Spring Precip (Median),Spring Precip (mm)
+prec_summer_med,Summer Precip (Median),Summer Precip (mm)
+pct_cov_by_class_modis,Land Cover % (MODIS),Pct Land Cover MODIS
+lnd_use_div_ind_2016_modis,Land Use Diversity (MODIS),Land Use Div MODIS
+roughness_index,Surface Roughness,Surface Roughness
+twi_index_mean,TWI Mean,TWI Mean
+twi_index_modal,TWI Modal,TWI Modal
+twi_class,TWI Class,TWI Class
+soil_perm,Soil Permeability,Soil Permeability (mm/h)
+soil_runoff_class,Soil Runoff Class,Soil Runoff Class
+flow_accum,Flow Accumulation,Flow Accumulation (sq-km)
+cnt_freeze_thaw,Freeze‚ÄìThaw Days,Freeze‚ÄìThaw Days
+prec_intensity,Precip Intensity (95th-percentile),Precip Intensity (mm)
+wet_day_freq_seasonal,Wet Day Frequency (Seasonal),Wet Day Freq (days)
+pct_cov_by_class_nlcd,Land Cover % (NLCD),Pct Land Cover NLCD
+lnd_use_div_ind_nlcd,Land Use Diversity (NLCD),Land Use Div NLCD
+elev_range_m,Elevation Range,Elevation Range (m)
+aspect_cos,Aspect (Cosine),Aspect Cosine
+aspect_sin,Aspect (Sine),Aspect Sine
+curvature_iqr,Curvature IQR,Curvature IQR
+curvature_planiform,Planform Curvature,Planform Curvature
+curvature_profile,Profile Curvature,Profile Curvature
+wtsd_elong_ratio,Watershed Elongation,Watershed Elongation
+wtsd_circ_ratio,Watershed Circularity,Watershed Circularity
+str_density,Stream Density,Stream Density (m/sq-m)
+str_flow_len_ave,Mean Flow Length,Mean Flow Length (m)
+str_slope,Stream Slope,Stream Slope
+wtsd_relief_ratio,Relief Ratio,Relief Ratio

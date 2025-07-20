@@ -3,7 +3,7 @@
 # Script Name:  extract_summary_metadata_vector.R
 # Purpose:      Iterate over all layers in a GeoPackage and extract metadata
 # Author:       Charles Jason Tinant — with ChatGPT 4o
-# Date Created: 2025-07-19
+# Date Created: 2025-07-20
 # Last Updated:
 #
 # Changelog:
@@ -29,12 +29,15 @@ library(tibble)
 library(here)
 
 # ---- Define input and output paths ----
-gpkg_file   <- here("data", "processed", "ecoregions",
-                    "us_eco_levels.gpkg")
+gpkg_file   <- here("data", "processed", "statsgo2",
+                    "statsgo2_mupolygon.gpkg")
+
+#gpkg_file <- here("data/processed/statsgo2/statsgo2_mupolygon.gpkg")
+
 output_dir  <- here("docs", "metadata", "vector-data-summaries")
 if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
 
-if (!file.exists(vector_path)) {
+if (!file.exists(gpkg_file)) {
   stop("Geopackage not found: ", gpkg_file)
 }
 
@@ -81,7 +84,7 @@ for (layer in layer_names) {
 # ---- Combine and write full summary ----
 vector_summary <- bind_rows(summary_list)
 write_csv(vector_summary, 
-          file.path(output_dir, "gpkg_layers_summary_metadata_v01.csv"))
+          file.path(output_dir, "statsgo2_mupolygon_layer_metadata_v01.csv"))
 
 # ------------------------------------------------------------------------------
 # 2. Get attribute names for layers
@@ -109,4 +112,4 @@ fields_summary <- fields_df %>%
 
 # Write output
 write_csv(fields_summary, 
-          file.path(output_dir, "ecoregions_attributes_metadata_v01.csv"))
+          file.path(output_dir, "statsgo2_mupolygon_attribute_metadata_v01.csv"))

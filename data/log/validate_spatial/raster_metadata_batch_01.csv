@@ -1,5 +1,5 @@
 file,type,crs,resolution,xmin,xmax,ymin,ymax,file_size_MB,error
-data/processed/koppen_climate/koppen-geiger.tif,raster,"PROJCRS[""NAD83 / Conus Albers"",
+data/processed/koppen-climate/koppen-geiger.tif,raster,"PROJCRS[""NAD83 / Conus Albers"",
     BASEGEOGCRS[""NAD83"",
         DATUM[""North American Datum 1983"",
             ELLIPSOID[""GRS 1980"",6378137,298.257222101,

@@ -135,24 +135,24 @@ write_csv(files_raw_summary,
 
 ### 1.5. Remove Unneeded Climate Rasters
 
-The following step identifies legacy koppen_climate rasters representing time periods prior to 1990. These files are not used in the current modeling workflow and may be removed following QA and confirmation.
+The following step identifies legacy koppen-climate rasters representing time periods prior to 1990. These files are not used in the current modeling workflow and may be removed following QA and confirmation.
 
 ```{r remove_unneeded_climate rasters, eval=FALSE}
 
-# This step removes `koppen_climate` raster files for the periods **1901–1930**, # **1931–1960**, and **1961–1990** because the regional skew modeling targets 
+# This step removes `koppen-climate` raster files for the periods **1901–1930**, # **1931–1960**, and **1961–1990** because the regional skew modeling targets 
 # modern climate normals (1990–2020).
 
 # Identify outdated Koppen-Geiger rasters
 # koppen_rasters_to_remove <- files_raw_rast %>%
 #   filter(
-#     folder == "koppen_climate",
+#     folder == "koppen-climate",
 #     !str_detect(file, "1990|2000|2010|2020")
 #   ) %>%
 #   mutate(remove_reason = "outside_target_period")
 
 # (Run Once) Log files marked for removal
 # write_csv(koppen_rasters_to_remove,
-#          here("data/log/koppen_climate_files_removed.csv"))
+#          here("data/log/koppen-climate_files_removed.csv"))
 
 
 ```

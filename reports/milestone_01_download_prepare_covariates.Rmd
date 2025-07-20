@@ -70,7 +70,7 @@ Subdirectory naming follows the format: `[stage]/[source]_[category]/`
 |:---------------------------------:|:-----------:|
 | `data/raw/prism/PRISM_ppt_30yr_normal_800mM4_annual_bil` | Raw PRISM 30-yr precipitation normals at ~800m resolution at the annual scale in .bil format 
 | `data/meta/epa_ecoregions/`       | Metadata or schema for EPA ecoregions shapefiles |
-| `data/processed/koppen_climate/` | Processed koppen climate data |
+| `data/processed/koppen-climate/` | Processed koppen climate data |
 
 ### Script Naming Convention
 Scripts follow a standardized naming format to promote readability, automation, and chronological sequencing within the workflow.
@@ -235,8 +235,8 @@ FFA_regional-skew/
     ├── meta/                     # Metadata of datasets
     ├── processed/                # Cleaned, derived datasets
         ├── ecoregions/
-        |       ├── us_eco_levels.gpkg    # US Ecoregions Levels 1-4
-        ├── koppen_climate/
+        |       ├── us-eco-levels.gpkg    # US Ecoregions Levels 1-4
+        ├── koppen-climate/
         |       ├── koppen-geiger.tif   # Köppen Geiger climate raster 1991-2020
         ├── ned/                        # National Elevation Database (NED)
         |       ├── elev_30m_gp.tif     #   elevation raster NEED TO FIX
@@ -256,7 +256,7 @@ FFA_regional-skew/
         |       ├── ppt_MMDD_mm.tif   # PRISM daily temp in mm
     ├── raw/                      # Unmodified input data
         ├── ecoregions/           # US EPA NA CEC Ecoregions
-        ├── koppen_climate/       # Köppen Geiger climate rasters
+        ├── koppen-climate/       # Köppen Geiger climate rasters
         |       ├── 1901_1930
         |       ├── 1931_1960
         |       ├── 1961_1990
@@ -462,10 +462,10 @@ directories.
         results
 -     Joins mukey values to full mapunit attributes via get_mapunit_from_SDA()
 -     Saves output to:
--         mupolygon_statsgo2_great_plains.csv,
--         mapunit_statsgo2_great_plains.csv,
--         (WGS84): mupolygon_statsgo2_great_plains.gpkg
--         (EPSG:5070): mupolygon_statsgo2_albers.gpkg
+-         statsgo2_mupolygon.csv,
+-         statsgo2_mapunit.csv,
+-         (WGS84): statsgo2_mupolygon.gpkg
+-         (EPSG:5070): statsgo2_mupolygon.gpkg
 -     Verifies joinability between geometry and tabular data by checking 
           mukey alignment
 

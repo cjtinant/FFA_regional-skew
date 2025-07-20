@@ -1,7 +1,7 @@
 data_type,folder,file_type.raw,n.raw,file_type.processed,n.processed
 vector,archives,zip,8,NA,NA
 vector,ecoregions,shp,7,gpkg,1
-raster,koppen_climate,tif,4,tif,1
+raster,koppen-climate,tif,4,tif,1
 raster,modis,hdf,288,tif,25
 vector,modis,NA,NA,csv,1
 raster,ned,NA,NA,tif,2

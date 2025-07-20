@@ -82,7 +82,7 @@ Modeling”.
 |    USGS Stations     | peakflow_gages |     02      |  NA   |
 |   USGS NHDPlusV2.1   |    nhdplus     |     02      |  NA   |
 |    USGS NHDPlusHD    |    nhdplus     |     02      |  NA   |
-|    Koppen Geiger     | koppen_climate |     02      |  NA   |
+|    Koppen Geiger     | koppen-climate |     02      |  NA   |
 | Plant Hardiness Zone |      phzm      |     05      |  NA   |
 |   NLCD Land Cover    |      nlcd      |     02      |  NA   |
 |    NED Elevation     |    ned_elev    |     02      |  NA   |
