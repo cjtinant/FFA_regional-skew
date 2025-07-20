@@ -56,7 +56,7 @@ library(terra)
 # Set up local file paths
 file_path  <- "data/raw"                  # top-level folder for raw data
 dir_name   <- "koppen_climate"            # subfolder for koppen data
-zip_name   <- "koppen_geiger.zip"
+zip_name   <- "koppen-geiger.zip"
 target_dir <- glue("{here()}/{file_path}/{dir_name}")
 zip_path   <- glue("{target_dir}/{zip_name}")
 
@@ -72,14 +72,14 @@ if (!file_exists(zip_path)) {
 }
 
 # Unzip the contents
-koppen_geiger <- unzip(zip_path, exdir = target_dir)
+koppen-geiger <- unzip(zip_path, exdir = target_dir)
 message("Unzipped to: ", target_dir)
 
 # Project and save the data
 # Load and check current CRS (should be GCS WGS84)
 #   note: 1991_2020 refers to temporal resolution
 #         0p1 refers to 0.1 decimal degrees or 36 arcsec
-r <- rast("data/raw/koppen_climate/1991_2020/koppen_geiger_0p1.tif")
+r <- rast("data/raw/koppen_climate/1991_2020/koppen-geiger_0p1.tif")
 crs <- crs(r)
 
 # ------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ if (!is_proj_5070) warning("Reprojection may have failed: CRS does not contain E
 # 3a) Define output path
 file_path  <- "data/processed"
 dir_name   <- "koppen_climate"
-file_name  <- "koppen_geiger.tif"
+file_name  <- "koppen-geiger.tif"
 target_dir <- here(file_path, dir_name)
 out_path   <- file.path(target_dir, file_name)
 

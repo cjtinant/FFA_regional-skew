@@ -362,7 +362,7 @@ Use this to ensure every release is polished and complete.
 
     * Covariate metadata for a model: regional_skew_covariates_metadata_v01.csv
 
-    * Climate class lookup table: koppen_geiger_class_legend.csv
+    * Climate class lookup table: koppen-geiger_class_legend.csv
 
     * Peak flow summary: data_pk_summary.csv
 
@@ -388,7 +388,7 @@ Use this to ensure every release is polished and complete.
 
     * license.txt
 
-    * koppen_geiger_legend.txt (if it’s just reference info)
+    * koppen-geiger_legend.txt (if it’s just reference info)
 
 ## 👓 Rule of Thumb
 

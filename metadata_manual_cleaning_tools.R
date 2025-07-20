@@ -131,7 +131,7 @@ write_csv(df_old_aligned, here("docs", "metadata", "covariates_metadata_split",
 # ==============================================================================
 # Path to input legend file
 input_table <- here("docs", "metadata",
-                    "koppen_geiger_legend.txt")
+                    "koppen-geiger_legend.txt")
 
 # 1. Read all lines
 legend_lines <- read_lines(input_table)
@@ -158,7 +158,7 @@ legend_df <- data_lines %>%
 
 # 4. Write to CSV
 write_csv(legend_df, here("docs", "metadata",
-                          "koppen_geiger_class_legend.csv"))
+                          "koppen-geiger_class_legend.csv"))
 
 
 

@@ -237,7 +237,7 @@ FFA_regional-skew/
         ├── ecoregions/
         |       ├── us_eco_levels.gpkg    # US Ecoregions Levels 1-4
         ├── koppen_climate/
-        |       ├── koppen_geiger.tif   # Köppen Geiger climate raster 1991-2020
+        |       ├── koppen-geiger.tif   # Köppen Geiger climate raster 1991-2020
         ├── ned/                        # National Elevation Database (NED)
         |       ├── elev_30m_gp.tif     #   elevation raster NEED TO FIX
         |       ├── slope_30m_gp.tif    #   slope raster NEED TO FIX
@@ -506,7 +506,7 @@ directories.
 
 -       Clipped to the CONUS Great Plains region using ecoregions Level I–IV
 
--       Exported as koppen_geiger_zones_5070.tif in data/processed/
+-       Exported as koppen-geiger_zones_5070.tif in data/processed/
 
 -   USDA Plant Hardiness Zones: Created a script to download and convert the Plant Hardiness Zones raster:
 
