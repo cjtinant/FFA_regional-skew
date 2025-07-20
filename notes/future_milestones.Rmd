@@ -20,7 +20,7 @@ This idea deserves its own milestone when you're ready. For now, just document t
 
     "Add a log_README.md in each R/ subfolder to document script purpose"
     "Use both .Rmd and .md for documentation"
-    "Add a data_dictionary.csv in data/meta/"
+    "Add a data-dictionary.csv in data/meta/" [Resolved]
 
 ✅ What to do with this: Create a separate Milestone titled:
 
@@ -30,7 +30,7 @@ With tasks like:
 
 Add README.md to each R/ subfolder to document script roles
 
-Add data/meta/data_dictionary.csv to define covariate metadata
+Add data/meta/data-dictionary.csv to define covariate metadata
 
     Add log_README.md template for reproducibility
 

@@ -47,6 +47,13 @@ data, including:
   - Logged retry attempts with buffer distance in nhdphr_retry_log.csv
   - Generated diagnostics for NULL AOIs with sliver flag logic and QA map
   - Exported null_aoi_summary.csv and null_aois_diagnostics_facet_map.png for review
+- Added script 02g_extract_summary_metadata_raster.R
+  - Extracts raster-level summary metadata (CRS, extent, resolution, dimensions, band names)
+  - Captures band-level data types for all layers
+  - Outputs written to:
+    - koppen-geiger_summary_metadata_v01.csv
+    - koppen-geiger_band_metadata_v01.csv
+  - Stored in docs/metadata/raster-data-summaries/
 
 ## Changed
 - Metadata Restructure and Cleanup (v0.3.0)
@@ -54,6 +61,7 @@ data, including:
     - dictionaries/
     - descriptions/
     - look-up-tables/
+    - raster-data-summaries
   - Cleaned and renamed README.Rmd and README.md for docs/metadata/
   - Removed redundant files (e.g., .csv.csv extensions)
   -  Added support tools:

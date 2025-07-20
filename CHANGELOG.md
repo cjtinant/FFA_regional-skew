@@ -63,6 +63,14 @@ Changelog](https://keepachangelog.com/) format.*
     map
   - Exported null_aoi_summary.csv and
     null_aois_diagnostics_facet_map.png for review
+- Added script 02g_extract_summary_metadata_raster.R
+  - Extracts raster-level summary metadata (CRS, extent, resolution,
+    dimensions, band names)
+  - Captures band-level data types for all layers
+  - Outputs written to:
+    - koppen-geiger_summary_metadata_v01.csv
+    - koppen-geiger_band_metadata_v01.csv
+  - Stored in docs/metadata/raster-data-summaries/
 
 ## Changed
 
