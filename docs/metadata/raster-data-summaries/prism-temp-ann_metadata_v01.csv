@@ -1,0 +1,4 @@
+band,data_type
+tmax_ann_C,FLT4S
+tmean_ann_C,FLT4S
+tmin_ann_C,FLT4S
