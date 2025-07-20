@@ -35,48 +35,48 @@ library(knitr)
 
 
 # 1. List metadata files, including subdirectories (e.g. data-dictionaries/)
+# 1. List metadata files, including subdirectories (e.g., data-dictionaries/)
 metadata_files <- dir_info(here("docs", "metadata"), recurse = TRUE) %>%
   filter(type == "file") %>%
   mutate(
     file_name = path_file(path),
     ext = path_ext(path),
-#    folder = path_rel(path_dir(path), start = here("docs")),  # Show subfolder
-folder = path_rel(path_dir(path), start = here("docs", "metadata")),
-folder = if_else(folder == ".", 
-                 "metadata", 
-                 path_file(folder)
-                 ),
+    # Subdirectory within docs/metadata
+    folder = path_rel(path_dir(path), start = here("docs", "metadata")),
+    # Replace "." (top-level) with "metadata"
+    folder = if_else(folder == ".", "metadata", folder)
+  ) %>%
+  # Optional: custom folder order
+  mutate(
+    folder = factor(folder, levels = c("data-dictionaries", "descriptions", "look-up-tables", "metadata")),
     size_kb = round(size / 1024, 1),
     size_display = if_else(size < 1024, "<1 KB", paste0(size_kb, " KB"))
   ) %>%
   arrange(folder, file_name) %>%
-  select(folder, file_name, ext, size_display)
+  select(folder, file_name, ext, size_display) %>%
+  filter(!str_detect(file_name, "^README\\."))
 
+file_descriptions <- tribble(
+  ~file_name, ~description,
+  "koppen-geiger_class_lut.csv", "Köppen climate class lookup table",
+  "ned_data-dictionary_2014.pdf", "National Elevation Dataset field definitions",
+  "nlcd_description_2024.docx", "NLCD land cover class descriptions"
+)
 
+metadata_files <- left_join(metadata_files, file_descriptions, by = "file_name")
 
-
-# 
-# # 1. List and summarize metadata files
-# metadata_files <- dir_info(here("docs", "metadata"), recurse = FALSE) %>%
-#   filter(type == "file") %>%
-# mutate(
-#   file_name = path_file(path),
-#   ext = path_ext(path),
-#   size_display = case_when(
-#     size < 1024 ~ "<1 KB",
-#     TRUE ~ paste0(round(size / 1024, 1), " KB")
-#   )
-# ) %>%
-#   arrange(file_name) %>%
-#   select(file_name, ext, size_display)
 
 # 2. Render the table
 metadata_files %>%
-  rename(
-    `File Name` = file_name,
-    `Extension` = ext,
-    `Size` = size_display
-  ) %>%
+select(Folder = folder, 
+       `File Name` = file_name, 
+       Extension = ext, Size = size_display, 
+       Description = description) %>%
+  # rename(
+  #   `File Name` = file_name,
+  #   `Extension` = ext,
+  #   `Size` = size_display
+  #   ) %>%
   kable(align = "lcc")
 
 
