@@ -279,7 +279,7 @@ vec_summary_updated %>%
 # ------------------------------------------------------------------------------
 
 # ---- Load and Filter Level 1 ecoregions ----
-eco_l1_gp <- st_read(here("data/raw/us_ecoregions/us-eco-levels.gpkg"),
+eco_l1_gp <- st_read(here("data/r/us_ecoregions/us-eco-levels.gpkg"),
                   layer = "us_eco_l1", quiet = TRUE) %>%
   filter(NA_L1NAME == "GREAT PLAINS")
 
