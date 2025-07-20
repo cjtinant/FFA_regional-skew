@@ -1,0 +1,10 @@
+layer,field_name,data_type
+nhdphr_catchments_combined,nhdplusid,numeric
+nhdphr_catchments_combined,sourcefc,character
+nhdphr_catchments_combined,gridcode,integer
+nhdphr_catchments_combined,areasqkm,numeric
+nhdphr_catchments_combined,vpuid,character
+nhdphr_catchments_combined,Shape_Length,numeric
+nhdphr_catchments_combined,Shape_Area,numeric
+nhdphr_catchments_combined,chunk_id,integer
+nhdphr_catchments_combined,geom,sfc_MULTIPOLYGON

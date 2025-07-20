@@ -131,7 +131,7 @@ nhdV2_gp <- get_nhdplus(
 # Write flowlines and catchments to GeoPackage
 st_write(nhdV2_gp$flowline, "data/raw/nhdplus_v21/nhd_flowline_v21.gpkg",
          delete_dsn = TRUE)
-st_write(nhdV2_gp$catchment, "data/raw/nhdplus_v21/nhd_catchment_v21.gpkg",
+st_write(nhdV2_gp$catchment, "data/raw/nhdplus_v21/nhdv21_catchments.gpkg",
          delete_dsn = TRUE)
 
 # Quick reality check (visually)
@@ -146,7 +146,7 @@ ggplot() +
 # ------------------------------------------------------------------------------
 
 # 4.1. Load the GeoPackage
-catchments <- st_read("data/raw/nhdplus_v21/nhd_catchment_v21.gpkg")
+catchments <- st_read("data/raw/nhdplus_v21/nhdv21_catchments.gpkg")
 
 # 4.2. Check the current CRS
 st_crs(catchments)
@@ -160,7 +160,7 @@ st_crs(catchments_proj)
 # Define output path
 file_path  <- "data/processed"
 dir_name   <- "nhdplus_v21"
-file_name  <- "nhd_catchment_v21.gpkg"
+file_name  <- "nhdv21_catchments.gpkg"
 target_dir <- here(file_path, dir_name)
 out_path   <- file.path(target_dir, file_name)
 
@@ -188,7 +188,7 @@ flowlines_proj <- st_transform(flowlines, crs = 5070)
 # Define output path
 file_path  <- "data/processed"
 dir_name   <- "nhdplus_21"
-file_name  <- "nhd_flowlines_v21.gpkg"
+file_name  <- "nhdv21_flowlines.gpkg"
 target_dir <- here(file_path, dir_name)
 out_path   <- file.path(target_dir, file_name)
 

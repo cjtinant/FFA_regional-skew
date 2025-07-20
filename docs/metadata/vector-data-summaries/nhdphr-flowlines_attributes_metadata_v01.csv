@@ -1,0 +1,10 @@
+field_name,data_type
+Shape_Area,numeric
+Shape_Length,numeric
+areasqkm,numeric
+chunk_id,integer
+geom,sfc_MULTIPOLYGON
+gridcode,integer
+nhdplusid,numeric
+sourcefc,character
+vpuid,character

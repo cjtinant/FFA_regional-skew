@@ -1,0 +1,6 @@
+file,layer,geometry_type,crs,extent,n_features,n_attributes,geometry_column,timestamp
+us_eco_levels.gpkg,us_eco_l1,MULTIPOLYGON,NAD83 / Conus Albers,"-2356069.4578, 272048.495719239, 2258224.83065218, 3172577.0456",1187,4,geom,2025-07-20T16:56:20Z
+us_eco_levels.gpkg,us_eco_l2,MULTIPOLYGON,NAD83 / Conus Albers,"-2356069.4578, 272048.495719239, 2258224.83065218, 3172577.0456",1280,7,geom,2025-07-20T16:56:21Z
+us_eco_levels.gpkg,us_eco_l3,MULTIPOLYGON,NAD83 / Conus Albers,"-2356069.4578, 272048.495719239, 2258224.83065218, 3172577.0456",1221,10,geom,2025-07-20T16:56:21Z
+us_eco_levels.gpkg,us_eco_l4,POLYGON,NAD83 / Conus Albers,"-2356069.4578, 272048.4957, 2258224.8307, 3172577.0456",5896,15,geom,2025-07-20T16:56:22Z
+us_eco_levels.gpkg,us_eco_l4_merged,MULTIPOLYGON,NAD83 / Conus Albers,"-2356069.4578, 272048.4957, 2258224.8307, 3172577.0456",1,0,geom,2025-07-20T16:56:22Z
