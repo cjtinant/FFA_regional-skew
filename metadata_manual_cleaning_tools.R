@@ -21,17 +21,20 @@ library(waldo)
 # 1. Define paths to old and new CSV versions
 # ------------------------------------------------------------------------------
 
-old_csv <- here("docs", "metadata", "covariates_metadata_split", 
-                "skew_covariates_metadata_v071.csv")
-new_csv <- here("docs", "metadata", "covariates_metadata_split", 
-                "skew_covariates_metadata_v081.csv")
+old_csv <- here("docs", "metadata",
+                "ecoregion_data-dictionary_v01.csv")
+new_csv <- here("docs", "metadata",
+                "ecoregion_eco_l4_no_st_attributes.csv")
 
 # ------------------------------------------------------------------------------
 # 2. Read and clean both CSV files
 # ------------------------------------------------------------------------------
 
-df_old <- read_csv(old_csv, show_col_types = FALSE) %>% clean_names()
-df_new <- read_csv(new_csv, show_col_types = FALSE) %>% clean_names()
+df_old <- read_csv(old_csv, show_col_types = FALSE) %>% 
+  clean_names()
+
+df_new <- read_csv(new_csv, show_col_types = FALSE) %>% 
+  clean_names()
 
 # ------------------------------------------------------------------------------
 # 3. Reorder and align df_old to match df_new's structure
@@ -68,7 +71,7 @@ if (nrow(df_old) < 1) {
 # ------------------------------------------------------------------------------
 
 cat("\n--- Structural and Value Differences (waldo) ---\n")
-waldo::compare(df_old_aligned, df_new)
+waldo::compare(df_old_extended, df_new)
 
 # ------------------------------------------------------------------------------
 # 5. Compare row-level differences using dplyr anti_join
@@ -79,6 +82,30 @@ anti_join(df_new, df_old)
 
 cat("\n--- Rows in OLD but not in NEW ---\n")
 anti_join(df_old, df_new)
+
+# ------------------------------------------------------------------------------
+# 6. Compare selected variable by name using a join
+# ------------------------------------------------------------------------------
+
+compare_metadata_column <- function(df_old, df_new, var_to_ck) {
+  old_var <- df_old %>%
+    select(variable_name, value_old = !!sym(var_to_ck))
+  
+  new_var <- df_new %>%
+    select(variable_name, value_new = !!sym(var_to_ck))
+  
+  full_join(new_var, old_var, by = "variable_name") %>%
+#    filter(value_old != value_new) %>%
+    print(n = Inf)
+}
+
+compare_metadata_column(df_old, df_new, "notes")
+
+
+
+
+
+
 
 # ------------------------------------------------------------------------------
 # 6. Compare row-level differences using dplyr anti_join
@@ -93,18 +120,7 @@ write_csv(df_old_aligned, here("docs", "metadata", "covariates_metadata_split",
                                "skew_covariates_metadata_v071.csv"))
 
 
-# ==============================================================================
-# Script Section: check rows based on index
-# Purpose: 
-# ==============================================================================
 
-ck_new <- df_new %>%
-  select(variable_name, short_name)
-
-ck_old <- df_old %>%
-  select(variable_name, short_name)
-
-ck_cols <- full_join(ck_new, ck_old)
 
 
 

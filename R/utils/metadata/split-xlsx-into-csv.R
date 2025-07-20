@@ -79,7 +79,7 @@ anti_join(df_old, df_new)
 # 2. Define file paths
 # ------------------------------------------------------------------------------
 xlsx_path <- here("docs", "metadata", 
-                  "skew_covariates_metadata_v023.xlsx"
+                  "dic_draft.xlsx"
                   )
 
 output_dir <- here("docs", "metadata", "covariates_metadata_split")
