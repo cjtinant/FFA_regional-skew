@@ -6,6 +6,7 @@ CJ Tinant
 - [Changelog](#changelog)
   - [\[Unreleased\]](#unreleased)
   - [Changed](#changed)
+  - [In Progress](#in-progress)
   - [\[v1.3.0\] - 2025-06-30](#v130---2025-06-30)
   - [\[v1.2.5\] - 2025-05-08](#v125---2025-05-08)
   - [\[v1.2.0\] - 2025-05-08](#v120---2025-05-08)
@@ -21,124 +22,90 @@ Changelog](https://keepachangelog.com/) format.*
 
 ------------------------------------------------------------------------
 
-``` r
-library(tidyverse)
-```
-
-    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-    ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
-    ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-    ## ✔ ggplot2   3.5.2     ✔ tibble    3.3.0
-    ## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-    ## ✔ purrr     1.1.0     
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## ✖ dplyr::filter() masks stats::filter()
-    ## ✖ dplyr::lag()    masks stats::lag()
-    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
 ## \[Unreleased\]
 
-\###Added
+### Added
 
 - Created git_changelog_workflow_reference.Rmd to document versioning
   and commit practices
-
 - Drafted structured README content for `docs/` folder organization and
   contents
-
 - Converted spatial_data_preparation_checklist.md to RMarkdown with
   interactive checkboxes
-
 - Added YAML header with github_document output and floating TOC for
   checklist rendering
-
 - Added 01c_download_usgs_site_metadata.R to query and export detailed
   metadata for USGS peak flow gages filtered within the Great Plains
   Level I Ecoregion
-
 - Added 01e_filter_peakflow_data.R script to apply staged filtering of
   peak flow data, including:
-
-- Filtered USGS peak flow data for usable records (≥10 years)
-
-- Applied MGBT to flag and remove PILFs
-
-- Tiered sites into 3 categories based on regulation and record length
-
-- Calculated LP3-compatible sample skewness per Bulletin 17C
-
-- Cleaned and joined gage attributes; removed unused/constant fields
-
-- Exported results to GeoPackage (gage_summary_skew.gpkg), CSV, and metadata dictionary
-
+  - Filtered USGS peak flow data for usable records (≥10 years)
+  - Applied MGBT to flag and remove PILFs
+  - Tiered sites into 3 categories based on regulation and record length
+  - Calculated LP3-compatible sample skewness per Bulletin 17C
+  - Cleaned and joined gage attributes; removed unused/constant fields
+  - Exported results to GeoPackage (gage_summary_skew.gpkg), CSV, and
+    metadata dictionary
 - Added/renamed docs/review_data_files to inventory downloads in
   data/raw/ and compare with data/processed/ to flag missing processing
   steps and unused files
-
 - Combined and validated NHDPlus HR catchments with chunked geometry
   repair
-
 - Recreated and enhanced 01h_download_nhdplus_hr_flowlines.R to download
   and QA NHDPlus HR flowlines for Great Plains L4 Ecoregions:
-
-- Restored functionality from deleted prior version
-
-- Standardized output file names via region_name_to_filename()
-
-- Switched output path to data/raw/nhdphr_flowlines/ for reproducibility
-
-- Added CLI status updates via {cli}
-
-- Logged retry attempts with buffer distance in nhdphr_retry_log.csv
-
-- Generated diagnostics for NULL AOIs with sliver flag logic and QA map
-
-- Exported null_aoi_summary.csv and null_aois_diagnostics_facet_map.png for review
+  - Restored functionality from deleted prior version
+  - Standardized output file names via region_name_to_filename()
+  - Switched output path to data/raw/nhdphr_flowlines/ for
+    reproducibility
+  - Added CLI status updates via {cli}
+  - Logged retry attempts with buffer distance in nhdphr_retry_log.csv
+  - Generated diagnostics for NULL AOIs with sliver flag logic and QA
+    map
+  - Exported null_aoi_summary.csv and
+    null_aois_diagnostics_facet_map.png for review
 
 ## Changed
 
+- Metadata Restructure and Cleanup (v0.3.0)
+  - Reorganized metadata files into subdirectories:
+    - dictionaries/
+    - descriptions/
+    - look-up-tables/
+  - Cleaned and renamed README.Rmd and README.md for docs/metadata/
+  - Removed redundant files (e.g., .csv.csv extensions)
+  - Added support tools:
+  - metadata_manual_cleaning_tools.R
+  - split-xlsx-into-csv.R
+- Updated changelogs and improved file naming consistency
 - Changed 01b_download-gage-data.R outputs: Removed tile_id, queryTime,
   ecoregion level, and unused fields from final CSVs
-
 - Updated docs/README.md to include spatial checklist as a key reference
-
 - Started reviewing and inventorying reports/ folder for milestone logs
   and modeling notes
-
 - Grouped finalized .Rmd logs and narrative summaries by milestone in
   `reports/`
-
 - Moved zipped files to data/raw/archives/
-
 - Updated `inventory_feature_data.R output` to permanently log results
   to `data/log`
-
 - Moved possible duplicate flowlines files from `/data/raw/` to data to
   `to_check/nhdphd_flowlines_dups/`
-
 - Moved `data/intermediate` to `to_check/`
-
 - Moved human-readable metadata to docs/metadata/
 
-\#In Progress \* Continue audit for duplicate or outdated files across
-documentation folders:
+## In Progress
 
+- Continue audit for duplicate or outdated files across documentation
+  folders:
 - Began migrating internal process documentation and QA/QC templates
   into docs/
-
 - check spatial extent by domain
-
 - Inventorying all .Rmd, .md, and .txt files in docs/ and reports/ by
   date, topic, and milestone
-
 - Integrating finalized workflow references and logs into a shared index
   or dashboard-style README
-
 - Tagging report .Rmd files with chunk header cleanup ({r name, eval=})
   for reproducibility
-
 - Auto-generate a CSV tracker from your 01_download script names
-
 - Draft a corresponding Git commit message
 
 ## \[v1.3.0\] - 2025-06-30
