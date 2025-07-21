@@ -1,7 +1,7 @@
 Changelog
 ================
 CJ Tinant
-2025-07-19
+2025-07-21
 
 - [Changelog](#changelog)
   - [\[Unreleased\]](#unreleased)
@@ -79,6 +79,7 @@ Changelog](https://keepachangelog.com/) format.*
     - dictionaries/
     - descriptions/
     - look-up-tables/
+    - raster-data-summaries
   - Cleaned and renamed README.Rmd and README.md for docs/metadata/
   - Removed redundant files (e.g., .csv.csv extensions)
   - Added support tools:
@@ -99,18 +100,19 @@ Changelog](https://keepachangelog.com/) format.*
   `to_check/nhdphd_flowlines_dups/`
 - Moved `data/intermediate` to `to_check/`
 - Moved human-readable metadata to docs/metadata/
+- Completed audit for duplicate or outdated files in:
+  - `/docs`
+- Migrated internal process documentation and QA/QC templates into
+  `docs/`
+- Integrate finalized workflow references into
+  `docs/best-practices_reference`
 
 ## In Progress
 
 - Continue audit for duplicate or outdated files across documentation
   folders:
-- Began migrating internal process documentation and QA/QC templates
-  into docs/
-- check spatial extent by domain
-- Inventorying all .Rmd, .md, and .txt files in docs/ and reports/ by
-  date, topic, and milestone
-- Integrating finalized workflow references and logs into a shared index
-  or dashboard-style README
+- Inventorying all .Rmd, .md, and .txt files and reports/ by date,
+  topic, and milestone
 - Tagging report .Rmd files with chunk header cleanup ({r name, eval=})
   for reproducibility
 - Auto-generate a CSV tracker from your 01_download script names
