@@ -1,5 +1,5 @@
 ---
-title: "Git + Changelog Workflow Scaffold"
+title: "Best Practices for Documentation"
 author: "FFA_regional-skew Project"
 output: 
   github_document:
@@ -11,7 +11,46 @@ output:
 
 # Overview
 
-This guide helps maintain clear, consistent, and expressive commit messages using conventional prefixes and best practices for documenting changes in hydrologic modeling and data science projects.
+This guide describes best practices for documenting changes in hydrologic 
+modeling and data science projects. The guide describes: 
+* data workflow status, 
+* working with Git, 
+* semantic versioning,
+* changelog format, 
+* DRY principles, and
+* Definitions for reference materials
+
+---
+
+# Workflow Status Level
+
+## Table 1: Common Status Levels for Data Workflow
+| Status Code | Label | Description |
+|:-----------:|:-----:|:-----------:|
+| 00 | ❌ Not Started | Task has not been initiated. |
+| 01 | ⬇️ Queued for Download | Identified for download; pending execution. |
+| 02 | ⬇️ Downloaded | Data successfully downloaded. No prep has started yet. |
+| 03 | 📐 Reprojected | Spatial data reprojected to standard CRS (e.g., NAD83). |
+| 04 | 🧹 Cleaned / Filtered | Unwanted data removed; NA handling, format consistency applied. |
+| 05 | 🔍 Verified Raw Files | File format, integrity, and metadata validated. |
+| 06 | 🧾 Metadata Documented | Dataset and processing steps documented in metadata or data dictionary. |
+| 07 | 🧮 Feature Extraction | Covariates or metrics calculated (e.g., slope, mean temp). |
+| 08 | 🧱 Joined to Site Data | Covariates or values joined with site records (e.g., gage locations). |
+| 09 | 📦 Finalized & Versioned | Clean, final dataset stored in data/processed/; versioned if needed. |
+| 10 | 📊 Used in Modeling | Dataset actively used in modeling or downstream analysis. |
+
+---
+
+### Table 2: In-Progress Modifiers 
+
+| Modifier | Status Indicator |
+|:--------:|:----------------:|
+| * | partially done          |
+| ~ | needs review            |
+| ! | blocker or known issue  |
+| ✓ | fully validated         |
+
+* **Note:** Control + Command + Spacebar opens the Emoji & Symbols viewer
 
 ---
 
@@ -28,7 +67,7 @@ This guide helps maintain clear, consistent, and expressive commit messages usin
 
 ---
 
-## ✅ Common Prefixes (`<type>`)
+## Table 3 ✅ Common Prefixes (`<type>`)
 
 | Prefix     | When to Use                                                  |
 |------------|--------------------------------------------------------------|
@@ -226,8 +265,6 @@ git push origin v0.3-refactor
 
 🔶 = Do it if you're tracking tightly or have collaborators who care about visibility
 
-
-
 ---
 
 # ✅  Release Checklist (Markdown or Issue Template)
@@ -364,3 +401,32 @@ Long-term editable source                | ✅ Yes       | ❌ Only generated fr
 * If it’s structured data, use .csv.
 
 * If it’s unstructured or semi-structured text, use .txt.
+
+# Definitions
+
+## Data Dictionary vs. Attribute Data
+
+*Attribute data* refers to the actual values associated with each record or
+feature in a dataset. In a spatial dataset, these are typically the values in
+the attribute table (e.g., names, measurements, categories).
+
+A *Data Dictionary* A data dictionary is metadata — it describes the structure,
+meaning, and units of the fields in your dataset. It helps humans understand
+what each field represents. It can be saved as:
+
+*  A separate file (e.g., Excel, CSV, JSON, R script)
+
+*  As a documentation section in an RMarkdown or README
+
+*  Embedded in metadata for shapefiles (e.g., .xml files) or GeoPackages
+
+### Data Dictionary Example
+
+| Field Name | Description            | Unit    | Data Type |
+|:----------:|:----------------------:|:-------:|:---------:|
+| STATE_NAME | Name of the U.S. state | NA      | Text      |
+| POP_2020   | Population in 2020     | Persons | Integer   |
+| AREA_SQKM  | Area of the state      | sqkm    | Float     |
+
+
+

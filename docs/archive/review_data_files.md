@@ -1,7 +1,7 @@
 Review and Inventory of Spatial and Tabular Data
 ================
 CJ Tinant
-2025-07-14 12:11:57
+2025-07-21 10:19:05
 
 - [Overview](#overview)
 - [Goals](#goals)
@@ -20,13 +20,16 @@ CJ Tinant
     Script](#21-run-feature-inventory-script)
   - [2.2. Run Raster Inventory Script](#22-run-raster-inventory-script)
 - [Part 3: Check Results](#part-3-check-results)
+- [Part 4: Validate Metadata](#part-4-validate-metadata)
+  - [Validate Spatial Data](#validate-spatial-data)
 
 ## Overview
 
 The goal is to inventory, validate, and document feature (vector and
 tabular) and raster datasets stored in the data/ directory, with a focus
 on identifying duplicates, standardizing file structure, and preparing
-inputs for covariate extraction in the regional skew model.
+inputs for covariate extraction in the regional skew model. Output from
+code-chunks are used by scripts in `R/02_clean_validate`
 
 ## Goals
 
@@ -54,7 +57,7 @@ while a filtered summary of files with shared names is exported to
 moved to `to_check/duplicates/` for archival and manual review.
 
 ``` r
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 
 result_feat_raw <- inventory_feature_data(
   input_dir = here("data/raw"),
@@ -81,13 +84,6 @@ manual review as `data/log/duplicate_raster_summary.csv`.
 
 ### 1.2. Run Raster Inventory Script
 
-``` r
-result_rast_raw <- inventory_raster_data(
-  input_dir = here("data/raw"),
-  output_dir = here("data/log/raw_raster/")
-)
-```
-
     ## ✔ ✅ Raster data inventory complete.
 
     ## ℹ → Full inventory saved to '/Users/cjtinant/Documents/Rprojects_not-class/FFA_regional-skew/data/log/raw_raster/raster_data_inventory.csv'
@@ -101,80 +97,13 @@ The following step identifies zip files from subdirectories of
 archived download packages are stored separately from unzipped raster
 inputs. The step is not used in the current modeling workflow.
 
-``` r
-# move_zip_to_archives()
-```
-
 ### 1.4. Check Results
-
-UPDATE
-
-``` r
-# get feature results
-files_raw_vec <- read_csv(here("data/log/raw_feature",
-                               "feature_file_inventory.csv"),
-                          show_col_types = FALSE) %>%
-  select(file_type, relative_path, possible_duplicate) %>%
-  separate(
-    col  = relative_path, 
-    into = c("folder", "file"),
-    sep = "/",           # delimiter
-    extra = "merge",     # merge any additional parts into last column
-    fill = "right"       # if no slash, leave second column NA
-  ) %>%
-  arrange(file_type, folder) %>%
-  mutate(data_type = "vector")
-
-# get raster results
-files_raw_rast <- read_csv(here("data/log/raw_raster",
-                                "raster_data_inventory.csv"),
-                          show_col_types = FALSE) %>%
-  select(file_type, relative_path, possible_duplicate) %>%
-  separate(
-    col  = relative_path, 
-    into = c("folder", "file"),
-    sep = "/",           # delimiter
-    extra = "merge",     # merge any additional parts into last column
-    fill = "right"       # if no slash, leave second column NA
-  ) %>%
-  arrange(file_type, folder) %>%
-  mutate(data_type = "raster")
-
-# combine and summarise results
-files_raw_all <- bind_rows(files_raw_vec, files_raw_rast) %>%
-  relocate(data_type, file_type, folder, file)
-
-
-files_raw_summary <- files_raw_all %>%
-  count(data_type, folder, file_type, possible_duplicate) %>%
-  arrange(folder)
-
-write_csv(files_raw_summary,
-          here("data/log/summary_raw_data_files.csv"))
-```
 
 ### 1.5. Remove Unneeded Climate Rasters
 
 The following step identifies legacy koppen-climate rasters representing
 time periods prior to 1990. These files are not used in the current
 modeling workflow and may be removed following QA and confirmation.
-
-``` r
-# This step removes `koppen-climate` raster files for the periods **1901–1930**, # **1931–1960**, and **1961–1990** because the regional skew modeling targets 
-# modern climate normals (1990–2020).
-
-# Identify outdated Koppen-Geiger rasters
-# koppen_rasters_to_remove <- files_raw_rast %>%
-#   filter(
-#     folder == "koppen-climate",
-#     !str_detect(file, "1990|2000|2010|2020")
-#   ) %>%
-#   mutate(remove_reason = "outside_target_period")
-
-# (Run Once) Log files marked for removal
-# write_csv(koppen_rasters_to_remove,
-#          here("data/log/koppen-climate_files_removed.csv"))
-```
 
 ## Part 2: Inventory Files in data/processed
 
@@ -191,13 +120,6 @@ duplicates. Files with the same name but different sizes are flagged for
 manual review. Preferred formats such as `.gpkg`, `.csv`, and `.rds` are
 retained; others are reviewed or archived if redundant.
 
-``` r
-result_feat_processed <- inventory_feature_data(
-  input_dir = here("data/processed"),
-  output_dir = here("data/log")
-)
-```
-
     ## ✔ ✅ Feature data inventory complete.
 
     ## ℹ → Full inventory saved to '/Users/cjtinant/Documents/Rprojects_not-class/FFA_regional-skew/data/log/feature_file_inventory.csv'
@@ -211,13 +133,6 @@ This step inventories raster outputs in `data/processed/`, including
 climate normals, terrain rasters, or derived surfaces used as
 covariates.
 
-``` r
-result_rast_processed <- inventory_raster_data(
-  input_dir = here("data/processed"),
-  output_dir = here("data/log")
-)
-```
-
     ## ✔ ✅ Raster data inventory complete.
 
     ## ℹ → Full inventory saved to '/Users/cjtinant/Documents/Rprojects_not-class/FFA_regional-skew/data/log/raster_data_inventory.csv'
@@ -226,74 +141,12 @@ result_rast_processed <- inventory_raster_data(
 
 ## Part 3: Check Results
 
-UPDATE
+This section loads saved logs and summarises results
 
-``` r
-# Load feature results
-files_processed_vec <- read_csv(here("data/log",
-                                     "feature_file_inventory.csv"),
-                                show_col_types = FALSE) %>%
-  select(file_type, relative_path, possible_duplicate) %>%
-  separate(
-    col = relative_path,
-    into = c("folder", "file"),
-    sep = "/",
-    extra = "merge",
-    fill = "right"
-  ) %>%
-  arrange(file_type, folder) %>%
-  mutate(data_type = "vector")
+## Part 4: Validate Metadata
 
-# Load raster results
-files_processed_rast <- read_csv(here("data/log",
-                                      "raster_data_inventory.csv"),
-                                 show_col_types = FALSE) %>%
-  select(file_type, relative_path, possible_duplicate) %>%
-  separate(
-    col = relative_path,
-    into = c("folder", "file"),
-    sep = "/",
-    extra = "merge",
-    fill = "right"
-  ) %>%
-  arrange(file_type, folder) %>%
-  mutate(data_type = "raster")
+### Validate Spatial Data
 
-# Combine and summarize
-files_processed_all <- bind_rows(files_processed_vec, files_processed_rast) %>%
-  relocate(data_type, file_type, folder, file)
-
-files_processed_summary <- files_processed_all %>%
-  count(data_type, folder, file_type, possible_duplicate) %>%
-  arrange(folder)
-
-full_summary <- full_join(files_raw_summary, files_processed_summary, 
-                  by = join_by(data_type, folder),
-                  suffix = c(".raw", ".processed"),
-                  relationship = "many-to-many"
-                  ) %>%
-  select(-starts_with("possible")) %>%
-  arrange(folder)
-
-# Save summary
-write_csv(full_summary,
-          here("data/log/summary_processed_data_files.csv"))
-```
-
-USE KABLE HERE
-
-``` r
-flowlines <- files_raw_vec %>%
-  filter(folder == "nhdphr_flowlines") %>%
-  select(file)
-
-catchments <- files_raw_vec %>%
-  filter(folder == "nhdphr_catchments")  %>%
-  select(file)
-
-dups <- anti_join(flowlines, catchments)
-```
-
-    ## Joining with `by = join_by(file)`
-
-CHECK THE CSV DATA – there is a difference in the numbers
+This step validates CRS, resolution, and spatial extent of raster and
+vector files in `data/processed/`. The script that creates the output is
+`02e_validate_spatial_metadata.R`

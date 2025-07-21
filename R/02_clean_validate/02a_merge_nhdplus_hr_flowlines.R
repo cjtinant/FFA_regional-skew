@@ -21,7 +21,7 @@
 #
 # Input:  Individual nhdphr flowlines (~3,405,000 obs x 178 vars) saved as .gpkg
 #         and aggregated by Level Ecoregion (N =171) in raw/nhdphr_flowlines/
-# Output: A single .gpkg in processed/raw/nhdphr_flowlines/
+# Output: A single .gpkg in processed/raw//
 #
 # Dependencies:
 # -    tidyverse: general data wrangling

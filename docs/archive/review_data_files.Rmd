@@ -11,9 +11,9 @@ date: "`r format(Sys.time(), '%Y-%m-%d %H:%M:%S')`"
 ## Overview
 
 The goal is to inventory, validate, and document feature (vector and tabular)
-and raster datasets stored in the data/ directory, with a focus on identifying 
-duplicates, standardizing file structure, and preparing inputs for covariate 
-extraction in the regional skew model.
+and raster datasets stored in the data/ directory, with a focus on identifying  duplicates, standardizing file structure, and preparing inputs for covariate 
+extraction in the regional skew model. Output from code-chunks are used by
+scripts in `R/02_clean_validate`
 
 ## Goals
 
@@ -47,7 +47,7 @@ Feature files are grouped by their basename to identify possible version conflic
 The full inventory is saved to `data/log/feature_file_inventory.csv`, while a filtered summary of files with shared names is exported to `to_check/duplicate_vector_summary.csv`. Lower-priority duplicates are moved to `to_check/duplicates/` for archival and manual review.
 
 ```{r run_inventory-feature-data-function_data_raw}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 
 result_feat_raw <- inventory_feature_data(
   input_dir = here("data/raw"),
@@ -84,8 +84,6 @@ in the current modeling workflow.
 ```
 
 ### 1.4. Check Results
-
-UPDATE
 
 ```{r read_data_raw_inventory}
 
@@ -256,7 +254,7 @@ files in `data/processed/`. The script that creates the output is
 ```{r}
 
 # Get vector validation summary
-vec_spatial_summary <- read_csv(here("data/meta",
+vec_spatial_summary <- read_csv(here("data/log/validate_spatial",
                                      "vector_validation_summary.csv"),
                                 show_col_types = FALSE)
 
@@ -266,41 +264,9 @@ vec_spatial_summary <- read_csv(here("data/meta",
 #                                 show_col_types = FALSE)
 
 
-# Get bb for ecoregions
-
-```
-
-### Validate Other Metadata
-
-**Definitions:**
-*Attribute data* refers to the actual values associated with each record or
-feature in a dataset. In a spatial dataset, these are typically the values in
-the attribute table (e.g., names, measurements, categories).
-
-A *Data Dictionary* A data dictionary is metadata — it describes the structure,
-meaning, and units of the fields in your dataset. It helps humans understand
-what each field represents. It can be saved as:
-
-*  A separate file (e.g., Excel, CSV, JSON, R script)
-
-*  As a documentation section in an RMarkdown or README
-
-*  Embedded in metadata for shapefiles (e.g., .xml files) or GeoPackages
-
-Example (corresponding to above):
-| Field Name | Description            | Unit    | Data Type |
-|:----------:|:----------------------:|:-------:|:---------:|
-| STATE_NAME | Name of the U.S. state | NA      | Text      |
-| POP_2020   | Population in 2020     | Persons | Integer   |
-| AREA_SQKM  | Area of the state      | sqkm    | Float     |
-
-```{r}
-
-# EPA files -- use join
 
 
 ```
-
 
 
 

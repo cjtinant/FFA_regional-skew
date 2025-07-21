@@ -330,11 +330,11 @@ library(ggplot2)
 
 gp_union <- st_union(eco_l1_gp)
 
-#flowlines <- st_read(here("data/processed/nhdphr_flowlines/nhd_flowlines_combined.gpkg"), quiet = TRUE) %>%
+#flowlines <- st_read(here("data/processed/nhdphr/nhdphr_flowlines_combined.gpkg"), quiet = TRUE) %>%
 #  st_transform(st_crs(gp_union))
 
 bbox_nhd <- terra::vect(
-  here("data/processed/nhdphr_flowlines/nhd_flowlines_combined.gpkg")) %>%
+  here("data/processed/nhdphr/nhdphr_flowlines_combined.gpkg")) %>%
   terra::ext() %>%
   as.vector()
 

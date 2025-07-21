@@ -1,13 +1,12 @@
 data_type,folder,file_type,possible_duplicate,n
-vector,archives,zip,FALSE,8
-vector,ecoregions,shp,FALSE,7
-raster,koppen-climate,tif,FALSE,4
+vector,archives,zip,FALSE,34
+raster,koppen_climate,tif,FALSE,4
 raster,modis,hdf,FALSE,288
-vector,nhdphr_catchments,gpkg,FALSE,161
+vector,nhdphr_catchments,gpkg,FALSE,160
 vector,nhdphr_flowlines,gpkg,FALSE,160
 vector,nhdplus_v21,gpkg,FALSE,2
 raster,nlcd,tif,FALSE,3
-vector,peakflow_gages,csv,FALSE,6
+vector,peakflow_gages,csv,FALSE,8
 vector,peakflow_gages,csv,TRUE,1
 vector,peakflow_gages,gpkg,TRUE,1
 raster,phzm,bil,FALSE,1
@@ -18,3 +17,4 @@ raster,prism,hdr,FALSE,1114
 raster,prism,stx,FALSE,1114
 vector,prism,csv,FALSE,12
 vector,statsgo2,csv,FALSE,1
+vector,us_ecoregions,shp,FALSE,7
