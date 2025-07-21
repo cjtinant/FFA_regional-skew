@@ -1,18 +1,13 @@
 README
 ================
 CJ Tinant
-2025-07-20
+2025-07-21
 
 - [📁 Project Documentation
   (`docs/`)](#file_folder-project-documentation-docs)
   - [📚 Folder Purpose](#books-folder-purpose)
-  - [Definitions](#definitions)
-  - [📄 Key Contents (as of
-    vX.X.0)](#page_facing_up-key-contents-as-of-vxx0)
-  - [📄 Key Contents (as of
-    v1.3.0)](#page_facing_up-key-contents-as-of-v130)
-  - [🗂️ Suggested Subfolders
-    (Optional)](#card_index_dividers-suggested-subfolders-optional)
+  - [🗂️ Subfolders](#card_index_dividers-subfolders)
+  - [📄 Key Contents](#page_facing_up-key-contents)
 
 # 📁 Project Documentation (`docs/`)
 
@@ -20,6 +15,9 @@ This folder contains supporting documents, workflow references, and
 metadata guides related to the **Regional Skew Estimation** project.
 Materials here are designed to be human-readable, versioned, and
 referenceable in publications, milestone reports, or modeling scripts.
+This folder complements the `reports/` folder, which contains
+milestone-specific logs, exploratory notes, and in-progress `.Rmd`
+analysis files.
 
 ------------------------------------------------------------------------
 
@@ -38,71 +36,32 @@ The `docs/` directory serves as a centralized archive for:
 
 - Files referenced in `.Rmd`, Quarto, or PDF outputs
 
-This folder complements the `reports/` folder, which contains
-milestone-specific logs, exploratory notes, and in-progress `.Rmd`
-analysis files.
-
 ------------------------------------------------------------------------
 
-## Definitions
+## 🗂️ Subfolders
 
-- *Attribute data* refers to the actual values associated with each
-  record or feature in a dataset. In a spatial dataset, these are
-  typically the values in the attribute table (e.g., names,
-  measurements, categories).
-
-- *Data Dictionary* Describes the structure, meaning, and units of the
-  fields in a dataset. It helps humans understand what each field
-  represents. It can be saved as:
-
-- A separate file (e.g., Excel, CSV, JSON, R script)
-
-- As a documentation section in an RMarkdown or README
-
-- Embedded in metadata for shapefiles (e.g., .xml files) or GeoPackages
-
-Example (corresponding to above): \| Field Name \| Description \| Unit
-\| Data Type \| \|:———-:\|:———————-:\|:——-:\|:———:\| \| STATE_NAME \|
-Name of the U.S. state \| NA \| Text \| \| POP_2020 \| Population in
-2020 \| Persons \| Integer \| \| AREA_SQKM \| Area of the state \| sqkm
-\| Float \|
-
-## 📄 Key Contents (as of vX.X.0)
-
-| File / Subfolder | Description |
-|:--:|:--:|
-| `covariate_source_inventory` | Dataset status and sources |
-|  | links to metadata, QA/QC, documentation workflows |
-|  | integrates download script tracker (from R/01_download/) |
-| `data_dictionary` | Covariate metadata, data dictionary |
-| `ref_git_changelog_workflow` | Versioning, tagging, and changelog conventions |
-| `methods_covariate-selection` | Covariate domains, stratification, and macrozone delineation methods |
-
-**Check these** \| `regional_skew_covariates_metadata_by_scale_v01.csv`
-\| Climate and terrain covariate metadata \| \|
-`spatial_validation_summary.csv` \| CRS/resolution audit results for all
-spatial layers \|
-
-## 📄 Key Contents (as of v1.3.0)
-
-| File / Subfolder | Description |
-|----|----|
-| `git_changelog_workflow_reference.Rmd` | Versioning, tagging, and changelog conventions |
-| `methods_covariate-selection.Rmd` | Covariate domains, stratification, and macrozone delineation methods |
-| `regional_skew_covariates_metadata_by_scale_v01.csv` | Climate and terrain covariate metadata |
-| `spatial_validation_summary.csv` | CRS/resolution audit results for all spatial layers |
-
-------------------------------------------------------------------------
-
-## 🗂️ Suggested Subfolders (Optional)
-
-You may organize `docs/` into the following logical groups:
+The `docs/` folder is organized as follows:
 
 ``` plaintext
 
 docs/
-├── workflows/         # Commit, versioning, modeling, data QAQC scaffolds
+├── archive/         # Proposal text, figures, letters
 ├── metadata/          # Variable definitions, units, and crosswalks
-├── proposals/         # Proposal text, figures, letters
-├── release_notes/     # Tagged version notes or publication summaries
+       ├── data-dictionaries/
+       ├── descriptions/
+       ├── look-up-tables/
+       ├── raster-data-summaries
+       ├── vector-data-summaries
 ```
+
+------------------------------------------------------------------------
+
+## 📄 Key Contents
+
+| File | Description |
+|:--:|:--:|
+| `covariate_source_inventory.md` | Dataset status and references |
+| `covariate data_dictionary.pdf` | Covariate metadata, data dictionary |
+| `best-practices_reference.md` | Documentation, versioning, tagging, and changelog conventions |
+| `methods_covariate-selection.md` | Covariate domains, stratification, and macrozone delineation methods |
+| `covariates_metadata.csv` | Climate and terrain covariate metadata |

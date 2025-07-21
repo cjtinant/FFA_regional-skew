@@ -1,12 +1,16 @@
-Git + Changelog Workflow Scaffold
+Best Practices for Documentation
 ================
 FFA_regional-skew Project
 
 - [Overview](#overview)
+- [Covariate Status Level](#covariate-status-level)
+  - [Table 1: Common Status Levels for Data
+    Workflow](#table-1-common-status-levels-for-data-workflow)
+    - [Table 2: In-Progress Modifiers](#table-2-in-progress-modifiers)
 - [Working with Git](#working-with-git)
   - [📌 Commit Message Format](#pushpin-commit-message-format)
-  - [✅ Common Prefixes
-    (`<type>`)](#white_check_mark-common-prefixes-type)
+  - [Table 3 ✅ Common Prefixes
+    (`<type>`)](#table-3-white_check_mark-common-prefixes-type)
   - [✅ Sample Commit
     Messages](#white_check_mark-sample-commit-messages)
   - [✅ Tips for Good Commit
@@ -39,18 +43,57 @@ FFA_regional-skew Project
     - [✅ Use .txt when:](#white_check_mark-use-txt-when)
     - [Examples:](#examples-1)
   - [👓 Rule of Thumb](#eyeglasses-rule-of-thumb)
-- [Data Dictionary vs. Attribute
-  Data](#data-dictionary-vs-attribute-data)
-  - [Definitions](#definitions)
+- [Definitions](#definitions)
+  - [Data Dictionary vs. Attribute
+    Data](#data-dictionary-vs-attribute-data)
     - [Data Dictionary Example](#data-dictionary-example)
 
 ------------------------------------------------------------------------
 
 # Overview
 
-This guide helps maintain clear, consistent, and expressive commit
-messages using conventional prefixes and best practices for documenting
-changes in hydrologic modeling and data science projects.
+This guide describes best practices for documenting changes in
+hydrologic modeling and data science projects. The guide describes: \*
+data workflow status, \* working with Git, \* semantic versioning, \*
+changelog format, \* DRY principles, and \* Definitions for reference
+materials
+
+helps maintain clear, consistent, and expressive commit messages using
+conventional prefixes and
+
+# Covariate Status Level
+
+------------------------------------------------------------------------
+
+## Table 1: Common Status Levels for Data Workflow
+
+| Status Code | Label | Description |
+|:--:|:--:|:--:|
+| 00 | ❌ Not Started | Task has not been initiated. |
+| 01 | ⬇️ Queued for Download | Identified for download; pending execution. |
+| 02 | ⬇️ Downloaded | Data successfully downloaded. No prep has started yet. |
+| 03 | 📐 Reprojected | Spatial data reprojected to standard CRS (e.g., NAD83). |
+| 04 | 🧹 Cleaned / Filtered | Unwanted data removed; NA handling, format consistency applied. |
+| 05 | 🔍 Verified Raw Files | File format, integrity, and metadata validated. |
+| 06 | 🧾 Metadata Documented | Dataset and processing steps documented in metadata or data dictionary. |
+| 07 | 🧮 Feature Extraction | Covariates or metrics calculated (e.g., slope, mean temp). |
+| 08 | 🧱 Joined to Site Data | Covariates or values joined with site records (e.g., gage locations). |
+| 09 | 📦 Finalized & Versioned | Clean, final dataset stored in data/processed/; versioned if needed. |
+| 10 | 📊 Used in Modeling | Dataset actively used in modeling or downstream analysis. |
+
+------------------------------------------------------------------------
+
+### Table 2: In-Progress Modifiers
+
+| Modifier |    Status Indicator    |
+|:--------:|:----------------------:|
+|    \*    |     partially done     |
+|    ~     |      needs review      |
+|    !     | blocker or known issue |
+|    ✓     |    fully validated     |
+
+- **Note:** Control + Command + Spacebar opens the Emoji & Symbols
+  viewer
 
 ------------------------------------------------------------------------
 
@@ -66,7 +109,7 @@ changes in hydrologic modeling and data science projects.
 
 ------------------------------------------------------------------------
 
-## ✅ Common Prefixes (`<type>`)
+## Table 3 ✅ Common Prefixes (`<type>`)
 
 | Prefix      | When to Use                                               |
 |-------------|-----------------------------------------------------------|
@@ -400,9 +443,9 @@ Use this to ensure every release is polished and complete.
 
 - If it’s unstructured or semi-structured text, use .txt.
 
-# Data Dictionary vs. Attribute Data
+# Definitions
 
-## Definitions
+## Data Dictionary vs. Attribute Data
 
 *Attribute data* refers to the actual values associated with each record
 or feature in a dataset. In a spatial dataset, these are typically the
@@ -425,7 +468,3 @@ humans understand what each field represents. It can be saved as:
 | STATE_NAME | Name of the U.S. state |   NA    |   Text    |
 |  POP_2020  |   Population in 2020   | Persons |  Integer  |
 | AREA_SQKM  |   Area of the state    |  sqkm   |   Float   |
-
-``` r
-# EPA files -- use join
-```

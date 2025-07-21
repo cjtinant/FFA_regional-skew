@@ -1,7 +1,7 @@
 Covariate Selection and Macrozone Methods
 ================
 CJ Tinant
-2025-07-01
+2025-07-21
 
 - [Overview](#overview)
 - [Design Structure and Spatial
