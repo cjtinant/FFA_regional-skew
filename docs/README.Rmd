@@ -8,7 +8,6 @@ output:
     toc_depth: 3
 ---
 
-
 # 📁 Project Documentation (`docs/`)
 
 This folder contains supporting documents, workflow references, and metadata

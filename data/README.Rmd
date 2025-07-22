@@ -94,5 +94,4 @@ docs/
         |       ├── PRISM_tmin_30yr_normal_800mD1_mmdd_bil
         |       ├── PRISM_tmin_30yr_normal_800mM5_annual_bil
         ├── statsgo2/             # Digital Gen. Soil Map of the US (STATSGO2)
-
 ```

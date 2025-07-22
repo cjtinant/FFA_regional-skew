@@ -26,7 +26,7 @@ This document provides an up-to-date listing of metadata files stored in
 
 ## Metadata Files in docs/metadata
 
-```{r metadata-inventory_1, echo=FALSE, message=FALSE, warning=FALSE}
+```{r metadata-inventory, echo=FALSE, message=FALSE, warning=FALSE}
 
 library(tidyverse)
 library(fs)

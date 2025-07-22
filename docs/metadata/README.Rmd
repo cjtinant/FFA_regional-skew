@@ -129,4 +129,3 @@ metadata_files %>%
          Description = description) %>%
   kable(align = "lcc")
 ```
-

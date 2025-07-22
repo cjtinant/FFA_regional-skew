@@ -425,6 +425,3 @@ what each field represents. It can be saved as:
 | STATE_NAME | Name of the U.S. state | NA      | Text      |
 | POP_2020   | Population in 2020     | Persons | Integer   |
 | AREA_SQKM  | Area of the state      | sqkm    | Float     |
-
-
-
