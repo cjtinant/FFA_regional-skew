@@ -23,6 +23,10 @@
 # Output Files:
 # - data/raw/peakflow_gages/data_pk_all.csv — all retrieved peak flow records
 #
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
+#
 # Dependencies:
 # - tidyverse       → Data wrangling & visualization
 # - glue            → String interpolation

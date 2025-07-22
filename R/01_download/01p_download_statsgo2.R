@@ -18,6 +18,10 @@
 # Output:
 # -   STATSGO2 mapunit attributes for Great Plains Level I area
 #
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
+#
 # Dependencies:
 # - dplyr:         Data manipulation
 # - fs             File system operations

@@ -24,6 +24,10 @@
 # - Climate rasters in:       data/processed/prism/
 # - Download logs in:         data/log/prism_*.csv
 #
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
+#
 # Dependencies:
 # - dplyr, fs, glue, here, httr, prism, terra, sf, stringr
 # ==============================================================================

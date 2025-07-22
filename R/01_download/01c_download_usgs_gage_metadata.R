@@ -34,6 +34,10 @@
 # - usgs_site_metadata_vars.csv
 # - usgs_sites_pk_ST_only.csv
 #
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
+#
 # Dependencies:
 # - dataRetrieval: To retrieve USGS site metadata
 # - dplyr, readr:  For data manipulation and export

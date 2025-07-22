@@ -5,6 +5,7 @@ CJ Tinant
 
 - [Changelog](#changelog)
   - [\[Unreleased\]](#unreleased)
+  - [\[v1.4.6\] — 2025-07-22](#v146--2025-07-22)
   - [\[v1.4.0\] - 2025-07-22](#v140---2025-07-22)
   - [\[v1.3.0\] - 2025-06-30](#v130---2025-06-30)
   - [\[v1.2.5\] - 2025-05-08](#v125---2025-05-08)
@@ -28,6 +29,25 @@ Changelog](https://keepachangelog.com/) format.*
 ### Changed
 
 ### In Progress
+
+## \[v1.4.6\] — 2025-07-22
+
+### Added
+
+- README.Rmd for R/01_download/ to document spatial data download
+  scripts and workflows.
+- Workflow summaries and output descriptions to all major download
+  scripts.
+
+### Changed
+
+- Standardized headers, metadata blocks, and dependencies in:
+  - 01g_download_nhdplus_hr.R
+  - 01h_download_koppen-geiger_climate.R
+  - 01k_download_prism_climate.R
+- Improved clarity and reproducibility of output file paths and export
+  logic.
+- Minor cleanup and consistency improvements across R/01_download.
 
 ## \[v1.4.0\] - 2025-07-22
 

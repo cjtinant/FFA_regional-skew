@@ -18,6 +18,10 @@
 # Output:
 # - NHDPlusV2.1 flowlines and catchment boundaries for the GP Ecoregion.
 #
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
+#
 # Dependencies:
 # - dplyr
 # - fs

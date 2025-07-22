@@ -29,14 +29,17 @@
 # - sf:             handling spatial data
 # - tidyverse:      general data wrangling
 # - units           unit conversion -- to convert from m² to km²
-
+#
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
+#
 # Notes:
 # - Original metadata & layer files for each level are downloaded for reference.
 # - Data sources are EPA/CEC shapefiles hosted via AWS links.
 # - This script assumes internet access and local write permissions.
 # =============================================================================
-
-# load libraries
+# ----load libraries---
 
 library(glue)
 library(here)

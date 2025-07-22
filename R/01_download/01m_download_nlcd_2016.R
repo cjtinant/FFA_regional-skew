@@ -18,6 +18,11 @@
 # Output:
 # Clipped and masked raster projected to a common CRS
 #
+#
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
+#
 # Dependencies:
 # - dplyr:         Data manipulation
 # - fs             File system operations

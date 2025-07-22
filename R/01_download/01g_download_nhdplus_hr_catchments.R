@@ -62,6 +62,10 @@
 # - data/log/catchment_download_log.csv — timestamped download log
 # - diagnostics/*.csv and *.png — retry logs and summary figures
 #
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
+#
 # Dependencies:
 # - dplyr, glue, fs, here, mapview, nhdplusTools, purrr, readr, sf, stringr, cli
 # ==============================================================================

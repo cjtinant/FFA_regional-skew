@@ -22,6 +22,10 @@
 # Output:
 # - Reprojected Köppen-Geiger raster (EPSG:5070) ready for spatial analysis
 #
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
+#
 # Dependencies:
 # - dplyr, fs, glue, here, httr, sf, terra
 # ==============================================================================

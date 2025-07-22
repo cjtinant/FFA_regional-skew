@@ -53,6 +53,10 @@
 # - peakflow_sites_dropped_summary.csv       summary of dropped site count
 # - data/meta/summary_pk_by_site.csv         site-year counts (for 20-yr filter)
 #
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
+#
 # Dependencies:
 # - e1071          calculate skewness
 # - fs             file system ops (dir_create)

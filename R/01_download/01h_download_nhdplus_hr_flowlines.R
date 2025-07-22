@@ -27,6 +27,10 @@
 # - Log of downloads:          data/log/nhdphr_download_log.csv
 # - Diagnostics PNG:           data/log/null_aois_diagnostics_facet_map.png
 #
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
+#
 # Data Source:
 # https://www.usgs.gov/national-hydrography/nhdplus-high-resolution
 #

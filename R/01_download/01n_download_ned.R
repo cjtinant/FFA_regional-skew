@@ -24,7 +24,11 @@
 # 5.   Export clipped and masked raster to ~data/processed.
 #
 # Output:
-# Clipped and masked raster projected to a common CRS
+# - Clipped and masked raster projected to a common CRS
+#
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
 #
 # Dependencies:
 # - elevatr:       Access to elevation data from various APIs

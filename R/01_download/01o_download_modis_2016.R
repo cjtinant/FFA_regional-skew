@@ -8,6 +8,10 @@
 #                  raster data for the year 2016, clipped to the Great Plains
 #                  Level I Ecoregion.
 #
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
+#
 # Dependencies:
 # - dplyr:         Data manipulation
 # - fs             File system operations

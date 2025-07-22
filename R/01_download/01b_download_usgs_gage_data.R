@@ -35,6 +35,10 @@
 #                            to encode and analyze vector data. Binds to 'GDAL'.
 # - process_geometries.R:  Custom helper functions for cleaning sf geometries
 #
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
+#
 # Notes:
 # - Requires internet access to download data from USGS NWIS
 # - Bounding box grid helps avoid request size limitations in NWIS queries
