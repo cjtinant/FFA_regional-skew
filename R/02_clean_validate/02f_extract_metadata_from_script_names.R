@@ -3,7 +3,7 @@
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-07-01
 # Last Updated:   2025-07-01
-# Purpose:        Extract structured information from download scripts and 
+# Purpose:        Extract structured information from download scripts and
 #                 generate a CSV tracker.
 #
 # Description:
@@ -13,11 +13,11 @@
 #   - Step 4: Add last modified time from file info
 #   - Step 5: Output tracker as CSV
 #
-# Input: 
+# Input:
 #   - R/01_download/*.R
 #   - (optional) data/meta/script_name_mapping.csv
 #
-# Output: 
+# Output:
 #   - data/intermediate/download_script_tracker.csv
 #
 # Dependencies:

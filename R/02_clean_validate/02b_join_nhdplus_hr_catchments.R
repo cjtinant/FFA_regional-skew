@@ -9,9 +9,9 @@
 # Last Updated:   2025-07-12
 #
 # Description:
-# This script reads multiple NHDPlus HR catchment GeoPackages, performs 
-# geometry validation in chunks to prevent memory issues, standardizes geometry 
-# types to MULTIPOLYGON, and exports a combined spatial dataset. File naming is 
+# This script reads multiple NHDPlus HR catchment GeoPackages, performs
+# geometry validation in chunks to prevent memory issues, standardizes geometry
+# types to MULTIPOLYGON, and exports a combined spatial dataset. File naming is
 # based on sanitized region names (e.g., ecoregion or subregion tiles).
 #
 # Inputs:
@@ -122,7 +122,3 @@ dir_create(dirname(output_path))
 st_write(catchments_valid, output_path, delete_dsn = TRUE)
 
 message("✅ Combined catchments written to: ", output_path)
-
-
-
-

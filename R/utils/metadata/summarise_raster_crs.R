@@ -3,17 +3,17 @@
 # Author:         CJ Tinant
 # Date Created:   2025-05-15
 # Last Updated:   [yyyy-mm-dd]
-# Purpose:        Utility: Summarize CRS from raster files (.tif and .bil) 
+# Purpose:        Utility: Summarize CRS from raster files (.tif and .bil)
 #
 # Description:
 #   - Returns a tibble of CRS given an input directory with raster files.
 #   - (Optional:) writes a summary log, if (write_log) = TRUE;
-#       User can specify path if (write_log) = TRUE; 
+#       User can specify path if (write_log) = TRUE;
 #       Example: log_path = here::here("data/log/raster_crs_summary.csv")
 #
-# Input: 
+# Input:
 #   - User-defined raster_dir (e.g., "data/processed/prism")
-# Output: 
+# Output:
 #   - tibble
 #   - Optional: log.csv
 #
@@ -30,9 +30,9 @@
 # =============================================================================
 
 summarise_raster_crs <- function(
-    raster_dir = here::here("data/processed/prism"),
-    write_log = TRUE,
-    log_path = here("data/log/raster_crs_summary.csv")
+  raster_dir = here::here("data/processed/prism"),
+  write_log = TRUE,
+  log_path = here("data/log/raster_crs_summary.csv")
 ) {
   library(terra)
   library(dplyr)

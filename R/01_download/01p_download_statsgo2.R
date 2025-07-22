@@ -93,7 +93,6 @@ mu_geom <- mu_list %>%
       suppressWarnings(st_make_valid(chunk)),
       error = function(e) {
         message("⚠️ Failed to repair geometry: ", e$message)
-        return(NULL)
       }
     )
   }) %>%
@@ -163,6 +162,6 @@ if (!"mukey" %in% names(mu_attribs)) {
     message("✅ All mukeys in geometry are present in attribute table.")
   } else {
     warning("⚠️ ", length(unmatched),
-    " mukeys in geometry are missing from attribute table.")
+            " mukeys in geometry are missing from attribute table.")
   }
 }

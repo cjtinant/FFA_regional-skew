@@ -18,14 +18,14 @@ inventory_feature_data <- function(input_dir = "data/raw",
   library(fs)
   library(tidyverse)
   library(cli)
-  
+
   # Resolve absolute paths
   input_path <- path_abs(input_dir)
   output_path <- path_abs(output_dir)
-  
+
   stopifnot(dir_exists(input_path))
   if (!dir_exists(output_path)) dir_create(output_path, recurse = TRUE)
-  
+
   # List vector and tabular files
   feature_files <- dir_info(
     path = input_path,
@@ -46,24 +46,24 @@ inventory_feature_data <- function(input_dir = "data/raw",
     group_by(context_key) %>%
     mutate(possible_duplicate = n() > 1) %>%
     ungroup()
-  
+
   # Flag and summarize true duplicates
   duplicates <- feature_files %>%
     filter(possible_duplicate) %>%
     group_by(context_key) %>%
     mutate(size_variation = n_distinct(size_mb) > 1) %>%
     ungroup()
-  
+
   # Write outputs
   file_inventory_path <- path(output_path, "feature_file_inventory.csv")
   duplicates_path <- path(output_path, "duplicate_feature_summary.csv")
-  
+
   write_csv(feature_files, file_inventory_path)
   write_csv(duplicates, duplicates_path)
-  
+
   cli::cli_alert_success("✅ Feature data inventory complete.")
   cli::cli_alert_info("→ Full inventory saved to {.file {file_inventory_path}}")
   cli::cli_alert_info("→ Duplicates summary saved to {.file {duplicates_path}}")
-  
+
   return(list(feature_files = feature_files, duplicates = duplicates))
 }

@@ -22,19 +22,19 @@ inventory_raster_data <- function(input_dir = "data/raw",
   library(fs)
   library(tidyverse)
   library(cli)
-  
+
   # Resolve full paths
   input_path <- path_abs(input_dir)
   output_path <- path_abs(output_dir)
   zip_path <- path(output_path, zip_subdir)
-  
+
   # Validate input directory
   stopifnot(dir_exists(input_path))
-  
+
   # Create output folders as needed
   if (!dir_exists(output_path)) dir_create(output_path, recurse = TRUE)
   if (archive_zips && !dir_exists(zip_path)) dir_create(zip_path, recurse = TRUE)
-  
+
   # Inventory raster and sidecar files
   raster_files <- dir_info(
     path = input_path,
@@ -53,7 +53,7 @@ inventory_raster_data <- function(input_dir = "data/raw",
         str_detect(input_path, "data/processed") ~ "processed",
         TRUE ~ "unknown"
       ),
-      possible_duplicate = duplicated(basename) | duplicated(basename, 
+      possible_duplicate = duplicated(basename) | duplicated(basename,
                                                              fromLast = TRUE),
       description = case_when(
         file_type == "tif"  ~ "GeoTIFF raster",
@@ -65,27 +65,27 @@ inventory_raster_data <- function(input_dir = "data/raw",
         TRUE                ~ "Other raster format"
       )
     )
-  
+
   # Identify duplicates by basename
   duplicates <- raster_files %>%
     filter(possible_duplicate) %>%
     group_by(basename) %>%
     mutate(size_variation = n_distinct(size_mb) > 1) %>%
     ungroup()
-  
+
   # Define output CSV paths
   inventory_path <- path(output_path, "raster_data_inventory.csv")
   dupes_path     <- path(output_path, "duplicate_raster_data_summary.csv")
-  
+
   # Write CSV summaries
   write_csv(raster_files, inventory_path)
   write_csv(duplicates, dupes_path)
-  
+
   # Console messages
   cli::cli_alert_success("✅ Raster data inventory complete.")
   cli::cli_alert_info("→ Full inventory saved to {.file {inventory_path}}")
   cli::cli_alert_info("→ Duplicate summary saved to {.file {dupes_path}}")
-  
+
   # Return results invisibly
   invisible(list(raster_files = raster_files, duplicates = duplicates))
 }

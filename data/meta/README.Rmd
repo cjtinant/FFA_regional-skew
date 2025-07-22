@@ -49,18 +49,18 @@ metadata_files <- dir_info(here(folder, subfolder), recurse = TRUE) %>%
     # Replace "." (top-level) with "metadata"
     folder = if_else(folder == ".", "metadata", folder)
   ) %>%
-   mutate(
+  mutate(
     size_kb = round(size / 1024, 1),
     size_display = if_else(size < 1024, "<1 KB", paste0(size_kb, " KB")) #,
-  # Optional: custom folder order
-  #   folder = factor(folder, 
-  #                   levels = c("data-dictionaries", 
-  #                              "descriptions", 
-  #                              "look-up-tables", 
-  #                              "metadata", 
-  #                              "raster-data-summaries", 
-  #                              "vector-data-summaries")
-  #                  )
+    # Optional: custom folder order
+    #   folder = factor(folder,
+    #                   levels = c("data-dictionaries",
+    #                              "descriptions",
+    #                              "look-up-tables",
+    #                              "metadata",
+    #                              "raster-data-summaries",
+    #                              "vector-data-summaries")
+    #                  )
   ) %>%
   arrange(folder, file_name) %>%
   select(folder, file_name, ext, size_display) %>%
@@ -68,9 +68,9 @@ metadata_files <- dir_info(here(folder, subfolder), recurse = TRUE) %>%
 
 file_descriptions <- tribble(
   ~file_name, ~description,
-"U.S._Generalized_Soil_Map_Database_(STATSGO2).xml", "STATSGO2 xml data",
-"ecoregions_na_l1-l3_metadata_2021_xml.doc", "EPA Ecoregions Level I to III xml data",
-"nlcd_landcover_2020v2_30m_metadata_xml.docx", "NLCD xml data"
+  "U.S._Generalized_Soil_Map_Database_(STATSGO2).xml", "STATSGO2 xml data",
+  "ecoregions_na_l1-l3_metadata_2021_xml.doc", "EPA Ecoregions Level I to III xml data",
+  "nlcd_landcover_2020v2_30m_metadata_xml.docx", "NLCD xml data"
 )
 
 metadata_files <- left_join(metadata_files, file_descriptions, by = "file_name")
@@ -78,15 +78,10 @@ metadata_files <- left_join(metadata_files, file_descriptions, by = "file_name")
 
 # 2. Render the table
 metadata_files %>%
-select(Folder = folder, 
-       `File Name` = file_name, 
-       Extension = ext, Size = size_display, 
-       Description = description) %>%
+  select(Folder = folder,
+         `File Name` = file_name,
+         Extension = ext, Size = size_display,
+         Description = description) %>%
   kable(align = "lcc")
-
-
-
-
 ```
-
 

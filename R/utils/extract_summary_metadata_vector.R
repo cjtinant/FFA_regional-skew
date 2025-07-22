@@ -51,20 +51,20 @@ summary_list <- list()
 # ---- Iterate through layers ----
 for (layer in layer_names) {
   message("Processing layer: ", layer)
-  
+
   # Read the layer
   vec <- st_read(gpkg_file, layer = layer, quiet = TRUE)
-  
+
   # Get attribute schema
   field_info <- tibble(
     layer = layer,
     field_name = names(vec),
     data_type = sapply(vec, function(x) class(x)[1])
   )
-  
+
   # Write per-layer field metadata
   write_csv(field_info, file.path(output_dir, paste0(layer, "_attribute_metadata_v01.csv")))
-  
+
   # Summarize layer
   summary_info <- tibble(
     file = basename(gpkg_file),
@@ -77,13 +77,13 @@ for (layer in layer_names) {
     geometry_column = attr(vec, "sf_column"),
     timestamp = Sys.time()
   )
-  
+
   summary_list[[layer]] <- summary_info
 }
 
 # ---- Combine and write full summary ----
 vector_summary <- bind_rows(summary_list)
-write_csv(vector_summary, 
+write_csv(vector_summary,
           file.path(output_dir, "statsgo2_mupolygon_layer_metadata_v01.csv"))
 
 # ------------------------------------------------------------------------------
@@ -111,5 +111,5 @@ fields_summary <- fields_df %>%
   arrange(field_name, data_type)
 
 # Write output
-write_csv(fields_summary, 
+write_csv(fields_summary,
           file.path(output_dir, "statsgo2_mupolygon_attribute_metadata_v01.csv"))

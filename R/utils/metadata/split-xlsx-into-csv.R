@@ -11,7 +11,7 @@
 # This script supports a clean, maintainable metadata structure for modeling.
 #
 # Workflow summary:
-# 1. 
+# 1.
 #
 # Input / Output files: user defined
 #
@@ -35,12 +35,8 @@ library(waldo)
 # 1. (Optional) Compare Excel file versions
 # ------------------------------------------------------------------------------
 # Define paths
-old_file <- here("docs", "metadata", 
-                 "regional_skew_covariates_metadata_by_scale_v022.xlsx"
-                 )
-new_file <-  here("docs", "metadata", 
-                  "skew_covariates_metadata_v023.xlsx"
-                  )
+old_file <- here("docs", "metadata", "regional_skew_covariates_metadata_by_scale_v022.xlsx")
+new_file <-  here("docs", "metadata", "skew_covariates_metadata_v023.xlsx")
 
 # List sheets (assumes same sheet names in both files)
 sheets_old <- excel_sheets(old_file)
@@ -55,10 +51,10 @@ sheets_to_compare <- intersect(sheets_old, sheets_new)
 # ---- Compare sheets using Waldo ----
 for (sheet in sheets_to_compare) {
   cat("\n--- Comparing Sheet:", sheet, "---\n")
-  
+
   df_old <- read_excel(old_file, sheet = sheet) %>% clean_names()
   df_new <- read_excel(new_file, sheet = sheet) %>% clean_names()
-  
+
   waldo::compare(df_old, df_new)
 }
 
@@ -78,9 +74,7 @@ anti_join(df_old, df_new)
 # ------------------------------------------------------------------------------
 # 2. Define file paths
 # ------------------------------------------------------------------------------
-xlsx_path <- here("docs", "metadata", 
-                  "dic_draft.xlsx"
-                  )
+xlsx_path <- here("docs", "metadata", "dic_draft.xlsx")
 
 output_dir <- here("docs", "metadata", "covariates_metadata_split")
 
@@ -95,14 +89,14 @@ sheets <- excel_sheets(xlsx_path)
 
 for (sheet in sheets) {
   df <- read_excel(xlsx_path, sheet = sheet)
-  
+
   # Clean sheet name for filename use
   base <- gsub("[^A-Za-z0-9]+", "_", sheet) |>
     tolower() |>
     trimws()
 
   out_file <- path(output_dir, glue("covariates_{base}.csv"))
-  
+
   if (file_exists(out_file)) {
     message("⏭️  Skipping existing file: ", out_file)
     next
@@ -111,5 +105,3 @@ for (sheet in sheets) {
   write_csv(df, out_file)
   message("✔️  Wrote: ", out_file)
 }
-
-

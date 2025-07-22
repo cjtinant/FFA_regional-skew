@@ -9,10 +9,10 @@
 #   - [Step 1: what the function does...]
 #   - [Step 2: any side effects, file outputs, or key decisions]
 #
-# Input: 
+# Input:
 #   - [e.g., File paths, data frames, raw XML, etc.]
 #
-# Output: 
+# Output:
 #   - [e.g., A tibble, a CSV, a shapefile, etc.]
 #
 # Dependencies:
@@ -36,5 +36,5 @@
 #'
 #' @export
 #[your_function_name] <- function([param1], [param2 = NULL]) {
-  # Your code here
+# Your code here
 #}

@@ -7,7 +7,8 @@
 # Purpose: Merge NHDPlus HR flowlines into a single GeoPackage
 #
 # Data URLs: https://www.usgs.gov/national-hydrography/nhdplus-high-resolution
-# Data Dictionary: https://www.usgs.gov/ngp-standards-and-specifications/national-hydrography-dataset-nhd-data-dictionary-feature-classes
+# Data Dictionary: https://www.usgs.gov/ngp-standards-and-specifications/
+#   national-hydrography-dataset-nhd-data-dictionary-feature-classes
 #
 # Changelog:
 # 2025-07-13 -- Update name and folder path to fit with naming conventions.
@@ -15,7 +16,7 @@
 #
 # Workflow Summary:
 # 1. List files in /data/raw/nhdphr_flowlines/
-# 2. QA check on 
+# 2. QA check on
 # 2. Read each file
 # 3. Combine all into one sf object
 #
@@ -31,7 +32,7 @@
 # -    sf:        handling spatial data
 # -    units      unit conversion
 
-# ============================================================================== 
+# ==============================================================================
 
 # Load libraries
 library(tidyverse)
@@ -57,9 +58,9 @@ column_types <- map(gpkg_files, function(file) {
     path_file() %>%
     str_remove("\\.gpkg$") %>%
     str_replace_all("_", " ")
-  
+
   sf_obj <- read_sf(file)
-  
+
   tibble(
     region = region,
     column = names(sf_obj),
@@ -74,13 +75,13 @@ type_summary <- bind_rows(column_types)
 # ------------------------------------------------------------------------------
 
 # --- 2a. Find which regions had type conflicts -------------------------------
-# View where column types differ across files 
+# View where column types differ across files
 type_summary_table <- type_summary %>%
   group_by(column) %>%
   summarise(n_types = n_distinct(class), .groups = "drop") %>%
   filter(n_types > 1)
 
-# Join back to original 
+# Join back to original
 type_summary_table_regions <- type_summary %>%
   semi_join(type_summary_table, by = "column") %>%
   arrange(column, region)
@@ -96,9 +97,9 @@ conflicts <- type_summary_table_regions %>%
   arrange(types)
 
 # log the conflicts
-write_csv(conflicts, 
+write_csv(conflicts,
           here("data/log/nhdphr_conflicts.csv"
-               ))
+          ))
 
 # --- 2b. Identify potential coercions -----------------------------------------
 # Parse the types into list columns
@@ -132,14 +133,14 @@ generate_coercion_function <- function(coercion_df) {
       'if ("{column}" %in% names(sf_obj)) sf_obj${column} <- as.{suggested_type}(sf_obj${column})'
     )) %>%
     pull(code)
-  
+
   fn_code <- c(
     "coerce_column_types <- function(sf_obj) {",
     paste0("  ", lines),
     "  return(sf_obj)",
     "}"
   )
-  
+
   cat(paste(fn_code, collapse = "\n"))
 }
 
@@ -149,21 +150,21 @@ generate_coercion_function <- function(coercion_df) {
 
 # --- 3a. Coerce known problematic columns to common types --------------------
 # Uses a file-reading loop with type coercion and error logging
-# Fixes issues: 
+# Fixes issues:
 # -   Only coerce if possible, using a safe test like is.integerish().
 # -   Fallback to numeric when needed.
-# 
+#
 # -   Applies coercion one column at a time
 # -   Skips columns that cause errors (and logs them)
 # -   Prevents across() from failing all at once
-# -   Wrap the across() call in logic that filters to only existing columns. 
+# -   Wrap the across() call in logic that filters to only existing columns.
 #
 # -   Fine-grained control: logs problems per column, per file
-# -   Non-blocking: does not interrupt the whole region's read if a single 
+# -   Non-blocking: does not interrupt the whole region's read if a single
 #       column fails
 # -   Quiet warnings: keeps logs readable but still lets you know what happened
 #
-# -   coerce fdate to character safely in all files. Character is the most 
+# -   coerce fdate to character safely in all files. Character is the most
 #        flexible, readable, and safest for uncertain timestamp formats.
 
 safe_as_integer <- function(x) {
@@ -174,7 +175,7 @@ safe_as_integer <- function(x) {
   if (all(is.na(x))) return(as.integer(x))
   if (all(x == floor(x), na.rm = TRUE)) return(as.integer(x))
   warning("⚠️ Not integer-safe — coercing to numeric instead")
-  return(as.numeric(x))
+  #  return(as.numeric(x))
 }
 
 coerce_column_types <- function(sf_obj) {
@@ -186,10 +187,10 @@ coerce_column_types <- function(sf_obj) {
       message(glue::glue("⚠️ Could not coerce `fdate` — {e$message}"))
     })
   }
-  
+
   # Columns that can safely be numeric (if integer-like)
   intish_cols <- c("avgqadjma", "gageqma", "qgadjma", "qgnavma", "hwnodesqkm")
-  
+
   for (col in intersect(intish_cols, names(sf_obj))) {
     tryCatch({
       sf_obj[[col]] <- suppressWarnings(safe_as_integer(sf_obj[[col]]))
@@ -197,10 +198,10 @@ coerce_column_types <- function(sf_obj) {
       message(glue("⚠️ Skipped numeric coercion for `{col}` — {e$message}"))
     })
   }
-  
+
   # Columns with mixed character/numeric → standardize as character
   char_cols <- c("flowdir", "ftype", "resolution", "thinner", "hwtype")
-  
+
   for (col in intersect(char_cols, names(sf_obj))) {
     tryCatch({
       sf_obj[[col]] <- as.character(sf_obj[[col]])
@@ -208,8 +209,8 @@ coerce_column_types <- function(sf_obj) {
       message(glue("⚠️ Skipped character coercion for `{col}` — {e$message}"))
     })
   }
-  
-  return(sf_obj)
+
+  #  return(sf_obj)
 }
 
 flowlines_all <- map_dfr(gpkg_files, function(file) {
@@ -217,7 +218,7 @@ flowlines_all <- map_dfr(gpkg_files, function(file) {
     fs::path_file() %>%
     str_remove("\\.gpkg$") %>%
     str_replace_all("_", " ")
-  
+
   tryCatch({
     sf_obj <- read_sf(file)
     sf_obj <- coerce_column_types(sf_obj)
@@ -233,7 +234,7 @@ flowlines_all <- map_dfr(gpkg_files, function(file) {
 # -----------------------------------------------------------------------------
 
 # --- 4a. check results -------------------------------------------------------
-# Check for empty geometries -- should be zero 
+# Check for empty geometries -- should be zero
 n_empty <- sum(sf::st_is_empty(flowlines_all))
 message(glue("Found {n_empty} empty geometries"))
 
@@ -252,7 +253,7 @@ flowlines_all <- flowlines_all %>%
   select(-matches("^shape_length$", ignore.case = TRUE))
 
 # --- 4b. drop qa/qc prior to writing -----------------------------------------
-# drop qa/qc vars prior to witing
+# drop qa/qc vars prior to writing
 flowlines_vars <- tibble(var_names = names(flowlines_all))
 
 flowlines_vars_sub <- flowlines_vars %>%
@@ -263,9 +264,8 @@ flowlines_vars_sub <- flowlines_vars %>%
 unlink(here("data/processed/nhdphr_flowlines/nhdhr_flowlines_combined.gpkg"))
 
 # --- 4b. write merged results ------------------------------------------------
-sf::write_sf(flowlines_all[, flowlines_vars_sub$var_names], 
-             here(
-               "data/processed/nhdphr_flowlines/nhdhr_flowlines_combined.gpkg"))
+sf::write_sf(flowlines_all[, flowlines_vars_sub$var_names],
+             here("data/processed/nhdphr_flowlines/nhdhr_flowlines_combined.gpkg"))
 
 # -----------------------------------------------------------------------------
 # 5. Make data dictionary
@@ -273,27 +273,26 @@ sf::write_sf(flowlines_all[, flowlines_vars_sub$var_names],
 flowlines_vars <- tibble(var_names = names(flowlines_all))
 
 fld <- c("Enabled", "FCode", "FDate", "FlowDir", "FType", "GNIS_ID",
-         "GNIS_Name", "InNetwork", "LengthKM", "MainPath", "NHDPlusID",
-         "Permanent_Identifier", "ReachCode", "VisibilityFilter", "VPUID",
-         "WBArea_Permanent_Identifier", "resolution", "streamleve", 
-         "streamorde", "streamcalc", "fromnode", "tonode","hydroseq", 
-         "levelpathi", "pathlength", "terminalpa", "arbolatesu", "divergence", 
-         "startflag", "terminalfl", "uplevelpat", "uphydroseq", "dnlevel", 
-         "dnlevelpat", "dnhydroseq", "dnminorhyd", "dndraincou", "frommeas", 
-         "tomeas", "rtndiv", "thinner", "vpuin", "vpuout", "areasqkm", 
-         "totdasqkm", "divdasqkm", "maxelevraw", "minelevraw", "maxelevsmo", 
-         "minelevsmo", "slope", "slopelenkm", "elevfixed", "hwtype", 
-         "hwnodesqkm", "statusflag", "qama", "vama", "qincrama", "qbma", "vbma",
-         "qincrbma", "qcma", "vcma", "qincrcma", "qdma", "vdma", "qincrdma", 
-         "qema", "vema", "qincrema", "qfma", "qincrfma", "arqnavma", "petma", 
-         "qlossma", "qgadjma", "qgnavma", "gageadjma", "avgqadjma", "gageidma", 
-         "gageqma", "geom", "ecoregion", "gridcode","featureid", "sourcefc", 
-         "shape_area", "comid", "wbareacomi", "tidal", "totma", "wbareatype", 
-         "pathtimema", "lakefract", "surfarea", "rareahload", "rpuid"
-         )
+  "GNIS_Name", "InNetwork", "LengthKM", "MainPath", "NHDPlusID",
+  "Permanent_Identifier", "ReachCode", "VisibilityFilter", "VPUID",
+  "WBArea_Permanent_Identifier", "resolution", "streamleve",
+  "streamorde", "streamcalc", "fromnode", "tonode", "hydroseq",
+  "levelpathi", "pathlength", "terminalpa", "arbolatesu", "divergence",
+  "startflag", "terminalfl", "uplevelpat", "uphydroseq", "dnlevel",
+  "dnlevelpat", "dnhydroseq", "dnminorhyd", "dndraincou", "frommeas",
+  "tomeas", "rtndiv", "thinner", "vpuin", "vpuout", "areasqkm",
+  "totdasqkm", "divdasqkm", "maxelevraw", "minelevraw", "maxelevsmo",
+  "minelevsmo", "slope", "slopelenkm", "elevfixed", "hwtype",
+  "hwnodesqkm", "statusflag", "qama", "vama", "qincrama", "qbma", "vbma",
+  "qincrbma", "qcma", "vcma", "qincrcma", "qdma", "vdma", "qincrdma",
+  "qema", "vema", "qincrema", "qfma", "qincrfma", "arqnavma", "petma",
+  "qlossma", "qgadjma", "qgnavma", "gageadjma", "avgqadjma", "gageidma",
+  "gageqma", "geom", "ecoregion", "gridcode", "featureid", "sourcefc",
+  "shape_area", "comid", "wbareacomi", "tidal", "totma", "wbareatype",
+  "pathtimema", "lakefract", "surfarea", "rareahload", "rpuid"
+)
 
-data_dict <- tibble(
-  field = fld,
+data_dict <- tibble(field = fld,
   description = c(
     "Participates in geometric network",
     "Five-digit feature code (type + subtype)",
@@ -393,8 +392,8 @@ data_dict <- tibble(
     "Catchment surface area (sq km)",
     "Rare species habitat load score (if available)",
     "Reach Processing Unit ID"
-    )
-  ) %>% mutate(var_names = tolower(field))
+  )
+) %>% mutate(var_names = tolower(field))
 
 data_dict <- left_join(flowlines_vars, data_dict,
                        by = join_by(var_names)) %>%

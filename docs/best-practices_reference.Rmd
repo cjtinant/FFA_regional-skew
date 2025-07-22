@@ -7,8 +7,6 @@ output:
     toc_depth: 3
 ---
 
----
-
 # Overview
 
 This guide describes best practices for documenting changes in hydrologic 
@@ -255,7 +253,7 @@ git push origin v0.3-refactor
 # ✅ When to Create a GitHub Issue Comment or Changelog Entry
 
 | Change Type                        | GitHub Issue Comment | Changelog Entry |
-|------------------------------------|----------------------|--------------|
+|------------------------------------|----------------------|-----------------|
 | Major feature or milestone         | ✅ Yes               | ✅ Yes           |
 | Fix for a reported bug             | ✅ Yes               | ✅ Yes           |
 | Refactor that affects structure    | 🔶 Optional          | ✅ Yes           |
@@ -324,8 +322,8 @@ Use this to ensure every release is polished and complete.
 | Task                                   |.csv or .xlsx | .Rmd        |
 |:--------------------------------------:|:------------:|:------------:|
 |Store raw metadata                      | ✅ Yes       | ❌  No |     |  
-Include scale, units, description, notes | ✅ Yes       | selectively |
-Discuss rationale, sources, assumptions  | ❌ No        | ✅ Yes | 
+Include scale, units, description, notes | ✅ Yes       | selectively | 
+Discuss rationale, sources, assumptions  | ❌ No        | ✅ Yes       |
 List variables by modeling role (e.g., climate, terrain)| ✅ Yes (structured)| ✅ Yes (narrative/justified) |
 Drive reproducibility                    | ✅ Yes       | ✅ Yes |
 Long-term editable source                | ✅ Yes       | ❌ Only generated from spreadsheet |

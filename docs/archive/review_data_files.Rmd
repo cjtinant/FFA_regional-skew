@@ -93,7 +93,7 @@ files_raw_vec <- read_csv(here("data/log/raw_feature",
                           show_col_types = FALSE) %>%
   select(file_type, relative_path, possible_duplicate) %>%
   separate(
-    col  = relative_path, 
+    col  = relative_path,
     into = c("folder", "file"),
     sep = "/",           # delimiter
     extra = "merge",     # merge any additional parts into last column
@@ -105,10 +105,10 @@ files_raw_vec <- read_csv(here("data/log/raw_feature",
 # get raster results
 files_raw_rast <- read_csv(here("data/log/raw_raster",
                                 "raster_data_inventory.csv"),
-                          show_col_types = FALSE) %>%
+                           show_col_types = FALSE) %>%
   select(file_type, relative_path, possible_duplicate) %>%
   separate(
-    col  = relative_path, 
+    col  = relative_path,
     into = c("folder", "file"),
     sep = "/",           # delimiter
     extra = "merge",     # merge any additional parts into last column
@@ -137,7 +137,8 @@ The following step identifies legacy koppen-climate rasters representing time pe
 
 ```{r remove_unneeded_climate rasters, eval=FALSE}
 
-# This step removes `koppen-climate` raster files for the periods **1901–1930**, # **1931–1960**, and **1961–1990** because the regional skew modeling targets 
+# This step removes `koppen-climate` raster files for the periods **1901–1930**,
+# **1931–1960**, and **1961–1990** because the regional skew modeling targets
 # modern climate normals (1990–2020).
 
 # Identify outdated Koppen-Geiger rasters
@@ -231,11 +232,12 @@ files_processed_summary <- files_processed_all %>%
   count(data_type, folder, file_type, possible_duplicate) %>%
   arrange(folder)
 
-full_summary <- full_join(files_raw_summary, files_processed_summary, 
-                  by = join_by(data_type, folder),
-                  suffix = c(".raw", ".processed"),
-                  relationship = "many-to-many"
-                  ) %>%
+full_summary <- full_join(
+  files_raw_summary, files_processed_summary,
+  by = join_by(data_type, folder),
+  suffix = c(".raw", ".processed"),
+  relationship = "many-to-many"
+) %>%
   select(-starts_with("possible")) %>%
   arrange(folder)
 
@@ -245,29 +247,18 @@ write_csv(full_summary,
 
 ```
 
+<!--
 ## Part 4: Validate Metadata
 ### Validate Spatial Data
 This step validates CRS, resolution, and spatial extent of raster and vector
 files in `data/processed/`. The script that creates the output is 
 `02e_validate_spatial_metadata.R`
-
-```{r}
+-->
+```{r get_spatial metadata, eval=FALSE}
 
 # Get vector validation summary
 vec_spatial_summary <- read_csv(here("data/log/validate_spatial",
                                      "vector_validation_summary.csv"),
                                 show_col_types = FALSE)
-
-# Get raster validation summary
-# rast_spatial_summary <- read_csv(here("data/meta",
-#                                      "vector_validation_summary.csv"),
-#                                 show_col_types = FALSE)
-
-
-
-
 ```
-
-
-
 

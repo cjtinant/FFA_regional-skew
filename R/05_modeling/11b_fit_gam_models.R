@@ -10,7 +10,7 @@
 # 1. Fit initial GAM models (simple & climate-rich)
 # 2. Iteratively refine models based on AIC and interpretability
 # 3. Export tidy model summaries and AIC comparisons
-# 4. Visualize smooth terms 
+# 4. Visualize smooth terms
 #
 # Outputs:
 # - GAM model summary: results/model_summaries/gam_fit_climate_tidy.csv
@@ -44,7 +44,7 @@ gam_fit_simple <- gam(
 # Model 2: Climate-Inclusive Model
 gam_fit_climate <- gam(
   skew ~ s(dec_long_va) + s(elev_m) + s(slope_deg) +
-    s(ppt_spring_mm) + s(ppt_summer_mm) + s(ppt_winter_mm) + 
+    s(ppt_spring_mm) + s(ppt_summer_mm) + s(ppt_winter_mm) +
     s(tmean_m01_c),
   data = data
 )
@@ -136,7 +136,7 @@ purrr::walk(terms, ~{
   p <- draw(gam_fit_refined2, select = .x) +
     theme_minimal(base_size = 12) +
     ggtitle(glue::glue("GAM Smooth: {.x}"))
-  
+
   ggsave(
     filename = here(glue::glue("results/figures/gam_terms/smooth_{.x}.png")),
     plot = p,
@@ -180,4 +180,3 @@ write_csv(
   compare_fit_gam,
   here("results/model_summaries/gam_fit_compare_aic.csv")
 )
-

@@ -2,14 +2,14 @@
 # Script: 13_ecoregion_l2a.R    -- Exploratory--
 # Purpose: Explore potential vars related to L1 for predicting station skew.
 #
-# Author: Charles Jason Tinant 
+# Author: Charles Jason Tinant
 # Date Created: April 2025
 #
 # Workflow:
 # 1. Load Ecoregion level 2 db
 # 2. Check ecoregion description in bplant.org (volunteer effort)
 #
-# Thoughts -- 
+# Thoughts --
 # Topography -- use terrain roughness index?
 
 # ==============================================================================
@@ -18,8 +18,6 @@
 library(sf)
 library(tidyverse)
 library(here)
-
-
 
 # Load Data --------------------------------------------------------------------
 # Set the path to shapefile
@@ -38,9 +36,7 @@ l1_names <- eco_l2_df %>%
 # filter l2 key based on l1 name == "GREAT PLAINS"
 gp_l2_names <- eco_l2_df %>%
   filter(na_l1name == "GREAT PLAINS") %>%
-  select(na_l1code, na_l1name,
-         na_l2code, na_l2name
-         ) %>%
+  select(na_l1code, na_l1name, na_l2code, na_l2name) %>%
   distinct()
 
 gp_l2_names
@@ -60,25 +56,11 @@ logic_model <- tribble(
   "semiarid, subhumid, humid continental",    # climate
   "grasslands with scattered trees",          # cover type
   "WEST-CENTRAL SEMIARID PRAIRIES",
-  "flat to tablelands and badlands, with some sand dunes", 
-  "semi-arid continental", 
+  "flat to tablelands and badlands, with some sand dunes",
+  "semi-arid continental",
   "short- and mixed-grass prairie",
-  "SOUTH CENTRAL SEMIARID PRAIRIES", 
+  "SOUTH CENTRAL SEMIARID PRAIRIES",
   NA,
   "semi-arid continental to humid subtropical",
-  NA
-  )
-
-
-#,
-  "TEXAS-LOUISIANA COASTAL PLAIN")
-  #,
-  NA, # topo
- NA,  # climate
-  NA,# cover type
-  "TAMAULIPAS-TEXAS SEMIARID PLAIN",
- NA, # topo
- NA,  # climate
- NA # cover type
+  NA,
 )
-

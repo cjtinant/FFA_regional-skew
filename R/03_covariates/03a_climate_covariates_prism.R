@@ -29,34 +29,33 @@ library(terra)
 library(janitor)
 
 # ------------------------------------------------------------------------------
-# Make PRISM metadata 
+# Make PRISM metadata
 #    accessed from https://prism.oregonstate.edu/fetchData.php
 #    and fed into ChatGPT
 
 prism_metadata <- tribble(
   ~variable, ~time_period, ~resolution, ~units, ~description, ~source,
-  
-  "Precipitation", "1991-2020 Annual", "4km", "Millimeters", 
-  "Average annual total precipitation derived from monthly grids.", 
+
+  "Precipitation", "1991-2020 Annual", "4km", "Millimeters",
+  "Average annual total precipitation derived from monthly grids.",
   "https://prism.oregonstate.edu/normals/",
-  
-  "Precipitation", "1991-2020 Monthly", "4km", "Millimeters", 
-  "Monthly total precipitation normals.", 
+
+  "Precipitation", "1991-2020 Monthly", "4km", "Millimeters",
+  "Monthly total precipitation normals.",
   "https://prism.oregonstate.edu/normals/",
-  
-  "Temperature (Mean)", "1991-2020 Annual", "4km", "Degrees C", 
-  "Average annual mean temperature derived from monthly grids.", 
+
+  "Temperature (Mean)", "1991-2020 Annual", "4km", "Degrees C",
+  "Average annual mean temperature derived from monthly grids.",
   "https://prism.oregonstate.edu/normals/",
-  
-  "Temperature (Mean)", "1991-2020 Monthly", "4km", "Degrees C", 
-  "Monthly mean temperature normals.", 
+
+  "Temperature (Mean)", "1991-2020 Monthly", "4km", "Degrees C",
+  "Monthly mean temperature normals.",
   "https://prism.oregonstate.edu/normals/"
 )
 
-
 prism_metadata_spatial <- tribble(
   ~attribute, ~value,
-  
+
   "Variable", "Precipitation & Temperature",
   "Time Period", "1991-2020 Normals",
   "Resolution", "4km (~0.04166667 degrees)",
@@ -71,7 +70,8 @@ prism_metadata_spatial <- tribble(
   "Units Precipitation", "Millimeters",
   "Units Temperature", "Degrees Celsius",
   "Source", "https://prism.oregonstate.edu/normals/",
-  "Method", "PRISM model - Parameter-elevation Regressions on Independent Slopes Model (Daly et al. 2008, 2015)"
+  "Method",
+  "PRISM model - Parameter-elevation Regressions on Independent Slopes Model (Daly et al. 2015)"
 )
 
 # ------------------------------------------------------------------------------

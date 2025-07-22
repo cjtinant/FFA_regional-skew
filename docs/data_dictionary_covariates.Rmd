@@ -51,44 +51,45 @@ This document summarizes the covariate metadata used in the regional skew estima
 writeLines(c(
   "% _latex_preamble.tex",                 # (Comment in .tex: file description)
   "\\usepackage{booktabs}",                # For professional-quality horizontal
-                                           #   rules in tables
-  "\\usepackage{longtable}",               # Enables tables that span multiple 
-                                           #   pages
+  # rules in tables
+  "\\usepackage{longtable}",               # Enables tables that span multiple
+  # pages
   "\\usepackage{geometry}",                # Lets us customize page margins
   "\\usepackage{array}",                   # Enables advanced table formatting,
-                                           #   e.g., 'p{...}' columns
-  "\\renewcommand{\\arraystretch}{1.15}",  # Adds vertical padding between table 
-                                           #   rows (default is 1.0)
-  "\\geometry{margin=1in}",                # Sets uniform 1-inch margins all 
-                                           #   around
-  "\\usepackage{float}",                   # Improves float placement control 
-                                           #   (e.g., [H] option)
-  "\\usepackage{caption}",                 # For better control over 
-                                           #   figure/table captions
+  # e.g., 'p{...}' columns
+  "\\renewcommand{\\arraystretch}{1.15}",  # Adds vertical padding between table
+  # rows (default is 1.0)
+  "\\geometry{margin=1in}",                # Sets uniform 1-inch margins all
+  # around
+  "\\usepackage{float}",                   # Improves float placement control
+  # (e.g., [H] option)
+  "\\usepackage{caption}",                 # For better control over
+  # figure/table captions
   "\\usepackage{fancyhdr}",                # Allows custom headers/footers
   "\\pagestyle{fancy}",                    # Enables the fancy page style
   "\\fancyhf{}",                           # Clears default header/footer content
   "\\rhead{\\thepage}",                    # Places page number in the top right
-                                           #   corner
-  "\\lhead{Regional Skew Covariates}",     # Places a custom header title 
-                                           #   in the top left
+  # corner
+  "\\lhead{Regional Skew Covariates}",     # Places a custom header title
+  # in the top left
   "\\usepackage{tocloft}",
   "\\renewcommand{\\cftsecfont}{\\normalfont}",
-"\\renewcommand{\\cftsecpagefont}{\\normalfont}"
+  "\\renewcommand{\\cftsecpagefont}{\\normalfont}"
 ), "_latex_preamble.tex")
 
 ```
 
 ```{r get_data}
 
-metadata <- read_csv(here(
-  "docs/metadata/descriptions/covariate_metadata_v083.csv")) %>%
+metadata <- read_csv(
+  here(
+       "docs/metadata/descriptions/covariate_metadata_v083.csv")
+) %>%
   sanitize_metadata() %>%
- mutate(
-   Description = str_wrap(Description, 70),
-   Notes = str_wrap(Notes, 70)
-   )
-
+  mutate(
+    Description = str_wrap(Description, 70),
+    Notes = str_wrap(Notes, 70)
+  )
 ```
 
 ```{r create_tables, echo=FALSE, results='asis'}
@@ -98,14 +99,13 @@ unique_domains <- metadata %>%
   pull(Domain) %>%
   unique()
 
-options(knitr.kable.NA = '')
+options(knitr.kable.NA = "")
 
 # Loop through domains and print Table A and Table B
 for (d in unique_domains) {
 
-#  cat(paste0("\\section{", d, "}\n\n"))
-
-cat("\\section*{", d, "}\n\\addcontentsline{toc}{section}{", d, "}\n\n")
+  #  cat(paste0("\\section{", d, "}\n\n"))
+  cat("\\section*{", d, "}\n\\addcontentsline{toc}{section}{", d, "}\n\n")
 
   df <- metadata %>% filter(Domain == d)
 
@@ -114,8 +114,8 @@ cat("\\section*{", d, "}\n\\addcontentsline{toc}{section}{", d, "}\n\n")
     select(`Short Name`, Description, Unit) %>%
     kbl(
       format = "latex",
-      booktabs = TRUE, 
-      longtable = TRUE, 
+      booktabs = TRUE,
+      longtable = TRUE,
       caption = paste0("Table A: ", d, " — Definition and Units"),
       align = c("l", "p{8cm}", "l")
     ) %>%
@@ -143,8 +143,5 @@ cat("\\section*{", d, "}\n\\addcontentsline{toc}{section}{", d, "}\n\n")
   cat(as.character(table_b))
   cat("\n\n\\clearpage\n\n")
 }
-
 ```
-
-
 

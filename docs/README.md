@@ -1,7 +1,7 @@
 README
 ================
 CJ Tinant
-2025-07-21
+2025-07-22
 
 - [📁 Project Documentation
   (`docs/`)](#file_folder-project-documentation-docs)
@@ -50,8 +50,9 @@ docs/
        ├── data-dictionaries/
        ├── descriptions/
        ├── look-up-tables/
-       ├── raster-data-summaries
-       ├── vector-data-summaries
+       ├── QAQC/
+       ├── raster-data-summaries/
+       ├── vector-data-summaries/
 ```
 
 ------------------------------------------------------------------------

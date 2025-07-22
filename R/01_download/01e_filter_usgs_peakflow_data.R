@@ -4,7 +4,7 @@
 # Date Created:   April 2025
 # Last Updated:   2025-07-16
 #
-# Purpose: Calculate log-Pearson III station skew for a set of unregulated and 
+# Purpose: Calculate log-Pearson III station skew for a set of unregulated and
 #          suspected regulation (suspect) gage sites in the Great Plains (GP)
 #          ecoregion with greater than ten years of data. The following
 #          exclusions were applied:
@@ -68,7 +68,7 @@
 #        log-Pearson Type III distribution, biasing skewness, mean, and standard
 #        deviation. PILFs tend to skew the lower tail, by underestimating the
 #        sample skewness and producing unrealistic estimates for rare floods.
-#        MGBT() flags observations below a calculated threshold discharge. 
+#        MGBT() flags observations below a calculated threshold discharge.
 #
 #        Peak codes are comma-separated and must be parsed for reliable flagging
 #
@@ -91,18 +91,20 @@ library(tidyverse)
 # 1. Load peak flow and gage location data
 # ------------------------------------------------------------------------------
 data_pk <- read_csv(
-  here("data", "raw", "peakflow_gages", "usgs_data_pk_all.csv"),
-  col_types = cols(
-    ag_gage_ht_cd = col_character()
-  ))
+                    here("data", "raw", "peakflow_gages", "usgs_data_pk_all.csv"),
+                    col_types = cols(
+                      ag_gage_ht_cd = col_character()
+                    ))
 
 data_site <- read_csv(
-  here("data", "raw", "peakflow_gages", "usgs_sites_pk_ST_only.csv"))
-  
+                      here(
+                           "data", "raw", "peakflow_gages",
+                           "usgs_sites_pk_ST_only.csv"))
+
 # ------------------------------------------------------------------------------
 # 2. Drop NA discharge
 # ------------------------------------------------------------------------------
-data_pk_drop_na <- data_pk %>% 
+data_pk_drop_na <- data_pk %>%
   filter(!is.na(peak_va))
 
 # ---------------------------------------------------------
@@ -132,14 +134,14 @@ data_pk_tagged <- data_pk_fill_date %>%
     is_regulated = has_peak_flag(peak_cd, codes$regulated),
     is_suspect   = has_peak_flag(peak_cd, codes$suspect)
   ) %>%
-  mutate(across(c(is_break, is_regulated, is_suspect), 
+  mutate(across(c(is_break, is_regulated, is_suspect),
                 ~replace_na(.x, FALSE)))
 
 # ------------------------------------------------------------------------------
 # 5. Remove dam break and regulated codes
 # ------------------------------------------------------------------------------
 data_pk_filtered <- data_pk_tagged %>%
-  filter(!is_break & !is_regulated ) %>%
+  filter(!is_break & !is_regulated) %>%
   mutate(peak_year = year(peak_dt)) %>%
   select(-date_parse_failed, -is_break, -is_regulated)
 
@@ -167,21 +169,21 @@ data_pilf_test <- data_pk_filtered_10yr %>%
   nest()
 
 # Safely test for low threshold outliers
-  data_pilf_test <- data_pilf_test %>%
-    mutate(mgb_result = map2(data, site_no, function(.x, .id) {
-      tryCatch({
-        x <- .x$peak_va
-        if (length(x) >= 10 && all(x >= 0, na.rm = TRUE)) {
-          MGBT(x)  # <- NOTE: use MGBT not mgb, and raw values
-        } else {
-          message("Too few or negative values for site: ", .id)
-          NULL
-        }
-      }, error = function(e) {
-        message("MGBT error for site ", .id, ": ", conditionMessage(e))
+data_pilf_test <- data_pilf_test %>%
+  mutate(mgb_result = map2(data, site_no, function(.x, .id) {
+    tryCatch({
+      x <- .x$peak_va
+      if (length(x) >= 10 && all(x >= 0, na.rm = TRUE)) {
+        MGBT(x)  # <- NOTE: use MGBT not mgb, and raw values
+      } else {
+        message("Too few or negative values for site: ", .id)
         NULL
-      })
-    }))
+      }
+    }, error = function(e) {
+      message("MGBT error for site ", .id, ": ", conditionMessage(e))
+      NULL
+    })
+  }))
 
 # Pull low outler threshold from test results
 pilf_thresholds <- data_pilf_test %>%
@@ -194,7 +196,7 @@ data_with_thresh <- data_pk_filtered_10yr %>%
   mutate(is_pilf = peak_va <= LOThresh)
 
 # ------------------------------------------------------------------------------
-# 8. Remove PILFs and corresponding short records 
+# 8. Remove PILFs and corresponding short records
 # ------------------------------------------------------------------------------
 data_no_pilf <- data_with_thresh %>%
   filter(!is_pilf | is.na(is_pilf)) %>%  # keep NA if MGBT failed
@@ -231,7 +233,7 @@ data_tiered <- data_ge_10 %>%
             by = join_by(site_no, is_suspect, n_years))
 
 # ------------------------------------------------------------------------------
-# 10. Calculate skew 
+# 10. Calculate skew
 # ------------------------------------------------------------------------------
 # log transform the data prior to skew calculation
 data_tiered <- data_tiered %>%
@@ -289,34 +291,34 @@ gage_summary_clean <- gage_summary %>%
 # ------------------------------------------------------------------------------
 
 # ---- Split by datum ----
-gage_summary_NAD27 <- gage_summary_clean %>%
+gage_summary_nad27 <- gage_summary_clean %>%
   filter(coord_datum_cd == "NAD27")
 
-gage_summary_NAD83 <- gage_summary_clean %>%
+gage_summary_nad83 <- gage_summary_clean %>%
   filter(coord_datum_cd == "NAD83")
 
 # ---- Check completeness ----
-ck_length <- nrow(gage_summary_NAD83) + 
-  nrow(gage_summary_NAD27) == nrow(gage_summary_clean)
+ck_length <- nrow(gage_summary_nad83) +
+  nrow(gage_summary_nad27) == nrow(gage_summary_clean)
 
 # ---- Convert NAD27 to sf (EPSG:4267) ----
-gage_NAD27_sf <- gage_summary_NAD27 %>%
-  st_as_sf(coords = c("dec_long_va", "dec_lat_va"), 
-           crs = 4267, 
+gage_nad27_sf <- gage_summary_nad27 %>%
+  st_as_sf(coords = c("dec_long_va", "dec_lat_va"),
+           crs = 4267,
            remove = FALSE)
 
 # ---- Transform to NAD83 Albers Equal Area (EPSG:5070) ----
-gage_NAD27_sf_proj <- st_transform(gage_NAD27_sf, crs = 5070)
+gage_nad27_sf_proj <- st_transform(gage_nad27_sf, crs = 5070)
 
-gage_NAD83_sf <- gage_summary_NAD83 %>%
-  st_as_sf(coords = c("dec_long_va", "dec_lat_va"), 
+gage_nad83_sf <- gage_summary_nad83 %>%
+  st_as_sf(coords = c("dec_long_va", "dec_lat_va"),
            crs = 4269,   # EPSG for NAD83 (geographic)
            remove = FALSE)
 
-gage_NAD83_sf_proj <- st_transform(gage_NAD83_sf, crs = 5070)
+gage_nad83_sf_proj <- st_transform(gage_nad83_sf, crs = 5070)
 
 # ---- join results ----
-gage_all_sf_proj <- bind_rows(gage_NAD27_sf_proj, gage_NAD83_sf_proj)
+gage_all_sf_proj <- bind_rows(gage_nad27_sf_proj, gage_nad83_sf_proj)
 
 # ------------------------------------------------------------------------------
 # 13. Export results and metadata
@@ -326,32 +328,26 @@ gage_all_sf_proj <- bind_rows(gage_NAD27_sf_proj, gage_NAD83_sf_proj)
 # fs::dir_create(here::here("data", "processed", "peakflow_gages"))
 
 # Create output path for results
-output_path <- here::here("data", "processed", "peakflow_gages", 
+output_path <- here::here("data", "processed", "peakflow_gages",
                           "gage_summary_skew.gpkg")
 
-# ---- Write results to GeoPackage ---- 
-st_write(gage_all_sf_proj, 
-             output_path, 
-             layer = "gage_skew", 
-             delete_layer = TRUE)
+# ---- Write results to GeoPackage ----
+st_write(gage_all_sf_proj,
+         output_path,
+         layer = "gage_skew",
+         delete_layer = TRUE)
 
-# ---- Write results to csv ---- 
-output_path <- here::here("data", "processed", "peakflow_gages", 
-                          "gage_summary_skew.csv")
+# ---- Write results to csv ----
+output_path <- here("data", "processed", "peakflow_gages", "gage_summary_skew.csv")
 
-write_csv(gage_summary_clean,
-          output_path
-          )
+write_csv(gage_summary_clean, output_path)
 
-# ---- Write data to csv ---- 
-output_path <- here::here("data", "processed", "peakflow_gages", 
-                          "usgs_pk_data.csv")
+# ---- Write data to csv ----
+output_path <- here("data", "processed", "peakflow_gages", "usgs_pk_data.csv")
 
-write_csv(data_tiered,
-          output_path
-          )
+write_csv(data_tiered, output_path)
 
-# ---- Write metadata as a data dictionary ---- 
+# ---- Write metadata as a data dictionary ----
 
 gage_data_dict <- tribble(
   ~column_name,             ~description,
@@ -371,21 +367,16 @@ gage_data_dict <- tribble(
   "contrib_drain_area_va",  "Contributing drainage area (square miles)"
 )
 
-output_path <- here::here("docs", "metadata", 
+output_path <- here::here("docs", "metadata",
                           "gage_data_dictionary.csv")
 
-write_csv(gage_data_dict,
-          output_path
-          )
+write_csv(gage_data_dict, output_path)
 
 # ---- Export a summary of the tiers ----
 tier_summary <- skew_summary %>%
   count(tier, sort = TRUE)
 
-write_csv(tier_summary,
-          here("data", "meta", "summary_tiers_by_gage.csv"))
+write_csv(tier_summary, here("data", "meta", "summary_tiers_by_gage.csv"))
 
 # ---- Export a summary of the pilf thresholds ----
-write_csv(pilf_thresholds,
-          here("data", "meta", "pilf_thresholds_by_site.csv"))
-
+write_csv(pilf_thresholds, here("data", "meta", "pilf_thresholds_by_site.csv"))

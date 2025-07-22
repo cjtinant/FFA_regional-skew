@@ -5,9 +5,9 @@
 # Last update:     June 21, 2025      # update script to fit with folder struct
 #
 # Purpose:
-#                  This script downloads, processes, and filters USGS peak flow 
-#                  gage data within the GP Level 1 Ecoregion. It uses spatial 
-#                  data to define the AOI and queries USGS National Water 
+#                  This script downloads, processes, and filters USGS peak flow
+#                  gage data within the GP Level 1 Ecoregion. It uses spatial
+#                  data to define the AOI and queries USGS National Water
 #                  Information System (NWIS) services for peak flow gage data.
 #
 # Workflow Summary:
@@ -119,10 +119,10 @@ for (i in seq_len(nrow(grid_boxes))) {
   bbox_row <- grid_boxes[i, ]
   bbox_vector <- paste(
     bbox_row$xmin, bbox_row$ymin, bbox_row$xmax, bbox_row$ymax, sep = ","
-    )
-  
+  )
+
   message("Trying grid tile ", i, " with bbox: ", bbox_vector)
-  
+
   sites_data <- tryCatch(
     {
       whatNWISsites(
@@ -136,12 +136,12 @@ for (i in seq_len(nrow(grid_boxes))) {
       NULL
     }
   )
-  
+
   if (!is.null(sites_data) && nrow(sites_data) > 0) {
     sites_data$tile_id <- i
     sites_data_list[[i]] <- sites_data
   }
-  
+
   Sys.sleep(0.5)
 }
 
@@ -192,10 +192,10 @@ ck_sites_st_only <- anti_join(sites_all_in_bb, sites_st_only_in_bb)
 
 # convert stations into a spatial format (sf) object
 sites_all_in_bb_geo <- st_as_sf(sites_all_in_bb,
-                         coords = c("dec_long_va",        # note x goes first
-                                    "dec_lat_va"),
-                         crs = {crs_new},     # WGS 84 Geographic; Unit: degree
-                         remove = FALSE)      # don't remove lat/lon cols
+                                coords = c("dec_long_va",        # note x goes first
+                                           "dec_lat_va"),
+                                crs = crs_new,     # WGS 84 Geographic; Unit: degree
+                                remove = FALSE)      # don't remove lat/lon cols
 
 sites_pk_eco_only_geo <- st_intersection(sites_all_in_bb_geo, eco_lev1_gp_only)
 
@@ -210,9 +210,9 @@ st_write(
   layer = "sites_pk_eco_only",
   delete_layer = TRUE,    # overwrite if rerun
   quiet = TRUE
-  )
+)
 
-# --- Check for missing coordinates (shouldn’t happen, but just in case) --- 
+# --- Check for missing coordinates (shouldn’t happen, but just in case) ---
 n_missing_coords <- sites_pk_eco_only %>%
   filter(is.na(dec_lat_va) | is.na(dec_long_va)) %>%
   nrow()
@@ -221,7 +221,7 @@ if (n_missing_coords > 0) {
   warning("⚠️  Missing lat/lon coordinates in ", n_missing_coords, " rows.")
 }
 
-# --- Drop geometry and write tabular CSV --- 
+# --- Drop geometry and write tabular CSV ---
 sites_pk_eco_only <- sites_pk_eco_only_geo %>%
   st_drop_geometry(sites_pk_eco_only) %>%
   select(-starts_with("na")) %>%
@@ -229,5 +229,4 @@ sites_pk_eco_only <- sites_pk_eco_only_geo %>%
   select(-starts_with("area"))
 
 sites_pk_eco_only %>%
-write_csv(file.path(output_dir, "sites_pk_eco_only.csv"))
-
+  write_csv(file.path(output_dir, "sites_pk_eco_only.csv"))

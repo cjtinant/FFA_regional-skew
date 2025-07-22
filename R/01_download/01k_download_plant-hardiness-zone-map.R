@@ -8,12 +8,12 @@
 # -   gridded USDA Plant Hardiness Zone Map (PHZM)
 #
 # Data URLs:
-# -   Plant Hardiness Zones -- 
+# -   Plant Hardiness Zones --
 #       https://prism.oregonstate.edu/projects/plant_hardiness_zones.php
 #
 # Workflow Summary:
 # 1.   Download zipped archives, extract data and organize raster data
-# 2.   Reproject rasters to a common CRS (US Albers Equal Area – EPSG:5070) 
+# 2.   Reproject rasters to a common CRS (US Albers Equal Area – EPSG:5070)
 #
 # Output:
 # Validated climate rasters projected to a common CRS
@@ -25,7 +25,7 @@
 # -   here             -   Locates files relative to a project root
 # -   httr             -   Tools for working with URLs and HTTP
 # -   sf               -   Support for simple feature access, a standardized way
-#                          to encode and analyze spatial vector data. Binds to 
+#                          to encode and analyze spatial vector data. Binds to
 #                          'GDAL'
 # -   terra            -   Vector and raster data operations
 
@@ -109,4 +109,3 @@ out_path   <- file.path(target_dir, file_name)
 dir_create(target_dir, recurse = TRUE)
 
 writeRaster(r_proj, filename = out_path, overwrite = TRUE)
-

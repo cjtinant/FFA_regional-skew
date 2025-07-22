@@ -11,7 +11,7 @@
 #
 # Workflow Summary:
 # 1.   Download zipped archives, extract data and organize raster data
-# 2.   Reproject rasters to a common CRS (US Albers Equal Area – EPSG:5070) 
+# 2.   Reproject rasters to a common CRS (US Albers Equal Area – EPSG:5070)
 #        for spatial analysis.
 #
 # Output:
@@ -24,7 +24,7 @@
 # - httr           Tools for working with URLs and HTTP
 
 # -   sf               -   Support for simple feature access, a standardized way
-#                          to encode and analyze spatial vector data. Binds to 
+#                          to encode and analyze spatial vector data. Binds to
 #                          'GDAL'
 # -   terra            -   Vector and raster data operations
 
@@ -72,7 +72,8 @@ if (!file_exists(zip_path)) {
 }
 
 # Unzip the contents
-koppen-geiger <- unzip(zip_path, exdir = target_dir)
+koppen_geiger <- unzip(zip_path,
+                       exdir = target_dir)
 message("Unzipped to: ", target_dir)
 
 # Project and save the data
@@ -90,7 +91,9 @@ crs_new <- crs(r_proj)
 
 # Check if projection succeeded
 is_proj_5070 <- grepl("5070", crs_new) || grepl("Conus Albers", crs_new)
-if (!is_proj_5070) warning("Reprojection may have failed: CRS does not contain EPSG:5070 or 'Conus Albers'")
+if (!is_proj_5070) {
+  warning("Reprojection may have failed: CRS does not contain EPSG:5070 or 'Conus Albers'")
+}
 
 # ------------------------------------------------------------------------------
 # 3) Write results to data/processed
@@ -106,4 +109,3 @@ out_path   <- file.path(target_dir, file_name)
 # 3b) Create directory and write file
 dir_create(target_dir, recurse = TRUE)
 writeRaster(r_proj, filename = out_path, overwrite = TRUE)
-

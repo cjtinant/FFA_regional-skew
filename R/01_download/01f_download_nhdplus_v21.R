@@ -49,7 +49,7 @@ st_layers("data/processed/us_ecoregions/us-eco-levels.gpkg")
 eco_lev4 <- st_read(
   "data/processed/us_ecoregions/us-eco-levels.gpkg",
   layer = "us_eco_l4"
-  )
+)
 
 # Filter and dissolve all polygons for Great Plains (Level I)
 eco_lev4_gp_union <- eco_lev4 %>%
@@ -117,7 +117,7 @@ ggplot() +
 #     clipped geometries),
 # And get_nhdplus() must retry with geometry repair enabled.
 
-nhdV2_gp <- get_nhdplus(
+nhd_v2_gp <- get_nhdplus(
   AOI = eco_lev4_gp_main_buf,
   realization = "all",   # Includes flowline, catchment, outlet
   streamorder = 3,    # Or set a threshold like 3

@@ -25,7 +25,7 @@ This document provides an up-to-date listing of metadata files stored in `docs/m
 
 ## Metadata Files in docs/metadata
 
-```{r metadata-inventory_1, echo=FALSE, message=FALSE, warning=FALSE}
+```{r metadata-inventory, echo=FALSE, message=FALSE, warning=FALSE}
 
 library(tidyverse)
 library(fs)
@@ -48,14 +48,16 @@ metadata_files <- dir_info(here("docs", "metadata"), recurse = TRUE) %>%
   ) %>%
   # Optional: custom folder order
   mutate(
-    folder = factor(folder, 
-                    levels = c("data-dictionaries", 
-                               "descriptions", 
-                               "look-up-tables", 
-                               "metadata", 
-                               "raster-data-summaries", 
-                               "vector-data-summaries")
-                    ),
+    folder = factor(
+                    folder,
+                    levels = c(
+                      "data-dictionaries",
+                      "descriptions",
+                      "look-up-tables",
+                      "metadata",
+                      "raster-data-summaries",
+                      "vector-data-summaries"
+                    )),
     size_kb = round(size / 1024, 1),
     size_display = if_else(size < 1024, "<1 KB", paste0(size_kb, " KB"))
   ) %>%
@@ -72,7 +74,8 @@ file_descriptions <- tribble(
   "statsgo2_data-dictionary_v01.csv", "STATSGO2 map unit polygon field descriptions",
   "us-ecoregions_data-dictionary_v03.csv", "US Ecoregion Level I-IV data dictionary",
   "ned_data-dictionary-full_2014.pdf", "National Elevation Dataset field definitions",
-  "covariate_metadata_v082.csv", "Descriptions of covariate datasets including notes, resolution, scale, and hierchial group membership",
+  "covariate_metadata_v082.csv",
+  "Covariate descriptions e.g. notes, resolution, scale, hierchial group membership",
   "nlcd_description_2024.docx", "NLCD land cover class descriptions",
   "ned_description.docx", "National Elevation Dataset data description",
   "prism_data_description_2025-02.pdf", "Descriptions of prism data including field descriptions",
@@ -112,28 +115,18 @@ file_descriptions <- tribble(
   "statsgo2_mupolygon_layer_metadata_v01.csv", "statsgo2 map unit spatial metadata",
   "us-ecoregions_field_metadata_v01.csv", "US Ecoregions Level I-IV field metadata",
   "us-ecoregions_layer_metadata_v01.csv", "US Ecoregions Level I-IV spatial metadata",
-  "peakflow-gage_peak-cd_flags.csv", "Indicates special conditions that affect how the peak flow values may be interpreted"
+  "peakflow-gage_peak-cd_flags.csv",
+  "Indicates special conditions that affect how the peak flow values may be interpreted"
 )
 
 metadata_files <- left_join(metadata_files, file_descriptions, by = "file_name")
 
-
 # 2. Render the table
 metadata_files %>%
-select(Folder = folder, 
-       `File Name` = file_name, 
-       Extension = ext, Size = size_display, 
-       Description = description) %>%
-  # rename(
-  #   `File Name` = file_name,
-  #   `Extension` = ext,
-  #   `Size` = size_display
-  #   ) %>%
+  select(Folder = folder,
+         `File Name` = file_name,
+         Extension = ext, Size = size_display,
+         Description = description) %>%
   kable(align = "lcc")
-
-
-
-
 ```
-
 

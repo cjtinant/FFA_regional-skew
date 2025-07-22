@@ -30,10 +30,10 @@ new_csv <- here("docs", "metadata",
 # 2. Read and clean both CSV files
 # ------------------------------------------------------------------------------
 
-df_old <- read_csv(old_csv, show_col_types = FALSE) %>% 
+df_old <- read_csv(old_csv, show_col_types = FALSE) %>%
   clean_names()
 
-df_new <- read_csv(new_csv, show_col_types = FALSE) %>% 
+df_new <- read_csv(new_csv, show_col_types = FALSE) %>%
   clean_names()
 
 # ------------------------------------------------------------------------------
@@ -46,21 +46,21 @@ new_cols <- names(df_new)
 # Safely handle empty df_old
 if (nrow(df_old) < 1) {
   message("⚠️ df_old has 0 rows. Creating NA-filled aligned version.")
-  
+
   df_old_extended <- tibble(!!!setNames(rep(list(NA), length(new_cols)), new_cols)) %>%
     slice(rep(1, nrow(df_new)))  # Match new's row count
-  
+
 } else {
   # Identify any missing columns
   missing_cols <- setdiff(new_cols, names(df_old))
-  
+
   if (length(missing_cols) > 0) {
     # Add NA columns matching row count
     na_cols <- as_tibble(setNames(rep(list(NA), length(missing_cols)), missing_cols)) %>%
       slice(rep(1, nrow(df_old)))
     df_old <- bind_cols(df_old, na_cols)
   }
-  
+
   # Reorder to match df_new
   df_old_extended <- df_old %>%
     select(all_of(new_cols))
@@ -90,39 +90,26 @@ anti_join(df_old, df_new)
 compare_metadata_column <- function(df_old, df_new, var_to_ck) {
   old_var <- df_old %>%
     select(variable_name, value_old = !!sym(var_to_ck))
-  
+
   new_var <- df_new %>%
     select(variable_name, value_new = !!sym(var_to_ck))
-  
+
   full_join(new_var, old_var, by = "variable_name") %>%
-#    filter(value_old != value_new) %>%
+    #    filter(value_old != value_new) %>%
     print(n = Inf)
 }
 
 compare_metadata_column(df_old, df_new, "notes")
 
-
-
-
-
-
-
 # ------------------------------------------------------------------------------
 # 6. Compare row-level differences using dplyr anti_join
 # ------------------------------------------------------------------------------
 
-ck_var_new <- 
-
-
+# ck_var_new <-
 
 # Save aligned old version for inspection
-write_csv(df_old_aligned, here("docs", "metadata", "covariates_metadata_split", 
+write_csv(df_old_aligned, here("docs", "metadata", "covariates_metadata_split",
                                "skew_covariates_metadata_v071.csv"))
-
-
-
-
-
 
 # ==============================================================================
 # Script Section: Convert TXT to CSV
@@ -155,15 +142,6 @@ legend_df <- data_lines %>%
     hex = rgb(r, g, b, maxColorValue = 255)
   )
 
-
 # 4. Write to CSV
 write_csv(legend_df, here("docs", "metadata",
                           "koppen-geiger_class_legend.csv"))
-
-
-
-
-
-
-
-

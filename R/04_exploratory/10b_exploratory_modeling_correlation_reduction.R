@@ -1,23 +1,20 @@
 # ==============================================================================
-  # Script: 10b_exploratory_modeling_correlation.R
-  # Purpose: Explore relationships among numeric covariates and station skew 
-  #          to inform modeling strategies.
-  #
-  # Author: Charles Jason Tinant — with ChatGPT 4o
-  # Date Created: April 2025
-  #
-  # Notes:
-  # - This script focuses on correlation exploration only.
-  # - Final modeling and cross-validation workflows will follow in later milestones.
-  #
-  # Outputs:
-  # - Spearman correlation matrix (data/clean/cor_matrix_clean.csv)
-  # - Correlation heatmap figure (results/figures/heatmap_covariates_no-labels.png)
-  # ==============================================================================
-
-
+# Script: 10b_exploratory_modeling_correlation.R
+# Purpose: Explore relationships among numeric covariates and station skew
+#          to inform modeling strategies.
+#
+# Author: Charles Jason Tinant — with ChatGPT 4o
+# Date Created: April 2025
+#
+# Notes:
+# - This script focuses on correlation exploration only.
+# - Final modeling and cross-validation workflows will follow in later milestones.
+#
+# Outputs:
+# - Spearman correlation matrix (data/clean/cor_matrix_clean.csv)
+# - Correlation heatmap figure (results/figures/heatmap_covariates_no-labels.png)
+# ==============================================================================
 # Load Libraries ---------------------------------------------------------------
-
 library(tidyverse)      # Core data manipulation
 library(here)           # File paths
 library(janitor)        # Clean names
@@ -26,11 +23,8 @@ library(ggcorrplot)     # Correlation heatmap plotting
 
 # Load Data --------------------------------------------------------------------
 
-covariates_modeling <- read_csv(
-  here("data/clean/data_covariates_modeling_clean.csv")
-  ) %>%
+covariates_modeling <- read_csv(here("data/clean/data_covariates_modeling_clean.csv")) %>%
   clean_names()
-
 
 # Step 1: Check for Remaining Missing Data -------------------------------------
 
@@ -73,7 +67,7 @@ heatmap_plot <- ggcorrplot::ggcorrplot(
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
- 
+
 heatmap_plot
 
 # Step 4: Save Outputs ---------------------------------------------------------
@@ -92,14 +86,13 @@ write_csv(cor_matrix, here("data/clean/cor_matrix_clean.csv"))
 #
 # Key Findings:
 # - station_skew is not strongly correlated with any single covariate.
-# - Strong inter-correlations observed among climate variables 
+# - Strong inter-correlations observed among climate variables
 #   (monthly and annual precipitation & temperature).
-# - Weak correlations between terrain variables (elev_m, slope_deg) 
+# - Weak correlations between terrain variables (elev_m, slope_deg)
 #   and both skew and climate covariates.
 #
 # Next Steps:
-# - Consider dimensionality reduction (Elastic Net, PCA) or 
+# - Consider dimensionality reduction (Elastic Net, PCA) or
 #   representative variable selection to address multi-collinearity.
 # - Explore non-linear modeling approaches (GAM).
 # ==============================================================================
-

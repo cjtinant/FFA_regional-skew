@@ -190,9 +190,9 @@ cat("\nReprojecting, clipping, and writing rasters...")
 
 # Read and buffer AOI again for cropping
 aoi_proj <- st_read("data/processed/us_ecoregions/us-eco-levels.gpkg",
-                    layer = "us_eco_l1",
-                    quiet = TRUE
-                    ) %>%
+  layer = "us_eco_l1",
+  quiet = TRUE
+) %>%
   filter(NA_L1NAME == "GREAT PLAINS") %>%
   st_transform(5070) %>%
   st_buffer(50000)
@@ -202,13 +202,13 @@ for (i in seq_len(nrow(ndvi_stacks))) {
   r <- ndvi_stacks$mosaic[[i]] %>%
     project("EPSG:5070") %>%
     crop(vect(aoi_proj))
-  
+
   r <- classify(r, cbind(0, NA)) * 0.0001        # scale the NDVI values
-                                                 # and set fill values to NA
-  
+  # and set fill values to NA
+
   out_path <- here(dir_processed, glue("ndvi_{d}.tif"))
-  writeRaster(r, 
-              out_path, 
+  writeRaster(r,
+              out_path,
               overwrite = TRUE)
 }
 

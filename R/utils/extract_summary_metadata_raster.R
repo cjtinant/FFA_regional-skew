@@ -3,7 +3,7 @@
 # Purpose: Extract summary metadata from raster
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-07-19
-# Last Updated:   
+# Last Updated:
 #
 # Changelog:
 # - 2025-07-19: Initial version to summarize CRS, resolution, and dimensions
@@ -73,6 +73,3 @@ raster_info <- raster_info %>%
 
 write_csv(band_info, file.path(output_path, output_band_meta))
 write_csv(raster_info, file.path(output_path, output_summ_meta))
-
-
-          

@@ -12,9 +12,9 @@
 #                 The vector files validated are in .gpkg and .shp formats.
 #                 The raster files validated are in .tif. format.
 #
-# Output: 
+# Output:
 # - Vector summary: data/log/validate_spatial/vector_validation_summary.csv
-# - Raster summaries (batched): 
+# - Raster summaries (batched):
 #        data/log/validate_spatial/raster_metadata_batch_XX.csv
 # - Optional recheck output: data/log/validate_spatial/raster_recheck_results.csv
 
@@ -23,14 +23,12 @@
 # Output:         CSV summary report saved to `data/meta/spatial_validation_summary.csv`
 #
 
-# Don't Run: 
+# Don't Run:
 # Check an individual raster with:
 # terra::rast(here::here("data", "processed", "prism", "tmin_0925_C.tif"))
 
 # This was able to be read: data/processed/prism/tmin_0924_C.tif
 # THis was not able to be read: data/processed/prism/tmin_0925_C.tif
-
-
 # ==============================================================================
 
 library(dplyr)
@@ -48,9 +46,9 @@ library(cli)
 # 1. List vector and raster files separately
 # ------------------------------------------------------------------------------
 
-vector_files <- dir_ls(here("data/processed"), 
+vector_files <- dir_ls(here("data/processed"),
                        recurse = TRUE, regexp = "\\.(gpkg|shp)$")
-raster_files <- dir_ls(here("data/processed"), 
+raster_files <- dir_ls(here("data/processed"),
                        recurse = TRUE, regexp = "\\.tif$")
 
 # ------------------------------------------------------------------------------
@@ -63,7 +61,7 @@ validate_vector_metadata <- function(file) {
     vec <- st_read(file, layer = layer, quiet = TRUE)
     crs <- st_crs(vec)$input
     bbox <- st_bbox(vec)
-    
+
     tibble(
       file = path_rel(file, start = here()),
       type = "vector",
@@ -87,13 +85,13 @@ validate_vector_metadata <- function(file) {
 
 validate_raster_metadata <- function(file) {
   file <- as.character(file)[1]  # Force scalar
-  
+
   tryCatch({
     r <- rast(file)
     crs_val <- as.character(crs(r))[1]
     bbox <- ext(r)
     resolution <- res(r) %>% paste(collapse = " x ")
-    
+
     tibble(
       file = path_rel(file, start = here()),
       type = "raster",
@@ -147,18 +145,17 @@ cli::cli_alert_success("✅ Summary saved to {out_path}")
 cli::cli_h2("🌄 Validating raster files...")
 
 batch_size <- 100
-raster_chunks <- split(raster_files, ceiling(
-  seq_along(raster_files) / batch_size))
-
+raster_chunks <- split(raster_files,
+                       ceiling(seq_along(raster_files) / batch_size))
 
 for (i in seq_along(raster_chunks)) {
   cli::cli_h2("🌄 Processing raster batch {i}/{length(raster_chunks)}")
-  
+
   chunk_summary <- map_dfr(raster_chunks[[i]], function(f) {
     cli::cli_alert("→ {basename(f)}")
     validate_raster_metadata(f)
   })
-  
+
   batch_filename <- sprintf("raster_metadata_batch_%02d.csv", i)
   batch_path <- here("data", "log", "validate_spatial", batch_filename)
   stopifnot(length(batch_path) == 1, is.character(batch_path))
@@ -170,10 +167,11 @@ batch_files <- dir_ls(here("data/log/validate_spatial"),
                       regexp = "raster_metadata_batch_.*\\.csv$")
 
 # Combine all batch CSVs
-raster_validation_summary <- map_dfr(batch_files,
-                                     read_csv,
-                                     show_col_types = FALSE
-                                     )
+raster_validation_summary <- map_dfr(
+  batch_files,
+  read_csv,
+  show_col_types = FALSE
+)
 
 raster_validation_summary <- map_dfr(batch_files, function(f) {
   read_csv(f, show_col_types = FALSE) %>%
@@ -212,7 +210,7 @@ write_csv(recheck_results, raster_errors_log)
 # ------------------------------------------------------------------------------
 
 # Combine updated rows with successful original rows
-raster_validation_summary_updated <- raster_validation_summary %>%
+rast_validation_summ_updated <- raster_validation_summary %>%
   # Remove old entries for failed files
   filter(!(file %in% raster_errors)) %>%
   # Add rechecked versions
@@ -220,13 +218,13 @@ raster_validation_summary_updated <- raster_validation_summary %>%
   arrange(file)
 
 # Overwrite the master summary CSV
-write_csv(raster_validation_summary_updated,
+write_csv(rast_validation_summ_updated,
           here("data/log/validate_spatial", "raster_validation_summary.csv"))
 
 cli::cli_alert_success("✅ Updated summary written to raster_validation_summary.csv")
 
 # Confirm no remaining errors
-remaining_errors <- raster_validation_summary_updated %>%
+remaining_errors <- rast_validation_summ_updated %>%
   filter(!is.na(error))
 
 cli::cli_alert_info("🚨 Remaining unreadable rasters: {nrow(remaining_errors)}")
@@ -235,8 +233,7 @@ cli::cli_alert_info("🚨 Remaining unreadable rasters: {nrow(remaining_errors)}
 # 8. Check vector results for data issues
 # ------------------------------------------------------------------------------
 
-vec_summary <- read_csv(here(
-  "data/log/validate_spatial/vector_validation_summary.csv"))
+vec_summary <- read_csv(here("data/log/validate_spatial/vector_validation_summary.csv"))
 
 # Count unreadable files
 bad_vectors <- vec_summary %>%
@@ -259,8 +256,7 @@ vec_summary_updated <- vec_summary %>%
 
 # Write updated version
 write_csv(vec_summary_updated,
-                 here::here(
-                   "data/log/validate_spatial/vector_validation_summary.csv"))
+          here("data/log/validate_spatial/vector_validation_summary.csv"))
 
 cli::cli_alert_success("✅ Vector summary updated after recheck.")
 
@@ -280,7 +276,7 @@ vec_summary_updated %>%
 
 # ---- Load and Filter Level 1 ecoregions ----
 eco_l1_gp <- st_read(here("data/r/us_ecoregions/us-eco-levels.gpkg"),
-                  layer = "us_eco_l1", quiet = TRUE) %>%
+                     layer = "us_eco_l1", quiet = TRUE) %>%
   filter(NA_L1NAME == "GREAT PLAINS")
 
 
@@ -330,11 +326,11 @@ library(ggplot2)
 
 gp_union <- st_union(eco_l1_gp)
 
-#flowlines <- st_read(here("data/processed/nhdphr/nhdphr_flowlines_combined.gpkg"), quiet = TRUE) %>%
+#flowlines <- st_read(here("data/processed/nhdphr/nhdphr_flowlines_combined.gpkg"),
+#  quiet = TRUE) %>%
 #  st_transform(st_crs(gp_union))
 
-bbox_nhd <- terra::vect(
-  here("data/processed/nhdphr/nhdphr_flowlines_combined.gpkg")) %>%
+bbox_nhd <- terra::vect(here("data/processed/nhdphr/nhdphr_flowlines_combined.gpkg")) %>%
   terra::ext() %>%
   as.vector()
 
@@ -344,4 +340,3 @@ ggplot() +
   geom_sf(data = gp_union, fill = NA, color = "black") +
   geom_sf(data = flowlines, color = "blue", size = 0.1) +
   theme_minimal()
-

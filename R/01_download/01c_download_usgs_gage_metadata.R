@@ -81,7 +81,7 @@ site_metadata <- map_dfr(site_id_chunks, function(chunk) {
     readNWISsite(chunk),
     error = function(e) {
       warning("Failed to fetch one batch: ", e$message)
-      return(NULL)
+      #      return(NULL)
     }
   )
 })
@@ -156,11 +156,12 @@ dict_output <- here("data",
 write_csv(site_meta_vars, dict_output)
 
 # --- write results ---
-output_file <- here("data",
-                    "raw",
-                    "peakflow_gages",
-                    "usgs_sites_pk_ST_only.csv"
-                    )
+output_file <- here(
+  "data",
+  "raw",
+  "peakflow_gages",
+  "usgs_sites_pk_ST_only.csv"
+)
 
 write_csv(site_metadata_st, output_file)
 message("✅ Cleaned site metadata saved to: ", output_file)

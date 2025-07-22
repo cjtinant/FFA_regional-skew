@@ -2,7 +2,7 @@
 # Script Name:    01l_download_nlcd_2016.R
 # Author: Charles Jason Tinant — with ChatGPT 4o
 # Date Created:   2025-06-23
-# Last Updated: 
+# Last Updated:
 #
 # Purpose: Download NLCD 2016 Land Cover raster clipped to Great Plains
 #
@@ -10,7 +10,7 @@
 # -   https://www.mrlc.gov/data
 # Workflow Summary:
 # 1.   Manually download zipped archive and move to outdir (see notes)
-# 2.   Reproject raster to a common CRS (US Albers Equal Area – EPSG:5070) 
+# 2.   Reproject raster to a common CRS (US Albers Equal Area – EPSG:5070)
 #        for spatial analysis.
 # 3.   Clip and mask raster
 # 4.   Export clipped and masked raster to ~data/processed.

@@ -23,11 +23,11 @@ generate_rmd_template <- function(script_path) {
   script_name <- path_file(script_path)
   log_stub <- str_remove(script_name, "\\.R$")
   rmd_path <- path(log_dir, paste0(log_stub, ".Rmd"))
-  
+
   header <- glue::glue(
     "---\ntitle: \"{log_stub}\"\noutput: html_document\n---\n\n"
   )
-  
+
   body <- glue::glue(
     "## Overview\n\nSummary of `{script_name}`.\n\n---\n\n",
     "## 📥 Inputs\n\n- _Describe input files here._\n\n---\n\n",
@@ -35,7 +35,7 @@ generate_rmd_template <- function(script_path) {
     "## 📤 Outputs\n\n- _Describe outputs here._\n\n---\n\n",
     "## 📝 Notes\n\n- _Any assumptions, decisions, or gotchas._"
   )
-  
+
   write_lines(c(header, body), rmd_path)
   message("✅ Created: ", rmd_path)
 }

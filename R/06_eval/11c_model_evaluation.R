@@ -1,6 +1,6 @@
 # ==============================================================================
 # Script: 11c_model_evaluation.R
-# Purpose: Evaluate and compare Generalized Additive Models (GAM) and 
+# Purpose: Evaluate and compare Generalized Additive Models (GAM) and
 #          Elastic Net models for predicting station skew.
 #
 # Author: Charles Jason Tinant — with ChatGPT 4o
@@ -76,7 +76,7 @@ write_csv(model_metrics, here("results/model_summaries/model_metrics_comparison.
 obs_vs_pred_gam <- ggplot(data, aes(x = skew, y = pred_gam)) +
   geom_point(alpha = 0.4) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
-  labs(title = "Observed vs Predicted — GAM", 
+  labs(title = "Observed vs Predicted — GAM",
        x = "Observed Skew", y = "Predicted Skew") +
   theme_minimal()
 
@@ -86,7 +86,7 @@ ggsave(here("results/figures/obs_vs_pred_gam.png"), obs_vs_pred_gam,
 obs_vs_pred_enet <- ggplot(data, aes(x = skew, y = pred_enet)) +
   geom_point(alpha = 0.4) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
-  labs(title = "Observed vs Predicted — Elastic Net", 
+  labs(title = "Observed vs Predicted — Elastic Net",
        x = "Observed Skew", y = "Predicted Skew") +
   theme_minimal()
 

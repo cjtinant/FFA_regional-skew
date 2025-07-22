@@ -10,10 +10,10 @@
 #     and constraints
 #   - Outputs a tidy summary for documentation or QA
 #
-# Input: 
+# Input:
 #   - XML metadata files (e.g., data/metadata/us_ecoregions/*.xml)
 #
-# Output: 
+# Output:
 #   - A tibble with extracted metadata fields
 #
 # Dependencies:
@@ -44,31 +44,31 @@ extract_full_metadata <- function(xml_path) {
 
 extract_full_metadata <- function(xml_path) {
   xml <- xml2::read_xml(xml_path)
-  
+
   # Helper for optional text extraction
   get_text <- function(xpath) {
     result <- xml2::xml_find_first(xml, xpath)
     if (length(result) > 0) xml2::xml_text(result) else NA_character_
   }
-  
+
   # Keywords (possibly multiple)
   keywords <- xml2::xml_find_all(xml, ".//keyword")
   keyword_list <- xml2::xml_text(keywords)
   keyword_str <- if (length(keyword_list)) paste(keyword_list, collapse = "; ") else NA_character_
-  
+
   # Bounding Box
   xmin <- get_text(".//westbc | .//westBoundLongitude")
   xmax <- get_text(".//eastbc | .//eastBoundLongitude")
   ymin <- get_text(".//southbc | .//southBoundLatitude")
   ymax <- get_text(".//northbc | .//northBoundLatitude")
-  
+
   # Spatial reference (e.g., NAD83, Albers Equal Area)
   spatial_ref <- get_text(".//horizdn | .//geodeticDatum | .//referenceSystemIdentifier//code")
-  
+
   # Access/use constraints
   access_constraint <- get_text(".//accconst | .//resourceConstraints//useLimitation")
   use_constraint <- get_text(".//useconst | .//resourceConstraints//otherConstraints")
-  
+
   tibble::tibble(
     title = get_text(".//title"),
     abstract = get_text(".//abstract | .//idAbs"),

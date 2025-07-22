@@ -20,7 +20,7 @@
 #
 # Workflow Summary:
 # 1.   Download zipped archives, extract data and organize raster data
-# 2.   Reproject rasters to a common CRS (US Albers Equal Area – EPSG:5070) 
+# 2.   Reproject rasters to a common CRS (US Albers Equal Area – EPSG:5070)
 #        for spatial analysis.
 # 3.   Stack PRISM rasters (where appropriate)
 # 4.   Export reprojected, stacked rasters to ~data/processed.
@@ -60,35 +60,35 @@ prism_set_dl_dir(here("data/raw/prism"))
 # 3b) download data  using {prism}
 #       download annual normal mean temp (1991-2020; tmean = tmax - tmin)
 get_prism_normals(type = "tmean",
-                  resolution = "800m", 
+                  resolution = "800m",
                   annual = TRUE)
 
 #       download annual normal precip  (1991-2020; ppt)
-get_prism_normals(type = "ppt", 
+get_prism_normals(type = "ppt",
                   resolution = "800m",
                   annual = TRUE)
 
 #       download the monthly average normal precip  (1991-2020; ppt)
-get_prism_normals(type="ppt", 
-                  resolution = "800m", 
+get_prism_normals(type = "ppt",
+                  resolution = "800m",
                   mon = 1:12,
                   keepZip = FALSE)
 
 #       download the daily average precip (1991-2020; ppt)
-get_prism_dailies(type="ppt", 
-                  resolution = "800m", 
+get_prism_dailies(type = "ppt",
+                  resolution = "800m",
                   mon = 1:12,
                   keepZip = FALSE)
 
 #       download the daily max temperature (1991-2020; tmax)
-get_prism_dailies(type="ppt", 
-                  resolution = "800m", 
+get_prism_dailies(type = "ppt",
+                  resolution = "800m",
                   mon = 1:12,
                   keepZip = FALSE)
 
 #       download the daily average precip (1991-2020; tmin)
-get_prism_dailies(type="ppt", 
-                  resolution = "800m", 
+get_prism_dailies(type = "ppt",
+                  resolution = "800m",
                   mon = 1:12,
                   keepZip = FALSE)
 
@@ -100,30 +100,29 @@ write_csv(prism_files, here("data/log/prism_file_inventory.csvprism_file_invento
 # ------------------------------------------------------------------------------
 # Project PRISM files into a common CRS
 
-# verify expected files were downloaded -- 
+# verify expected files were downloaded --
 #   note {prism} v0.2.3.9000 prism_archive_verify() is not working
- verify_prism_archive("data/raw/prism", 
-                        output_csv = "data/log/prism_qc.csv"
-                      )
+verify_prism_archive("data/raw/prism", output_csv = "data/log/prism_qc.csv")
 
 summarise_raster_crs(prism_files)
 # # check CRS
 # # Ensure path to PRISM rasters
 # prism_dir <- here("data/raw/prism")
-# 
+#
 # # List all .bil files
 # bil_files <- list.files(
 #   path = "data/raw/prism",
-#   pattern = "\\.bil$", 
-#   recursive = TRUE, 
+#   pattern = "\\.bil$",
+#   recursive = TRUE,
 #   full.names = TRUE
 # )
-# 
+#
 # # Show unique CRS strings
 # crs_summary %>% distinct(crs)
 
 # Load a raster and check current CRS (should be GCS NAD83)
-# r <- rast("data/raw/prism/PRISM_tmax_30yr_normal_800mM5_annual_bil/PRISM_tmax_30yr_normal_800mM5_annual_bil.bil")
+# r <- rast(print0("data/raw/prism/PRISM_tmax_30yr_normal_800mM5_annual_bil",
+# "/PRISM_tmax_30yr_normal_800mM5_annual_bil.bil")
 
 # Run the batch reprojector
 #reproject_to_epsg5070(bil_files)
@@ -136,7 +135,7 @@ rename_tbl()
 # add the `from` and `to` paths
 rename_tbl <- rename_tbl %>%
   mutate(
-    path_proj = path("data/intermediate/prism_epsg5070", 
+    path_proj = path("data/intermediate/prism_epsg5070",
                      path_ext_set(fname_raw, "tif")),
     path_renamed = path("data/intermediate/prism_epsg5070", fname_clean)
   )
@@ -172,17 +171,14 @@ output_dir <- glue("{here()}/{output_path}")
 temp_ann_paths <- file.path(prism_dir, temp_ann_files)
 
 # Load and stack
-temp_ann_C <- rast(temp_ann_paths)
-names(temp_ann_C) <- c("tmax_ann_C", "tmean_ann_C", "tmin_ann_C")
+temp_ann_c <- rast(temp_ann_paths)
+names(temp_ann_c) <- c("tmax_ann_C", "tmean_ann_C", "tmin_ann_C")
 
 # Inspect
-print(temp_ann_C)
+print(temp_ann_c)
 
 # Save stack to disk
-writeRaster(temp_ann_C, 
-            paste0(output_dir,"temp_ann_C_stack.tif"),
-            overwrite = TRUE
-            )
+writeRaster(temp_ann_C, paste0(output_dir, "temp_ann_C_stack.tif"), overwrite = TRUE)
 
 #-------------------------------------------------------------------------------
 # Stack and export monthly and annual ppt rasters
@@ -254,8 +250,3 @@ if (length(missing_files) == 0) {
 
 # delete intermediate prism files
 fs::dir_delete(here::here("data/intermediate/prism_epsg5070"))
-
-# ==============================================================================
-
-
-

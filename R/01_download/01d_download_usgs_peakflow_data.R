@@ -6,8 +6,8 @@
 #
 # Purpose:
 # Downloads and combines USGS peak flow data for stream gages located in the
-# Great Plains Level I Ecoregion. Site list is based on cleaned and filtered 
-# metadata output from prior steps. This script prepares a unified dataset of 
+# Great Plains Level I Ecoregion. Site list is based on cleaned and filtered
+# metadata output from prior steps. This script prepares a unified dataset of
 # raw annual peak flows for subsequent filtering and analysis.
 #
 # Workflow Summary:
@@ -46,15 +46,16 @@ library(dataRetrieval)  # Functions to access USGS NWIS data
 
 # ---------------------------------------------------------
 # Step 1 — Load cleaned metadata for usable Great Plains gages
-sites_meta <- read_csv(here(
-  "data/raw/peakflow_gages/usgs_sites_pk_ST_only.csv"))
+sites_meta <- read_csv(
+  here("data/raw/peakflow_gages/usgs_sites_pk_ST_only.csv")
+)
 
 # Step 2 — Extract unique site numbers and split into ~300-site batches
 site_ids <- unique(sites_meta$site_no)
 batch_size <- 300
 site_batches <- split(site_ids, ceiling(seq_along(site_ids) / batch_size))
 
-# Step 3 — Define a safe wrapper for data retrieval 
+# Step 3 — Define a safe wrapper for data retrieval
 #          (to avoid total failure on individual errors)
 safe_read_peak <- safely(readNWISpeak)
 
@@ -81,7 +82,7 @@ data_pk <- data_pk_raw %>%
     # attempt to parse as Date
     peak_dt = suppressWarnings(lubridate::ymd(peak_dt_raw)),
     # flag records where parsing failed
-    date_parse_failed = is.na(peak_dt) & !is.na(peak_dt_raw)    
+    date_parse_failed = is.na(peak_dt) & !is.na(peak_dt_raw)
   )
 
 # Step 7 — Export full dataset (with raw and parsed dates) to CSV

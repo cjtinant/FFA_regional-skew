@@ -37,12 +37,12 @@ build_seasonal_prism_rasters <- function(folder, var = "ppt") {
   ppt_files <- all_bils[str_detect(all_bils, var)]
   month_numbers <- str_extract(ppt_files, "_(\\d{2})_bil") %>%
     str_remove_all("_bil|_")
-  
+
   ppt_df <- tibble(file = ppt_files, month = month_numbers)
-  
+
   spring_files <- ppt_df %>% filter(month %in% c("04", "05")) %>% pull(file)
   winter_files <- ppt_df %>% filter(month %in% c("12", "01", "02")) %>% pull(file)
-  
+
   list(
     ppt_spring = sum(rast(spring_files)),
     ppt_winter = sum(rast(winter_files))
@@ -80,7 +80,8 @@ test <- test %>%
   mutate(pred_gam = predict(gam_model, newdata = test))
 
 pred_enet_test <- predict(enet_model, new_data = test) %>%
-  bind_cols(test %>% select(site_no, skew)) %>%
+  bind_cols(test %>%
+              select(site_no, skew)) %>%
   rename(pred_enet = .pred)
 
 # Evaluate

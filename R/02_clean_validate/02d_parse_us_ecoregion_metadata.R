@@ -39,18 +39,21 @@ parse_fgdc <- function(file_path) {
   message("📄 Parsing: ", basename(file_path))
   doc <- read_xml(file_path)
   name_root <- str_remove(basename(file_path), "\\.shp\\.xml$")
-  
+
   # 1. Extract attributes
   attrs <- xml_find_all(doc, ".//eainfo//detailed//attr")
   attr_tbl <- tibble(
     attr_name = xml_text(xml_find_first(attrs, "attrlabl")),
     description = xml_text(xml_find_first(attrs, "attrdef")),
     source = xml_text(xml_find_first(attrs, "attrdefs")),
-    domain = xml_text(xml_find_first(attrs, "attrdomv/udom | attrdomv/rdom/udom | attrdomv/rdom/rdommin"))
+    domain = xml_text(xml_find_first(attrs,
+                                     "attrdomv/udom |
+                                     attrdomv/rdom/udom |
+                                     attrdomv/rdom/rdommin"))
   ) %>%
     mutate(across(everything(), ~ na_if(.x, "")))
 
-# ------------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
   # 2. Extract spatial metadata
   crs_info <- tibble(
     file = name_root,
@@ -67,19 +70,17 @@ parse_fgdc <- function(file_path) {
     south = xml_text(xml_find_first(doc, ".//spdom//bounding//southbc"))
   ) %>%
     mutate(across(everything(), ~ na_if(.x, "")))
-  
+
   # 3. Write to disk
   attr_file <- path(meta_out_dir, str_glue("{name_root}_attributes.csv"))
   spatial_file <- path(meta_out_dir, str_glue("{name_root}_spatial_metadata.csv"))
-  
+
   write_csv(attr_tbl, attr_file)
   write_csv(crs_info, spatial_file)
-  
+
   message("✅ Written: ", attr_file)
   message("✅ Written: ", spatial_file)
 }
 
 # Apply to all xml files
 walk(xml_files, parse_fgdc)
-
-

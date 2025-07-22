@@ -5,14 +5,14 @@
 # Last Updated:   2025-07-13
 #
 # Purpose:
-# Download and validate NHDPlus HR (1:24k) flowlines clipped to Level IV 
-# Ecoregions of the Great Plains. Includes retry logic and diagnostics for 
+# Download and validate NHDPlus HR (1:24k) flowlines clipped to Level IV
+# Ecoregions of the Great Plains. Includes retry logic and diagnostics for
 # problematic AOIs.
 #
 # Change Log:
 # 2025-07-13 - Recreated script that had potentially been deleted. Updated file
 #              paths to avoid data/intermediate. Updated file names to follow
-#              a consistent naming pattern. Added reusable naming function, 
+#              a consistent naming pattern. Added reusable naming function,
 #              enhanced retry filtering, and CLI feedback.
 #
 # Workflow Summary:
@@ -86,39 +86,43 @@ log_tbl <- read_csv(log_file, show_col_types = FALSE)
 # --- Retry logic for failed AOIs ---------------------------------------------
 retry_failed_aoi <- function(region_name, ecoregion_sf, buffer_dist = default_buffer) {
   cli::cli_alert_info("🔄 Retrying {.strong {region_name}} with buffer = {buffer_dist} meters")
-  
+
   region_union <- ecoregion_sf %>%
     filter(us_l4name == region_name) %>%
     st_union() %>%
     st_sf(us_l4name = region_name, geometry = .) %>%
     st_transform(default_crs) %>%
     st_buffer(buffer_dist)
-  
+
   try_result <- tryCatch({
-    nhd <- get_nhdphr(AOI = region_union, type = "networknhdflowline", t_srs = default_crs)
-    
+    nhd <- get_nhdphr(
+      AOI = region_union,
+      type = "networknhdflowline",
+      t_srs = default_crs
+    )
+
     if (is.null(nhd) || nrow(nhd) == 0) {
-      cli::cli_alert_danger("❌ Retry failed for {.strong {region_name}} — NULL or no features returned")
+      cli_alert_danger("❌ Retry failed for {.strong {region_name}} — NULL or no features returned")
       return(tibble(us_l4name = region_name,
                     status = "error",
                     message = "NULL or no features",
                     timestamp = Sys.time()))
     }
-    
+
     nhd <- st_make_valid(nhd)
     safe_name <- region_name_to_filename(region_name)
     out_path <- glue("{output_dir}{safe_name}.gpkg")
-    
+
     if (file_exists(out_path)) file_delete(out_path)
     st_write(nhd, out_path, quiet = TRUE)
-    
+
     cli::cli_alert_success("✅ Retry succeeded for {.strong {region_name}}")
-    
+
     tibble(us_l4name = region_name,
            status = "retry_success",
            message = glue("Downloaded with buffer = {buffer_dist}"),
            timestamp = Sys.time())
-    
+
   }, error = function(e) {
     cli::cli_alert_danger("❌ Retry error for {.strong {region_name}} — {e$message}")
     tibble(us_l4name = region_name,
@@ -126,7 +130,7 @@ retry_failed_aoi <- function(region_name, ecoregion_sf, buffer_dist = default_bu
            message = conditionMessage(e),
            timestamp = Sys.time())
   })
-  
+
   write_csv(try_result, log_file, append = TRUE)
   return(try_result)
 }
@@ -139,13 +143,13 @@ eco_list <- eco_lev4 %>%
 
 walk(eco_list, function(l4name) {
   if (l4name %in% log_tbl$us_l4name &&
-      any(log_tbl$status[log_tbl$us_l4name == l4name] == "success")) {
+        any(log_tbl$status[log_tbl$us_l4name == l4name] == "success")) {
     cli::cli_alert_info("⏭️ Skipping already downloaded: {.strong {l4name}}")
     return(NULL)
   }
-  
+
   cli::cli_alert("⬇️  Downloading {.strong {l4name}}")
-  
+
   tryCatch({
     eco_aoi <- eco_lev4 %>%
       filter(us_l4name == l4name) %>%
@@ -157,23 +161,23 @@ walk(eco_list, function(l4name) {
       slice(1) %>%
       st_buffer(1) %>%
       st_transform(default_crs)
-    
+
     nhd <- get_nhdphr(AOI = eco_aoi, type = "networknhdflowline", t_srs = default_crs)
-    
+
     safe_name <- region_name_to_filename(l4name)
     out_path <- glue("{output_dir}{safe_name}.gpkg")
     if (file_exists(out_path)) file_delete(out_path)
     st_write(nhd, out_path, quiet = TRUE)
-    
+
     cli::cli_alert_success("✅ Saved flowlines for {.strong {l4name}}")
-    
+
     write_csv(tibble(us_l4name = l4name,
                      status = "success",
                      message = NA_character_,
                      timestamp = Sys.time()), log_file, append = TRUE)
-    
+
     Sys.sleep(5)
-    
+
   }, error = function(e) {
     cli::cli_alert_danger("⚠️  Error for {.strong {l4name}} — {e$message}")
     write_csv(tibble(us_l4name = l4name,
@@ -195,7 +199,10 @@ write_csv(retry_results, retry_log_file)
 
 # --- Diagnose NULL results ----------------------------------------------------
 null_regions <- retry_results %>%
-  filter(status == "error", str_detect(message, regex("null|empty|no features", ignore_case = TRUE))) %>%
+  filter(status == "error",
+         str_detect(message,
+                    regex("null|empty|no features",
+                          ignore_case = TRUE))) %>%
   pull(us_l4name)
 
 null_aois <- eco_lev4 %>%

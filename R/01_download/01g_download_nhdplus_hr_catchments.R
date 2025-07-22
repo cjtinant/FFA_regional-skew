@@ -68,15 +68,19 @@ eco_list <- eco_lev4 %>%
 
 walk2(eco_list, seq_along(eco_list), function(l4name, i) {
   cli::cli_alert_info("🟦 [{i}/{length(eco_list)}] Downloading {.strong {l4name}}")
-  
+
   safe_name <- str_replace_all(l4name, "[^A-Za-z0-9]+", "_")
-  out_path <- here("data", "intermediate", "nhdphr_catchments_by_ecoregion", glue("{safe_name}.gpkg"))
-  
-  if (l4name %in% log_tbl$us_l4name && any(log_tbl$status[log_tbl$us_l4name == l4name] == "success")) {
+  out_path <- here("data",
+                   "intermediate",
+                   "nhdphr_catchments_by_ecoregion",
+                   glue("{safe_name}.gpkg"))
+
+  if (l4name %in% log_tbl$us_l4name &&
+        any(log_tbl$status[log_tbl$us_l4name == l4name] == "success")) {
     cli::cli_alert_success("✅ Already downloaded: {.strong {l4name}}")
     return(NULL)
   }
-  
+
   tryCatch({
     eco_aoi <- eco_lev4 %>%
       filter(str_trim(us_l4name) == str_trim(l4name)) %>%
@@ -87,9 +91,9 @@ walk2(eco_list, seq_along(eco_list), function(l4name, i) {
       slice(1) %>%
       st_buffer(500) %>%
       st_make_valid()
-    
+
     bbox_tiles <- st_make_grid(eco_aoi, n = c(4, 4))
-    
+
     nhd_list <- imap(bbox_tiles, function(tile_geom, j) {
       tryCatch({
         aoi_tile <- st_sf(tile_id = j, geometry = st_sfc(tile_geom, crs = 5070))
@@ -99,26 +103,26 @@ walk2(eco_list, seq_along(eco_list), function(l4name, i) {
         NULL
       })
     })
-    
+
     nhd_combined <- compact(nhd_list)
-    
+
     if (length(nhd_combined) == 0) stop("No catchment features returned.")
-    
+
     nhd_combined <- bind_rows(nhd_combined) %>% st_make_valid()
-    
+
     if (file.exists(out_path)) file_delete(out_path)
     st_write(nhd_combined, out_path, quiet = TRUE)
-    
+
     write_csv(tibble(
       us_l4name = l4name,
       status = "success",
       message = NA_character_,
       timestamp = as.character(Sys.time())
     ), log_file, append = TRUE)
-    
+
     cli::cli_alert_success("✅ Saved: {.strong {l4name}}")
     Sys.sleep(5)
-    
+
   }, error = function(e) {
     cli::cli_alert_danger("❌ Error for {.strong {l4name}}: {e$message}")
     write_csv(tibble(
@@ -195,29 +199,34 @@ retry_matches <- stringdist_left_join(
 # Review best matches per retry_name
 retry_summary <- retry_matches %>%
   group_by(retry_name) %>%
-  slice_min(order_by = stringdist::stringdist(retry_name, us_l4name, method = "jw"), n = 1) %>%
+  slice_min(order_by = stringdist::stringdist(retry_name,
+                                              us_l4name,
+                                              method = "jw"),
+    n = 1
+  ) %>%
   ungroup()
 
 print(retry_summary, n = 20, width = Inf)
 
-
 walk(retry_catchments, function(l4name) {
   cli::cli_alert_info("🔁 Retrying catchment: {.strong {l4name}}")
-  
+
   safe_name <- str_replace_all(l4name, "[^A-Za-z0-9]+", "_")
   out_path <- here("data", "raw", "nhdphr_catchments", glue("{safe_name}.gpkg"))
-  
+
   if (file.exists(out_path)) {
     cli::cli_alert_info("⚠️ File exists, skipping: {.strong {l4name}}")
     return(NULL)
   }
-  
+
   tryCatch({
     eco_aoi <- eco_lev4 %>%
       filter(str_detect(US_L4NAME, fixed(l4name, ignore_case = TRUE)))
 
     if (nrow(eco_aoi) == 0) stop(glue("No match found in eco_lev4 for: {l4name}"))
-    if (nrow(eco_aoi) > 1) cli::cli_alert_warning("⚠️ Multiple matches found for {.strong {l4name}}")
+    if (nrow(eco_aoi) > 1) {
+      cli::cli_alert_warning("⚠️ Multiple matches found for {.strong {l4name}}")
+    }
 
     eco_aoi <- eco_aoi %>%
       st_transform(5070) %>%
@@ -227,9 +236,9 @@ walk(retry_catchments, function(l4name) {
       slice(1) %>%
       st_buffer(500) %>%
       st_make_valid()
-    
+
     bbox_tiles <- st_make_grid(eco_aoi, n = c(4, 4))
-    
+
     nhd_list <- imap(bbox_tiles, function(tile_geom, j) {
       tryCatch({
         aoi_tile <- st_sf(tile_id = j, geometry = st_sfc(tile_geom, crs = 5070))
@@ -239,26 +248,26 @@ walk(retry_catchments, function(l4name) {
         NULL
       })
     })
-    
+
     nhd_combined <- compact(nhd_list)
-    
+
     if (length(nhd_combined) == 0) stop("No catchment features returned.")
-    
+
     nhd_combined <- bind_rows(nhd_combined) %>% st_make_valid()
-    
+
     # Clean up existing file
     if (file.exists(out_path)) {
       cli::cli_alert_info("🧹 Removing existing file before write: {.strong {safe_name}}")
       file_delete(out_path)
     }
-    
+
     # Force MULTIPOLYGON output and write to temp file first
     temp_path <- tempfile(fileext = ".gpkg")
-    
+
     nhd_cleaned <- nhd_combined %>%
       st_collection_extract("POLYGON") %>%
       st_make_valid()
-    
+
     tryCatch({
       st_write(nhd_cleaned, temp_path, quiet = TRUE)
       file_copy(temp_path, out_path, overwrite = TRUE)
@@ -266,17 +275,17 @@ walk(retry_catchments, function(l4name) {
     }, error = function(e) {
       stop(glue("Creation failed for {safe_name}: {e$message}"))
     })
-    
+
     write_csv(tibble(
       us_l4name = l4name,
       status = "success",
       message = "retried successfully",
       timestamp = as.character(Sys.time())
     ), log_file, append = TRUE)
-    
+
     cli::cli_alert_success("✅ Retried and saved: {.strong {l4name}}")
     Sys.sleep(5)
-    
+
   }, error = function(e) {
     cli::cli_alert_danger("❌ Retry failed for {.strong {l4name}}: {e$message}")
     write_csv(tibble(
