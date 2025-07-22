@@ -48,8 +48,9 @@ docs/
        ├── data-dictionaries/
        ├── descriptions/
        ├── look-up-tables/
-       ├── raster-data-summaries
-       ├── vector-data-summaries
+       ├── QAQC/
+       ├── raster-data-summaries/
+       ├── vector-data-summaries/
 ```
 
 ---

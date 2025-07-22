@@ -95,7 +95,7 @@ get_prism_dailies(type="ppt",
 # 3c) log download results
 prism_files <- tibble(raw_files = prism_archive_ls())
 
-write_csv(prism_files, here("data/log/prism_files.csv"))
+write_csv(prism_files, here("data/log/prism_file_inventory.csvprism_file_inventory.csv"))
 
 # ------------------------------------------------------------------------------
 # Project PRISM files into a common CRS
