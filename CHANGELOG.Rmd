@@ -21,6 +21,14 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 
 ### Added
 
+### Changed
+
+### In Progress
+
+## [v1.4.0] - 2025-07-22
+
+### Added
+
 - Created git_changelog_workflow_reference.Rmd to document versioning and commit practices
 - Drafted structured README content for `docs/` folder organization and contents
 - Converted spatial_data_preparation_checklist.md to RMarkdown with interactive
@@ -55,7 +63,7 @@ data, including:
     - koppen-geiger_band_metadata_v01.csv
   - Stored in docs/metadata/raster-data-summaries/
 
-## Changed
+### Changed
 - Metadata Restructure and Cleanup (v0.3.0)
   - Reorganized metadata files into subdirectories:
     - dictionaries/
@@ -84,13 +92,11 @@ modeling notes
   - `/docs`
 - Migrated internal process documentation and QA/QC templates into `docs/`
 - Integrate finalized workflow references into `docs/best-practices_reference`
-
-## In Progress
-- Continue audit for duplicate or outdated files across documentation folders:
-- Inventorying all .Rmd, .md, and .txt files and reports/ by date, topic, and milestone
-- Tagging report .Rmd files with chunk header cleanup ({r name, eval=}) for reproducibility
-- Auto-generate a CSV tracker from your 01_download script names
-- Draft a corresponding Git commit message
+- Audit for duplicate or outdated files across documentation folders:
+  - data/
+  - docs/
+- Tag report .Rmd files with chunk header cleanup ({r name, eval=}) for
+reproducibility
 
 ## [v1.3.0] - 2025-06-30
 

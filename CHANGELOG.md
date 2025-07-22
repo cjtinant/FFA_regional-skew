@@ -1,12 +1,11 @@
 Changelog
 ================
 CJ Tinant
-2025-07-21
+2025-07-22
 
 - [Changelog](#changelog)
   - [\[Unreleased\]](#unreleased)
-  - [Changed](#changed)
-  - [In Progress](#in-progress)
+  - [\[v1.4.0\] - 2025-07-22](#v140---2025-07-22)
   - [\[v1.3.0\] - 2025-06-30](#v130---2025-06-30)
   - [\[v1.2.5\] - 2025-05-08](#v125---2025-05-08)
   - [\[v1.2.0\] - 2025-05-08](#v120---2025-05-08)
@@ -23,6 +22,14 @@ Changelog](https://keepachangelog.com/) format.*
 ------------------------------------------------------------------------
 
 ## \[Unreleased\]
+
+### Added
+
+### Changed
+
+### In Progress
+
+## \[v1.4.0\] - 2025-07-22
 
 ### Added
 
@@ -72,7 +79,7 @@ Changelog](https://keepachangelog.com/) format.*
     - koppen-geiger_band_metadata_v01.csv
   - Stored in docs/metadata/raster-data-summaries/
 
-## Changed
+### Changed
 
 - Metadata Restructure and Cleanup (v0.3.0)
   - Reorganized metadata files into subdirectories:
@@ -106,17 +113,11 @@ Changelog](https://keepachangelog.com/) format.*
   `docs/`
 - Integrate finalized workflow references into
   `docs/best-practices_reference`
-
-## In Progress
-
-- Continue audit for duplicate or outdated files across documentation
-  folders:
-- Inventorying all .Rmd, .md, and .txt files and reports/ by date,
-  topic, and milestone
-- Tagging report .Rmd files with chunk header cleanup ({r name, eval=})
-  for reproducibility
-- Auto-generate a CSV tracker from your 01_download script names
-- Draft a corresponding Git commit message
+- Audit for duplicate or outdated files across documentation folders:
+  - data/
+  - docs/
+- Tag report .Rmd files with chunk header cleanup ({r name, eval=}) for
+  reproducibility
 
 ## \[v1.3.0\] - 2025-06-30
 
