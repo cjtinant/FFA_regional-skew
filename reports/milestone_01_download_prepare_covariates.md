@@ -11,7 +11,6 @@ July 22, 2025
 - [v1.4 Tasklist](#v14-tasklist)
 - [Changelog Format: Per-Step
   Narrative](#changelog-format-per-step-narrative)
-  - [✅ Next Steps](#white_check_mark-next-steps)
 
 # Overview of v1.4
 
@@ -106,9 +105,9 @@ FFA_regional-skew/
 | **1.4.3** | Create / update download scripts for vector data     | \[X\]  |
 | **1.4.4** | Create downloads script for raster covariates        | \[X\]  |
 | **1.4.5** | QAQC for downloads                                   | \[X\]  |
-| **1.4.6** | Knit milestone and data dictionary .Rmd files to PDF | \[ \]  |
-| **1.4.7** | Document changes in 01_download README.Rmd           | \[ \]  |
-| **1.4.8** | Commit and tag `v1.4-download-scripts`               | \[ \]  |
+| **1.4.6** | Knit milestone and data dictionary .Rmd files to PDF | \[X\]  |
+| **1.4.7** | Document changes in 01_download README.Rmd           | \[X\]  |
+| **1.4.8** | Commit and tag `v1.4-download-scripts`               | \[X\]  |
 
 # Changelog Format: Per-Step Narrative
 
@@ -234,20 +233,24 @@ are aligned with workflow logic and audit-ready.
 
 ------------------------------------------------------------------------
 
-## ✅ Next Steps
+### Steps 1.4.6 to 1.4.8
 
-- [ ] Knit milestone `.Rmd` and metadata summary to PDF
+**Actions**
 
-- [ ] Finalize edits to `01_download/README.Rmd`
+This update focused on documenting and standardizing the spatial data
+download scripts housed in R/01_download/. A new README.Rmd was created
+to summarize the purpose, inputs, outputs, and dependencies of each
+script. Workflow summaries and milestone cross-references were added to
+all major download scripts to improve clarity and reproducibility.
 
-- [ ] Tag the milestone:
+**Reason (Before):**
 
-  ``` bash
-  git tag -a v1.4-download-scripts -m "Milestone 01: Download scripts and covariate metadata"
-  git push origin v1.4-download-scripts
-  ```
+Script headers were standardized to include consistent metadata and
+dependency blocks. Export paths and file-saving logic were refined for
+transparency, and minor cleanup was applied to ensure consistency across
+the download workflow.
 
-<!--
-# NEXT STEPS
-- CREATE CUSTOM MACROREGIONS
--->
+**Result (After):**
+
+These updates improve maintainability and prepare the scripts for
+downstream integration in covariate processing and modeling steps.

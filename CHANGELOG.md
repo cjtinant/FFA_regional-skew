@@ -5,7 +5,7 @@ CJ Tinant
 
 - [Changelog](#changelog)
   - [\[Unreleased\]](#unreleased)
-  - [\[v1.4.6\] — 2025-07-22](#v146--2025-07-22)
+  - [\[v1.4.8\] — 2025-07-22](#v148--2025-07-22)
   - [\[v1.4.0\] - 2025-07-22](#v140---2025-07-22)
   - [\[v1.3.0\] - 2025-06-30](#v130---2025-06-30)
   - [\[v1.2.5\] - 2025-05-08](#v125---2025-05-08)
@@ -30,7 +30,7 @@ Changelog](https://keepachangelog.com/) format.*
 
 ### In Progress
 
-## \[v1.4.6\] — 2025-07-22
+## \[v1.4.8\] — 2025-07-22
 
 ### Added
 
@@ -38,6 +38,8 @@ Changelog](https://keepachangelog.com/) format.*
   scripts and workflows.
 - Workflow summaries and output descriptions to all major download
   scripts.
+- Manually added milestone cross-references to script headers in
+  R/01_download/
 
 ### Changed
 

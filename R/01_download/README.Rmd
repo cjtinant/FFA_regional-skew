@@ -2,14 +2,16 @@
 title: "Documenting Changes in 01_download/README.Rmd"
 author: "CJ Tinant"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## 📌 Purpose
+## Purpose
 
 Provide a human-readable summary of all download scripts in R/01_download/, including their purpose, input/output expectations, status, and key changes over time. This supports reproducibility and onboarding of new contributors.
 
@@ -43,29 +45,24 @@ This section documents the current structure and status of all scripts responsib
 
 ## Summary of Key Changes
 
-### ✅ Standardized Folder Paths
+### Standardized Folder Paths
 
 - All output paths now use `here::here("data", "raw", ...)` or `data/processed/`
 - Ensures reproducibility across systems and OSes
 
-### ✅ Consistent CRS
+### Consistent CRS
 
 - All spatial outputs reprojected to EPSG:5070 (CONUS Albers Equal Area)
 
-### ✅ Modular Design
+### Modular Design
 
 - Each script targets a single source or covariate
 - Utility functions moved to `R/utils/`
 
-### ✅ Logging & QA
+### Logging & QA
 
 - Retry attempts, download failures, and chunking behavior logged to `.csv` where applicable
 - Scripts now include `{cli}` alerts for status tracking
+- Each script is cross-linked to relevant milestone reports
 
 ---
-
-## Suggested Maintenance
-
-- [ ] Add summary metadata export for all download outputs
-- [ ] Cross-link each script to relevant milestone reports
-- [ ] Auto-update table using a simple `list.files()` + metadata parser

@@ -25,11 +25,13 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 
 ### In Progress
 
-## [v1.4.6] — 2025-07-22
+## [v1.4.8] — 2025-07-22
+
 ### Added
 
 - README.Rmd for R/01_download/ to document spatial data download scripts and workflows.
 - Workflow summaries and output descriptions to all major download scripts.
+- Manually added milestone cross-references to script headers in R/01_download/
 
 ### Changed
 
