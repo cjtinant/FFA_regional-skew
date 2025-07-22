@@ -232,7 +232,7 @@ FFA_regional-skew/
 |                             #   (follows semantic versioning)
 ├── data/
     ├── log/                      # log files of downloads / processing steps
-    ├── meta/                     # Metadata of datasets
+    ├── meta/                     # xml format metadata
     ├── processed/                # Cleaned, derived datasets
         ├── ecoregions/
         |       ├── us-eco-levels.gpkg    # US Ecoregions Levels 1-4

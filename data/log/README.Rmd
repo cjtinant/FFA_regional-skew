@@ -1,7 +1,7 @@
 ---
 title: "Metadata Inventory"
 author: "CJ Tinant"
-date: July 18, 2025
+date: July 21, 2025
 output: 
   github_document:
     toc: true
@@ -17,7 +17,7 @@ output:
 **Last Updated:** `r format(Sys.Date(), "%B %d, %Y")`
 
 This document provides an up-to-date listing of metadata files stored in 
-`data/metadata/`.
+`data/log/`.
 
 ## Table of Contents
 
@@ -35,7 +35,7 @@ library(janitor)
 library(knitr)
 
 folder <- "data"
-subfolder <- "meta"
+subfolder <- "log"
 
 # 1. List metadata files, including subdirectories (e.g. data-dictionaries/)
 # 1. List metadata files, including subdirectories (e.g., data-dictionaries/)
@@ -68,9 +68,23 @@ metadata_files <- dir_info(here(folder, subfolder), recurse = TRUE) %>%
 
 file_descriptions <- tribble(
   ~file_name, ~description,
-"U.S._Generalized_Soil_Map_Database_(STATSGO2).xml", "STATSGO2 xml data",
-"ecoregions_na_l1-l3_metadata_2021_xml.doc", "EPA Ecoregions Level I to III xml data",
-"nlcd_landcover_2020v2_30m_metadata_xml.docx", "NLCD xml data"
+"catchment_download_log.csv", "NHDPlusHD catchment download log",
+"duplicate_feature_summary.csv", "log of duplicate check for in data/processed feature data",
+"duplicate_raster_data_summary.csv", "log of duplicate check for in data/processed raster data",
+"ecoregion_download_log.csv", "EPA Ecoregion download log",
+"feature_file_inventory.csv", "data/processed feature data inventory",
+"koppen_climate_files_removed.csv", "log of Koppen-Geiger download files removed",
+"nhdphr_download_log.csv", "NHDPlusHD flowline download log",
+"prism_file_inventory.csv", "PRISM normals download log",
+"prism_qc.csv", "PRISM normals download quality control",
+"raster_data_inventory.csv", "data/processed raster data inventory",
+"summary_processed_data_files.csv", "data/processed feature and raster data inventory",
+"summary_raw_data_files.csv", "data/raw feature and raster data inventory",
+"raster_error_recheck.csv", "data/processed raster data QC",
+"raster_validation_summary.csv", "data/processed raster data QC",
+"vector_bbox_summary.csv", "data/processed feature data QC",
+"vector_bbox_suspects.csv", "data/processed feature data QC",
+"vector_validation_summary.csv" , "data/processed feature data QC"
 )
 
 metadata_files <- left_join(metadata_files, file_descriptions, by = "file_name")
