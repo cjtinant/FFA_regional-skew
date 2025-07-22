@@ -4,6 +4,13 @@ subtitle: "Establishing a Reproducible Framework for Regional Skew Estimation"
 author: "C.J. Tinant"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    latex_engine: xelatex
+    fig_caption: true
+    keep_tex: true         # Optional: keeps intermediate .tex file for debugging
   github_document:
     toc: true
     toc_depth: 2

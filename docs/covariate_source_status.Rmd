@@ -1,7 +1,13 @@
 ---
-title: "Covariate Source Inventory"
+title: "Covariate Status"
 author: "CJ Tinant"
-output: 
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    latex_engine: xelatex
+    fig_caption: true
   github_document:
     toc: true
     toc_depth: 3

@@ -1,22 +1,32 @@
 ---
 title: "Best Practices for Documentation"
 author: "FFA_regional-skew Project"
-output: 
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    latex_engine: xelatex
+    fig_caption: true
+    keep_tex: true         # Optional: keeps intermediate .tex file for debugging
   github_document:
     toc: true
     toc_depth: 3
 ---
 
+\newpage
+
 # Overview
 
 This guide describes best practices for documenting changes in hydrologic 
 modeling and data science projects. The guide describes: 
-* data workflow status, 
-* working with Git, 
-* semantic versioning,
-* changelog format, 
-* DRY principles, and
-* Definitions for reference materials
+
+- Data workflow status, 
+- Working with Git, 
+- Semantic versioning,
+- Changelog format, 
+- DRY principles, and
+- Definitions for reference materials
 
 ---
 
