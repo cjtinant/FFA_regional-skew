@@ -249,5 +249,3 @@ ggplot() +
         legend.position = "bottom")
 
 ggsave(null_diag_png, width = 10, height = 8, dpi = 300)
-
-# ==============================================================================

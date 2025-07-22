@@ -8,7 +8,6 @@
 #                 located inside the Great Plains Ecoregion.
 #
 # Workflow Summary:
-#
 # 1. Read a list of stream gage site numbers from a previously prepared CSV file
 #    (sites_pk_eco_only.csv). This includes flags for potentially colocated
 #    sites.
@@ -40,8 +39,6 @@
 # - dplyr, readr:  For data manipulation and export
 # - here:          For consistent paths
 # - purrr:         Loop through download batches
-
-
 # ==============================================================================
 
 library(dataRetrieval)

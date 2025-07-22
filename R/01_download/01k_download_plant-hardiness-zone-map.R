@@ -4,16 +4,16 @@
 # Date Created:   2025-04-15
 # Last Updated:   2025-06-18      # split climate download scripts
 #
-# Purpose: Download, processes, and prepare climate rasters:
-# -   gridded USDA Plant Hardiness Zone Map (PHZM)
+# Purpose: Download, processes, and project USDA Plant Hardiness Zone Map (PHZM)
 #
 # Data URLs:
 # -   Plant Hardiness Zones --
 #       https://prism.oregonstate.edu/projects/plant_hardiness_zones.php
 #
 # Workflow Summary:
-# 1.   Download zipped archives, extract data and organize raster data
-# 2.   Reproject rasters to a common CRS (US Albers Equal Area – EPSG:5070)
+# 1. Download zipped archives, extract data and organize raster data
+# 2. Reproject rasters to a common CRS (US Albers Equal Area – EPSG:5070)
+# 3. Write results to data/processed
 #
 # Output:
 # Validated climate rasters projected to a common CRS
@@ -49,10 +49,10 @@ library(prism)
 library(sf)
 library(terra)
 library(tidyverse)
-# ==============================================================================
-# Download plant hardiness zone map (PHZM)
-# 1a) Setup
 
+# ------------------------------------------------------------------------------
+# 2. # Download and unzip plant hardiness zone map (PHZM)
+# ------------------------------------------------------------------------------
 file_path  <- "data/raw"
 dir_name   <- "phzm"
 zip_name   <- "phzm.zip"
@@ -79,9 +79,8 @@ if (!file_exists(zip_path)) {
 phzm <- unzip(zip_path, exdir = target_dir)
 message("Unzipped to: ", target_dir)
 
-
 # ------------------------------------------------------------------------------
-# 2) Reproject and check if EPSG:5070
+# 2. Reproject and check if EPSG:5070
 # ------------------------------------------------------------------------------
 
 # (Re)load raster and check current CRS (should be GCS NAD83)
@@ -96,7 +95,7 @@ crs_new <- crs(r_proj)
 is_proj_5070 <- grepl("5070", crs_new) || grepl("Conus Albers", crs_new)
 
 # ------------------------------------------------------------------------------
-# 3) Write results to data/processed
+# 3. Write results to data/processed
 # ------------------------------------------------------------------------------
 # Define output path
 file_path  <- "data/processed"

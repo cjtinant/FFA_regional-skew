@@ -2,7 +2,7 @@
 # Script Name:    01g_download_nhdplus_hr.R
 # Author:         Charles Jason Tinant — with ChatGPT
 # Date Created:   2025-06-06
-# Last Updated:   2025-07-13
+# Last Updated:   2025-07-22
 #
 # Purpose: Download NHDPlus HR (1:24k) catchment boundaries clipped to
 #          Great Plains Level IV Ecoregions. Includes retry logic for known
@@ -10,10 +10,61 @@
 #
 # Data Source: https://www.usgs.gov/national-hydrography/nhdplus-high-resolution
 #
+# Changelog: 
+# 2025-07-13 - Recreated script that had potentially been deleted. Updated file
+#              paths to avoid data/intermediate. Updated file names to follow
+#              a consistent naming pattern. Added reusable naming function,
+#              enhanced retry filtering, and CLI feedback.
+# 2025-07-22: Update header to add workflow summary and key features.
+#
+# Workflow Summary:
+# 1. Setup
+#    - Create necessary folders:
+#        - data/log/ for tracking
+#        - data/raw/nhdphr_catchments/ for GeoPackage outputs
+#    - Load:
+#        - Prior download log (if exists)
+#        - Processed EPA Level IV ecoregions from us-eco-levels.gpkg
+#    - Filter L4 ecoregions nested within targeted L3 Great Plains regions
+#
+# 2. Primary Catchment Download Loop
+#    - For each Level IV ecoregion:
+#        - Skip if previously downloaded (based on log)
+#        - Subset AOI from eco_lev4 and transform to EPSG:5070
+#        - Apply geometry cleanup and 500m buffer
+#        - Grid the AOI (4×4 tiles)
+#        - Download catchments using get_nhdphr() per tile
+#        - Combine tile outputs and validate geometry
+#        - Save to data/raw/nhdphr_catchments/{safe_name}.gpkg
+#        - Append status to download log
+#
+# 3. Retry for Known Problematic Regions
+#    - Manually defined list of retry_catchments
+#    - Match retry names to eco_lev4:
+#        - First via exact case-insensitive match
+#        - Then fuzzy string matching (Jaro-Winkler distance)
+#    - Repeat download process for these regions
+#
+# 4. Compile and Preview
+#    - Filter latest log entries with status == "success"
+#    - Read and combine corresponding GeoPackages
+#    - Preview with mapview(catchments["FEATUREID"])
+#
+# Key Features:
+# - Idempotent: skips previously downloaded regions
+# - Geometry-safe: cast, buffer, validate for AOIs
+# - Fuzzy retry logic: name correction and tile fallback
+# - Transparent logging: CSV-based log with timestamped status
+# - Interactive QA: mapview preview of results
+#
+# Output Files:
+# - data/raw/nhdphr_catchments/*.gpkg — one per Level IV ecoregion
+# - data/log/catchment_download_log.csv — timestamped download log
+# - diagnostics/*.csv and *.png — retry logs and summary figures
+#
 # Dependencies:
 # - dplyr, glue, fs, here, mapview, nhdplusTools, purrr, readr, sf, stringr, cli
 # ==============================================================================
-
 suppressPackageStartupMessages({
   library(dplyr)
   library(glue)
@@ -31,15 +82,17 @@ suppressPackageStartupMessages({
 # ------------------------------------------------------------------------------
 # 1. Setup
 # ------------------------------------------------------------------------------
-
 # Create folders
 dir_create(here("data", "log"))
-dir_create(here("data", "intermediate", "nhdphr_catchments_by_ecoregion"))
+dir_create(here("data", "raw", "nhdphr_catchments"))
 
 # Load or initialize log
 log_file <- here("data", "log", "catchment_download_log.csv")
 log_tbl <- if (file.exists(log_file)) read_csv(log_file, show_col_types = FALSE) else tibble()
 
+# ------------------------------------------------------------------------------
+# 2. Load data
+# ------------------------------------------------------------------------------
 # Load EPA Level IV Ecoregions
 eco_lev4 <- st_read(
   here("data", "processed", "ecoregions", "us-eco-levels.gpkg"),
@@ -63,7 +116,7 @@ eco_list <- eco_lev4 %>%
   pull()
 
 # ------------------------------------------------------------------------------
-# 2. Main download loop for NHDPlus HR catchments
+# 3. Main download loop for NHDPlus HR catchments
 # ------------------------------------------------------------------------------
 
 walk2(eco_list, seq_along(eco_list), function(l4name, i) {
@@ -71,8 +124,8 @@ walk2(eco_list, seq_along(eco_list), function(l4name, i) {
 
   safe_name <- str_replace_all(l4name, "[^A-Za-z0-9]+", "_")
   out_path <- here("data",
-                   "intermediate",
-                   "nhdphr_catchments_by_ecoregion",
+                   "raw",
+                   "nhdphr_catchments",
                    glue("{safe_name}.gpkg"))
 
   if (l4name %in% log_tbl$us_l4name &&
@@ -135,9 +188,8 @@ walk2(eco_list, seq_along(eco_list), function(l4name, i) {
 })
 
 # ------------------------------------------------------------------------------
-# 2b. Retry missing regions (from flowlines but missing in catchments)
+# 4. Retry missing regions
 # ------------------------------------------------------------------------------
-
 retry_catchments <- c(
   "Caprock Canyons, Badlands, and Breaks",
   "Lower St. Croix and Vermillion Valleys",
@@ -298,7 +350,7 @@ walk(retry_catchments, function(l4name) {
 })
 
 # ------------------------------------------------------------------------------
-# 3. Preview All Successful Downloads
+# 5. Preview All Successful Downloads
 # ------------------------------------------------------------------------------
 
 log_latest <- read_csv(log_file, show_col_types = FALSE) %>%

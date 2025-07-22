@@ -48,10 +48,7 @@
 #   only values within the actual polygon boundary.
 # Inputs: r_crop: a raster that has already been spatially subset (cropped)
 #         shape:  the same or overlapping SpatVector
-
-
 # ==============================================================================
-
 library(fs)
 library(here)
 library(sf)

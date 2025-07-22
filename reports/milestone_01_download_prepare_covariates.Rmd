@@ -111,7 +111,7 @@ FFA_regional-skew/
 | **1.4.3** | Create / update download scripts for vector data        |  [X]   |
 | **1.4.4** | Create downloads script  for raster covariates          |  [X]   |
 | **1.4.5** | QAQC for downloads                                      |  [X]   |
-| **1.4.6** | Knit milestone and data dictionary .Rmd files to PDF    |  [ ]   |
+| **1.4.6** | Knit milestone and data dictionary .Rmd files to PDF    |  [X]   |
 | **1.4.7** | Document changes in 01_download README.Rmd              |  [ ]   |
 | **1.4.8** | Commit and tag `v1.4-download-scripts`                  |  [ ]   |
 
@@ -226,7 +226,7 @@ All layers validated for modeling compatibility. Scripts are now reproducible, d
 
 ## ✅ Next Steps
 
-- [ ] Knit milestone `.Rmd` and metadata summary to PDF
+
 - [ ] Finalize edits to `01_download/README.Rmd`
 - [ ] Tag the milestone:
   ```bash
