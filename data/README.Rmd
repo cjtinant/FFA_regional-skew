@@ -1,0 +1,98 @@
+---
+title: "README"
+author: "CJ Tinant"
+date: "`r Sys.Date()`"
+output: 
+  github_document:
+    toc: true
+    toc_depth: 3
+---
+
+
+# 📁 Project Data (`data/`)
+
+This folder contains raw and processed data and supporting documents related
+to the **Regional Skew Estimation** project. Processed data are projected to
+a consistent geospatial format.
+
+---
+
+## 📚 Folder Purpose
+
+The `data/` directory serves as a centralized archive for:
+
+- QAQC logs in `data/logs/`
+
+- Metadata in xml format in `data/meta/`
+
+- Processed data in `data/processed/`
+
+- Raw data downloads in `data/raw/`
+---
+
+## 🗂️ Subfolders
+
+The `data/` folder is organized as follows:
+
+```plaintext
+
+docs/
+├── data/
+    ├── log/                      # log files of downloads / processing steps
+    ├── meta/                     # xml format metadata
+    ├── processed/                # Cleaned, derived datasets
+        ├── koppen-climate/
+        |       ├── koppen-geiger.tif   # Köppen Geiger climate raster 1991-2020
+        ├── modis/                      # MODIS Terra Vegetation Indices, 
+        |       ├── mod13a1_nvdi_timeseries
+        ├── ned/                        # National Elevation Database (NED)
+        |       ├── elev_30m_gp.tif     #   elevation raster for GP
+        |       ├── slope_30m_gp.tif    #   slope raster for GP
+        ├── nhdphr/                     # Natl Hydrology Dataset High Resolution
+        |       ├── nhd_flowlines_combined.gpkg      # NHD HR flowlines for GP
+        |       ├── nhdhpr_catchments_combined.gpkg  # NHD HR catchments for GP
+        ├── nhdplus_v21/                # Natl Hydrology Dataset Version 2.1
+        |       ├── nhdv21_flowlines.gpkg            # NHD v21 flowlines for GP
+        |       ├── nhd21_catchments.gpkg            # NHD v21 catchments for GP
+        ├── nlcd/                       # National Land Cover Dataset (NLCD)
+        |       ├── nlcd_2016_gp.tif
+        ├── peakflow_gages/
+        |       ├── gage_summary_skew.csv    # USGS gage skew and covariate data
+        |       ├── gage_summary_skew.gpkg   # USGS gage skew and covariate data
+        |       ├── usgs_pk_data.csv         # USGS peakflow gage data
+        ├── phzm/                            # USDA Plant Hardiness Zone map
+        |       ├── phzm.tif
+        ├── prism/                         # Prism data normals 2010 - 2020
+        |       ├── ppt_MMDD_mm.tif            # PRISM daily precip in mm
+        |       ├── ppt_ann_mm_stack.tif       # PRISM annual precip in mm
+        |       ├── ppt_monthly_mm_stack.tif   # PRISM annual precip in mm
+        |       ├── temp_ann_C_stack.tif       # PRISM annual max/min temp in C
+        |       ├── tmax_MMDD_mm.tif           # PRISM daily max temp in C
+        |       ├── tmin_MMDD_mm.tif           # PRISM daily min temp in C
+        ├── statsgo2/
+        |       ├── statsgo2_mapunit.csv     # STATSGO2 mapunits data for GP
+        |       ├── statsgo2_mapunit.csv     # STATSGO2 mapunit polygons for GP
+        |       ├── statsgo2_mapunit.gpkg    # STATSGO2 mapunit polygons for GP
+        ├── us- ecoregions/
+                ├── us-eco-levels.gpkg    # US Ecoregions Levels 1-4
+    ├── raw/                      # Unmodified input data
+        ├── ecoregions/           # US EPA NA CEC Ecoregions
+        ├── koppen-climate/       # Köppen Geiger climate rasters
+        ├── modis/                # MODIS Terra Vegetation Indices, 
+        |       ├── mod13q1_hdf
+        ├── nhdplus/              # NHDPlus flowlines and catchments
+        ├── nlcd/                 # National Land Cover Dataset (NLCD)
+        ├── peakflow_gages/       # USGS peakflow gage data
+        ├── phzm/                 # Plant Hardiness Zone Map (PHZM)
+        ├── prism/                # Parameter-elevation Regressions on
+        |                         #   Independent Slopes Model (PRISM)
+        |       ├── PRISM_ppt_30yr_normal_800mD1_mmdd_bil
+        |       ├── PRISM_ppt_30yr_normal_800mM4_mm_bil
+        |       ├── PRISM_ppt_30yr_normal_800mM4_annual_bil
+        |       ├── PRISM_tmax_30yr_normal_800mD1_mmdd_bil
+        |       ├── PRISM_tmax_30yr_normal_800mM5_annual_bil
+        |       ├── PRISM_tmin_30yr_normal_800mD1_mmdd_bil
+        |       ├── PRISM_tmin_30yr_normal_800mM5_annual_bil
+        ├── statsgo2/             # Digital Gen. Soil Map of the US (STATSGO2)
+
+```
