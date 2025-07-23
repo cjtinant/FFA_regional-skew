@@ -1,43 +1,40 @@
----
-title: "Milestone 02 – Improve Script and Metadata Documentation"
-author: "C.J. Tinant"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
-output:
-  pdf_document:
-    toc: true
-    toc_depth: 2
-    number_sections: true
-    latex_engine: xelatex
-    fig_caption: true
-  github_document:
-    toc: true
-    toc_depth: 2
-params:
-  version: "v1.5"
-editor_options:
-  markdown:
-    wrap: 72
----
+Milestone 02 – Improve Script and Metadata Documentation
+================
+C.J. Tinant
+July 23, 2025
+
+- [Overview of v1.5](#overview-of-v15)
+  - [Goal](#goal)
+- [Project Structure](#project-structure)
+- [v1.5 – Improve Script and Metadata
+  Documentation](#v15--improve-script-and-metadata-documentation)
+- [v1.5 Tasklist](#v15-tasklist)
+  - [Description of Tasks Completed or In
+    Progress](#description-of-tasks-completed-or-in-progress)
+- [Summary](#summary)
 
 <!--
 For issues with pdf add #    keep_tex: true
-
-# Description of sections:
+&#10;# Description of sections:
 1. Overview: Brief context — why this milestone matters.
 2. Goal: Clear, concise objective for this milestone.
 3. Project Structure: Relevant folders and files
 4. Tasklist: Checkboxes for each task or improvement item.
 5. Next Steps: What follows this milestone — e.g., which milestone will build on this work.
 6. Retrospective Summary: Provides a record of key results and an opportunity to reflect on what was accomplished.
---> 
+-->
 
-# Overview of `r params$version`
-This milestone focuses on strengthening project transparency and reproducibility by embedding documentation within analysis folders and formalizing metadata management.
+# Overview of v1.5
+
+This milestone focuses on strengthening project transparency and
+reproducibility by embedding documentation within analysis folders and
+formalizing metadata management.
 
 ## Goal
-Enhance clarity, reproducibility, and maintainability of all project scripts by standardizing documentation headers, comments, and auxiliary files.
 
-\newpage
+Enhance clarity, reproducibility, and maintainability of all project
+scripts by standardizing documentation headers, comments, and auxiliary
+files.
 
 # Project Structure
 
@@ -63,42 +60,36 @@ FFA_regional-skew/
 ├── reports/                    # Knitted .Rmd/.qmd milestone reports
 ├── results/                    # Manuscript-ready figures, models, and outputs
 ├── sandbox/                    # Staging area for review
-
 ```
 
-# `r params$version` – Improve Script and Metadata Documentation
+# v1.5 – Improve Script and Metadata Documentation
 
-# `r params$version` Tasklist
+# v1.5 Tasklist
+
 | Step | Task | Status |
-|-----------|------------------------------------------------------------|-----|
-| 2.1 | Standardize header blocks across all R scripts                   | [ ] |
-| 2.2 | Add `README.md` to each `R/` subfolder                           | [ ] |
-| 2.3 | Ensure all scripts are self-contained                            | [ ] |
-| 2.4 | Review document dependencies                                     | [ ] |
-| 2.5 | Review `data/meta/data_dictionary.csv` to define covariates      | [ ] |
-| 2.6 | Standardize use of `.Rmd` and `.md` for all folders              | [ ] |
-| 2.7 | Develop `log_README.md` templates to include in `R/` and `data/` | [ ] |
-| 2.8 | Link README-style metadata to milestone logs                     | [ ] |
-| 2.9 | Commit and push changes as tag `v0.5-docs-enhancement`           | [ ] |
+|----|----|----|
+| 2.1 | Standardize header blocks across all R scripts | \[ \] |
+| 2.2 | Add `README.md` to each `R/` subfolder | \[ \] |
+| 2.3 | Ensure all scripts are self-contained | \[ \] |
+| 2.4 | Review document dependencies | \[ \] |
+| 2.5 | Review `data/meta/data_dictionary.csv` to define covariates | \[ \] |
+| 2.6 | Standardize use of `.Rmd` and `.md` for all folders | \[ \] |
+| 2.7 | Develop `log_README.md` templates to include in `R/` and `data/` | \[ \] |
+| 2.8 | Link README-style metadata to milestone logs | \[ \] |
+| 2.9 | Commit and push changes as tag `v0.5-docs-enhancement` | \[ \] |
 
 ## Description of Tasks Completed or In Progress
 
 ### 2.1 Standardize header blocks across all R scripts
-Check the following are included in all scripts:
-- Script Name:    01m_download_ned.R
-- Author: Charles Jason Tinant — with ChatGPT 4o
-- Date Created:
-- Last Updated:
-- Change Log:
-- Purpose:
-- Workflow Summary:
-- Input/Data URLs
-- Outputs
-- Dependencies
-- Related Milestone Reports
-- Notes
+
+Check the following are included in all scripts: - Script Name:
+01m_download_ned.R - Author: Charles Jason Tinant — with ChatGPT 4o -
+Date Created: - Last Updated: - Change Log: - Purpose: - Workflow
+Summary: - Input/Data URLs - Outputs - Dependencies - Related Milestone
+Reports - Notes
 
 ### 2.2 Add README files to each major script directory
+
 The README should include the following:
 
 - High level workflow summaries
@@ -133,6 +124,9 @@ If you’re versioning as you go:
     v1.5.0-docs or v02-complete
 
 # Summary
-This milestone strengthens reproducibility by formalizing internal documentation practices. It includes README templates for `R/` subfolders, a planned data dictionary, and introduces `log_README.md` documentation inside each milestone to clarify roles, assumptions, and outputs.
 
-
+This milestone strengthens reproducibility by formalizing internal
+documentation practices. It includes README templates for `R/`
+subfolders, a planned data dictionary, and introduces `log_README.md`
+documentation inside each milestone to clarify roles, assumptions, and
+outputs.
