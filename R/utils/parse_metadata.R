@@ -6,11 +6,11 @@
 # - 2025-07-25     Update header information;
 #                  move notes to `script-notes_and_developer-log`
 #
-# Workflow Summary:
-#
 # Purpose:         Loop through multiple FGDC metadata XML files and extract:
 #                    Attribute definitions
 #                    CRS and spatial extent
+#
+# Workflow Summary:
 #
 # Input/Data URLs:
 # - xml data in a user-defined folder.

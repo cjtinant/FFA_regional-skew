@@ -1,29 +1,39 @@
 # =============================================================================
-# Script Name:    extract_full_metadata.R
-# Author:         CJ Tinant
-# Date Created:   2025-05-12
-# Purpose:        Extract and validate metadata from ISO or FGDC-style XML files
+# Script Name:     extract_full_metadata.R
+# Author:          CJ Tinant - with ChatGPT 4o
+# Date Created:    2025-05-12
+# Last Updated:    2025-07-25
+# Change Log:
+# - 2025-07-25     Update header information;
+#                  move notes to `script-notes_and_developer-log`
 #
-# Description:
-#   - Reads and parses XML metadata files (e.g., EPA shapefiles)
-#   - Extracts title, abstract, originator, date, keywords, bounding box, CRS,
-#     and constraints
-#   - Outputs a tidy summary for documentation or QA
+# Purpose:        Extract and validate metadata from ISO or FGDC-style XML files.
+
+# Workflow Summary
+# 1. Read and parses XML metadata files
+# 2. Extract title, abstract, originator, date, keywords, bounding box, CRS,
+#    and constraints
+# 3. Output a tidy summary for documentation or QA
 #
-# Input:
+# Input/Data URLs:
 #   - XML metadata files (e.g., data/metadata/us_ecoregions/*.xml)
-#
-# Output:
+# Outputs:
 #   - A tibble with extracted metadata fields
+# Helper Functions:
 #
 # Dependencies:
-#   - xml2
-#   - dplyr
-#   - tibble
+# - dplyr          General data wrangling, import and export.
+# - fs             File interface system.
+# - here           Consistent relative paths.
+# - xml2           Parse XML data.
 #
-# Notes:
-#   - Utility function used in milestone 01a and beyond
+# Related Milestone Reports:
 # =============================================================================
+# --- load libraries ---
+library(dplyr)
+library(fs)
+library(here)
+library(xml2)
 
 #' Extract metadata from ISO/FGDC XML file
 #'

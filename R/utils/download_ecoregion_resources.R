@@ -1,54 +1,67 @@
-# Script Name:   download_ecoregion_resources.R
-# Author:         CJ Tinant - with ChatGPT 4o
-# Date Created:   2025-05-12
-# Purpose:       Download EPA ecoregion shapefiles, metadata, and layer files
-
-# Description:
-#   - Adaptable function that uses here() to ensure project-root-relative paths
-#     to download and extract ecoregion shapefiles, metadata, and layer files
-#   - Provides safe checks using fs::dir_create() and file_exists()
+# Script Name:     download_ecoregion_resources.R
+# Author:          CJ Tinant - with ChatGPT 4o
+# Date Created:    2025-05-12
+# Last Updated:    2025-07-25
+# Change Log:
+# - 2025-07-25     Update header information;
+#                  move notes to `script-notes_and_developer-log`
+#
+# Purpose:         Download EPA ecoregion shapefiles, metadata, and layer files
+#                  for milestone 01a. The function uses here() to ensure
+#                  project-root-relative paths to download and extract ecoregion
+#                  shapefiles, metadata,and layer files. Additionally, the
+#                  function provides safe checks using fs::dir_create() and
+#                  file_exists().
+#
+# Workflow Summary:
 #
 # Inputs with example usage:
-#  target_dir = here("data/raw/us_ecoregions"),
-#  zip_url    = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/
+#   target_dir = here("data/raw/us_ecoregions"),
+#   zip_url    = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/
 # Ecoregions/cec_na/na_cec_eco_l1.zip",
-#  zip_path   = here("data/raw/us_ecoregions/na_eco_lev01.zip"),
-#  meta_url   = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/
+#    zip_path   = here("data/raw/us_ecoregions/na_eco_lev01.zip"),
+#    meta_url   = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/
 # Ecoregions/cec_na/NA_CEC_Eco_Level1.htm",
-#  meta_path  = here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.htm"),
-#  lyr_url    = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/
+#    meta_path  = here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.htm"),
+#    lyr_url    = "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/
 # Ecoregions/cec_na/NA_CEC_Eco_Level1.lyr",
-#  lyr_path   = here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.lyr"),
-#  remove_zip = TRUE
-#   -
+#    lyr_path   = here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.lyr"),
+#    remove_zip = TRUE
+#
 # Outputs:
-#   - Downloaded EPA layer files
-#   - Log file of download (e.g., data/log/download_log.csv)
-#   - A tibble summarizing what was downloaded and logged in-session
+# - Downloaded EPA layer files in `data/raw/us_ecoregions`.
+# - Log file of download (e.g., data/log/download_log.csv)
+# - A tibble summarizing what was downloaded and logged in-session
 #
 # Dependencies:
-# library(here)
-# library(glue)
-# library(fs)
+# - fs             File interface system.
+# - glue           String interpolation
+# - here           Consistent relative paths.
 #
-# Notes:
-#   - Utility function used in milestone 01a and beyond
+# Helper Functions:
+#
+# Related Milestone Reports:
 # =============================================================================
+# --- load libraries ---
+library(fs)
+library(glue)
+library(here)
 
+# --- make function ---
 download_ecoregion_resources <- function(target_dir,
                                          zip_url, zip_path,
                                          meta_url, meta_path,
                                          lyr_url, lyr_path,
                                          remove_zip = FALSE,
                                          log_csv = here::here("data/log/download_log.csv")) {
-  # Ensure target and log directories exist
+  # --- Ensure target and log directories exist ---
   fs::dir_create(target_dir)
   fs::dir_create(fs::path_dir(log_csv))
 
-  # Store log entries for return
+  # --- Store log entries for return ---
   log_entries <- list()
 
-  # Internal helper to log each download
+  # --- Internal helper to log each download ---
   log_download <- function(file_path, source_url) {
     if (fs::file_exists(file_path)) {
       entry <- tibble::tibble(
@@ -70,7 +83,7 @@ download_ecoregion_resources <- function(target_dir,
 
   # --- Download and log each file ---
 
-  # Shapefile ZIP
+  # --- Shapefile ZIP ---
   if (!fs::file_exists(zip_path)) {
     message("Downloading shapefile ZIP...")
     download.file(zip_url, destfile = zip_path, mode = "wb")
@@ -79,7 +92,7 @@ download_ecoregion_resources <- function(target_dir,
     message("Shapefile ZIP already exists. Skipping download.")
   }
 
-  # Unzip contents
+  # --- Unzip contents ---
   message("Unzipping shapefile contents...")
   unzip(zip_path, exdir = target_dir)
 
@@ -89,14 +102,14 @@ download_ecoregion_resources <- function(target_dir,
     message("ZIP file deleted after extraction.")
   }
 
-  # Metadata HTML
+  # --- Metadata HTML ---
   if (!fs::file_exists(meta_path)) {
     message("Downloading metadata HTML...")
     download.file(meta_url, destfile = meta_path, mode = "wb")
     log_download(meta_path, meta_url)
   }
 
-  # Layer file
+  # --- Layer file ---
   if (!fs::file_exists(lyr_path)) {
     message("Downloading layer file...")
     download.file(lyr_url, destfile = lyr_path, mode = "wb")
@@ -105,6 +118,6 @@ download_ecoregion_resources <- function(target_dir,
 
   message("All downloads and logging complete.")
 
-  # Return in-session tibble
+  # --- Return in-session tibble ---
   dplyr::bind_rows(log_entries)
 }
