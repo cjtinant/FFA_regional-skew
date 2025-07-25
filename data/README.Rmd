@@ -49,7 +49,7 @@ docs/
         |       ├── elev_30m_gp.tif     #   elevation raster for GP
         |       ├── slope_30m_gp.tif    #   slope raster for GP
         ├── nhdphr/                     # Natl Hydrology Dataset High Resolution
-        |       ├── nhd_flowlines_combined.gpkg      # NHD HR flowlines for GP
+        |       ├── nhdphr_flowlines_combined.gpkg      # NHD HR flowlines for GP
         |       ├── nhdhpr_catchments_combined.gpkg  # NHD HR catchments for GP
         ├── nhdplus_v21/                # Natl Hydrology Dataset Version 2.1
         |       ├── nhdv21_flowlines.gpkg            # NHD v21 flowlines for GP

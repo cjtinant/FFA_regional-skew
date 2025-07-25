@@ -46,7 +46,8 @@
 #    - Read and combine corresponding GeoPackages
 #    - Preview with mapview(catchments["FEATUREID"])
 #
-# Input/Data URLs: https://www.usgs.gov/national-hydrography/nhdplus-high-resolution
+# Input/Data URLs: 
+# - https://www.usgs.gov/national-hydrography/nhdplus-high-resolution
 # Output Files:
 # - data/raw/nhdphr_catchments/*.gpkg — one per Level IV ecoregion
 # - data/log/catchment_download_log.csv — timestamped download log

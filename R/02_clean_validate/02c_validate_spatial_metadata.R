@@ -1,36 +1,48 @@
 # ==============================================================================
-# Script Name:    02b_validate_spatial_metadata.R
-# Purpose:        Validate CRS, resolution, and spatial extent of raster and
-#                 vector files separately from data/processed/
-# Author:         Charles Jason Tinant — with ChatGPT 4o
-# Date Created:   2025-06-28
-# Last Update:    2025-07-14
+# Script Name:     02c_validate_spatial_metadata.R
+# Author:          Charles Jason Tinant — with ChatGPT 4o
+# Date Created:    2025-06-28
+# Last Update:     2025-07-14
+# Change Log:
+# - 2025-07-25     Update header information;
+#                  move notes to `script-notes_and_developer-log`
 #
-# Purpose:        Validate CRS, resolution, and spatial extent of spatial data.
+# Purpose:         Validate CRS and resolution of raster and vector files.
 #
-# Inputs:         Raster and vector files in the `data/processed/` directory.
-#                 The vector files validated are in .gpkg and .shp formats.
-#                 The raster files validated are in .tif. format.
+# Workflow Summary:
+# 1. List vector and raster files in data/processed.
+# 2. Make function to validate vector files.
+# 3. Make function to validate raster files.
+# 4. Validate vector files.
+# 5. Validate raster files.
+# 6. Recheck rasters with errors.
+# 7. Replace failed entries with recheck results.
+# 8. Recheck vector results for data issues.
+# 9. Check vector results for minimum spatial extent
 #
-# Output:
+# Input/Data URLs: Raster and vector files in the `data/processed/` directory.
+#                  The vector files validated are in .gpkg and .shp formats.
+#                  The raster files validated are in .tif. format.
+# Outputs:
 # - Vector summary: data/log/validate_spatial/vector_validation_summary.csv
 # - Raster summaries (batched):
 #        data/log/validate_spatial/raster_metadata_batch_XX.csv
-# - Optional recheck output: data/log/validate_spatial/raster_recheck_results.csv
-
-
-# NEED TO UPDATE BELOW
-# Output:         CSV summary report saved to `data/meta/spatial_validation_summary.csv`
+# - Rechecked raster output: data/log/validate_spatial/raster_recheck_results.csv
 #
-
-# Don't Run:
-# Check an individual raster with:
-# terra::rast(here::here("data", "processed", "prism", "tmin_0925_C.tif"))
-
-# This was able to be read: data/processed/prism/tmin_0924_C.tif
-# THis was not able to be read: data/processed/prism/tmin_0925_C.tif
+# Dependencies:
+# - dplyr, readr   General data wrangling, import and export.
+# - fs             File interface system.
+# - glue           String interpolation
+# - here           Consistent relative paths.
+# - purrr          Apply a function to each element of a vector.
+# - sf             Handling spatial data.
+# - terra           Vector and raster data operations.
+#
+# Helper Functions:
+#
+# Related Milestone Report:
 # ==============================================================================
-
+# --- load libraries ---
 library(dplyr)
 library(fs)
 library(glue)
@@ -41,11 +53,9 @@ library(sf)
 library(terra)
 library(cli)
 
-
 # ------------------------------------------------------------------------------
 # 1. List vector and raster files separately
 # ------------------------------------------------------------------------------
-
 vector_files <- dir_ls(here("data/processed"),
                        recurse = TRUE, regexp = "\\.(gpkg|shp)$")
 raster_files <- dir_ls(here("data/processed"),
@@ -54,7 +64,6 @@ raster_files <- dir_ls(here("data/processed"),
 # ------------------------------------------------------------------------------
 # 2. Function: Validate vector files
 # ------------------------------------------------------------------------------
-
 validate_vector_metadata <- function(file) {
   tryCatch({
     layer <- st_layers(file)$name[1]
@@ -82,7 +91,6 @@ validate_vector_metadata <- function(file) {
 # ------------------------------------------------------------------------------
 # 3. Function: Validate raster files
 # ------------------------------------------------------------------------------
-
 validate_raster_metadata <- function(file) {
   file <- as.character(file)[1]  # Force scalar
 
@@ -124,7 +132,6 @@ validate_raster_metadata <- function(file) {
 # ------------------------------------------------------------------------------
 # 4. Validate vector files
 # ------------------------------------------------------------------------------
-
 cli::cli_h2("🔍 Validating vector files...")
 vector_summary <- map_dfr(seq_along(vector_files), function(i) {
   cli::cli_alert("Vector {i}/{length(vector_files)}: {basename(vector_files[i])}")
@@ -141,7 +148,6 @@ cli::cli_alert_success("✅ Summary saved to {out_path}")
 # ------------------------------------------------------------------------------
 # 5. Validate raster files as batches
 # ------------------------------------------------------------------------------
-
 cli::cli_h2("🌄 Validating raster files...")
 
 batch_size <- 100
@@ -162,11 +168,11 @@ for (i in seq_along(raster_chunks)) {
   write_csv(chunk_summary, file = batch_path)
 }
 
-# Path to your metadata batch outputs
+# --- Path to metadata batch outputs ---
 batch_files <- dir_ls(here("data/log/validate_spatial"),
                       regexp = "raster_metadata_batch_.*\\.csv$")
 
-# Combine all batch CSVs
+# --- Combine all batch CSVs ---
 raster_validation_summary <- map_dfr(
   batch_files,
   read_csv,
@@ -178,26 +184,25 @@ raster_validation_summary <- map_dfr(batch_files, function(f) {
     mutate(file_size_MB = as.numeric(file_size_MB))
 })
 
-# Write a raster summary file
+# --- Write a raster summary file ---
 out_path <- here("data/log/validate_spatial", "raster_validation_summary.csv")
 write_csv(raster_validation_summary, out_path)
 
 # ------------------------------------------------------------------------------
 # 6. Recheck rasters with errors
 # ------------------------------------------------------------------------------
-
-# Identify files with errors
+# --- Identify files with errors ---
 raster_errors <- raster_validation_summary %>%
   filter(!is.na(error)) %>%
   pull(file)
 
 length(raster_errors)
 
-# Write a log file to compare
+# --- Write a log file to compare ---
 raster_errors_log <- here("data/log/validate_spatial",
                           "raster_error_recheck.csv")
 
-# Recheck only the failed files
+# --- Recheck only the failed files ---
 recheck_results <- map_dfr(raster_errors, ~{
   cli::cli_alert("🔄 Rechecking: {.file {basename(.x)}}")
   validate_raster_metadata(here(.x))
@@ -208,8 +213,7 @@ write_csv(recheck_results, raster_errors_log)
 # ------------------------------------------------------------------------------
 # 7. Replace failed entries with recheck results
 # ------------------------------------------------------------------------------
-
-# Combine updated rows with successful original rows
+# --- Combine updated rows with successful original rows ---
 rast_validation_summ_updated <- raster_validation_summary %>%
   # Remove old entries for failed files
   filter(!(file %in% raster_errors)) %>%
@@ -217,13 +221,13 @@ rast_validation_summ_updated <- raster_validation_summary %>%
   bind_rows(recheck_results) %>%
   arrange(file)
 
-# Overwrite the master summary CSV
+# --- Overwrite the master summary CSV ---
 write_csv(rast_validation_summ_updated,
           here("data/log/validate_spatial", "raster_validation_summary.csv"))
 
 cli::cli_alert_success("✅ Updated summary written to raster_validation_summary.csv")
 
-# Confirm no remaining errors
+# --- Confirm no remaining errors ---
 remaining_errors <- rast_validation_summ_updated %>%
   filter(!is.na(error))
 
@@ -232,7 +236,6 @@ cli::cli_alert_info("🚨 Remaining unreadable rasters: {nrow(remaining_errors)}
 # ------------------------------------------------------------------------------
 # 8. Check vector results for data issues
 # ------------------------------------------------------------------------------
-
 vec_summary <- read_csv(here("data/log/validate_spatial/vector_validation_summary.csv"))
 
 # Count unreadable files
@@ -271,14 +274,12 @@ vec_summary_updated %>%
   filter(xmin == xmax | ymin == ymax)
 
 # ------------------------------------------------------------------------------
-# 8. Check vector results for minimum spatial extent
+# 9. Check vector results for minimum spatial extent
 # ------------------------------------------------------------------------------
-
 # ---- Load and Filter Level 1 ecoregions ----
 eco_l1_gp <- st_read(here("data/r/us_ecoregions/us-eco-levels.gpkg"),
                      layer = "us_eco_l1", quiet = TRUE) %>%
   filter(NA_L1NAME == "GREAT PLAINS")
-
 
 # Union all features to create a bounding box or mask
 eco_gp_union <- st_union(eco_l1_gp) %>% st_as_sf()
@@ -319,24 +320,3 @@ write_csv(vec_summary_bbox_check,
 vec_summary_bbox_check %>%
   filter(scope == "partial GP" | scope == "unknown") %>%
   write_csv(here("data/log/validate_spatial/vector_bbox_suspects.csv"))
-
-
-# MOVE THIS
-library(ggplot2)
-
-gp_union <- st_union(eco_l1_gp)
-
-#flowlines <- st_read(here("data/processed/nhdphr/nhdphr_flowlines_combined.gpkg"),
-#  quiet = TRUE) %>%
-#  st_transform(st_crs(gp_union))
-
-bbox_nhd <- terra::vect(here("data/processed/nhdphr/nhdphr_flowlines_combined.gpkg")) %>%
-  terra::ext() %>%
-  as.vector()
-
-print(bbox_nhd)
-
-ggplot() +
-  geom_sf(data = gp_union, fill = NA, color = "black") +
-  geom_sf(data = flowlines, color = "blue", size = 0.1) +
-  theme_minimal()

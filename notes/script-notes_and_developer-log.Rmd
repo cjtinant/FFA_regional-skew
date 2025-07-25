@@ -201,6 +201,39 @@ the following reasons:
 
 ---
 
+### 02a_merge_nhdplus_hr_flowlines.R
+
+Type coercion is the process of converting a value or object from one data type
+to another. This can occur either automatically (implicitly) or intentionally (explicitly). Explicitly fixes issues using a file-reading loop with type
+coercion and error logging. The loop fixes the following issues:
+-   Only coerce if possible, using a safe test like is.integerish().
+-   Fallback to numeric when needed.
+-   Applies coercion one column at a time
+-   Skips columns that cause errors (and logs them)
+-   Prevents across() from failing all at once
+-   Wrap the across() call in logic that filters to only existing columns.
+-   Fine-grained control: logs problems per column, per file
+-   Non-blocking: does not interrupt the whole region's read if a single
+      column fails
+-   Quiet warnings: keeps logs readable but still lets you know what happened
+-   coerce fdate to character safely in all files. Character is the most
+       flexible, readable, and safest for uncertain timestamp formats.
+
+---
+
+---
+
+---
+
+---
+
+---
+
+---
+
+
+
+
 ## TODO (General)
 
 <!--

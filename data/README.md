@@ -3,9 +3,10 @@ README
 CJ Tinant
 2025-07-21
 
-- [📁 Project Data (`data/`)](#file_folder-project-data-data)
-  - [📚 Folder Purpose](#books-folder-purpose)
-  - [🗂️ Subfolders](#card_index_dividers-subfolders)
+- [README](#readme)
+- [📁 Project Data (`data/`)](#-project-data-data)
+  - [📚 Folder Purpose](#-folder-purpose)
+  - [🗂️ Subfolders](#️-subfolders)
 
 # 📁 Project Data (`data/`)
 
@@ -46,7 +47,7 @@ docs/
         |       ├── elev_30m_gp.tif     #   elevation raster for GP
         |       ├── slope_30m_gp.tif    #   slope raster for GP
         ├── nhdphr/                     # Natl Hydrology Dataset High Resolution
-        |       ├── nhd_flowlines_combined.gpkg      # NHD HR flowlines for GP
+        |       ├── nhdphr_flowlines_combined.gpkg      # NHD HR flowlines for GP
         |       ├── nhdhpr_catchments_combined.gpkg  # NHD HR catchments for GP
         ├── nhdplus_v21/                # Natl Hydrology Dataset Version 2.1
         |       ├── nhdv21_flowlines.gpkg            # NHD v21 flowlines for GP

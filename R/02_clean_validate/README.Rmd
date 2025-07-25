@@ -30,7 +30,7 @@ START HERE
 | `01a_download_ecoregions.R`       | Download Level I–IV US ecoregion shapefiles | `data/raw/`       | CRS standardized (EPSG:5070) |
 
 | 02a_merge_nhdplus_hr_flowlines.R |   |   |   |
-| 02b_join_nhdplus_hr_catchments.R |   |   |   |
+| 02b_merge_nhdplus_hr_catchments.R |   |   |   |
 | 02c_validate_spatial_metadata.R |   |   |   |
 | 02d_parse_us_ecoregion_metadata.R |   |   |   |
 | 02f_extract_metadata_from_script_names.R |   |   |   |

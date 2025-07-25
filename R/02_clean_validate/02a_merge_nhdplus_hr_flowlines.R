@@ -1,40 +1,47 @@
 # ==============================================================================
-# Script Name:    02a_merge_nhdplus_hr_flowlines.R
-# Author: Charles Jason Tinant — with ChatGPT 4o
-# Date Created:   2025-06-07
-# Last Updated:   2025-07-13
+# Script Name:     02a_merge_nhdplus_hr_flowlines.R
+# Author:          Charles Jason Tinant — with ChatGPT 4o
+# Date Created:    2025-06-07
+# Last Updated:    2025-07-25
+# Change Log:
+# - 2025-07-13     Update name and folder path to fit with naming conventions.
+#                  Update metadata in script header
+# - 2025-07-25     Update header information;
+#                  move notes to `script-notes_and_developer-log`
 #
-# Purpose: Merge NHDPlus HR flowlines into a single GeoPackage
-#
-# Data URLs: https://www.usgs.gov/national-hydrography/nhdplus-high-resolution
-# Data Dictionary: https://www.usgs.gov/ngp-standards-and-specifications/
-#   national-hydrography-dataset-nhd-data-dictionary-feature-classes
-#
-# Changelog:
-# 2025-07-13 -- Update name and folder path to fit with naming conventions.
-#               Update metadata in script header
+# Purpose: Merge NHDPlus HR flowlines into a single GeoPackage.
 #
 # Workflow Summary:
 # 1. List files in /data/raw/nhdphr_flowlines/
-# 2. QA check on
-# 2. Read each file
-# 3. Combine all into one sf object
-#
-# Input:  Individual nhdphr flowlines (~3,405,000 obs x 178 vars) saved as .gpkg
-#         and aggregated by Level Ecoregion (N =171) in raw/nhdphr_flowlines/
-# Output: A single .gpkg in processed/raw//
+# 2. QA check on potential type conflicts prior to merge.
+# 3. QA check on potential coercions.
+# 4. Read and combine flowlines from all .gpkg files with type coercion.
+# 5. Perform QA on result and export result.
+# 6. Make and export a data dictionary to
+#    `data/meta/flowlines_combined_data_dict.csv``
+
+# Input/Data URLs
+# - data/raw/nhdphr_flowlines/*.gpkg — one per Level IV ecoregion (N =171) .
+# - https://www.usgs.gov/ngp-standards-and-specifications/ Data Dictionary items.
+# Outputs:
+# - nhdphr_flowlines_combined.gpkg (~3,405,000 obs x 178 vars) saved to:
+#   data/processed/nhdphr/
+# - data/log/nhdphr_conflicts.csv -- type conflicts log
 #
 # Dependencies:
-# -    tidyverse: general data wrangling
-# -    fs:        file interface system
-# -    glue:      string interpolation
-# -    here:      consistent relative paths
-# -    sf:        handling spatial data
-# -    units      unit conversion
-
+# - tidyverse      General data wrangling
+# - fs             File interface system
+# - glue           String interpolation
+# - here           Consistent relative paths
+# - sf             Handling spatial data
+# - units          Unit conversion
+#
+# Helper Functions:
+#
+# Related Milestone Reports:
+#
 # ==============================================================================
-
-# Load libraries
+# --- Load libraries ---
 library(tidyverse)
 library(fs)
 library(glue)
@@ -43,16 +50,15 @@ library(sf)
 library(units)
 
 # ------------------------------------------------------------------------------
-# 1. List All Downloaded Files
+# 1. Read in downloaded nhdphr flowline files
 # ------------------------------------------------------------------------------
-
-# --- 1a. get list of file names ----------------------------------------------
+# --- Get list of file names ---
 file_path  <- "data/raw"      # top-level folder for intermediate data
 dir_name   <- "nhdphr_flowlines/"   # subfolder for NHDPlus HR flowlines
 
 gpkg_files <- dir_ls(glue("{here()}/{file_path}/{dir_name}/", glob = "*.gpkg"))
 
-# --- 1b. get list of column types --------------------------------------------
+# --- Get list of column types ---
 column_types <- map(gpkg_files, function(file) {
   region <- file %>%
     path_file() %>%
@@ -71,22 +77,20 @@ column_types <- map(gpkg_files, function(file) {
 type_summary <- bind_rows(column_types)
 
 # ------------------------------------------------------------------------------
-# 2. QA Check on potential type conflicts prior to merge
+# 2. QA check on potential type conflicts prior to merge
 # ------------------------------------------------------------------------------
-
-# --- 2a. Find which regions had type conflicts -------------------------------
-# View where column types differ across files
+# --- Check regions for type conflicts -- column types differ across files ---
 type_summary_table <- type_summary %>%
   group_by(column) %>%
   summarise(n_types = n_distinct(class), .groups = "drop") %>%
   filter(n_types > 1)
 
-# Join back to original
+# --- Join results with original ---
 type_summary_table_regions <- type_summary %>%
   semi_join(type_summary_table, by = "column") %>%
   arrange(column, region)
 
-# make a table of results
+# --- make a table of results ---
 conflicts <- type_summary_table_regions %>%
   group_by(column) %>%
   summarise(
@@ -96,13 +100,15 @@ conflicts <- type_summary_table_regions %>%
   ) %>%
   arrange(types)
 
-# log the conflicts
+# --- log the conflicts ---
 write_csv(conflicts,
           here("data/log/nhdphr_conflicts.csv"
           ))
 
-# --- 2b. Identify potential coercions -----------------------------------------
-# Parse the types into list columns
+# ------------------------------------------------------------------------------
+# 3. QA check on potential coercions
+# ------------------------------------------------------------------------------
+# --- Parse the types into list columns ---
 conflicts_expanded <- conflicts %>%
   mutate(type_list = str_split(types, ",\\s*")) %>%
   rowwise() %>%
@@ -122,11 +128,11 @@ conflicts_expanded <- conflicts %>%
   ) %>%
   ungroup()
 
-# Show proposed coercions
+# --- Show proposed coercions ---
 coercion_table <- conflicts_expanded %>%
   select(column, types, suggested_type, regions)
 
-# --- 2c. Generate coercion function _-----------------------------------------
+# --- Generate coercion function ---
 generate_coercion_function <- function(coercion_df) {
   lines <- coercion_df %>%
     mutate(code = glue::glue(
@@ -145,28 +151,9 @@ generate_coercion_function <- function(coercion_df) {
 }
 
 # ------------------------------------------------------------------------------
-# 3. Read and combine flowlines from all .gpkg files with type coercion
+# 4. Read and combine flowlines from all .gpkg files with type coercion
 # ------------------------------------------------------------------------------
-
-# --- 3a. Coerce known problematic columns to common types --------------------
-# Uses a file-reading loop with type coercion and error logging
-# Fixes issues:
-# -   Only coerce if possible, using a safe test like is.integerish().
-# -   Fallback to numeric when needed.
-#
-# -   Applies coercion one column at a time
-# -   Skips columns that cause errors (and logs them)
-# -   Prevents across() from failing all at once
-# -   Wrap the across() call in logic that filters to only existing columns.
-#
-# -   Fine-grained control: logs problems per column, per file
-# -   Non-blocking: does not interrupt the whole region's read if a single
-#       column fails
-# -   Quiet warnings: keeps logs readable but still lets you know what happened
-#
-# -   coerce fdate to character safely in all files. Character is the most
-#        flexible, readable, and safest for uncertain timestamp formats.
-
+# --- Coerce known problematic columns to common types ---
 safe_as_integer <- function(x) {
   if (!is.numeric(x)) {
     warning("⚠️ Not numeric — skipping integer coercion")
@@ -230,10 +217,9 @@ flowlines_all <- map_dfr(gpkg_files, function(file) {
 })
 
 # -----------------------------------------------------------------------------
-# 4. Check and save results
+# 5. Checks results of merge and save results
 # -----------------------------------------------------------------------------
-
-# --- 4a. check results -------------------------------------------------------
+# --- Check results ---
 # Check for empty geometries -- should be zero
 n_empty <- sum(sf::st_is_empty(flowlines_all))
 message(glue("Found {n_empty} empty geometries"))
@@ -248,22 +234,21 @@ dups_case <- flowlines_all %>%
 
 names(flowlines_all)[dups_case]
 
-# drop shape_length prior to writing
+# --- Drop shape_length prior to writing ---
 flowlines_all <- flowlines_all %>%
   select(-matches("^shape_length$", ignore.case = TRUE))
 
-# --- 4b. drop qa/qc prior to writing -----------------------------------------
-# drop qa/qc vars prior to writing
+# --- Drop qa/qc prior to writing ---
 flowlines_vars <- tibble(var_names = names(flowlines_all))
 
 flowlines_vars_sub <- flowlines_vars %>%
   filter(!str_detect(var_names, "^qa_|^va_|^qc_|^vc_|^qe_|^ve_"))
 
-# --- 4c. write merged results ------------------------------------------------
+# --- Write merged results ---
 # close any open processes prior to writing
 unlink(here("data/processed/nhdphr_flowlines/nhdhr_flowlines_combined.gpkg"))
 
-# --- 4b. write merged results ------------------------------------------------
+# write merged results
 sf::write_sf(flowlines_all[, flowlines_vars_sub$var_names],
              here("data/processed/nhdphr_flowlines/nhdhr_flowlines_combined.gpkg"))
 
@@ -401,4 +386,4 @@ data_dict <- left_join(flowlines_vars, data_dict,
   select(-var_names) %>%
   filter(!is.na(field))
 
-write_csv(data_dict, here("data/meta/flowlines_combined_data_dict"))
+write_csv(data_dict, here("data/meta/flowlines_combined_data_dict.csv"))
