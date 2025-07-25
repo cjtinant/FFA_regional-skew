@@ -1,32 +1,43 @@
 # ==============================================================================
-# Script Name:    01m_download_ned.R
-# Author: Charles Jason Tinant — with ChatGPT 4o
-# Date Created:   2025-06-25
-# Last Updated:
+# Script Name:     01n_download_ned.R
+# Author:          Charles Jason Tinant — with ChatGPT 4o
+# Date Created:    2025-06-25
+# Last Updated:    2025-07-24
+# Change Log:
+# - 2025-07-24     Update header information; 
+#                  move notes to `script-notes_and_developer-log`.
 #
-# Purpose: Download NED (National Elevation Dataset) clipped to Great Plains.
-#          Calculate slope using (Fleming & Hoffer / Ritter algorithms), which
-#          use the 4 cardinal directions only (rook’s case) to produces smoother,
-#          more generalized slope surfaces -- Better matches subtle terrain
-#          transitions, especially in agricultural, prairie, or floodplain
-#          contexts
+# Purpose:         Download NED (National Elevation Dataset) clipped to the Great
+#                  Plains. Calculate slope using (Fleming & Hoffer / Ritter
+#                  algorithms), which use the 4 cardinal directions only
+#                  (rook’s case) to produces smoother, more generalized slope
+#                  surfaces -- Better matches subtle terrain transitions,
+#                  especially in agricultural, prairie, or floodplain contexts.
 #
-# Data URLs:
-# -   Manual download: https://apps.nationalmap.gov/downloader/
 # Workflow Summary:
-# 1.   Download zipped archive clipped to bounding box with {elevatr} using
-#      get_elev_raster(). Bounding box needs to be in WGS84 (EPSG:4326).
-# 2.   Reproject raster to a common CRS (US Albers Equal Area – EPSG:5070)
-#      for spatial analysis for slope calculations and masking for accurate
-#      distances and angles.
-# 3.  Compute slope (in degrees)
-# 4.   Mask raster
+# 0.5  Download zipped archive clipped to bounding box with {elevatr} using
+#      get_elev_raster().
+# 1.   Set-up and create a rectangular bounding box and ensure it’s in WGS84
+#      (EPSG:4326). The EPSG:4326 CRS is required by elevatr{} and to make the
+#      raster compatible with get_elev_raster() clipping logic.
+# 2.   Reproject raster to a common CRS (US Albers Equal Area – EPSG:5070) for
+#      spatial analysis for slope calculations and masking for accurate distances
+#      and angles.
+# 3.   Compute slope (in degrees) Slope was calculated using Fleming & Hoffer /
+#      Ritter algorithms, which use only the four cardinal directions
+#      (rook’s case) to produces smoother, more generalized slope surfaces,
+#      which better matches subtle terrain transitions, especially in
+#      agricultural, prairie, or floodplain contexts.
+# 4.   Clip and mask raster. When clipping I used expand = 1000 for buffer to
+#      help prevent clipping artifacts near edges.
 # 5.   Export clipped and masked raster to ~data/processed.
 #
+# Input/Data URLs:
+# -   Manual download: https://apps.nationalmap.gov/downloader/
 # Output:
 # - Clipped and masked raster projected to a common CRS
 #
-# Related Milestone Reports: 
+# Related Milestone Reports:
 # - milestone_01_download_prepare_covariates.Rmd
 # - milestone_01_download_prepare_covariates.pdf
 #
@@ -37,17 +48,17 @@
 # - sf             Support for simple feature access, a standardized way to
 #                    encode and analyze spatial vector data. Binds to 'GDAL'
 # - terra:         Spatial data analysis-- wector and raster data operations
-#
-# Notes:
-# Used neighbors = 4 for smoother slope -- good for prairie landscapes
-# Used expand = 1000 for buffer to help prevent clipping artifacts near edges
 # ==============================================================================
+# --- Load libraries ---
 library(elevatr)
 library(fs)
 library(here)
 library(sf)
 library(terra)
 
+# ------------------------------------------------------------------------------
+# 1. Setup and make bounding box
+# ------------------------------------------------------------------------------
 # --- Read Great Plains vector ------------------------------------------------
 gpkg_file <- here("data", "processed", "ecoregions", "us-eco-levels.gpkg")
 
@@ -55,9 +66,6 @@ gp_sf <- st_read(gpkg_file, layer = "us_eco_l1", quiet = TRUE) %>%
   dplyr::filter(NA_L1NAME == "GREAT PLAINS")
 
 # --- Make bounding box -------------------------------------------------------
-# Create a rectangular bounding box and ensure it’s in WGS84 (EPSG:4326)
-#    which {elevatr} requires -- and make it compatible with get_elev_raster()
-#    clipping logic
 gp_bbox <- st_bbox(gp_sf) %>%
   st_as_sfc() %>%
   st_sf() %>%
@@ -71,25 +79,32 @@ elev_raster <- get_elev_raster(
   expand = 1000
 )
 
-# Reproject raster to EPSG:5070
-#    Slope calculations and masking require a projected CRS for accurate
-#    distances and angles.
+# ------------------------------------------------------------------------------
+# 2. Reproject raster to EPSG:5070
+# ------------------------------------------------------------------------------
+# Slope calculations and masking require a projected CRS
+# for accurate distances and angles.
 elev_rast_proj <- terra::project(rast(elev_raster), "EPSG:5070")
 
-# --- Compute slope vector ----------------------------------------------------
+# ------------------------------------------------------------------------------
+# 3. Compute slope raster
+# ------------------------------------------------------------------------------
 slope_proj <- terrain(elev_rast_proj,
                       v = "slope",
                       neighbors = 4,
                       unit = "degrees")
 
-# --- Mask outputs ------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# 4. Mask outputs
+# ------------------------------------------------------------------------------
 gp_vect <- vect(gp_sf)
 
 elev_mask <- mask(crop(elev_rast_proj, gp_vect), gp_vect)
 slope_mask <- mask(crop(slope_proj, gp_vect), gp_vect)
 
-
-# --- Save clipped rasters ----------------------------------------------------
+# ------------------------------------------------------------------------------
+# 4. Save clipped rasters
+# ------------------------------------------------------------------------------
 dir_create(here("data", "processed", "ned"))
 
 writeRaster(

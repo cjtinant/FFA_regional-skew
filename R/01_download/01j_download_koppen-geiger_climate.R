@@ -1,17 +1,18 @@
 # ==============================================================================
-# Script Name:    01h_download_koppen-geiger_climate.R
-# Author:         Charles Jason Tinant — with ChatGPT 4o
-# Date Created:   2025-04-15
-# Last Updated:   2025-06-18
-#
-# Purpose: Download, process, and reproject Köppen-Geiger climate raster data.
-#
-# Data Source: https://www.gloh2o.org/koppen/
-#
+# Script Name:     01h_download_koppen-geiger_climate.R
+# Author:          Charles Jason Tinant — with ChatGPT 4o
+# Date Created:    2025-04-15
+# Last Updated:    2025-07-23
 # Changelog:
-# 2025-07-22 - Header Cleanup, Use here() for all paths, Add checks for whether
-#              raster exists before trying to reproject, Use tryCatch() for
-#              rast() or unzip() in case something is missing or corrupt
+# - 2025-07-22     Header Cleanup, Use here() for all paths, Add checks for
+#                  whether raster exists before trying to reproject, Use
+#                  tryCatch() for rast() or unzip() in case something is missing
+#                  or corrupt.
+# - 2025-07-23     Update header information; 
+#                  move notes to `script-notes_and_developer-log`.
+#
+# Purpose:         Download, process, and reproject Köppen-Geiger climate raster
+#                  data.
 #
 # Workflow Summary:
 # 1. Download ZIP archive (if not already present)
@@ -19,18 +20,26 @@
 # 2b. Reproject to EPSG:5070 (Conus Albers)
 # 3. Save to data/processed/koppen-climate/koppen-geiger.tif
 #
-# Output:
+# Input/Data URLs: 
+# - https://www.gloh2o.org/koppen/
+# Outputs:
 # - Reprojected Köppen-Geiger raster (EPSG:5070) ready for spatial analysis
+# in /data/processed/
+#
+# Dependencies:
+# - dplyr, readr   Data manipulation and export
+# - fs             File system ops (dir_create)
+# - glue           Interpret string literals
+# - here           Relative path handling
+# - httr           Tools for working with URLs and HTTP
+# - sf             Spatial data (simple features)
+# - terra           Vector and raster data operations
 #
 # Related Milestone Reports: 
 # - milestone_01_download_prepare_covariates.Rmd
 # - milestone_01_download_prepare_covariates.pdf
-#
-# Dependencies:
-# - dplyr, fs, glue, here, httr, sf, terra
 # ==============================================================================
-
-# Load libraries
+# --- Load libraries ---
 library(tidyverse)
 library(fs)
 library(glue)

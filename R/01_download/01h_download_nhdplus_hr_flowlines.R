@@ -1,19 +1,19 @@
 # ==============================================================================
-# Script Name:    01h_download_nhdplus_hr_flowlines.R
-# Author:         Charles Jason Tinant — with ChatGPT 4o
-# Date Created:   2025-05-19
-# Last Updated:   2025-07-13
-#
-# Purpose:
-# Download and validate NHDPlus HR (1:24k) flowlines clipped to Level IV
-# Ecoregions of the Great Plains. Includes retry logic and diagnostics for
-# problematic AOIs.
-#
+# Script Name:     01h_download_nhdplus_hr_flowlines.R
+# Author:          Charles Jason Tinant — with ChatGPT 4o
+# Date Created:    2025-05-19
+# Last Updated:    2025-07-23
 # Change Log:
-# 2025-07-13 - Recreated script that had potentially been deleted. Updated file
-#              paths to avoid data/intermediate. Updated file names to follow
-#              a consistent naming pattern. Added reusable naming function,
-#              enhanced retry filtering, and CLI feedback.
+# - 2025-07-13 -   Recreated script that had potentially been deleted. Updated
+#                  file paths to avoid data/intermediate. Updated file names to
+#                  follow a consistent naming pattern. Added reusable naming
+#                  function, enhanced retry filtering, and CLI feedback.
+# - 2025-07-23     Update header information; 
+#                  move notes to `script-notes_and_developer-log`
+#
+# Purpose:         Download and validate NHDPlus HR (1:24k) flowlines clipped to
+#                  Level IV Ecoregions of the Great Plains. Includes retry logic
+#                  and diagnostics for problematic AOIs.
 #
 # Workflow Summary:
 # 1. Load Great Plains Level IV ecoregions shapefile
@@ -22,23 +22,31 @@
 # 4. Log success/failure; retry failed regions with `retry_failed_aoi()`
 # 5. Diagnose geometry issues (e.g., slivers, complex AOIs)
 #
-# Output:
+# Input/Data URLs:
+# - https://www.usgs.gov/national-hydrography/nhdplus-high-resolution
+# Output Files:
 # - GeoPackage flowline files: data/raw/nhdphr_flowlines/
 # - Log of downloads:          data/log/nhdphr_download_log.csv
 # - Diagnostics PNG:           data/log/null_aois_diagnostics_facet_map.png
 #
+# Dependencies:
+# - cli            Status updates during downloads
+# - dplyr, readr   Data manipulation and export
+# - fs             File system ops (dir_create)
+# - glue           Interpret string literals
+# - here           Relative path handling
+# - mapview        Visualize results of download
+# - nhdplusTools   Download National Hydrography Dataset Plus (NHDPlus) data
+# - stringr        String operations
+# - sf             Spatial data (simple features)
+# - units          Unit conversion
+#
+# Helper Functions:
+#
 # Related Milestone Reports: 
 # - milestone_01_download_prepare_covariates.Rmd
 # - milestone_01_download_prepare_covariates.pdf
-#
-# Data Source:
-# https://www.usgs.gov/national-hydrography/nhdplus-high-resolution
-#
-# Dependencies:
-# dplyr, fs, ggplot2, glue, here, nhdplusTools, purrr, readr, sf, stringr,
-# units, janitor, cli
 # ==============================================================================
-
 suppressPackageStartupMessages({
   library(dplyr)
   library(fs)

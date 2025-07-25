@@ -1,13 +1,14 @@
 # ==============================================================================
-# Script Name:    01l_download_nlcd_2016.R
-# Author: Charles Jason Tinant — with ChatGPT 4o
-# Date Created:   2025-06-23
-# Last Updated:
+# Script Name:     01m_download_nlcd_2016.R
+# Author:          Charles Jason Tinant — with ChatGPT 4o
+# Date Created:    2025-06-23
+# Last Updated:    2025-07-23
+# Change Log:
+# - 2025-07-23     Update header information; 
+#                  move notes to `script-notes_and_developer-log`.
 #
-# Purpose: Download NLCD 2016 Land Cover raster clipped to Great Plains
+# Purpose: Download NLCD 2016 Land Cover raster clipped to Great Plains.
 #
-# Data URLs:
-# -   https://www.mrlc.gov/data
 # Workflow Summary:
 # 1.   Manually download zipped archive and move to outdir (see notes)
 # 2.   Reproject raster to a common CRS (US Albers Equal Area – EPSG:5070)
@@ -15,13 +16,10 @@
 # 3.   Clip and mask raster
 # 4.   Export clipped and masked raster to ~data/processed.
 #
+# Input/Data URLs:
+# - Data are downloaded from https://www.mrlc.gov/data.
 # Output:
 # Clipped and masked raster projected to a common CRS
-#
-#
-# Related Milestone Reports: 
-# - milestone_01_download_prepare_covariates.Rmd
-# - milestone_01_download_prepare_covariates.pdf
 #
 # Dependencies:
 # - dplyr:         Data manipulation
@@ -35,30 +33,23 @@
 #                  Hydrography Dataset Plus (NHDPlus) data.
 # - purrr          Functional programming toolkit
 # - readr          Reads rectangular data
-# - stringr      -   Wrappers for string operations
+# - stringr        Wrappers for string operations
 # - tidyverse:     Data wrangling & visualization
-# - units           Unit conversion -- to convert from m² to km²
+# - units          Unit conversion -- to convert from m² to km²
 # - dataRetrieval: Access USGS NWIS data
 #
-# Notes: Using {FedData} All tile requests timed out at ~30 seconds
-# Received over 100–200 MB per tile, but not enough to complete the download.
-# Then FedData::get_nlcd() tried to crop those partial files → 💥 crash.
+# Helper Functions:
 #
-# crop() -- Trims the raster extent down to the bounding box of the vector
-#    geometry (shape). Keeps all raster cells that intersect the box — even if
-#    they fall outside the exact shape.
-# Inputs: raster: a SpatRaster (e.g., the full NLCD)
-#         shape:  a SpatVector (e.g., Great Plains boundary)
-# mask() -- Replaces all raster cells outside the exact shape with NA. Keeps
-#   only values within the actual polygon boundary.
-# Inputs: r_crop: a raster that has already been spatially subset (cropped)
-#         shape:  the same or overlapping SpatVector
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
+
 # ==============================================================================
+# --- Load libraries ---
 library(fs)
 library(here)
 library(sf)
 library(terra)
-
 
 # --- Define file paths -------------------------------------------------------
 nlcd_file <- here("data", "raw", "nlcd", "Annual_NLCD_LndCov_2016_CU_C1V0.tif")

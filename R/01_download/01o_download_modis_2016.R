@@ -1,16 +1,37 @@
 # ==============================================================================
-# Script Name:     01n_download_modis_ndvi_2016.R
+# Script Name:     01o_download_modis_ndvi_2016.R
 # Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-06-26
-# Last Updated:    2025-06-28         # stack rasters, add index csv
+# Last Updated:    2025-07-25
+# Change Log:
+# - 2025-06-28     Stack rasters, add index csv
+# - 2025-07-25     Update header information; 
+#                  move notes to `script-notes_and_developer-log`.
 #
 # Purpose:         Document the process for downloading MODIS MOD13Q1 (NDVI/EVI)
 #                  raster data for the year 2016, clipped to the Great Plains
 #                  Level I Ecoregion.
 #
-# Related Milestone Reports: 
-# - milestone_01_download_prepare_covariates.Rmd
-# - milestone_01_download_prepare_covariates.pdf
+# Workflow Summary
+# 0.0  This script documents workflow but does NOT download rasters directly. 
+# 0.2. Create a NASA Earthdata Login account:
+#      https://urs.earthdata.nasa.gov/users/new
+# 0.4. Install Earthdata Download Manager:
+#      https://wiki.earthdata.nasa.gov/display/ED/Earthdata+Download+Client
+# 0.6. Search and download via browser (Requires Earthdata Download Manager).
+# 0.8  Move .hdf files from the download folder:
+#      `~/Downloads/MOD13Q1_061-YYYYMMDD_HHMMSS/` to `data/raw/modis/mod13q1_hdf`
+#      after download completes.
+# 1.0. Make bounding box.
+# 2.0  Build rasters from HDF files.
+# 3.0  Mosaic rasters by time step.
+# 4.0  Reproject, clip, and write output
+#
+# Input/Data URLs:
+# - https://search.earthdata.nasa.gov/
+# Outputs:
+# - stacked raster in a geo-tif format projected to EPSG:5070, and stored in
+#   `/data/processed/`.
 #
 # Dependencies:
 # - dplyr:         Data manipulation
@@ -20,88 +41,15 @@
 # - purrr          Functional programming toolkit
 # - readr          Reads rectangular data
 # - sf             Support for simple feature access, a standardized way to
-#                    encode and analyze spatial vector data. Binds to 'GDAL'
+#                  encode and analyze spatial vector data. Binds to 'GDAL'
 # - terra:         Spatial data analysis-- wector and raster data operations
 #
-# Requirements:
-# ------------------------------------------------------------------------------
-# ✔ Create a NASA Earthdata Login account:
-#     https://urs.earthdata.nasa.gov/users/new
-# ✔ Install Earthdata Download Manager:
-#     https://wiki.earthdata.nasa.gov/display/ED/Earthdata+Download+Client
-# ✔ Search and download via browser (Requires Earthdata Download Manager):
-#     https://search.earthdata.nasa.gov/
-
-# After download completes:
-# ------------------------------------------------------------------------------
-# • Locate your downloaded folder: ~/Downloads/MOD13Q1_061-YYYYMMDD_HHMMSS/
-# • Move all .hdf files from that folder to:
-#     data/raw/modis/mod13q1_hdf/
-
-# Output:
-# ------------------------------------------------------------------------------
-# This script does NOT download rasters directly but documents workflow.
-# Rasters will be processed in:
-#     02_process_modis_ndvi_rasters.R
-
-# MOD13Q1 Tiles contain multiple subdatasets (SDS):
-# • NDVI           — Normalized Difference Vegetation Index
-# • EVI            — Enhanced Vegetation Index
-# • VI Quality     — Bit-packed QA layer
-# • Reflectance    — Red, NIR, Blue bands used for index calculation
-# • Day of Year    — Date of composite
-
-# Metadata Reference:
-# ------------------------------------------------------------------------------
-# MOD13Q1 = MODIS Terra Vegetation Indices, 250m resolution, 16-day composites
-# Product Code Breakdown:
-# • MOD  = MODIS sensor on Terra satellite
-# • 13   = Product suite 13: Vegetation Indices
-# • Q1   = 16-day temporal composite
-# • 061  = Collection 6.1 (latest operational version)
-
-# Tile structure:
-# • MODIS uses sinusoidal projection
-# • Tiles named like h10v05, where:
-#     - h = horizontal index
-#     - v = vertical index
-
-# NDVI vs EVI — Choosing for Great Plains Modeling:
-# ------------------------------------------------------------------------------
-# NDVI = (NIR - Red) / (NIR + Red)     → Ranges from -1 to +1
-# ✔ Healthy vegetation typically = 0.6–0.9
-
-# EVI = Designed to improve performance in dense forests, reduce effects of:
-#   • Canopy background
-#   • Aerosols (blue-band correction)
-#   • Soil brightness
-
-# ✅ Why NDVI Works Well for the Great Plains:
-#   • Moderate to sparse vegetation: prairie, cropland, rangeland
-#   • Low cloud/aerosol interference: no need for blue-band correction
-#   • Widely used in agriculture and rangeland applications:
-#       - Crop condition
-#       - Forage productivity
-#       - Drought/grazing assessment (VegDRI, USDM, NDMC)
-
-# 🧠 Modeling Guidance:
-# ✔ Use NDVI when:
-#     - Modeling open grasslands/croplands
-#     - Interested in interannual variability (e.g., flood skew vs vegetation)
-#     - Want fewer assumptions and post-processing corrections
-
-# 🔋 Use EVI only if:
-#     - NDVI saturates during peak growth (dense vegetation)
-#     - Soil brightness or haze is a known issue
-#     - You model highly productive, irrigated cropland
-
-# 🔄 Best Practice:
-# ✔ Include both NDVI and EVI as covariates in Elastic Net or similar models.
-# ✔ Let regularization decide:
-#     - If NDVI remains and EVI drops: NDVI is more informative.
-#     - If EVI survives: its corrections added value.
+# Helper Functions:
+#
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
 # ==============================================================================
-
 # ---- Load packages ----
 library(dplyr)
 library(fs)
@@ -126,7 +74,9 @@ dir_create(dir_processed)
 # -   End:   2016-12-31
 # Click: MODIS/Terra Vegetation Indices 16-Day L3 Global 250m SIN Grid V061
 
-
+# -----------------------------------------------------------------------------
+# 1. Make bounding box
+# -----------------------------------------------------------------------------
 # ---- Load Bounding Box and Output SW/NW Corners ----
 gp_bbox_wgs84 <- st_read("data/processed/us_ecoregions/us-eco-levels.gpkg",
                          layer = "us_eco_l1") %>%
@@ -143,6 +93,9 @@ cat("\nPaste this into Earthdata Search bounding box:")
 cat(glue("\nSW (lower left): {sw}"))
 cat(glue("\nNE (upper right): {ne}\n"))
 
+# -----------------------------------------------------------------------------
+# 2. Build rasters from HDF files
+# -----------------------------------------------------------------------------
 # ---- List and describe .hdf files ----
 hdf_files <- dir_ls(dir_raw, regexp = "\\.hdf$")
 
@@ -164,6 +117,9 @@ ndvi_list <- lapply(hdf_files, function(hdf) {
   rast(sds_path)
 })
 
+# -----------------------------------------------------------------------------
+# 3. Mosaic rasters by time step
+# -----------------------------------------------------------------------------
 # ---- Confirm CRS and extent match ----
 crs_vals <- sapply(ndvi_list, crs)
 if (length(unique(crs_vals)) > 1) {
@@ -189,7 +145,9 @@ ndvi_stacks <- ndvi_tbl %>%
   group_by(date) %>%
   summarize(mosaic = list(reduce(raster, mosaic)))
 
-# ---- Reproject, clip, and write output ----
+# -----------------------------------------------------------------------------
+# 4. Reproject, clip, and write output
+# -----------------------------------------------------------------------------
 cat("\nReprojecting, clipping, and writing rasters...")
 
 # Read and buffer AOI again for cropping

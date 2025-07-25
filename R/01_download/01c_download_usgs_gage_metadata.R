@@ -3,6 +3,9 @@
 # Author:         Charles Jason Tinant — with ChatGPT
 # Date Created:   2025-07-05
 #
+# Change Log:
+# - 2025-07-23     Move notes to notes/script-notes_and_developer-log
+#
 # Purpose:        This script retrieves and cleans metadata for a set of USGS
 #                 stream gaging stations for filtered USGS peak flow gages
 #                 located inside the Great Plains Ecoregion.
@@ -44,7 +47,6 @@
 # - here:          For consistent paths
 # - purrr:         Loop through download batches
 # ==============================================================================
-
 library(dataRetrieval)
 library(dplyr)
 library(readr)
@@ -54,7 +56,6 @@ library(purrr)
 # ------------------------------------------------------------------------------
 # 1. Load site numbers from prior output
 # ------------------------------------------------------------------------------
-
 input_file <- here("data", "raw", "peakflow_gages", "sites_pk_eco_only.csv")
 sites_df <- read_csv(input_file, show_col_types = FALSE)
 
@@ -70,11 +71,11 @@ colocated <- sites_df %>%
 # 2. Query USGS site metadata using dataRetrieval
 # ------------------------------------------------------------------------------
 
-# Split site IDs into chunks (e.g., 500 per request)
+# --- Split site IDs into chunks (e.g., 500 per request) ---
 chunk_size <- 500
 site_id_chunks <- split(site_ids, ceiling(seq_along(site_ids) / chunk_size))
 
-# Loop through chunks and fetch metadata
+# --- Loop through chunks and fetch metadata ---
 site_metadata <- map_dfr(site_id_chunks, function(chunk) {
   message("Retrieving ", length(chunk), " sites...")
   Sys.sleep(0.5)  # gentle pause to avoid overloading server
@@ -90,7 +91,7 @@ site_metadata <- map_dfr(site_id_chunks, function(chunk) {
 message("✅ Retrieved metadata for ", nrow(site_metadata), " sites.")
 
 # ------------------------------------------------------------------------------
-# 3. --- Drop duplicates and missing data ---
+# 3. Drop duplicates and missing data
 # ------------------------------------------------------------------------------
 missing_in_metadata <- sites_df %>%
   anti_join(site_metadata, by = "site_no")
@@ -136,7 +137,7 @@ sw_site_types <- tibble::tribble(
   "FA", "Facility",
 )
 
-# check sites by agency and site_code
+# --- check sites by agency and site_code ---
 sites_by_type <- site_metadata_clean %>%
   left_join(sw_site_types, by = "site_tp_cd") %>%
   group_by(agency_cd, site_tp_cd, description) %>%
@@ -147,7 +148,7 @@ site_metadata_st <- site_metadata_clean %>%
   filter(site_tp_cd == "ST")
 
 # ------------------------------------------------------------------------------
-# 5. --- write results ---
+# 5. Write results
 # ------------------------------------------------------------------------------
 # --- write metadata results ---
 dict_output <- here("data",

@@ -1,33 +1,35 @@
 # ==============================================================================
-# Script Name:    01e_filter_usgs_peakflow_data.R
-# Author:         Charles Jason Tinant — with ChatGPT 4o
-# Date Created:   April 2025
-# Last Updated:   2025-07-16
+# Script Name:     01e_filter_usgs_peakflow_data.R
+# Author:          Charles Jason Tinant — with ChatGPT 4o
+# Date Created:    April 2025
+# Last Updated:    2025-07-16
+# Change Log:
+# - 2025-07-23     Move notes to notes/script-notes_and_developer-log.
 #
-# Purpose: Calculate log-Pearson III station skew for a set of unregulated and
-#          suspected regulation (suspect) gage sites in the Great Plains (GP)
-#          ecoregion with greater than ten years of data. The following
-#          exclusions were applied:
-#            - Years with missing discharge or dates
-#            - Years with dam failure and known regulation flags
-#            - Records of less than 10 years
-#            - Records flagged as Potentially Influential Low Flows (PILFs)
-#          The remaining periods of record were tiered as
-#            - Tier 1: Reliable              ≥20 years, unregulated
-#                                            High confidence, use in core mode
-#            - Tier 2: Short Record          10–19 years, unregulated
-#                                            Moderate confidence, use with
-#                                            caution -- weighting sensitivity
-#            - Tier 3: Suspected Regulation  ≥10 years
-#                                            May bias skew low, use only in
-#                                            sensitivity analysis
+# Purpose:         Calculate log-Pearson III station skew for a set of unregulated
+#                  and suspected regulation (suspect) gage sites in the Great Plains
+#                  (GP) ecoregion with greater than ten years of data. The following
+#                  exclusions were applied:
+#                    - Years with missing discharge or dates
+#                    - Years with dam failure and known regulation flags
+#                    - Records of less than 10 years
+#                    - Records flagged as Potentially Influential Low Flows (PILFs)
+#                  The remaining periods of record were tiered as
+#                    - Tier 1: Reliable              ≥20 years, unregulated
+#                                                    High confidence, use in core mode
+#                    - Tier 2: Short Record          10–19 years, unregulated
+#                                                    Moderate confidence, use with
+#                                                    caution -- weighting sensitivity
+#                    - Tier 3: Suspected Regulation  ≥10 years
+#                                                    May bias skew low, use only in
+#                                                    sensitivity analysis
 #
 # Workflow Summary:
 # 1. Load raw peak flow dataset
 # 2. Drop records with missing discharge or dates
 # 3. Fill missing peak dates with AG DT where available
-# 4. Tag records for:
-#        dam break (code 3), regulated (code 6), and suspect regulation (code 5)
+# 4. Tag records for: dam break (code 3), regulated (code 6), and
+#      suspect regulation (code 5)
 # 5. Remove regulated and dam break records
 # 6. Remove sites with ≥ 10 years of record
 # 7. Flag PILFs using MGBT
@@ -41,10 +43,10 @@
 # 12. Convert gage summary data to an sf object in Albers Conus projection
 # 13. Export results and metadata
 #
-# Input Files:
-# data/raw/peakflow_gages/usgs_data_pk_all.csv
+# Input/Data URLs:
+# - data/raw/peakflow_gages/usgs_data_pk_all.csv
 #
-# Output Files:
+# Outputs:
 # data/raw/peakflow_gages/
 # - peakflow_gages/data_pk_core.csv          modeling-ready core data
 # - alternative dataset w/ suspect gages     data_pk_blended.csv
@@ -52,10 +54,6 @@
 # - peakflow_sites_dropped_in_core.csv       sites lost in core-only analysis
 # - peakflow_sites_dropped_summary.csv       summary of dropped site count
 # - data/meta/summary_pk_by_site.csv         site-year counts (for 20-yr filter)
-#
-# Related Milestone Reports: 
-# - milestone_01_download_prepare_covariates.Rmd
-# - milestone_01_download_prepare_covariates.pdf
 #
 # Dependencies:
 # - e1071          calculate skewness
@@ -65,24 +63,13 @@
 # - MGBT           test for low
 # - tidyverse      dplyr, purrr, readr, stringr, etc.
 #
-# Notes: Bulletin 17C explicitly recommends using the Multiple Grubbs-Beck Test
-#        (MGBT) to identify low-end outliers, e.g. zero flows, and near-zero
-#        flows like 0.01, 0.02, 0.05, etc. The inclusion of  outliers (note
-#        in FFA there are only low-end outliers) distorts the estimation of the
-#        log-Pearson Type III distribution, biasing skewness, mean, and standard
-#        deviation. PILFs tend to skew the lower tail, by underestimating the
-#        sample skewness and producing unrealistic estimates for rare floods.
-#        MGBT() flags observations below a calculated threshold discharge.
+# Helper Functions:
 #
-#        Peak codes are comma-separated and must be parsed for reliable flagging
-#
-#       Skewness is calculated as type = 1, using a method of moments estimator
-#       which follows the guidances under Bulletin 17C
-#
-#       For later documentation --> # Install peakfq directly from USGS GitLab
-#       remotes::install_gitlab("water/peakfqr", host = "code.usgs.gov")
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
 # ==============================================================================
-# Load required libraries
+# --- Load required libraries ---
 library(e1071)
 library(fs)
 library(glue)
@@ -167,12 +154,12 @@ data_pk_filtered_10yr <- data_pk_filtered %>%
 # 7. Flag PILFs
 # ------------------------------------------------------------------------------
 
-# Transform to list-cols prior to applying MGBT
+# --- Transform to list-cols prior to applying MGBT ---
 data_pilf_test <- data_pk_filtered_10yr %>%
   group_by(site_no) %>%
   nest()
 
-# Safely test for low threshold outliers
+# ---Safely test for low threshold outliers ---
 data_pilf_test <- data_pilf_test %>%
   mutate(mgb_result = map2(data, site_no, function(.x, .id) {
     tryCatch({
@@ -189,12 +176,12 @@ data_pilf_test <- data_pilf_test %>%
     })
   }))
 
-# Pull low outler threshold from test results
+# --- Pull low outler threshold from test results ---
 pilf_thresholds <- data_pilf_test %>%
   mutate(LOThresh = map_dbl(mgb_result, ~ .x$LOThresh)) %>%
   select(site_no, LOThresh)
 
-# Add low outlier threshhold to filtered data
+# --- Add low outlier threshhold to filtered data ---
 data_with_thresh <- data_pk_filtered_10yr %>%
   left_join(pilf_thresholds, by = "site_no") %>%
   mutate(is_pilf = peak_va <= LOThresh)
@@ -206,14 +193,14 @@ data_no_pilf <- data_with_thresh %>%
   filter(!is_pilf | is.na(is_pilf)) %>%  # keep NA if MGBT failed
   select(-c(is_pilf, n_years, LOThresh, peak_year))
 
-# ---- recalculate years of record ----
+# --- recalculate years of record ---
 data_no_pilf <- data_no_pilf %>%
   mutate(peak_year = lubridate::year(peak_dt)) %>%
   group_by(site_no) %>%
   mutate(n_years = n_distinct(peak_year)) %>%
   ungroup()
 
-# ---- remove short records ----
+# --- remove short records ---
 data_ge_10 <- data_no_pilf %>%
   group_by(site_no) %>%
   filter(n_distinct(lubridate::year(peak_dt)) >= 10) %>%
@@ -239,11 +226,11 @@ data_tiered <- data_ge_10 %>%
 # ------------------------------------------------------------------------------
 # 10. Calculate skew
 # ------------------------------------------------------------------------------
-# log transform the data prior to skew calculation
+# --- log transform the data prior to skew calculation ---
 data_tiered <- data_tiered %>%
   mutate(log_peak_va = log10(peak_va))
 
-# Calculate skewness per site
+# --- Calculate skewness per site ---
 skew_summary <- data_tiered %>%
   group_by(site_no) %>%
   summarise(
@@ -256,7 +243,6 @@ skew_summary <- data_tiered %>%
 # ------------------------------------------------------------------------------
 # 11. Join and clean covariate data
 # ------------------------------------------------------------------------------
-
 gage_summary <- skew_summary %>%
   inner_join(data_site,
              by = "site_no")
@@ -293,25 +279,24 @@ gage_summary_clean <- gage_summary %>%
 # ------------------------------------------------------------------------------
 # 12. Convert gage summary data to an sf object in Albers Conus projection
 # ------------------------------------------------------------------------------
-
-# ---- Split by datum ----
+# --- Split by datum ---
 gage_summary_nad27 <- gage_summary_clean %>%
   filter(coord_datum_cd == "NAD27")
 
 gage_summary_nad83 <- gage_summary_clean %>%
   filter(coord_datum_cd == "NAD83")
 
-# ---- Check completeness ----
+# --- Check completeness ---
 ck_length <- nrow(gage_summary_nad83) +
   nrow(gage_summary_nad27) == nrow(gage_summary_clean)
 
-# ---- Convert NAD27 to sf (EPSG:4267) ----
+# --- Convert NAD27 to sf (EPSG:4267) ---
 gage_nad27_sf <- gage_summary_nad27 %>%
   st_as_sf(coords = c("dec_long_va", "dec_lat_va"),
            crs = 4267,
            remove = FALSE)
 
-# ---- Transform to NAD83 Albers Equal Area (EPSG:5070) ----
+# --- Transform to NAD83 Albers Equal Area (EPSG:5070) ---
 gage_nad27_sf_proj <- st_transform(gage_nad27_sf, crs = 5070)
 
 gage_nad83_sf <- gage_summary_nad83 %>%
@@ -321,38 +306,37 @@ gage_nad83_sf <- gage_summary_nad83 %>%
 
 gage_nad83_sf_proj <- st_transform(gage_nad83_sf, crs = 5070)
 
-# ---- join results ----
+# --- join results ---
 gage_all_sf_proj <- bind_rows(gage_nad27_sf_proj, gage_nad83_sf_proj)
 
 # ------------------------------------------------------------------------------
 # 13. Export results and metadata
 # ------------------------------------------------------------------------------
 
-# Optional: create directory
+# --- Optional: create directory ---
 # fs::dir_create(here::here("data", "processed", "peakflow_gages"))
 
-# Create output path for results
+# --- Create output path for results ---
 output_path <- here::here("data", "processed", "peakflow_gages",
                           "gage_summary_skew.gpkg")
 
-# ---- Write results to GeoPackage ----
+# --- Write results to GeoPackage ---
 st_write(gage_all_sf_proj,
          output_path,
          layer = "gage_skew",
          delete_layer = TRUE)
 
-# ---- Write results to csv ----
+# --- Write results to csv ---
 output_path <- here("data", "processed", "peakflow_gages", "gage_summary_skew.csv")
 
 write_csv(gage_summary_clean, output_path)
 
-# ---- Write data to csv ----
+# --- Write data to csv ---
 output_path <- here("data", "processed", "peakflow_gages", "usgs_pk_data.csv")
 
 write_csv(data_tiered, output_path)
 
-# ---- Write metadata as a data dictionary ----
-
+# --- Write metadata as a data dictionary ---
 gage_data_dict <- tribble(
   ~column_name,             ~description,
   "site_no",                "USGS site identifier",
@@ -376,11 +360,11 @@ output_path <- here::here("docs", "metadata",
 
 write_csv(gage_data_dict, output_path)
 
-# ---- Export a summary of the tiers ----
+# --- Export a summary of the tiers ---
 tier_summary <- skew_summary %>%
   count(tier, sort = TRUE)
 
 write_csv(tier_summary, here("data", "meta", "summary_tiers_by_gage.csv"))
 
-# ---- Export a summary of the pilf thresholds ----
+# --- Export a summary of the pilf thresholds ---
 write_csv(pilf_thresholds, here("data", "meta", "pilf_thresholds_by_site.csv"))

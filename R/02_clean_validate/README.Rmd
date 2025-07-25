@@ -1,0 +1,63 @@
+---
+title: "Documenting Changes in 02_clean_validate/README.Rmd"
+author: "CJ Tinant"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Purpose
+
+Provide a human-readable summary of all download scripts in `R/02_clean_validate`, including their purpose, input/output expectations, status, and key changes over time. This supports reproducibility and onboarding of new contributors.
+
+## Overview
+This section documents the current structure and status of all scripts responsible for downloading raw spatial and tabular data inputs. Each script is version-controlled and tied to a specific covariate or source dataset.
+
+---
+
+START HERE
+
+## Table 1: Script Index
+
+| File Name                          | Description                              | Output Folder      | Notes / Status        |
+|-----------------------------------|------------------------------------------|--------------------|------------------------|
+| _latex_preamble.tex               | CHECK | | |
+| `01a_download_ecoregions.R`       | Download Level I–IV US ecoregion shapefiles | `data/raw/`       | CRS standardized (EPSG:5070) |
+
+| 02a_merge_nhdplus_hr_flowlines.R |   |   |   |
+| 02b_join_nhdplus_hr_catchments.R |   |   |   |
+| 02c_validate_spatial_metadata.R |   |   |   |
+| 02d_parse_us_ecoregion_metadata.R |   |   |   |
+| 02f_extract_metadata_from_script_names.R |   |   |   |
+
+
+---
+
+## Summary of Key Changes
+
+### Standardized Folder Paths
+
+- All output paths now use `here::here("data", "raw", ...)` or `data/processed/`
+- Ensures reproducibility across systems and OSes
+
+### Consistent CRS
+
+- All spatial outputs reprojected to EPSG:5070 (CONUS Albers Equal Area)
+
+### Modular Design
+
+- Each script targets a single source or covariate
+- Utility functions moved to `R/utils/`
+
+### Logging & QA
+
+- Retry attempts, download failures, and chunking behavior logged to `.csv` where applicable
+- Scripts now include `{cli}` alerts for status tracking
+- Each script is cross-linked to relevant milestone reports
+
+---

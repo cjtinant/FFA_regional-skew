@@ -1,38 +1,53 @@
 # ==============================================================================
-# Script Name:    01l_download_prism_climate.R
-# Author:         Charles Jason Tinant — with ChatGPT 4o
-# Date Created:   2025-04-15
-# Last Updated:   2025-07-22
-#
-# Purpose:
-# Download and process PRISM 30-year climate normals (1991–2020) at 800m resolution:
-# - Temperature: annual (tmax, tmean, tmin), daily (tmax, tmin)
-# - Precipitation: annual, monthly, daily
-#
+# Script Name:     01l_download_prism_climate.R
+# Author:          Charles Jason Tinant — with ChatGPT 4o
+# Date Created:    2025-04-15
+# Last Updated:    2025-07-22
 # Changelog:
-# 2025-07-22 - updated to conform with other scripts. Archived prior version
+# - 2025-07-22     Updated to conform with other scripts. Archived prior version.
+# - 2025-07-23     Update header information; 
+#                  move notes to `script-notes_and_developer-log`.
+#
+# Purpose:         Download and process PRISM 30-year climate normals (1991–2020)
+#                  at 800m resolution:
+#                  - Temperature: annual (tmax, tmean, tmin), daily (tmax, tmin)
+#                  - Precipitation: annual, monthly, daily
 #
 # Workflow Summary:
-# 1. Download climate rasters using {prism}
-# 2. Log raw files and verify download inventory
-# 3. Reproject to EPSG:5070 and rename
-# 4. Stack rasters by theme and temporal scale
-# 5. Export stacked or individual rasters to data/processed/prism
-# 6. Optionally delete intermediate files
+# 1. Download climate rasters using {prism}.
+# 2. Log raw files and verify download inventory.
+# 3. Reproject to EPSG:5070 and rename.
+# 4. Stack rasters by theme and temporal scale.
+# 5. Export stacked or individual rasters to data/processed/prism.
+# 6. Optionally delete intermediate files.
 #
-# Output:
+# Input/Data URLs:
+# - The `prism` package provides a web service API to access Oregon State Prism
+# climate data (https://prism.nacse.org/). Built-in `prism` functions allows
+# bulk downloads.
+# Outputs:
 # - Climate rasters in:       data/processed/prism/
 # - Download logs in:         data/log/prism_*.csv
 #
-# Related Milestone Reports: 
+# Dependencies:
+# - dplyr, readr   Data manipulation and export
+# - fs             File system ops (dir_create)
+# - glue           Interpret string literals
+# - here           Relative path handling
+# - httr           Tools for working with URLs and HTTP
+# prism            Access data from the Oregon State Prism Climate Project 
+# - sf             Spatial data (simple features)
+# - terra          Vector and raster data operations
+# - stringr        Wrappers for string operations
+#
+# Helper Functions:
+# verify_prism_archive.R
+#
+# Related Milestone Reports:
 # - milestone_01_download_prepare_covariates.Rmd
 # - milestone_01_download_prepare_covariates.pdf
-#
-# Dependencies:
-# - dplyr, fs, glue, here, httr, prism, terra, sf, stringr
 # ==============================================================================
-
-# Load Libraries
+# --- Load libraries ---
 library(tidyverse)
 library(here)
 library(fs)
@@ -43,7 +58,7 @@ library(terra)
 library(sf)
 library(stringr)
 
-# Load custom function
+# --- Load custom function ---
 source(here("R/utils/qaqc/verify_prism_archive.R"))
 
 # ------------------------------------------------------------------------------
@@ -51,14 +66,14 @@ source(here("R/utils/qaqc/verify_prism_archive.R"))
 # ------------------------------------------------------------------------------
 prism_set_dl_dir(here("data/raw/prism"))
 
-# Annual normals
+# --- Annual normals ---
 get_prism_normals("tmean", resolution = "800m", annual = TRUE)
 get_prism_normals("ppt",   resolution = "800m", annual = TRUE)
 
-# Monthly normals
+# --- Monthly normals ---
 get_prism_normals("ppt", resolution = "800m", mon = 1:12)
 
-# Daily (climatology by month)
+# --- Daily (climatology by month) ---
 get_prism_dailies("ppt",  resolution = "800m", mon = 1:12)
 get_prism_dailies("tmax", resolution = "800m", mon = 1:12)
 get_prism_dailies("tmin", resolution = "800m", mon = 1:12)
@@ -89,24 +104,24 @@ walk2(rename_tbl$path_proj, rename_tbl$path_renamed, file_move)
 intermediate_dir <- here("data/intermediate/prism_epsg5070")
 output_dir <- here("data/processed/prism")
 
-# 4a. Stack annual temperature
+# --- Stack annual temperature ---
 temp_ann_paths <- file.path(intermediate_dir, c("tmax_ann_C.tif", "tmean_ann_C.tif", "tmin_ann_C.tif"))
 temp_stack <- rast(temp_ann_paths)
 names(temp_stack) <- c("tmax_ann_C", "tmean_ann_C", "tmin_ann_C")
 writeRaster(temp_stack, file.path(output_dir, "temp_ann_C_stack.tif"), overwrite = TRUE)
 
-# 4b. Stack monthly precipitation
+# --- Stack monthly precipitation ---
 ppt_month_paths <- file.path(intermediate_dir, sprintf("ppt_m%02d_mm.tif", 1:12))
 ppt_month_stack <- rast(ppt_month_paths)
 names(ppt_month_stack) <- sprintf("ppt_m%02d_mm", 1:12)
 writeRaster(ppt_month_stack, file.path(output_dir, "ppt_monthly_stack.tif"), overwrite = TRUE)
 
-# 4c. Export annual precipitation
+# --- Export annual precipitation
 ppt_ann <- rast(file.path(intermediate_dir, "ppt_ann_mm.tif"))
 names(ppt_ann) <- "ppt_ann_mm"
 writeRaster(ppt_ann, file.path(output_dir, "ppt_ann_mm_stack.tif"), overwrite = TRUE)
 
-# 4d. Copy daily rasters individually
+# --- Copy daily rasters individually ---
 walk(
   dir_ls(intermediate_dir, glob = "*.tif") %>% keep(~ str_detect(path_file(.x), "^(t(min|max)|ppt)_[0-9]{4}_")),
   ~ file_copy(.x, output_dir, overwrite = TRUE)

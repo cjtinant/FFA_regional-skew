@@ -3,6 +3,8 @@
 # Author:          Charles Jason Tinant
 # Date Created:    April 2025
 # Last update:     June 21, 2025      # update script to fit with folder struct
+# Change Log:
+# - 2025-07-23     Move notes to notes/script-notes_and_developer-log
 #
 # Purpose:
 #                  This script downloads, processes, and filters USGS peak flow
@@ -20,34 +22,30 @@
 # 6. Convert sites to spatial format and clip to Great Plains extent
 # 7. Export CSV outputs for all sites, peakflow-only sites, and clipped sites
 #
+# Input/Data URLs:
+# -
 # Output Files:
-# - data/sites_all_in_bb.csv        → All USGS sites within bounding box
-# - data/sites_all_peak_in_bb.csv   → Sites with peak flow data in bounding box
-# - data/sites_pk_eco_only.csv      → Peak flow sites within GP Ecoregion
+# - data/sites_all_in_bb.csv           All USGS sites within bounding box
+# - data/sites_all_peak_in_bb.csv      Sites with peak flow data in bounding box
+# - data/sites_pk_eco_only.csv         Peak flow sites within GP Ecoregion
 #
 # Dependencies:
-# - dataRetrieval:         Access USGS NWIS data
-# - dplyr:                 Data manipulation
-# - glue:                  String interpolation
-# - here:                  Consistent relative paths
-# - purrr:                 Functional programming toolkit
-# - sf:                    Support for simple feature access, a standardized way
-#                            to encode and analyze vector data. Binds to 'GDAL'.
+# - dataRetrieval  Access USGS NWIS data
+# - dplyr:         Data manipulation
+# - glue:          String interpolation
+# - here:          Consistent relative paths
+# - purrr:         Functional programming toolkit
+# - sf:            Spatial data (simple features)
+#
+# Helper Functions:
 # - process_geometries.R:  Custom helper functions for cleaning sf geometries
 #
 # Related Milestone Reports: 
 # - milestone_01_download_prepare_covariates.Rmd
 # - milestone_01_download_prepare_covariates.pdf
-#
-# Notes:
-# - Requires internet access to download data from USGS NWIS
-# - Bounding box grid helps avoid request size limitations in NWIS queries
-# - Uses a batch download approach for peak flow data retrieval
-# - Great Plains extent is defined using EPA Level 1 Ecoregion shapefiles
 # ==============================================================================
-
 # ------------------------------------------------------------------------------
-# 1) Setup -- Load libraries and Level 1 Ecoregion data
+# 1. Setup -- Load libraries and Level 1 Ecoregion data
 # ------------------------------------------------------------------------------
 
 library(dataRetrieval)
@@ -69,25 +67,25 @@ st_layers(target_file)
 message("Reading Level 1 ecoregions from: ", target_file)
 eco_lev1 <- st_read(target_file, layer = "us_eco_l1")
 
-# (optional) check the file -- which shows the CONUS
+#  --- (optional) check the file -- shows the CONUS --- 
 # head(eco_lev1)
 
-# set coordinate system for transform
+#  --- set coordinate system for transform ---
 crs_new <- 4326     # WGS 84 Geographic; Unit: degree
 
-# Transform projection to geographic
+# --- Transform projection to geographic ---
 eco_lev1_geo <- st_transform(eco_lev1, crs = crs_new)
 
-# Filter to just GREAT PLAINS before processing geometry
+# --- Filter to just GREAT PLAINS before processing geometry ---
 eco_lev1_gp_only <- eco_lev1_geo %>%
   janitor::clean_names() %>%
   filter(na_l1name == "GREAT PLAINS")
 
-# (optional) check results
+# --- (optional) check results  ---
 # glimpse(eco_lev1_gp_only)
 
 # -----------------------------------------------------------------------------
-# 2) Download peakflow data
+# 2. Download peakflow data
 # -----------------------------------------------------------------------------
 
 # -- Define a Bounding Box ---
@@ -164,7 +162,7 @@ sites_all_in_bb <- sites_all_in_bb %>%
   select(-tile_id)
 
 # -----------------------------------------------------------------------------
-# 3) Export all sites in bounding box
+# 3. Export all sites in bounding box
 # -----------------------------------------------------------------------------
 
 # --- Ensure output folder exists ---
@@ -183,7 +181,7 @@ write_csv(sites_all_in_bb, here("data",
 #                                  "sites_all_in_bb.csv"))
 
 # -----------------------------------------------------------------------------
-# 4) Filter sites to only stream (ST) and within GP ecoregion
+# 4. Filter sites to only stream (ST) and within GP ecoregion
 # -----------------------------------------------------------------------------
 
 # --- Drop canal ditch sites ---
@@ -204,7 +202,7 @@ sites_all_in_bb_geo <- st_as_sf(sites_all_in_bb,
 sites_pk_eco_only_geo <- st_intersection(sites_all_in_bb_geo, eco_lev1_gp_only)
 
 # ------------------------------------------------------------------------------
-# 5) Export filtered sites (filtered spatial + tabular)
+# 5. Export filtered sites (filtered spatial + tabular)
 # ------------------------------------------------------------------------------
 
 # --- Write spatial version to GeoPackage ---

@@ -1,21 +1,20 @@
 # ==============================================================================
-# Script Name:    01g_download_nhdplus_hr.R
-# Author:         Charles Jason Tinant — with ChatGPT
-# Date Created:   2025-06-06
-# Last Updated:   2025-07-22
-#
-# Purpose: Download NHDPlus HR (1:24k) catchment boundaries clipped to
-#          Great Plains Level IV Ecoregions. Includes retry logic for known
-#          mismatches with flowline coverage.
-#
-# Data Source: https://www.usgs.gov/national-hydrography/nhdplus-high-resolution
-#
+# Script Name:     01g_download_nhdplus_hr.R
+# Author:          Charles Jason Tinant — with ChatGPT
+# Date Created:    2025-06-06
+# Last Updated:    2025-07-22
 # Changelog: 
-# 2025-07-13 - Recreated script that had potentially been deleted. Updated file
-#              paths to avoid data/intermediate. Updated file names to follow
-#              a consistent naming pattern. Added reusable naming function,
-#              enhanced retry filtering, and CLI feedback.
-# 2025-07-22: Update header to add workflow summary and key features.
+# - 2025-07-13:    Recreated script that had potentially been deleted. Updated file
+#                  paths to avoid data/intermediate. Updated file names to follow
+#                  a consistent naming pattern. Added reusable naming function,
+#                  enhanced retry filtering, and CLI feedback.
+# - 2025-07-22:    Update header to add workflow summary and key features.
+# - 2025-07-23     Update header information; 
+#                  move notes to `script-notes_and_developer-log`
+#
+# Purpose:         Download NHDPlus HR (1:24k) catchment boundaries clipped to
+#                  Great Plains Level IV Ecoregions. Includes retry logic for
+#                  known mismatches with flowline coverage.
 #
 # Workflow Summary:
 # 1. Setup
@@ -26,7 +25,6 @@
 #        - Prior download log (if exists)
 #        - Processed EPA Level IV ecoregions from us-eco-levels.gpkg
 #    - Filter L4 ecoregions nested within targeted L3 Great Plains regions
-#
 # 2. Primary Catchment Download Loop
 #    - For each Level IV ecoregion:
 #        - Skip if previously downloaded (based on log)
@@ -37,37 +35,40 @@
 #        - Combine tile outputs and validate geometry
 #        - Save to data/raw/nhdphr_catchments/{safe_name}.gpkg
 #        - Append status to download log
-#
 # 3. Retry for Known Problematic Regions
 #    - Manually defined list of retry_catchments
 #    - Match retry names to eco_lev4:
 #        - First via exact case-insensitive match
 #        - Then fuzzy string matching (Jaro-Winkler distance)
 #    - Repeat download process for these regions
-#
 # 4. Compile and Preview
 #    - Filter latest log entries with status == "success"
 #    - Read and combine corresponding GeoPackages
 #    - Preview with mapview(catchments["FEATUREID"])
 #
-# Key Features:
-# - Idempotent: skips previously downloaded regions
-# - Geometry-safe: cast, buffer, validate for AOIs
-# - Fuzzy retry logic: name correction and tile fallback
-# - Transparent logging: CSV-based log with timestamped status
-# - Interactive QA: mapview preview of results
-#
+# Input/Data URLs: https://www.usgs.gov/national-hydrography/nhdplus-high-resolution
 # Output Files:
 # - data/raw/nhdphr_catchments/*.gpkg — one per Level IV ecoregion
 # - data/log/catchment_download_log.csv — timestamped download log
 # - diagnostics/*.csv and *.png — retry logs and summary figures
 #
+# Dependencies:
+# - cli            Status updates during downloads
+# - dplyr, readr   Data manipulation and export
+# - fs             File system ops (dir_create)
+# - glue           Interpret string literals
+# - here           Relative path handling
+# - mapview        Visualize results of download
+# - nhdplusTools   Download National Hydrography Dataset Plus (NHDPlus) data
+# - stringr        String operations
+# - sf             Spatial data (simple features)
+# - units          Unit conversion
+#
+# Helper Functions:
+#
 # Related Milestone Reports: 
 # - milestone_01_download_prepare_covariates.Rmd
 # - milestone_01_download_prepare_covariates.pdf
-#
-# Dependencies:
-# - dplyr, glue, fs, here, mapview, nhdplusTools, purrr, readr, sf, stringr, cli
 # ==============================================================================
 suppressPackageStartupMessages({
   library(dplyr)
@@ -86,25 +87,25 @@ suppressPackageStartupMessages({
 # ------------------------------------------------------------------------------
 # 1. Setup
 # ------------------------------------------------------------------------------
-# Create folders
+# --- Create folders ---
 dir_create(here("data", "log"))
 dir_create(here("data", "raw", "nhdphr_catchments"))
 
-# Load or initialize log
+# --- Load or initialize log ---
 log_file <- here("data", "log", "catchment_download_log.csv")
 log_tbl <- if (file.exists(log_file)) read_csv(log_file, show_col_types = FALSE) else tibble()
 
 # ------------------------------------------------------------------------------
 # 2. Load data
 # ------------------------------------------------------------------------------
-# Load EPA Level IV Ecoregions
+# --- Load EPA Level IV Ecoregions ---
 eco_lev4 <- st_read(
   here("data", "processed", "ecoregions", "us-eco-levels.gpkg"),
   layer = "us_eco_l4",
   quiet = TRUE
 )
 
-# Build list of target L4 ecoregions from Great Plains Level III regions
+# --- Build list of target L4 ecoregions from Great Plains Level III regions ---
 eco_list <- eco_lev4 %>%
   filter(us_l3name %in% c(
     "Central Irregular Plains", "Central Great Plains", "Cross Timbers",
@@ -208,10 +209,10 @@ retry_catchments <- c(
   "Texas-Tamaulipan Thornscrub"
 )
 
-# Precheck: Validate retry_catchments against eco_lev4$us_l4name
+# --- Precheck: Validate retry_catchments against eco_lev4$us_l4name ---
 cli::cli_h1("Validating retry_catchments names")
 
-# Check for matches using case-insensitive pattern detection
+# --- Check for matches using case-insensitive pattern detection ---
 name_check <- tibble(retry_name = retry_catchments) %>%
   rowwise() %>%
   mutate(
@@ -224,7 +225,7 @@ name_check <- tibble(retry_name = retry_catchments) %>%
   ) %>%
   ungroup()
 
-# Print summary
+# --- Print summary ---
 name_check %>%
   rowwise() %>%
   mutate(status = case_when(
@@ -237,10 +238,10 @@ name_check %>%
 
 library(fuzzyjoin)
 
-# Sort actual Level IV names from eco_lev4
+# --- Sort actual Level IV names from eco_lev4 ---
 actual_names <- unique(eco_lev4$US_L4NAME) %>% sort()
 
-# Create tibble of retry names
+# --- Create tibble of retry names ---
 retry_df <- tibble(retry_name = retry_catchments)
 
 # Perform fuzzy join (Jaro-Winkler distance, max_dist = 0.15 is usually conservative)
@@ -252,7 +253,7 @@ retry_matches <- stringdist_left_join(
   method = "jw"
 )
 
-# Review best matches per retry_name
+# --- Review best matches per retry_name ---
 retry_summary <- retry_matches %>%
   group_by(retry_name) %>%
   slice_min(order_by = stringdist::stringdist(retry_name,
@@ -356,7 +357,6 @@ walk(retry_catchments, function(l4name) {
 # ------------------------------------------------------------------------------
 # 5. Preview All Successful Downloads
 # ------------------------------------------------------------------------------
-
 log_latest <- read_csv(log_file, show_col_types = FALSE) %>%
   group_by(us_l4name) %>%
   arrange(desc(timestamp), .by_group = TRUE) %>%

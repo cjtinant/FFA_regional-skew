@@ -1,10 +1,22 @@
 ---
 title: "Documenting Changes in 01_download/README.Rmd"
-author: "CJ Tinant"
-date: "`r Sys.Date()`"
+author: "C.J. Tinant"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
-  pdf_document: default
-  html_document: default
+  github_document:
+    toc: true
+    toc_depth: 2
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    latex_engine: xelatex
+    fig_caption: true
+params:
+  version: "v1.5"
+editor_options:
+  markdown:
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
@@ -24,7 +36,6 @@ This section documents the current structure and status of all scripts responsib
 
 | File Name                          | Description                              | Output Folder      | Notes / Status        |
 |-----------------------------------|------------------------------------------|--------------------|------------------------|
-| _latex_preamble.tex               | CHECK | | |
 | `01a_download_ecoregions.R`       | Download Level I–IV US ecoregion shapefiles | `data/raw/`       | CRS standardized (EPSG:5070) |
 | `01b_download_USGS_gage_data.R`   | Download peak flow gage locations         | `data/raw/`        | Reorganized metadata |
 | `01c_download_usgs_gage_metadata.R` | Query detailed site metadata            | `data/raw/`        | Outputs raw data-dictionary |

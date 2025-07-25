@@ -1,26 +1,27 @@
 # ==============================================================================
-# Script Name:    01o_download_statsgo2.R
-# Author:         Charles Jason Tinant — with ChatGPT 4o
-# Date Created:   2025-06-28
-# Last Updated:   2025-06-28
+# Script Name:     01o_download_statsgo2.R
+# Author:          Charles Jason Tinant — with ChatGPT 4o
+# Date Created:    2025-06-28
+# Last Updated:    2025-06-28
+# Changelog:
+# - 2025-07-25     Update header information; 
+#                  move notes to `script-notes_and_developer-log`.
 #
-# Purpose:        Download STATSGO2 (national soil database) mapunit data
-#                 clipped to GP Ecoregion using Soil Data Access (SDA).
+# Purpose:         Download STATSGO2 (national soil database) mapunit data
+#                  clipped to GP Ecoregion using Soil Data Access (SDA).
 #
 # Workflow Summary:
-# ------------------------------------------------------------------------------
-# 1.   Load Great Plains Level I boundary as area of interest (AOI)
-# 2.   Union and clean AOI polygon
-# 3.   Query intersecting mupolygons via SDA_spatialQuery()
-# 4.   Join mukeys to mapunit table via get_mapunit_from_SDA()
-# 5.   Save results as CSV
+# 1. Load Great Plains Level I boundary as area of interest (AOI). Perform union
+#    and clean AOI polygon
+# 2. Query intersecting mupolygons via SDA_spatialQuery()
+# 3. Join mukeys to mapunit table via get_mapunit_from_SDA()
+# 4. Save results as CSV and GPKG.
+# 5. (Optional) verify joinability of mapunit attributes.
 #
+# Input/Data URLs:
+# - Grid of data derived from the Great Plains Level I ecoregion GPKG.
 # Output:
-# -   STATSGO2 mapunit attributes for Great Plains Level I area
-#
-# Related Milestone Reports: 
-# - milestone_01_download_prepare_covariates.Rmd
-# - milestone_01_download_prepare_covariates.pdf
+# -   STATSGO2 mapunit attributes for Great Plains Level I area.
 #
 # Dependencies:
 # - dplyr:         Data manipulation
@@ -31,9 +32,14 @@
 # - sf             Support for simple feature access, a standardized way to
 #                    encode and analyze spatial vector data. Binds to 'GDAL'
 # - soilDb         Soil database interface
+#
+# Helper Functions:
+#
+# Related Milestone Reports: 
+# - milestone_01_download_prepare_covariates.Rmd
+# - milestone_01_download_prepare_covariates.pdf
 # ==============================================================================
-
-# 1. Setup ---------------------------------------------------------------------
+# --- load libraries ---
 library(dplyr)
 library(fs)
 library(here)
@@ -42,16 +48,17 @@ library(readr)
 library(sf)
 library(soilDB)
 
-
-# Define output directories
+# ------------------------------------------------------------------------------
+# 1. Define output directories and load Great Plains ecoregion
+# ------------------------------------------------------------------------------
 in_dir  <- here("data", "raw", "statsgo2")
-intermed_dir <- here("data", "intermediate", "statsgo2")
+intermed_dir <- here("data", "raw", "statsgo2")
 out_dir <- here("data", "processed", "statsgo2")
 dir_create(in_dir)
 dir_create(intermed_dir)
 dir_create(out_dir)
 
-# Load AOI: Great Plains Level I Ecoregion
+# --- Load AOI: Great Plains Level I Ecoregion
 aoi_path <- here("data", "processed", "ecoregions", "us-eco-levels.gpkg")
 aoi <- st_read(aoi_path,
                layer = "us_eco_l1",
@@ -64,9 +71,9 @@ aoi_union <- st_union(aoi) %>%
   st_make_valid() %>%
   st_buffer(0)  # 0 distance fixes minor topology errors
 
-# ==============================================================================
-# 2. Spatial Query for STATSGO Mapunits (chunked) ------------------------------
-
+# ------------------------------------------------------------------------------
+# 2. Spatial Query for STATSGO Mapunits (chunked) 
+# ------------------------------------------------------------------------------
 message("🔍 Querying SDA for STATSGO2 mupolygons in chunks...")
 
 # Break the AOI union into a grid (e.g. 2x2 or 3x3)
@@ -111,9 +118,9 @@ if (!inherits(mu_geom, "sf") || nrow(mu_geom) == 0) {
 
 message("✅ Retrieved ", nrow(mu_geom), " unique STATSGO mupolygons.")
 
-# ==============================================================================
-# 3. Get mapunit attributes ----------------------------------------------------
-
+# ------------------------------------------------------------------------------
+# 3. Get mapunit attributes
+# ------------------------------------------------------------------------------
 # Use get_mapunit_from_SDA to join mukeys to attributes
 if (inherits(mu_geom, "sf")) {
   mukeys <- unique(mu_geom$mukey)
@@ -127,9 +134,9 @@ mu_attribs <- get_mapunit_from_SDA(WHERE = paste0("mukey IN (", paste(mukeys, co
 
 message("✅ Retrieved mapunit attributes.")
 
-# ==============================================================================
-# 4. Export Results ------------------------------------------------------------
-
+# ------------------------------------------------------------------------------
+# 4. Export Results
+# ------------------------------------------------------------------------------
 message("💾 Writing results to: ", out_dir)
 
 write_csv(mu_geom,    file = path(out_dir, "statsgo2_mupolygon.csv"))
@@ -151,8 +158,9 @@ gpkg_out_albers <- path(out_dir, "statsgo2_mupolygon.gpkg")
 st_write(mu_geom_proj, gpkg_out_albers, delete_dsn = TRUE, quiet = TRUE)
 message("📁 Saved projected GeoPackage (EPSG:5070): ", gpkg_out_albers)
 
-# ==============================================================================
-# 6. Verify joinability of mapunit attributes ----------------------------------
+# ------------------------------------------------------------------------------
+# 5. (Optional) verify joinability of mapunit attributes
+# ------------------------------------------------------------------------------
 
 message("🔍 Verifying that mukey fields match between geometry and attributes...")
 

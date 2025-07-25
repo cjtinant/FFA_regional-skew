@@ -84,19 +84,23 @@ FFA_regional-skew/
 ## Description of Tasks Completed or In Progress
 
 ### 2.1 Standardize header blocks across all R scripts
-Check the following are included in all scripts:
-- Script Name:    01m_download_ned.R
-- Author: Charles Jason Tinant — with ChatGPT 4o
-- Date Created:
-- Last Updated:
-- Change Log:
-- Purpose:
-- Workflow Summary:
-- Input/Data URLs
-- Outputs
-- Dependencies
-- Related Milestone Reports
-- Notes
+- Check the following are included in all scripts:
+  - Script Name                line 20
+  - Author:                    line 20
+  - Date Created               line 20
+  - Last Updated               line 20
+  - Change Log                 new line bulleted
+  - Purpose                    line 20
+  - Workflow Summary           new line numbered
+  - Input/Data URLs            new line bulleted
+  - Outputs                    new line bulleted -- add subfolder
+  - Dependencies               new line bulleted -- description on line 20
+  - Helper Functions           new line bulleted
+  - Related Milestone Reports  new line bulleted
+
+- Move notes to Move notes to notes/script-notes_and_developer-log
+
+- Make a consistent use of `=====` and `------`
 
 ### 2.2 Add README files to each major script directory
 The README should include the following:
