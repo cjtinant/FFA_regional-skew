@@ -1,27 +1,61 @@
 # ==============================================================================
-# Function: inventory_raster_data
-# Purpose:  Inventory raster files, detect duplicates, and write summary CSVs
-#           for quality assurance. Optionally archives ZIP files.
-#
-# Author:   Charles Jason Tinant — revised with ChatGPT 4o
-# Date Created: 2025-07-08
-# Last Updated: 2025-07-11
-#
+# Script:          inventory_raster_data.R
+# Author:          Charles Jason Tinant — revised with ChatGPT 4o
+# Date Created:    2025-05
+# Last Updated:    2025-07-27
 # Change Log:
-# - 2025-07-11: Added support for MODIS HDF files
-# - 2025-07-10: Renamed function to inventory_raster_data(); generalized paths,
-#               added optional ZIP archive subfolder, consistent output naming
-# - 2025-07-08: Initial version with raster inventory and duplicate detection
+# - 2025-07-08     Initial version with raster inventory and duplicate detection.
+# - 2025-07-10:    Renamed function to inventory_raster_data(); generalized paths,
+#                  added optional ZIP archive subfolder, consistent output naming
+# - 2025-07-11:    Added support for MODIS HDF files
+# - 2025-07-27     Update header information;
+#                  move notes to `script-notes_and_developer-log`.
+#                  Update output folder location from `~/to_check` to
+#                  `~/docs/metadata/`
+#                  Add `here()` to library call.
+#
+# # Purpose:       Inventory raster files, detect duplicates, and write summary
+#                  CSVs for quality assurance. Optionally archives ZIP files.
+#
+# Workflow Summary:
+# The script creates a function `inventory_raster_data()` that can be called
+# by an Rmd file to:
+# 1. Load required packages,
+# 2. Resolve absolute paths with safety checks,
+# 3. Inventory raster and sidecar files
+# 4. Identify duplicates by base name,
+# 5. Write summary outputs.
+#
+# Input/Data URLs:
+# - ~/data/raw/
+# Outputs:
+# - ~/docs/meta/raster_data_inventory.csv"
+# - ~/docs/meta/duplicate_raster_data_summary.csv
+#
+# Dependencies:
+# cli              More organized and understandable presentation of information
+#                  compared to simple print() or message() calls.
+#                  Cli helpers operate similarly to how HTML and CSS work
+#                  together for web pages to define output using semantic elements
+#                  like headings, lists, alerts, paragraphs, and code blocks.
+# fs               File system interface.
+# tidyverse        General data wrangling, import and export.
+#
+# Helper Functions:
+#
+# Related Milestone Reports:
 # ==============================================================================
 
 inventory_raster_data <- function(input_dir = "data/raw",
-                                  output_dir = "to_check",
+                                  output_dir = "docs/metadata",
                                   archive_zips = TRUE,
                                   zip_subdir = "archives/raster_zips") {
   # Load required libraries
+  library(cli)
+  library(here)
   library(fs)
   library(tidyverse)
-  library(cli)
+
 
   # Resolve full paths
   input_path <- path_abs(input_dir)

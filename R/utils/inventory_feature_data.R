@@ -1,23 +1,55 @@
 # ==============================================================================
-# Script: inventory_feature_data.R
+# Script:          inventory_feature_data.R
+# Author:          Charles Jason Tinant — revised with ChatGPT 4o
+# Date Created:    2025-05
+# Last Updated:    2025-07-27
+# Change Log:
+# - 2025-07-13:    Improved duplicate logic to distinguish catchment and flowline
+#                  files with same base name in different folders
+# - 2025-07-14:    Updated output to permanently log results
+# - 2025-07-27     Update header information;
+#                  move notes to `script-notes_and_developer-log`.
+#                  Add `here()` to library call.
+#
 # Purpose: Create an inventory of feature (vector + tabular) files in a directory,
 #          flag duplicates, and write summary tables for review.
-# Author: Charles Jason Tinant — revised with ChatGPT 4o
-# Date Created: 2025-05
-# Last Updated: 2025-07-14
 #
-# Change Log:
-# - 2025-07-14: Updated output to permanently log results
-# - 2025-07-13: Improved duplicate logic to distinguish catchment and flowline
-#               files with same base name in different folders
+# Workflow Summary:
+# The script creates a function `inventory_feature_data()` that can be called
+# by an Rmd file to:
+# 1. Load required packages,
+# 2. Resolve absolute paths,
+# 3. Create a list of vector and tabular files,
+# 4. Flag and summarize true duplicates,
+# 5. Write outputs.
+#
+# Input/Data URLs:
+# - ~/data/raw/
+# Outputs:
+# - ~/docs/meta/raster_data_inventory.csv"
+# - ~/docs/meta/duplicate_raster_data_summary.csv
+#
+# Dependencies:
+# cli              More organized and understandable presentation of information
+#                  compared to simple print() or message() calls.
+#                  Cli helpers operate similarly to how HTML and CSS work
+#                  together for web pages to define output using semantic elements
+#                  like headings, lists, alerts, paragraphs, and code blocks.
+# fs               File system interface.
+# here             Consistent relative paths.
+# tidyverse        General data wrangling, import and export.
+#
+# Helper Functions:
+#
+# Related Milestone Reports:
 # ==============================================================================
-
 inventory_feature_data <- function(input_dir = "data/raw",
-                                   output_dir = "data/log") {
+                                   output_dir = "docs/metadata") {
   # Load required packages
+  library(cli)
+  library(here)
   library(fs)
   library(tidyverse)
-  library(cli)
 
   # Resolve absolute paths
   input_path <- path_abs(input_dir)

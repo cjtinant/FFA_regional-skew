@@ -1,54 +1,62 @@
-
 # ==============================================================================
-# Script Name:  extract_summary_metadata_vector.R
-# Purpose:      Iterate over all layers in a GeoPackage and extract metadata
-# Author:       Charles Jason Tinant — with ChatGPT 4o
-# Date Created: 2025-07-20
-# Last Updated:
-#
+# Script Name:     extract_summary_metadata_vector.R
+# Author:          Charles Jason Tinant — with ChatGPT 4o
+# Date Created:    2025-07-20
+# Last Updated:    2025-07-27
 # Changelog:
-# - 2025-07-20: Initial version to summarize geometry, CRS, and attribute schema
+# - 2025-07-20:    Initial version.
+# - 2025-07-27     Update header information;
+#                  move notes to `script-notes_and_developer-log`
+#
+# Purpose:         Iterate over all layers in a GeoPackage and extract metadata;
+#                  summarize geometry, CRS, and attribute schema.
 #
 # Workflow Summary:
-# - Load vector file using {sf}
-# - Extract layer summary metadata (geometry, CRS, extent, features, columns)
-# - Extract attribute schema (field names and data types)
-# - Write both summaries to CSV
+# 1. Load vector file using {sf}.
+# 2. Extract layer summary metadata (geometry, CRS, extent, features, columns).
+# 3. Extract attribute schema (field names and data types).
+# 4. Write both summaries to CSV.
+#
+# Input/Data URLs:
+# - Single scripts in `data/processed/`
+# Outputs:
+# - vector-data-summaries.csv to `docs/metadata/``
 #
 # Dependencies:
-# -    here:      consistent relative paths
-# -    dplyr
-# -    readr
-# -    sf:        spatial vector data support
+# - dplyr, readr   General data wrangling, import and export.
+# - here           Consistent relative paths.
+# - sf             Spatial vector data support
+#
+# Helper Functions:
+#
+# Related Milestone Reports:
 # ==============================================================================
-
+# --- load libraries ---
 library(sf)
 library(dplyr)
 library(readr)
 library(tibble)
 library(here)
 
-# ---- Define input and output paths ----
+# --- Define input and output paths ---
 gpkg_file   <- here("data", "processed", "statsgo2",
                     "statsgo2_mupolygon.gpkg")
 
-#gpkg_file <- here("data/processed/statsgo2/statsgo2_mupolygon.gpkg")
-
-output_dir  <- here("docs", "metadata", "vector-data-summaries")
+output_dir  <- here("docs", "metadata", "vector-data-summaries.csv")
 if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
 
 if (!file.exists(gpkg_file)) {
   stop("Geopackage not found: ", gpkg_file)
 }
 
-# ---- Get layer names ----
+# --- Get layer names ---
 layer_info <- st_layers(gpkg_file)
 layer_names <- layer_info$name
 
-# ---- Initialize summary list ----
+# --- Initialize summary list ---
 summary_list <- list()
 
-# ---- Iterate through layers ----
+# --- Iterate through layers ---
 for (layer in layer_names) {
   message("Processing layer: ", layer)
 
@@ -81,11 +89,6 @@ for (layer in layer_names) {
   summary_list[[layer]] <- summary_info
 }
 
-# ---- Combine and write full summary ----
-vector_summary <- bind_rows(summary_list)
-write_csv(vector_summary,
-          file.path(output_dir, "statsgo2_mupolygon_layer_metadata_v01.csv"))
-
 # ------------------------------------------------------------------------------
 # 2. Get attribute names for layers
 # ------------------------------------------------------------------------------
@@ -101,15 +104,23 @@ field_names_list <- lapply(layer_names, function(layer) {
   )
 })
 
-# Combine into one table
+# --- Combine into one table ---
 fields_df <- bind_rows(field_names_list)
 
-# Summarise to drop duplicates
+# --- Summarise to drop duplicates ---
 fields_summary <- fields_df %>%
   select(-layer) %>%
   distinct() %>%
   arrange(field_name, data_type)
 
-# Write output
+# ------------------------------------------------------------------------------
+# 3. Write output
+# ------------------------------------------------------------------------------
+# --- Combine and write full summaries ---
+vector_summary <- bind_rows(summary_list)
+
+write_csv(vector_summary,
+          file.path(output_dir, "statsgo2_mupolygon_layer_metadata_v01.csv"))
+
 write_csv(fields_summary,
           file.path(output_dir, "statsgo2_mupolygon_attribute_metadata_v01.csv"))

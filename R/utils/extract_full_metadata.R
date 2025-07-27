@@ -19,13 +19,14 @@
 #   - XML metadata files (e.g., data/metadata/us_ecoregions/*.xml)
 # Outputs:
 #   - A tibble with extracted metadata fields
-# Helper Functions:
 #
 # Dependencies:
 # - dplyr          General data wrangling, import and export.
 # - fs             File interface system.
 # - here           Consistent relative paths.
 # - xml2           Parse XML data.
+#
+# Helper Functions:
 #
 # Related Milestone Reports:
 # =============================================================================

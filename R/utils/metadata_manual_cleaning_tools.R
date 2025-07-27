@@ -1,26 +1,59 @@
 # ==============================================================================
-# Script Name: metadata_manual_cleaning_tools
-# Author: Charles Jason Tinant — adapted with ChatGPT 4o
-# Created:      2025-07-17
-# Last Updated: 2025-07-19
-# Purpose: Manual tools for metatdata cleaning
+# Script:          metadata_manual_cleaning_tools.R
+# Author:          Charles Jason Tinant — adapted with ChatGPT 4o
+# Date Created:    2025-07-17
+# Last Updated:    2025-07-27
+# Change Log:
+# - 2025-07-27     Update header information;
+#                  move notes to `script-notes_and_developer-log`
+#
+# Purpose:         Manual tools for metadata cleaning.
+#                  Section A: Compare CSV versions of covariate metadata
+#                  Compare two versions of a covariate metadata CSV to identify
+#                  structural and content-level changes.
+#                  Section B:  Convert TXT to CSV
+#
+# Workflow Summary:
+#    Section A:
+# 1. Define paths to old and new CSV versions
+# 2. Read and clean both CSV files
+# 3. Reorder and align df_old to match df_new's structure
+# 4. Compare data frames using waldo (structural + value differences)
+# 5. Compare row-level differences using dplyr anti_join
+# 6. Compare selected variable by name using a join
+# 7. Compare row-level differences using dplyr anti_join
+#    Section B:
+# 1. Read text file
+# 2. Filter only lines that look like legend entries
+# 3. Extract fields using regex
+# 4. Write to CSV
+#
+# Input/Data URLs:
+# - User defined
+# Outputs:
+# - User defined to ~/docs/metadata/ 
+#
+# Dependencies:
+# - here           Consistent relative paths
+# - janitor        Tools for cleaning dirty data
+# - tidyverse      General data wrangling, import and export.
+# - waldo          Compare complex R objects and reveal the key differences.
+#
+# Helper Functions:
+#
+# Related Milestone Reports:
 # ==============================================================================
-
+# Section A: Compare CSV versions of covariate metadata
+# ==============================================================================
+# --- Load libraries ---
 library(here)
 library(janitor)
 library(tidyverse)
 library(waldo)
 
-# ==============================================================================
-# Script Section: Compare CSV versions of covariate metadata
-# Purpose: Compare two versions of a covariate metadata CSV to identify
-#          structural and content-level changes.
-# ==============================================================================
-
 # ------------------------------------------------------------------------------
 # 1. Define paths to old and new CSV versions
 # ------------------------------------------------------------------------------
-
 old_csv <- here("docs", "metadata",
                 "ecoregion_data-dictionary_v01.csv")
 new_csv <- here("docs", "metadata",
@@ -29,7 +62,6 @@ new_csv <- here("docs", "metadata",
 # ------------------------------------------------------------------------------
 # 2. Read and clean both CSV files
 # ------------------------------------------------------------------------------
-
 df_old <- read_csv(old_csv, show_col_types = FALSE) %>%
   clean_names()
 
@@ -39,7 +71,6 @@ df_new <- read_csv(new_csv, show_col_types = FALSE) %>%
 # ------------------------------------------------------------------------------
 # 3. Reorder and align df_old to match df_new's structure
 # ------------------------------------------------------------------------------
-
 # Identify all columns in df_new
 new_cols <- names(df_new)
 
@@ -69,14 +100,12 @@ if (nrow(df_old) < 1) {
 # ------------------------------------------------------------------------------
 # 4. Compare data frames using waldo (structural + value differences)
 # ------------------------------------------------------------------------------
-
 cat("\n--- Structural and Value Differences (waldo) ---\n")
 waldo::compare(df_old_extended, df_new)
 
 # ------------------------------------------------------------------------------
 # 5. Compare row-level differences using dplyr anti_join
 # ------------------------------------------------------------------------------
-
 cat("\n--- Rows in NEW but not in OLD ---\n")
 anti_join(df_new, df_old)
 
@@ -86,7 +115,6 @@ anti_join(df_old, df_new)
 # ------------------------------------------------------------------------------
 # 6. Compare selected variable by name using a join
 # ------------------------------------------------------------------------------
-
 compare_metadata_column <- function(df_old, df_new, var_to_ck) {
   old_var <- df_old %>%
     select(variable_name, value_old = !!sym(var_to_ck))
@@ -102,31 +130,37 @@ compare_metadata_column <- function(df_old, df_new, var_to_ck) {
 compare_metadata_column(df_old, df_new, "notes")
 
 # ------------------------------------------------------------------------------
-# 6. Compare row-level differences using dplyr anti_join
+# 7. Compare row-level differences using dplyr anti_join
 # ------------------------------------------------------------------------------
-
-# ck_var_new <-
-
 # Save aligned old version for inspection
 write_csv(df_old_aligned, here("docs", "metadata", "covariates_metadata_split",
                                "skew_covariates_metadata_v071.csv"))
 
 # ==============================================================================
-# Script Section: Convert TXT to CSV
-# Purpose: Compare two versions of a covariate metadata CSV to identify
-#          structural and content-level changes.
+# Script Section B: Convert TXT to CSV
 # ==============================================================================
-# Path to input legend file
+# --- Path to input text file ---
 input_table <- here("docs", "metadata",
                     "koppen-geiger_legend.txt")
 
-# 1. Read all lines
+# ------------------------------------------------------------------------------
+# 1. Read text file
+# ------------------------------------------------------------------------------
+# --- Path to input text file ---
+input_table <- here("docs", "metadata",
+                    "koppen-geiger_legend.txt")
+
+# --- Read all lines ---
 legend_lines <- read_lines(input_table)
 
+# ------------------------------------------------------------------------------
 # 2. Filter only lines that look like legend entries
+# ------------------------------------------------------------------------------
 data_lines <- legend_lines[str_detect(legend_lines, "^\\s*\\d+:")]
 
+# ------------------------------------------------------------------------------
 # 3. Extract fields using regex
+# ------------------------------------------------------------------------------
 legend_df <- data_lines %>%
   str_match("^\\s*(\\d+):\\s+(\\w+)\\s+(.*?)\\s+\\[(\\d+)\\s+(\\d+)\\s+(\\d+)\\]") %>%
   as.data.frame() %>%
@@ -142,6 +176,8 @@ legend_df <- data_lines %>%
     hex = rgb(r, g, b, maxColorValue = 255)
   )
 
+# ------------------------------------------------------------------------------
 # 4. Write to CSV
+# ------------------------------------------------------------------------------
 write_csv(legend_df, here("docs", "metadata",
                           "koppen-geiger_class_legend.csv"))
