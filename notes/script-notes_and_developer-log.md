@@ -5,9 +5,10 @@ July 28, 2025
 
 - [Overview](#overview)
 - [Project Notes (General)](#project-notes-general)
-- [Notes by Script](#notes-by-script)
 - [TODO (General)](#todo-general)
-- [Ideas](#ideas)
+- [Future Ideas](#future-ideas)
+- [Notes by Script](#notes-by-script)
+- [Zettelkasten-style markdown](#zettelkasten-style-markdown)
 - [Notes](#notes)
 
 ## Overview
@@ -35,6 +36,32 @@ Use this log to track:
 -->
 
 ------------------------------------------------------------------------
+
+## TODO (General)
+
+<!--
+- [ ] Add version check for `{terra}` to all raster scripts
+- [ ] Write a unified function to extract raster metadata to `data/meta/`
+- [ ] Add `README.Rmd` to `R/02_process/` with script overview
+-->
+
+------------------------------------------------------------------------
+
+## Future Ideas
+
+- Adopt a targets-based workflow {targets} after covariate extraction.
+
+- Distinguish between exploratory (`output/`) and final outputs
+  (`results/`).
+
+- Add `data/meta/variable_scaffold.csv` after covariate extraction to
+  distinguish between exploratory output and final cleaned results.
+
+<!--
+- Add script benchmarking to track execution time across revisions
+- Add logging (e.g., `cli::cli_alert()`) for key script actions
+- Create a `.Rprofile` project startup file to auto-load common packages
+-->
 
 ## Notes by Script
 
@@ -282,35 +309,72 @@ using is.null along with checks for the number of rows and columns in
 
 ------------------------------------------------------------------------
 
-------------------------------------------------------------------------
+## Zettelkasten-style markdown
 
-------------------------------------------------------------------------
+Zettelkasten-style markdown refers to using Markdown files to implement
+a digital version of the Zettelkasten method—a powerful personal
+knowledge management system developed by German sociologist Niklas
+Luhmann.
 
-------------------------------------------------------------------------
+Zettelkasten means “slip box” in German. It’s a system where you:
 
-------------------------------------------------------------------------
+- Break ideas into atomic notes (each note = one concept or insight)
+- Use unique IDs and bi-directional links to connect notes
+- Emphasize networked thinking rather than hierarchical folders
 
-## TODO (General)
+In R or code-based workflows, Zettelkasten-style Markdown means using
+plain text .md files where each file is a single, focused idea, tagged
+and cross-linked like a mini personal wiki.
 
-<!--
-- [ ] Add version check for `{terra}` to all raster scripts
-- [ ] Write a unified function to extract raster metadata to `data/meta/`
-- [ ] Add `README.Rmd` to `R/02_process/` with script overview
--->
+### Example Folder Structure
 
-------------------------------------------------------------------------
+``` text
+notes/
+├── 20250728_gam-vs-ridge.md
+├── 20250727_skewness-viz-notes.md
+├── 20250721_prism-uncertainty.md
+├── index.md  # optional index or dashboard
+```
 
-## Ideas
+Each note might contain:
 
-<!--
-- Add script benchmarking to track execution time across revisions
-- Add logging (e.g., `cli::cli_alert()`) for key script actions
-- Create a `.Rprofile` project startup file to auto-load common packages
--->
+``` text
+# GAM vs Ridge Regression for Skew Modeling
+
+- Ridge performed best on full covariate set (low MSE)
+- GAMs improved interpretability in non-linear effects (e.g. tmean_ann_C)
+- TODO: test GAM + macrozone as random effect
+
+Linked notes:
+- [[20250721_prism-uncertainty]]
+- [[20250727_skewness-viz-notes]]
+```
+
+### Core Features of Zettelkasten Markdown Notes
+
+| Feature               | Benefit for Researchers            |
+|-----------------------|------------------------------------|
+| ✍️ Atomic Notes       | Each `.md` = 1 idea = easier reuse |
+| 🔗 Links (`[[...]]`)  | Creates networked ideas, not silos |
+| 🗓️ Timestamps / IDs   | Keeps notes organized and unique   |
+| 🧠 Emergent Structure | You discover themes organically    |
+| 🧾 Markdown Format    | Easy to version, edit, and render  |
+
+### How It Might Help
+
+For your hydrologic and regional skew work, this approach could help:
+
+- Track decisions or insights across milestones
+- Store modeling rationale (e.g., why you dropped ecoregions)
+- Connect field notes, exploratory thoughts, and literature summaries
+- Gradually build a knowledge graph of ideas and results
+
+ChatGPT can generate a Zettelkasten-style notes/ folder with a few seed
+notes and a script to open/edit them easily using RStudio.
 
 ------------------------------------------------------------------------
 
 ## Notes
 
-- Last updated: 2025-07-28 10:28
+- Last updated: 2025-07-28 12:34
 - Maintained by: CJ Tinant

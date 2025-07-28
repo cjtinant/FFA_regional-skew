@@ -21,7 +21,16 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 
 ### Added
 
+- README.md in `notes/`
+
 ### Changed
+
+- Standardized header scripts in `R/01_downloads`, `R/02_clean_verify`, and
+`R/utils`.
+
+- Integrated `notes/future_milestones` into `notes/script-notes_and_developer-log`
+
+- Moved `var-select_stats.xlsx` to `sandbox/`
 
 ### In Progress
 

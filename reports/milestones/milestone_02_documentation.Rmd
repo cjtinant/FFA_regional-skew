@@ -45,16 +45,16 @@ Relevant folders and files
 
 ``` text
 FFA_regional-skew/
-├── .gitignore                    # Prevents sensitive/local files from being pushed
-├── arcgis_project/              # ArcGIS Pro .aprx project and supporting layers
-├── CHANGELOG.Rmd                # Human-readable changelog (semantic versioning)
-├── data/                        # Raw, processed, meta, intermediate, and QA data
-├── docs/                        # Documentation, workflow notes, metadata, checklists
-├── FFA_regional-skew.Rproj      # RStudio project file (keep in root)
-├── notebooks/                   # Ad hoc .Rmd/.qmd experiments (empty or minimal)
-├── notes/                       # Team notes, meeting logs, brainstorms (convert to .md/.qmd)
-├── R/                           # Analysis scripts (milestone-organized)
-│   ├── 01_download/             # Download process raw data
+├── .gitignore                  # Prevents sensitive/local files from being pushed
+├── arcgis_project/             # ArcGIS Pro .aprx project and supporting layers
+├── CHANGELOG.Rmd               # Human-readable changelog (semantic versioning)
+├── data/                       # Raw, processed, meta, intermediate, and QA data
+├── docs/                       # Documentation, workflow notes, metadata, checklists
+├── FFA_regional-skew.Rproj     # RStudio project file (keep in root)
+├── notebooks/                  # Ad hoc .Rmd/.qmd experiments (empty or minimal)
+├── notes/                      # Team notes, meeting logs, brainstorms
+├── R/                          # Analysis scripts (milestone-organized)
+│   ├── 01_download/            # Download process raw data
 │   ├── 02_clean_validate/      # QA scripts and validation checks
 │   ├── 03_covariates/          # Covariate extraction
 │   ├── 04_modeling/            # Statistical modeling (GAMs, Elastic Net, etc.)
