@@ -1,32 +1,44 @@
 # =============================================================================
-# Script Name:    reproject_to_epsg5070.R
-# Author: Charles Jason Tinant — with ChatGPT 4o
-# Date Created:   2025-05-12
-# Last Updated:   2025-05-15
-# Purpose:        Helper function to reproject .bil files to EPSG5070
+# Script Name:     reproject_to_epsg5070.R
+# Author:          Charles Jason Tinant — with ChatGPT 4o
+# Date Created:    2025-05-12
+# Last Updated:    2025-07-28
+# Change Log:
+# - 2025-07-28     Update header information;
+#                  Move notes to `script-notes_and_developer-log`.
+#                  Update output to `data/raw/``
 #
-# Description:
-#   - [Step 1: what the function does...]
-#   - [Step 2: any side effects, file outputs, or key decisions]
+# Purpose:         Helper function to reproject .bil files to EPSG5070.
 #
-# Input:
-#   - [e.g., File paths, data frames, raw XML, etc.]
+# Workflow Summary:
+# 1. Check if a .bil file already in EPSG:5070.
+# 2. Reproject to EPSG:5070 if the .bil has another coordinate system.
+# 3. Export reprojected files and log.
 #
-# Output:
-#   - [e.g., A tibble, a CSV, a shapefile, etc.]
+# Input/Data URLs:
+# - user-defined .bil file.
+# Outputs:
+# - reprojected .bil file saved to `data/raw/prism_epsg5070`.
 #
 # Dependencies:
-#   - [e.g., xml2, dplyr, terra, fs]
+# - dplyr, readr   General data wrangling, import and export.
+# - fs             File interface system.
+# - here           Consistent relative paths.
+# - terra          Vector and raster data operations.
 #
-# Notes:
-#   - [Optional: reference to related milestones, issues, or expected uses]
+# Helper Functions:
+#
+# Related Milestone Reports:
+#
 # =============================================================================
 reproject_to_epsg5070 <- function(bil_files,
-                                  out_dir = here::here("data/intermediate/prism_epsg5070"),
-                                  log_path = here::here("data/log/prism_crs_log.csv")) {
-  library(terra)
-  library(fs)
+                                  out_dir = here("data/raw/prism_epsg5070"),
+                                  log_path = here("data/log/prism_crs_log.csv")) {
   library(dplyr)
+  library(fs)
+  library(here)
+  library(readr)
+  library(terra)
 
   dir_create(out_dir, recurse = TRUE)
 
@@ -63,7 +75,7 @@ reproject_to_epsg5070 <- function(bil_files,
   })
 
   # Save log
-  readr::write_csv(crs_log, log_path)
+  write_csv(crs_log, log_path)
 
   invisible(crs_log)
 }

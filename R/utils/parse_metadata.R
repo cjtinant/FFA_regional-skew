@@ -2,20 +2,24 @@
 # Script Name:     parse_metadata.R
 # Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-07-01
-# Last Update:     2025-07-25
-# - 2025-07-25     Update header information;
+# Last Update:     2025-07-28
+# Change Log:
+# - 2025-07-28     Update header information;
 #                  move notes to `script-notes_and_developer-log`
 #
-# Purpose:         Loop through multiple FGDC metadata XML files and extract:
-#                    Attribute definitions
-#                    CRS and spatial extent
+# Purpose:         Loop through multiple FGDC metadata XML files and extract
+#                  attribute definitions, CRS, and spatial extent
 #
 # Workflow Summary:
-#
+# 1. Check `raw/data` or a user-defined folder for XML files.
+# 2. Extract spatial metadata, including: datum, ellipsoid, semi_major_axis,
+#    inverse_flattening, planar_units, abs_res, ord_res, bounding box coords.
+# 
 # Input/Data URLs:
 # - xml data in a user-defined folder.
-# Outputs:         data/meta/<name>_attributes.csv
-#                 data/meta/<name>_spatial_metadata.csv
+# Outputs:
+# - data/meta/<name>_attributes.csv
+# - data/meta/<name>_spatial_metadata.csv
 #
 # Dependencies:
 # - dplyr, readr   General data wrangling, import and export.
@@ -26,6 +30,7 @@
 # Helper Functions:
 #
 # Related Milestone Reports:
+#
 # ==============================================================================
 # --- Load libraries ---
 library(xml2)
@@ -87,7 +92,10 @@ crs_info <- tibble(
 ) %>%
   mutate(across(everything(), ~ na_if(.x, "")))
 
-# 3. --- Write to disk ---
+# ------------------------------------------------------------------------------
+# 3. Export results
+# ------------------------------------------------------------------------------
+
 attr_file <- path(meta_out_dir, str_glue("{name_root}_attributes.csv"))
 spatial_file <- path(meta_out_dir, str_glue("{name_root}_spatial_metadata.csv"))
 

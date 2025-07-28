@@ -1,9 +1,33 @@
 # ==============================================================================
-# Function: move_zip_to_archives
-# Purpose:  Move .zip (or other) files from domain folders in `data/raw/` into
-#           a parallel structure inside `data/raw/archives/`
-# Author:   Charles Jason Tinant — with ChatGPT 4o
-# Updated:  2025-07-08
+# Script Name      move_zip_to_archives
+# Author:          Charles Jason Tinant — with ChatGPT 4o
+# Date Created:    2025-07-08
+# Last Updated:    2025-07-28
+# Change Log:
+# - 2025-07-28     Update header information;
+#                  move notes to `script-notes_and_developer-log`
+#
+# Purpose:         Move .zip (or other) files from domain folders in `data/raw/`
+#                  into a parallel structure inside `data/raw/archives/`
+#
+# Workflow Summary:
+# 
+# Input/Data URLs:
+# - `data/raw.zip`
+# Outputs:
+# - `data/raw/archives`
+#
+# Dependencies:
+# cli              More organized and understandable presentation of information
+#                  compared to simple print() or message() calls.
+#                  Cli helpers operate similarly to how HTML and CSS work
+#                  together for web pages to define output using semantic elements
+#                  like headings, lists, alerts, paragraphs, and code blocks.
+# fs               File system interface.
+#
+# Helper Functions:
+#
+# Related Milestone Reports:
 # ==============================================================================
 
 move_zip_to_archives <- function(raw_root = here::here("data/raw"),

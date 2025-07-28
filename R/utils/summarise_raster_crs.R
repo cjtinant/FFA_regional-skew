@@ -1,34 +1,33 @@
 # =============================================================================
-# Script Name:    summarise_raster_crs.R
-# Author:         CJ Tinant
-# Date Created:   2025-05-15
-# Last Updated:   [yyyy-mm-dd]
-# Purpose:        Utility: Summarize CRS from raster files (.tif and .bil)
+# Script Name:     summarise_raster_crs.R
+# Author:          Charles Jason Tinant — with ChatGPT 4o
+# Date Created:    2025-05-15
+# Last Updated:    2025-07-28
+# Change Log:
+# - 2025-07-28     Update header information.
 #
-# Description:
-#   - Returns a tibble of CRS given an input directory with raster files.
-#   - (Optional:) writes a summary log, if (write_log) = TRUE;
-#       User can specify path if (write_log) = TRUE;
-#       Example: log_path = here::here("data/log/raster_crs_summary.csv")
+# Purpose:         Summarize CRS from raster files (.tif and .bil). The function
+#                  Returns a tibble of CRS given an input directory with raster
+#                  files, and writes a summary log.
 #
-# Input:
-#   - User-defined raster_dir (e.g., "data/processed/prism")
+# Input/Data URLs:
+# - User-defined raster directory (e.g., "data/processed/prism")
 # Output:
-#   - tibble
-#   - Optional: log.csv
+#   - tibble of results
+#   - a log of the CRS for the user-defined raster directory.
 #
 # Dependencies:
-#   - terra        # raster and vector geometric operations
-#   - dplyr        # data manipulation
-#   - purrr        # functional programming tools
-#   - fs           # file operations
-#   - readr        # read rectangular data
+# - dplyr, readr   Data manipulation, input and output.
+# - fs             File operations.
+# - here           Consistent relative paths.
+# - purrr          Functional programming tools.
+# - terra          Raster and vector geometric operations.
 #
-# Notes:
-#   - Milestone 01
+# Helper Functions:
+#
+# Related Milestone Reports:
 #
 # =============================================================================
-
 summarise_raster_crs <- function(
   raster_dir = here::here("data/processed/prism"),
   write_log = TRUE,

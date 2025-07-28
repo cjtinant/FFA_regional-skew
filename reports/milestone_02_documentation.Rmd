@@ -13,7 +13,7 @@ output:
     toc: true
     toc_depth: 2
 params:
-  version: "v1.5"
+  version: "v2.0"
 editor_options:
   markdown:
     wrap: 72
@@ -21,25 +21,27 @@ editor_options:
 
 <!--
 For issues with pdf add #    keep_tex: true
-
-# Description of sections:
-1. Overview: Brief context — why this milestone matters.
-2. Goal: Clear, concise objective for this milestone.
-3. Project Structure: Relevant folders and files
-4. Tasklist: Checkboxes for each task or improvement item.
-5. Next Steps: What follows this milestone — e.g., which milestone will build on this work.
-6. Retrospective Summary: Provides a record of key results and an opportunity to reflect on what was accomplished.
 --> 
 
 # Overview of `r params$version`
+<!--
+Brief context — why this milestone matters
+-->
 This milestone focuses on strengthening project transparency and reproducibility by embedding documentation within analysis folders and formalizing metadata management.
 
 ## Goal
+<!--
+Clear, concise objective for this milestone.
+-->
 Enhance clarity, reproducibility, and maintainability of all project scripts by standardizing documentation headers, comments, and auxiliary files.
 
 \newpage
 
 # Project Structure
+<!--
+Relevant folders and files
+-->
+
 
 ``` text
 FFA_regional-skew/
@@ -63,13 +65,17 @@ FFA_regional-skew/
 ├── reports/                    # Knitted .Rmd/.qmd milestone reports
 ├── results/                    # Manuscript-ready figures, models, and outputs
 ├── sandbox/                    # Staging area for review
-
 ```
 
 # `r params$version` – Improve Script and Metadata Documentation
 
 # `r params$version` Tasklist
-| Step | Task | Status |
+<!--
+Clear, concise objective for this milestone.
+Relevant folders and files
+-->
+
+| Step      | Task                                                    | Status |
 |-----------|------------------------------------------------------------|-----|
 | 2.1 | Standardize header blocks across R scripts                       | [X] |
 | 2.2 | Add `README.md` to each `R/` subfolder                           | [ ] |
@@ -136,7 +142,14 @@ If you’re versioning as you go:
     Tag for milestone completion:
     v1.5.0-docs or v02-complete
 
+# Next Steps
+<!-- What follows this milestone — e.g., which milestone will build on this work.
+-->
+
 # Summary
+<!--
+Retrospective record of key results and an opportunity to reflect on what was
+accomplished.
+-->
+
 This milestone strengthens reproducibility by formalizing internal documentation practices. It includes README templates for `R/` subfolders, a planned data dictionary, and introduces `log_README.md` documentation inside each milestone to clarify roles, assumptions, and outputs.
-
-
