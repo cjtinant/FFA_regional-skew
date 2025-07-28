@@ -3,64 +3,43 @@
 # =======================
 
 # =======================
-# Raster and Vector files
-# =======================
-
-data/raw/
-data/intermediate/
-data/processed/
-data/meta/check_metadata_files
-
-# Output Data (Generated or Large Files)
-# =======================
-
-# Ignore folders used for processing or outputs
-data/delete/
-data/spatial/*
-data/raw/*
-
-# =======================
 # Ignore ArcGIS Pro Artifacts
 # =======================
-
 arcgis_project/*
+
+# ==============================================================
+# Output Data (Generated or Large Files) Raster and Vector files
+# ==============================================================
+data/raw/
+data/processed/
 
 # =======================
 # Ignore generic
+# =======================
 *.zip
-# =======================
-
-# =======================
-# Ignore binary Excel source metadata
-# =======================
-docs/skew_covariates_metadata_v*.xlsx
-
-# =======================
-# Ignore temporary or deprecated folders
-docs/delete_later/
-docs/_old_versions/
-docs/tmp/
-# =======================
-
-# =======================
-# Ignore files not yet in production
-RELEASE_CHECKLIST.Rmd
-# =======================
-
-# =======================
-# Ignore Excel export logs or LaTeX leftovers
-# =======================
 *.log
 *.aux
 *.toc
 *.out
 *.log
-# =======================
+
+# ==================================================================
+# Ignore binary Excel source metadata export logs or LaTeX leftovers
+# ==================================================================
+*.xlsx
+
+# ======================================
+# Ignore temporary or deprecated folders
+# ======================================
+
+# ==================================
+# Ignore files not yet in production
+# ==================================
+RELEASE_CHECKLIST.Rmd
 
 # =======================
 # Ignore General Windows or MacOs cruft
 # =======================
-
 schema.ini
 *.bak
 *.tmp
@@ -71,21 +50,14 @@ schema.ini
 # =======================
 # Ignore RStudio Junk
 # =======================
-
 .Rproj.user/
 .Rhistory
 .RData
 
-# =======================
+# =========================================
 # Ignore Temporary files to delete on final
-# =======================
-
+# =========================================
 delete/
 prior-maps/
 notebooks/
 sandbox/
-
-
-
-
-
