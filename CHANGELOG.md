@@ -1,10 +1,11 @@
 Changelog
 ================
 CJ Tinant
-2025-07-22
+2025-07-28
 
 - [Changelog](#changelog)
   - [\[Unreleased\]](#unreleased)
+  - [\[v1.5.0\] — 2025-07-28](#v150--2025-07-28)
   - [\[v1.4.8\] — 2025-07-22](#v148--2025-07-22)
   - [\[v1.4.0\] - 2025-07-22](#v140---2025-07-22)
   - [\[v1.3.0\] - 2025-06-30](#v130---2025-06-30)
@@ -24,11 +25,39 @@ Changelog](https://keepachangelog.com/) format.*
 
 ## \[Unreleased\]
 
+### In Progress
+
+- Milestone 2.3: Ensure all scripts are self-contained
+
+## \[v1.5.0\] — 2025-07-28
+
 ### Added
+
+- README.pdf and README.md in `notes/`
+- README.pdf and README.md in `reports/`
+- README.pdf and README.md in `R/01_download/`
+- README.pdf and README.md in `R/02_clean_validate/`
 
 ### Changed
 
-### In Progress
+- Standardized script headers in `R/01_download/`, `R/02_clean_verify/`,
+  and `R/utils/`
+- Integrated `notes/future_milestones.md` into
+  `notes/script-notes_and_developer-log.md`
+- Emptied `sandbox/` and migrated remaining files to `notes/to_process/`
+- Reorganized `reports/`:
+  - Moved pilot project files to `reports/20250415_pilot/`
+  - Moved milestone reports to `reports/milestones/`
+- Reorganized `results/` by moving pilot outputs to
+  `results/20250415_pilot/`
+
+### Completed Milestones
+
+- **Milestone 2.1**: Improve script and metadata documentation for
+  spatial downloads
+- **Milestone 2.2**: Document QA of tabular and raster input files
+
+------------------------------------------------------------------------
 
 ## \[v1.4.8\] — 2025-07-22
 

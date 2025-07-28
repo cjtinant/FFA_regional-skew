@@ -18,30 +18,35 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 
 ## [Unreleased]
 
+### In Progress
+
+- Milestone 2.3: Ensure all scripts are self-contained
+
+## [v1.5.0] — 2025-07-28
+
 ### Added
 
 - README.pdf and README.md in `notes/`
 - README.pdf and README.md in `reports/`
-- README.pdf and README.md in ` R/01_download`
-- README.pdf and README.md in ` R/02_clean_validate`
+- README.pdf and README.md in `R/01_download/`
+- README.pdf and README.md in `R/02_clean_validate/`
 
 ### Changed
 
-- Standardized header scripts in `R/01_downloads`, `R/02_clean_verify`, and
-`R/utils`.
+- Standardized script headers in `R/01_download/`, `R/02_clean_verify/`, and `R/utils/`
+- Integrated `notes/future_milestones.md` into `notes/script-notes_and_developer-log.md`
+- Emptied `sandbox/` and migrated remaining files to `notes/to_process/`
+- Reorganized `reports/`:
+  - Moved pilot project files to `reports/20250415_pilot/`
+  - Moved milestone reports to `reports/milestones/`
+- Reorganized `results/` by moving pilot outputs to `results/20250415_pilot/`
 
-- Integrated `notes/future_milestones` into `notes/script-notes_and_developer-log`.
+### Completed Milestones
 
-- Emptied `sandbox/` moving a few files to `notes/to_process`.
+- **Milestone 2.1**: Improve script and metadata documentation for spatial downloads
+- **Milestone 2.2**: Document QA of tabular and raster input files
 
-- Organized `reports/` by moving abstract and posterdown files related to the
-pilot project to `reports/20250415_pilot` and moving milestone reports to
-`reports/milestones`.
-
-- Organized `results/` by moving files related to the pilot project to
-`results/20250415_pilot`.
-
-### In Progress
+---
 
 ## [v1.4.8] — 2025-07-22
 
