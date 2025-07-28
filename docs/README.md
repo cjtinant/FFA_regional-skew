@@ -1,7 +1,7 @@
-README
+README - docs/
 ================
-CJ Tinant
-2025-07-22
+C.J. Tinant
+July 28, 2025
 
 - [📁 Project Documentation
   (`docs/`)](#file_folder-project-documentation-docs)
@@ -17,7 +17,15 @@ Materials here are designed to be human-readable, versioned, and
 referenceable in publications, milestone reports, or modeling scripts.
 This folder complements the `reports/` folder, which contains
 milestone-specific logs, exploratory notes, and in-progress `.Rmd`
-analysis files.
+analysis files, and the `notes\` folder, which captures personal working
+notes, half-baked ideas, research summaries, TODOs, meeting logs,
+back-of-the-envelope calculations, etc.
+
+| Folder | Analogy | Example Use Case |
+|----|----|----|
+| `notes/` | **Field notebook** or scratchpad | Write a note on why GAM residuals were messy |
+| `docs/` | **Lab manual** or internal wiki | Atore raster metadata and covariate inventories |
+| `reports/` | **Final paper/poster/report** | Generate a posterdown PDF for AGU |
 
 ------------------------------------------------------------------------
 

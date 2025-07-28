@@ -1,5 +1,5 @@
 # =============================================================================
-# Script Name:     02e_extract_metadata_from_script_names.R
+# Script Name:     02d_extract_metadata_from_script_names.R
 # Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-07-01
 # Last Updated:    2025-07-25
@@ -15,9 +15,9 @@
 # Workflow Summary:
 # 1. List scripts in R/01_download/
 # 2. Extract script metadata step_id, dataset name
-# 3 Standardize dataset names using a manual lookup table
-# 4 Add last modified time from file info
-# 5 Output tracker as CSV
+# 3. Standardize dataset names using a manual lookup table
+# 4. Add last modified time from file info
+# 5. Output tracker as CSV
 #
 # Input/Data URLs:
 #   - R/01_download/*.R

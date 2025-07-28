@@ -16,21 +16,30 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 
 ---
 
-
 ## [Unreleased]
 
 ### Added
 
-- README.md in `notes/`
+- README.pdf and README.md in `notes/`
+- README.pdf and README.md in `reports/`
+- README.pdf and README.md in ` R/01_download`
+- README.pdf and README.md in ` R/02_clean_validate`
 
 ### Changed
 
 - Standardized header scripts in `R/01_downloads`, `R/02_clean_verify`, and
 `R/utils`.
 
-- Integrated `notes/future_milestones` into `notes/script-notes_and_developer-log`
+- Integrated `notes/future_milestones` into `notes/script-notes_and_developer-log`.
 
-- Moved `var-select_stats.xlsx` to `sandbox/`
+- Emptied `sandbox/` moving a few files to `notes/to_process`.
+
+- Organized `reports/` by moving abstract and posterdown files related to the
+pilot project to `reports/20250415_pilot` and moving milestone reports to
+`reports/milestones`.
+
+- Organized `results/` by moving files related to the pilot project to
+`results/20250415_pilot`.
 
 ### In Progress
 
