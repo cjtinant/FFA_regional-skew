@@ -65,4 +65,4 @@ reports/
 |:--:|:--:|
 | `milestone_00_project_structure_refact.pdf` | Project structure refactor |
 | `milestone_01_download_prepare_covariates.pdf` | Acquire and validate data |
-| `milestone_02_documentation.md` | Embed documentation within analysis folders and formalize metadata management |
+| `milestone_02_documentation.pdf` | Embed documentation within analysis folders and formalize metadata management |

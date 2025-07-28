@@ -6,6 +6,7 @@ July 28, 2025
 - [📁 Project Documentation
   (`notes/`)](#file_folder-project-documentation-notes)
   - [📚 Folder Purpose](#books-folder-purpose)
+  - [🗂️ Subfolders](#card_index_dividers-subfolders)
   - [📄 Key Contents](#page_facing_up-key-contents)
 
 # 📁 Project Documentation (`notes/`)
@@ -26,8 +27,18 @@ The `notes/` directory serves as a centralized archive for:
 
 ------------------------------------------------------------------------
 
+## 🗂️ Subfolders
+
+The `data/` folder is organized as follows:
+
+``` plaintext
+
+notes/
+    ├── to_process           # notes in docx doc format to incorporate in future
+```
+
 ## 📄 Key Contents
 
 | File | Description |
 |:--:|:--:|
-| `script-notes_and_developer-log.md` | Implementation notes, design decisions, and development comments |
+| `script-notes_and_developer-log.pdf` | Implementation notes, design decisions, and development comments |
