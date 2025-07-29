@@ -20,6 +20,19 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 
 ### In Progress
 
+
+### Changed
+
+- Standardized documentation workflow by ensuring consistent use of `.Rmd` and `.md` files across all major project folders.
+  - Added or updated `README.Rmd` files to document workflows in `R/`, `data/`, `notes/`, and `reports/`.
+  - Knitted corresponding `README.md` files for GitHub-friendly rendering.
+  - Removed outdated `.md` files that were not backed by `.Rmd` sources.
+  - Verified reproducibility and knit-cleanliness of all `.Rmd` files.
+
+### Completed Milestones
+
+- **Milestone 2.5**: Ensure all scripts are self-contained
+
 ## [v1.5.1] — 2025-07-29
 
 ### Added
