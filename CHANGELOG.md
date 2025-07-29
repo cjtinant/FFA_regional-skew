@@ -1,10 +1,13 @@
 Changelog
 ================
 CJ Tinant
-2025-07-28
+2025-07-29
 
 - [Changelog](#changelog)
-  - [\[Unreleased\]](#unreleased)
+  - [\[Untracked\]](#untracked)
+  - [\[v1.5.3\] — 2025-07-29](#v153--2025-07-29)
+  - [\[v1.5.2\] — 2025-07-29](#v152--2025-07-29)
+  - [\[v1.5.1\] — 2025-07-29](#v151--2025-07-29)
   - [\[v1.5.0\] — 2025-07-28](#v150--2025-07-28)
   - [\[v1.4.8\] — 2025-07-22](#v148--2025-07-22)
   - [\[v1.4.0\] - 2025-07-22](#v140---2025-07-22)
@@ -23,11 +26,72 @@ Changelog](https://keepachangelog.com/) format.*
 
 ------------------------------------------------------------------------
 
-## \[Unreleased\]
+## \[Untracked\]
 
 ### In Progress
 
-- Milestone 2.3: Ensure all scripts are self-contained
+## \[v1.5.3\] — 2025-07-29
+
+### Changed
+
+- Linked folder-level `README.Rmd` and `log_README.Rmd` files to project
+  milestones for improved documentation traceability.
+- Added milestone references to `R/log_README.Rmd` based on recent
+  updates (Milestone 2.3).
+
+## \[v1.5.2\] — 2025-07-29
+
+### Added
+
+- `log_README.Rmd` to `R/` for tracking script-level changes and
+  workflow decisions.
+- `log_README.Rmd` to `data/processed/` for documenting processed
+  dataset origins, transformations, and spatial coverage.
+- Initial log entries based on recent work in Milestones 2.2 and 2.3.
+- Folder-level conventions and documentation practices to improve
+  transparency and reproducibility.
+
+### Changed
+
+- Standardized documentation workflow by ensuring consistent use of
+  `.Rmd` and `.md` files across all major project folders.
+  - Added or updated `README.Rmd` files to document workflows in `R/`,
+    `data/`, `notes/`, and `reports/`.
+  - Knitted corresponding `README.md` files for GitHub-friendly
+    rendering.
+  - Removed outdated `.md` files that were not backed by `.Rmd` sources.
+  - Verified reproducibility and knit-cleanliness of all `.Rmd` files.
+
+### Completed Milestones
+
+- **Milestone 2.5**: Review `docs/metadata` covariates
+- **Milestone 2.6**: Standardize use of `.Rmd` and `.md` for all folders
+- **Milestone 2.7**: Develop `log_README.md` templates in `R/` and
+  `data/`
+
+## \[v1.5.1\] — 2025-07-29
+
+### Added
+
+- Created `DESCRIPTION` file to document base project dependencies.
+- Initialized `renv` and snapshot to create `renv.lock` for reproducible
+  package versions.
+- Cleaned syntax issues in `01g_download_nhdplus_hr_catchments.R` and
+  `02a_merge_nhdplus_hr_flowlines.R` flagged by `renv::init()`.
+- Updated all active packages in `renv.lock` via `renv::snapshot()`.
+
+### Changed
+
+- Updated script headers in affected `.R` files to remove trailing
+  commas and clarify `file.path()` usage.
+- Updated Milestone 02 documentation to include reproducibility tools.
+- Updated scripts to use here() for all file paths, applied tidyverse
+  style with {styler}, minimized hard-coded paths.
+
+### Completed Milestones
+
+- **Milestone 2.3**: Ensure all scripts are self-contained
+- **Milestone 2.4**: Review document dependencies
 
 ## \[v1.5.0\] — 2025-07-28
 
