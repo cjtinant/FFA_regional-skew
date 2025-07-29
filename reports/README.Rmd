@@ -13,7 +13,7 @@ output:
     latex_engine: xelatex
     fig_caption: true
 params:
-  version: "v1.4.8"
+  version: "v1.5.1"
 editor_options:
   markdown:
     wrap: 72
