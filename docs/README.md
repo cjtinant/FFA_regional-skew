@@ -1,7 +1,7 @@
 README - docs/
 ================
 C.J. Tinant
-July 28, 2025
+July 29, 2025
 
 - [📁 Project Documentation
   (`docs/`)](#file_folder-project-documentation-docs)
@@ -12,14 +12,13 @@ July 28, 2025
 # 📁 Project Documentation (`docs/`)
 
 This folder contains supporting documents, workflow references, and
-metadata guides related to the **Regional Skew Estimation** project.
-Materials here are designed to be human-readable, versioned, and
-referenceable in publications, milestone reports, or modeling scripts.
-This folder complements the `reports/` folder, which contains
-milestone-specific logs, exploratory notes, and in-progress `.Rmd`
-analysis files, and the `notes\` folder, which captures personal working
-notes, half-baked ideas, research summaries, TODOs, meeting logs,
-back-of-the-envelope calculations, etc.
+metadata guides. Materials here are designed to be human-readable,
+versioned, and referenceable in publications, milestone reports, or
+modeling scripts. This folder complements the `reports/` folder, which
+contains milestone-specific logs, exploratory notes, and in-progress
+`.Rmd` analysis files, and the `notes\` folder, which captures personal
+working notes, half-baked ideas, research summaries, TODOs, meeting
+logs, back-of-the-envelope calculations, etc.
 
 | Folder | Analogy | Example Use Case |
 |----|----|----|
@@ -34,14 +33,10 @@ back-of-the-envelope calculations, etc.
 The `docs/` directory serves as a centralized archive for:
 
 - Project workflows and process documentation
-
 - Metadata crosswalks and data dictionaries
-
 - Proposal materials and final report drafts
-
 - README-style files that describe the contents or purpose of other
   folders
-
 - Files referenced in `.Rmd`, Quarto, or PDF outputs
 
 ------------------------------------------------------------------------

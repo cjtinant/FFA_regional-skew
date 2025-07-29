@@ -1,7 +1,7 @@
 README - reports/
 ================
 C.J. Tinant
-July 28, 2025
+July 29, 2025
 
 - [📁 Project Documentation
   (`reports/`)](#file_folder-project-documentation-reports)
@@ -14,6 +14,16 @@ July 28, 2025
 Formal results for external stakeholders. This folder contains final
 deliverables or near-final outputs to potentially share with reviewers,
 PIs, funders, or journals.
+
+The `milestones\` folder contains reports of the purpose and expected
+outcome of a project step. Milestone reports are short project
+management captions that answer:
+
+    “What is this milestone for, and what will be completed when it’s done?”
+
+Reports in the `milestones` folder include discussion of the goal or
+question being answered, key tasks or processes, expected outputs, and
+dependencies or what the milestone builds on.
 
 ------------------------------------------------------------------------
 
@@ -34,16 +44,6 @@ The `reports/` directory serves as a centralized archive for:
 ------------------------------------------------------------------------
 
 ## 🗂️ Subfolders
-
-The `milestones\` folder contains reports of the purpose and expected
-outcome of a project step. Milestone reports are short project
-management captions that answer:
-
-    “What is this milestone for, and what will be completed when it’s done?”
-
-Reports in the `milestones` folder include discussion of the goal or
-question being answered, key tasks or processes, expected outputs, and
-dependencies or what the milestone builds on.
 
 The `reports/` folder is organized as follows:
 

@@ -1,18 +1,16 @@
-README
+README - data
 ================
 CJ Tinant
-2025-07-21
+July 29, 2025
 
-- [README](#readme)
-- [📁 Project Data (`data/`)](#-project-data-data)
-  - [📚 Folder Purpose](#-folder-purpose)
-  - [🗂️ Subfolders](#️-subfolders)
+- [📁 Project Data (`data/`)](#file_folder-project-data-data)
+  - [📚 Folder Purpose](#books-folder-purpose)
+  - [🗂️ Subfolders](#card_index_dividers-subfolders)
 
 # 📁 Project Data (`data/`)
 
-This folder contains raw and processed data and supporting documents
-related to the **Regional Skew Estimation** project. Processed data are
-projected to a consistent geospatial format.
+This folder contains raw and processed data and supporting. Processed
+data are projected to a consistent geospatial format.
 
 ------------------------------------------------------------------------
 

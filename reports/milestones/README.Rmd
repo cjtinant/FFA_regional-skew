@@ -1,0 +1,56 @@
+---
+title: "README - reports/milestones/"
+author: "C.J. Tinant"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  github_document:
+    toc: true
+    toc_depth: 2
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    latex_engine: xelatex
+    fig_caption: true
+params:
+  version: "v1.5.1"
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+# 📁 Project Documentation (`milestones/`)
+
+The `milestones\` folder contains reports of the purpose and expected outcome of
+a project step. Milestone reports are short project management captions that
+answer:
+
+    “What is this milestone for, and what will be completed when it’s done?”
+
+Reports in the `milestones` folder include discussion of the goal or question
+being answered, key tasks or processes, expected outputs, and dependencies or
+what the milestone builds on.
+
+---
+
+## 🔖 Structure Overview
+
+```{r table_of_scripts,message=FALSE,echo=FALSE,results='asis'}
+
+library(knitr)
+library(kableExtra)
+library(tidyverse)
+
+script_index <- tribble(
+  ~`Subfolder / File`, ~Purpose,
+  "milestone_00_project_structure_refactor", "Documents major project refactor to improve clarity, modularity, and reproducibility using milestones and standard naming conventions. Tracks structured covariate metadata development", "milestone_01_download_prepare_covariates", "Documents covariate acquisition, validation, and preparation", "milestone_02_documentation", "Documents embedding documentation within analysis folders and formalizing metadata management"
+)
+
+kbl(script_index, format = "latex", booktabs = TRUE, caption = "Script Index") %>%
+  kable_styling(latex_options = c("hold_position", "scale_down")) %>%
+  column_spec(2, width = "12.0cm")
+
+```
+
+---
+

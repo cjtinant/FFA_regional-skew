@@ -80,12 +80,12 @@ Relevant folders and files
 | 2.1 | Standardize header blocks across R scripts                       | [X] |
 | 2.2 | Add `README.md` to each `R/` subfolder                           | [X] |
 | 2.3 | Ensure all scripts are self-contained                            | [X] |
-| 2.4 | Review document dependencies                                     | [ ] |
-| 2.5 | Review `data/meta/data_dictionary.csv` to define covariates      | [ ] |
+| 2.4 | Review document dependencies                                     | [X] |
+| 2.5 | Review `docs/metadata` covariates                                | [X] |
 | 2.6 | Standardize use of `.Rmd` and `.md` for all folders              | [ ] |
 | 2.7 | Develop `log_README.md` templates to include in `R/` and `data/` | [ ] |
 | 2.8 | Link README-style metadata to milestone logs                     | [ ] |
-| 2.9 | Commit and push changes as tag `v2.9-docs-enhancement`           | [ ] |
+| 2.9 | Commit and push changes as tag `v1.6-docs-enhancement`           | [ ] |
 
 ## Description of Tasks Completed or In Progress
 
@@ -126,7 +126,27 @@ The README should include the following:
 - Ensure that each script lists required packages
 - Consider using a renv or DESCRIPTION file for reproducibility
 
-### 2.5 Improve inline comments:
+| 2.4 | Review document dependencies                                     | [X] |
+| 2.5 |     | [X] |
+| 2.6 | Standardize use of `.Rmd` and `.md` for all folders              | [ ] |
+
+
+### 2.5 Review `docs/metadata` covariates
+The file `docs/data_dictionary.pdf` summarizes `docs/metadata/descriptions/covariate_metadata_vxx.csv`
+
+Check the following items exist:
+-  Variable names
+-  Descriptions
+-  Units
+- Data types
+- Possible value ranges
+- Notes about relevance, quality, or source
+
+
+
+
+
+Improve inline comments:
 
 - Add clarifying comments to non-obvious code
 - Remove commented-out legacy code unless justified

@@ -16,15 +16,30 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 
 ---
 
-## [Unreleased]
-
-### Added
-
-### Changed
+## [Untracked]
 
 ### In Progress
 
+## [v1.5.1] — 2025-07-29
 
+### Added
+
+- Created `DESCRIPTION` file to document base project dependencies.
+- Initialized `renv` and snapshot to create `renv.lock` for reproducible package versions.
+- Cleaned syntax issues in `01g_download_nhdplus_hr_catchments.R` and `02a_merge_nhdplus_hr_flowlines.R` flagged by `renv::init()`.
+- Updated all active packages in `renv.lock` via `renv::snapshot()`.
+
+### Changed
+
+- Updated script headers in affected `.R` files to remove trailing commas and clarify `file.path()` usage.
+- Updated Milestone 02 documentation to include reproducibility tools.
+- Updated scripts to use here() for all file paths, applied tidyverse style with
+{styler}, minimized hard-coded paths.
+
+### Completed Milestones
+
+- **Milestone 2.3**: Ensure all scripts are self-contained
+- **Milestone 2.4**: Review document dependencies
 
 ## [v1.5.0] — 2025-07-28
 
@@ -45,14 +60,11 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
   - Moved milestone reports to `reports/milestones/`
 - Reorganized `results/` by moving pilot outputs to `results/20250415_pilot/`
 
-- Updated scripts to use here() for all file paths, applied tidyverse style with
-{styler}, minimize hard-coded paths or variables.
-
 ### Completed Milestones
 
 - **Milestone 2.1**: Improve script and metadata documentation for spatial downloads
 - **Milestone 2.2**: Document QA of tabular and raster input files
-- **Milestone 2.3**: Ensure all scripts are self-contained
+
 ---
 
 ## [v1.4.8] — 2025-07-22

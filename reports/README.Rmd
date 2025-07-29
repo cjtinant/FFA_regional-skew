@@ -3,15 +3,15 @@ title: "README - reports/"
 author: "C.J. Tinant"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
-  github_document:
-    toc: true
-    toc_depth: 2
   pdf_document:
     toc: true
     toc_depth: 2
     number_sections: true
     latex_engine: xelatex
     fig_caption: true
+  github_document:
+    toc: true
+    toc_depth: 2
 params:
   version: "v1.5.1"
 editor_options:
@@ -46,16 +46,6 @@ The `reports/` directory serves as a centralized archive for:
 \newpage
 
 ## 🗂️ Subfolders
-
-The `milestones\` folder contains reports of the purpose and expected outcome of
-a project step. Milestone reports are short project management captions that
-answer:
-
-    “What is this milestone for, and what will be completed when it’s done?”
-
-Reports in the `milestones` folder include discussion of the goal or question
-being answered, key tasks or processes, expected outputs, and dependencies or
-what the milestone builds on.
 
 The `reports/` folder is organized as follows:
 

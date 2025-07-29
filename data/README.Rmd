@@ -1,19 +1,29 @@
 ---
-title: "README"
+title: "README - data"
 author: "CJ Tinant"
-date: "`r Sys.Date()`"
-output: 
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    latex_engine: xelatex
+    fig_caption: true
   github_document:
     toc: true
-    toc_depth: 3
+    toc_depth: 2
+params:
+  version: "v1.5.1"
+editor_options:
+  markdown:
+    wrap: 72
 ---
 
 
 # 📁 Project Data (`data/`)
 
-This folder contains raw and processed data and supporting documents related
-to the **Regional Skew Estimation** project. Processed data are projected to
-a consistent geospatial format.
+This folder contains raw and processed data and supporting. Processed data are
+projected to a consistent geospatial format.
 
 ---
 
@@ -22,12 +32,10 @@ a consistent geospatial format.
 The `data/` directory serves as a centralized archive for:
 
 - QAQC logs in `data/logs/`
-
 - Metadata in xml format in `data/meta/`
-
 - Processed data in `data/processed/`
-
 - Raw data downloads in `data/raw/`
+
 ---
 
 ## 🗂️ Subfolders

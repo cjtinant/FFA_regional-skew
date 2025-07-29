@@ -1,0 +1,75 @@
+---
+title: "README - R/"
+author: "C.J. Tinant"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  github_document:
+    toc: true
+    toc_depth: 2
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    latex_engine: xelatex
+    fig_caption: true
+params:
+  version: "v1.5.1"
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+# 📁 Project Documentation (`R/`)
+
+The `R/` directory contains all R scripts used in the end-to-end workflow of this project. Scripts are organized by milestone and task category to ensure clarity, reproducibility, and modularity.
+
+Each subfolder or script corresponds to a specific phase in the data pipeline, from raw data download to modeling and final outputs. All scripts are written in {tidyverse} style, use relative paths via {here}, and follow consistent documentation and naming conventions.
+
+---
+
+## 🔖 Structure Overview
+
+| Subfolder / File     | Purpose       |
+| -------------------- | ------------------------------------------------ |
+| `01_download/`       | Download raw data (e.g., USGS gage data, climate normals, terrain)    |
+| `02_clean_validate/` | Validate, filter, and preprocess raw data into modeling-ready formats |
+| `03_covariates/`  | Extract covariates |
+| `04_explore_model/`  | Exploratory modeling, collinearity checks, and initial model fitting  |
+| `05_final_model/`    | Final model selection,  generation  |
+| `06_eval/`    | Model evaluation, and prediction surface |
+| `utils/`             | Shared utility functions used across scripts  |
+| `*_setup.R`          | (Optional) Project-wide setup scripts (e.g., library loading, options)  |
+
+---
+
+## 🔖 Script Documentation
+
+Each major subfolder includes a README.Rmd and README.md that describe:
+
+- Input and output files
+- Dependencies
+- Workflow summary
+- Script-specific notes
+
+Each script begins with a standardized header block including:
+
+- Script name, purpose, author, and changelog
+- Inputs and outputs
+- Required packages
+
+
+---
+
+## 🧭 Conventions
+
+- File names use a numeric prefix (e.g., 01a_download_usgs_gages.R) for ordering
+- Use of here::here() for all file paths ensures portability
+- Outputs are written to data/processed/ or data/derived/ with clear filenames
+- Scripts are written to be reproducible and modular (no hard-coded paths or state)
+
+---
+
+## ✅ Reproducibility Notes
+
+- Ensure the project environment is managed via {renv}
+- Scripts are intended to run independently if inputs are present
