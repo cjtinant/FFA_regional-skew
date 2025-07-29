@@ -1,0 +1,73 @@
+---
+title: "Milestone 03 — Prepare Covariates and Modeling Dataset"
+output: github_document
+---
+
+# 🎯 Milestone 03 — Prepare Covariates and Modeling Dataset
+
+**Goal:**
+Clean, join, and document covariate data for modeling station skew values. Ensure all numeric predictors are harmonized, standardized, and traceable.
+
+---
+
+## ✅ Objectives
+
+1. Organize covariate files from climate, terrain, and land cover sources.
+2. Standardize variable names and units for modeling compatibility.
+3. Join covariates to site locations (`site_no`, `latitude`, `longitude`).
+4. Handle missing values with clear rules and documentation.
+5. Create modeling-ready dataset in `data/derived/`.
+6. Document updated data dictionary and metadata.
+7. Begin exploratory modeling prep (e.g., correlation, distributions, scaling).
+
+---
+
+## 📁 Expected Outputs
+
+- `data/derived/skew_modeling_dataset.csv`
+- `data/meta/data_dictionary.csv` (updated with covariates)
+- `data/meta/README_covariates.md`
+- Updated logs in:
+  - `data/processed/log_README.Rmd`
+  - `R/log_README.Rmd`
+
+---
+
+## 🔧 Key Scripts
+
+- `03a_join_covariates.R`
+- `03b_clean_covariates.R`
+- `03c_check_missing_covariates.R`
+- `03d_create_modeling_dataset.R`
+
+---
+
+## 🧠 Notes
+
+- Use modeling-friendly standardized names (e.g., `ppt_ann_mm`, `tmean_jan_C`, `slope_pct`).
+- Move `site_no`, `latitude`, `longitude` fields to the front of the dataset.
+- Track variables dropped due to collinearity or missingness.
+- Log all transformation and filtering rules in script headers and `log_README.Rmd`.
+
+---
+
+## 🔖 Target Version(s)
+
+- Version: **v1.6.0–v1.6.x** for primary milestone tasks  
+- Follow-up work may extend into **v1.7.x** (exploratory modeling setup)
+
+---
+
+## 📝 Task Checklist
+
+- [ ] Clean and stack covariate rasters
+- [ ] Join raster data to site coordinates
+- [ ] Standardize column names and units
+- [ ] Remove unnecessary or problematic variables
+- [ ] Save modeling-ready `.csv` to `data/derived/`
+- [ ] Update data dictionary and README files
+- [ ] Write log entries in `log_README.Rmd`
+- [ ] Tag release `v1.6.0`
+
+
+

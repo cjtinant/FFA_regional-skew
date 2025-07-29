@@ -20,12 +20,25 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 
 ### In Progress
 
+### Added
+- `milestone_03_prepare_covariates.Rmd` in `reports/milestones/`
+- `data/covariates/` folder for joined covariates
+
+### Changed
+- Moved legacy `03_covariate` scripts to `sandbox`
+
 ## [v1.5.3] — 2025-07-29
 
 ### Changed
 
 - Linked folder-level `README.Rmd` and `log_README.Rmd` files to project milestones for improved documentation traceability.
 - Added milestone references to `R/log_README.Rmd` based on recent updates (Milestone 2.3).
+
+### Completed Milestones
+- **Milestone 2.8**: Standardize use of `.Rmd` and `.md` for all folders
+- **Milestone 2.9**: Develop `log_README.md` templates in `R/` and `data/`
+
+**This closes Milestone 2**
 
 ## [v1.5.2] — 2025-07-29
 

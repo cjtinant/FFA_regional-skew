@@ -9,9 +9,9 @@ vector,nhdphr_catchments,gpkg,160,NA,NA
 vector,nhdphr_flowlines,gpkg,160,NA,NA
 vector,nhdplus_v21,gpkg,2,gpkg,2
 raster,nlcd,tif,3,tif,1
-vector,peakflow-gages,NA,NA,csv,1
-vector,peakflow-gages,NA,NA,csv,1
-vector,peakflow-gages,NA,NA,gpkg,1
+vector,peakflow_gages,NA,NA,csv,1
+vector,peakflow_gages,NA,NA,csv,1
+vector,peakflow_gages,NA,NA,gpkg,1
 vector,peakflow_gages,csv,8,NA,NA
 vector,peakflow_gages,csv,1,NA,NA
 vector,peakflow_gages,gpkg,1,NA,NA
