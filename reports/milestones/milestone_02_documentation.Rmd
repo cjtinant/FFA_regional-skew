@@ -3,15 +3,15 @@ title: "Milestone 02 – Improve Script and Metadata Documentation"
 author: "C.J. Tinant"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
+  github_document:
+    toc: true
+    toc_depth: 2
   pdf_document:
     toc: true
     toc_depth: 2
     number_sections: true
     latex_engine: xelatex
     fig_caption: true
-  github_document:
-    toc: true
-    toc_depth: 2
 params:
   version: "v1.5.1"
 editor_options:
@@ -82,8 +82,8 @@ Relevant folders and files
 | 2.3 | Ensure all scripts are self-contained                            | [X] |
 | 2.4 | Review document dependencies                                     | [X] |
 | 2.5 | Review `docs/metadata` covariates                                | [X] |
-| 2.6 | Standardize use of `.Rmd` and `.md` for all folders              | [ ] |
-| 2.7 | Develop `log_README.md` templates to include in `R/` and `data/` | [ ] |
+| 2.6 | Standardize use of `.Rmd` and `.md` for all folders              | [X] |
+| 2.7 | Develop `log_README.md` templates to include in `R/` and `data/` | [X] |
 | 2.8 | Link README-style metadata to milestone logs                     | [ ] |
 | 2.9 | Commit and push changes as tag `v1.6-docs-enhancement`           | [ ] |
 
@@ -121,15 +121,13 @@ The README should include the following:
 - Clearly load libraries at top
 - Minimize hard-coded paths or variables
 
-### 2.4 Document dependencies:
+### 2.4 Review Document dependencies:
 
 - Ensure that each script lists required packages
 - Consider using a renv or DESCRIPTION file for reproducibility
-
-| 2.4 | Review document dependencies                                     | [X] |
-| 2.5 |     | [X] |
-| 2.6 | Standardize use of `.Rmd` and `.md` for all folders              | [ ] |
-
+- Add clarifying comments to non-obvious code
+- Remove commented-out legacy code unless justified
+- Cross-reference milestones or related scripts at the top of each file
 
 ### 2.5 Review `docs/metadata` covariates
 The file `docs/data_dictionary.pdf` summarizes `docs/metadata/descriptions/covariate_metadata_vxx.csv`
@@ -142,15 +140,48 @@ Check the following items exist:
 - Possible value ranges
 - Notes about relevance, quality, or source
 
+### 2.6 Standardize use of `.Rmd` and `.md` for all folders
+
+1. Define Purpose for Each Format
+
+  - `.Rmd` = Source file for dynamic documents with embedded R code (used for
+  knitting reports, README files, summaries).
+  - `.md` = Output file (or static version) typically created by knitting an .Rmd
+  or manually written for simple documentation (e.g., GitHub READMEs).
+
+2. Audit Each Folder
+Check folders like `docs/`, `data/`, `notes/`, `reports/`:
+
+  - Is there an `.Rmd` file with analysis, notes, or a README?
+  - Is there a matching .md file? If yes, is it auto-generated?
+  - Is the .md up to date with the `.Rmd`?
+
+🛠️ 3. Standardize Conventions
+
+- Every folder should have a README.Rmd with dynamic content (e.g., script summary, table of outputs).
+- Then, knit it to README.md for GitHub display or static viewing.
+
+🧹 4. Clean Up Inconsistencies
+
+- Remove stale .md files that aren’t backed by an .Rmd.
+
+- Rename files for consistency (e.g., avoid both readme.md and README.md).
+
+- Ensure every .Rmd can knit cleanly and reproducibly to .md.
 
 
+### 2.7 Develop `log_README.md` templates to include in `R/` and `data/`
 
+Create standardized log templates (log_README.md) for documenting changes,
+decisions, and file-level notes within the project R/ and data/ directories.
 
-Improve inline comments:
+The purpose is to act like  a local changelog or activity log specific to that folder to capture:
 
-- Add clarifying comments to non-obvious code
-- Remove commented-out legacy code unless justified
-- Cross-reference milestones or related scripts at the top of each file
+- Script or file additions/removals
+- Data transformations or validation steps
+- Notes about known issues, exceptions, or edits
+- Author/date stamps for transparency
+- Help maintain folder-level traceability for collaborative or long-term projects
 
 ### Suggested Tags and Commit Messages
 

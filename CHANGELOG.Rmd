@@ -20,6 +20,14 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 
 ### In Progress
 
+## [v1.5.1] — 2025-07-29
+
+### Added
+
+- `log_README.Rmd` to `R/` for tracking script-level changes and workflow decisions.
+- `log_README.Rmd` to `data/processed/` for documenting processed dataset origins, transformations, and spatial coverage.
+- Initial log entries based on recent work in Milestones 2.2 and 2.3.
+- Folder-level conventions and documentation practices to improve transparency and reproducibility.
 
 ### Changed
 
@@ -31,7 +39,9 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 
 ### Completed Milestones
 
-- **Milestone 2.5**: Ensure all scripts are self-contained
+- **Milestone 2.5**: Review `docs/metadata` covariates
+- **Milestone 2.6**: Standardize use of `.Rmd` and `.md` for all folders
+- **Milestone 2.7**: Develop `log_README.md` templates in `R/` and `data/`
 
 ## [v1.5.1] — 2025-07-29
 
