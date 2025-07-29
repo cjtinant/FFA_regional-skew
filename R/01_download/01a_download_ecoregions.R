@@ -2,10 +2,12 @@
 # Script Name:     01a_download_ecoregions.R
 # Author: Charles  Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-04-15
-# Last Updated:    2025-06-29
-# Change Log: 
-# - 2025-06-29     Update ecoregions naming
-# - 2025-07-23     Move notes to notes/script-notes_and_developer-log
+# Last Updated:    2025-07-28
+# Change Log:
+# - 2025-06-29     Update ecoregions naming.
+# - 2025-07-23     Move notes to notes/script-notes_and_developer-log.
+# - 2025-07-28     Update script to use {here} consistently;
+#                  Run {styler}
 #
 # Purpose:         This script downloads, processes, and prepares EPA/CEC
 #                  Level I-IV Ecoregion data.
@@ -29,21 +31,17 @@
 #     `data/raw/us_ecoregions`
 #
 # Dependencies:
-# - glue:           string interpolation
-# - here:           consistent relative paths
-# - sf:             handling spatial data
-# - tidyverse:      general data wrangling
-# - units           unit conversion -- to convert from m² to km²
+# - here           consistent relative paths
+# - sf             handling spatial data
+# - tidyverse      general data wrangling
+# - units          unit conversion -- to convert from m² to km²
 #
 # Helper Functions:
 #
 # Related Milestone Reports:
-# - milestone_01_download_prepare_covariates.Rmd
 # - milestone_01_download_prepare_covariates.pdf
 # =============================================================================
 # ----load libraries---
-
-library(glue)
 library(here)
 library(sf)
 library(tidyverse)
@@ -56,39 +54,49 @@ source(here("R/utils/download_data/download_ecoregion_resources.R"))
 # 1. Download zipped archives
 # ------------------------------------------------------------------------------
 # ---- Level 1 Ecoregion Download ----
-file_path  <- "data/raw"     # top-level folder for spatial data
-dir_name   <- "ecoregions"            # subfolder for ecoregions
-zip_name   <- "na_eco_lev01.zip"
-html_name  <- "NA_CEC_Eco_Level1.html"
-lyr_name   <- "NA_CEC_Eco_Level1.lyr"
+file_path <- "data/raw" # top-level folder for spatial data
+dir_name <- "ecoregions" # subfolder for ecoregions
+zip_name <- "na_eco_lev01.zip"
+html_name <- "NA_CEC_Eco_Level1.html"
+lyr_name <- "NA_CEC_Eco_Level1.lyr"
 
 # --- URLs for shapefile (ZIP), metadata (HTML), and layer file (LYR) ---
-zip_url <- paste0("https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/",
-                  "Ecoregions/cec_na/na_cec_eco_l1.zip")
-meta_url <- paste0("https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/",
-                   "Ecoregions/cec_na/NA_CEC_Eco_Level1.htm")
-lyr_url  <- paste0("https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/",
-                   "Ecoregions/cec_na/NA_CEC_Eco_Level1.lyr")
+zip_url <- paste0(
+  "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/",
+  "Ecoregions/cec_na/na_cec_eco_l1.zip"
+)
+meta_url <- paste0(
+  "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/",
+  "Ecoregions/cec_na/NA_CEC_Eco_Level1.htm"
+)
+lyr_url <- paste0(
+  "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/",
+  "Ecoregions/cec_na/NA_CEC_Eco_Level1.lyr"
+)
 
 # --- Local file paths ---
-target_dir <- glue("{here()}/{file_path}/{dir_name}")
-zip_path   <- glue("{target_dir}/{zip_name}")
-html_path  <- glue("{target_dir}/{html_name}")
-lyr_path   <- glue("{target_dir}/{lyr_name}")
-meta_path  <- glue("{target_dir}/{html_name}")
+target_dir <- file.path(here(), file_path, dir_name)
+zip_path <- file.path(target_dir, zip_name)
+html_path <- file.path(target_dir, html_name)
+lyr_path <- file.path(target_dir, lyr_name)
+meta_path <- file.path(target_dir, html_name) # Same as html_path
 
 # --- Create directory, download unzip remove ZIP, download metadata + layer ---
 log_summary <- download_ecoregion_resources(
-  target_dir = here::here("data/raw/us_ecoregions"),
+  target_dir = here("data/raw/us_ecoregions"),
   zip_url =
     "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/na_cec_eco_l1.zip",
-  zip_path   = here::here("data/raw/us_ecoregions/na_eco_lev01.zip"),
-  meta_url <- paste0("https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/",
-                     "ORD/Ecoregions/cec_na/NA_CEC_Eco_Level1.htm"),
-  meta_path  = here::here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.htm"),
-  lyr_url    = paste0("https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com",
-                      "/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level1.lyr"),
-  lyr_path   = here::here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.lyr"),
+  zip_path = here("data/raw/us_ecoregions/na_eco_lev01.zip"),
+  meta_url <- paste0(
+    "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/",
+    "ORD/Ecoregions/cec_na/NA_CEC_Eco_Level1.htm"
+  ),
+  meta_path = here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.htm"),
+  lyr_url = paste0(
+    "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com",
+    "/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level1.lyr"
+  ),
+  lyr_path = here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.lyr"),
   remove_zip = TRUE
 )
 
@@ -96,12 +104,12 @@ log_summary <- download_ecoregion_resources(
 log_summary
 
 # --- Level 2 Ecoregion Download ---
-file_path  <- "data/raw"     # top-level folder for spatial data
-dir_name   <- "ecoregions"            # subfolder for ecoregions
-zip_name   <- "na_eco_lev02.zip"
-html_name  <- "NA_CEC_Eco_Level2.html"
-lyr_name   <- "NA_CEC_Eco_Level2.lyr"
-meta_name  <- "NA_CEC_Eco_Level2.html"
+file_path <- "data/raw" # top-level folder for spatial data
+dir_name <- "ecoregions" # subfolder for ecoregions
+zip_name <- "na_eco_lev02.zip"
+html_name <- "NA_CEC_Eco_Level2.html"
+lyr_name <- "NA_CEC_Eco_Level2.lyr"
+meta_name <- "NA_CEC_Eco_Level2.html"
 
 # --- URLs for shapefile (ZIP), metadata (HTML), and layer file (LYR) ---
 zip_url <- paste0(
@@ -112,44 +120,45 @@ meta_url <- paste0(
   "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com",
   "/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level2.htm"
 )
-lyr_url  <- paste0(
+lyr_url <- paste0(
   "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com",
   "/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level2.lyr"
 )
 
 # --- Local file paths ---
-target_dir <- glue("{here()}/{file_path}/{dir_name}")
-zip_path   <- glue("{target_dir}/{zip_name}")
-html_path  <- glue("{target_dir}/{html_name}")
-lyr_path   <- glue("{target_dir}/{lyr_name}")
-meta_path  <- glue("{target_dir}/{zip_name}")
+target_dir <- file.path(here(), file_path, dir_name)
+zip_path <- file.path(target_dir, zip_name)
+html_path <- file.path(target_dir, html_name)
+lyr_path <- file.path(target_dir, lyr_name)
+meta_path <- file.path(target_dir, html_name) # Same as html_path
 
 # --- Create directory, download + unzip sf, remove ZIP, dl metadata + layer ---
 download_ecoregion_resources(target_dir,
-                             zip_url, zip_path,
-                             meta_url, meta_path,
-                             lyr_url, lyr_path,
-                             remove_zip = FALSE,
-                             log_csv = here::here("data/log/download_log.csv"))
+  zip_url, zip_path,
+  meta_url, meta_path,
+  lyr_url, lyr_path,
+  remove_zip = FALSE,
+  log_csv = here("data/log/download_log.csv")
+)
 
 # --- Check summary ---
 log_summary <- download_ecoregion_resources(
-  target_dir = here::here("data/raw/us_ecoregions"),
-  zip_url    = paste0(
+  target_dir = here("data/raw/us_ecoregions"),
+  zip_url = paste0(
     "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com",
     "/ORD/Ecoregions/cec_na/na_cec_eco_l1.zip"
   ),
-  zip_path   = here::here("data/raw/us_ecoregions/na_eco_lev01.zip"),
-  meta_url   = paste0(
+  zip_path = here("data/raw/us_ecoregions/na_eco_lev01.zip"),
+  meta_url = paste0(
     "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com",
     "/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level1.htm"
   ),
-  meta_path  = here::here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.htm"),
-  lyr_url    = paste(
+  meta_path = here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.htm"),
+  lyr_url = paste(
     "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com",
     "/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level1.lyr"
   ),
-  lyr_path   = here::here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.lyr"),
+  lyr_path = here("data/raw/us_ecoregions/NA_CEC_Eco_Level1.lyr"),
   remove_zip = TRUE
 )
 
@@ -157,12 +166,12 @@ log_summary <- download_ecoregion_resources(
 log_summary
 
 # --- Level 3 Ecoregion Download ---
-file_path  <- "data/raw"     # top-level folder for spatial data
-dir_name   <- "ecoregions"            # subfolder for ecoregions
-zip_name   <- "na_eco_lev03.zip"
-html_name  <- "NA_CEC_Eco_Level3.html"
-lyr_name   <- "NA_CEC_Eco_Level3.lyr"
-meta_name  <- "NA_CEC_Eco_Level3.html"
+file_path <- "data/raw" # top-level folder for spatial data
+dir_name <- "ecoregions" # subfolder for ecoregions
+zip_name <- "na_eco_lev03.zip"
+html_name <- "NA_CEC_Eco_Level3.html"
+lyr_name <- "NA_CEC_Eco_Level3.lyr"
+meta_name <- "NA_CEC_Eco_Level3.html"
 
 # --- URLs for shapefile (ZIP), metadata (HTML), and layer file (LYR) ---
 zip_url <-
@@ -173,50 +182,55 @@ lyr_url <-
   "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/cec_na/NA_CEC_Eco_Level3.lyr"
 
 #  ---Local file paths ---
-target_dir <- glue("{here()}/{file_path}/{dir_name}")
-zip_path   <- glue("{target_dir}/{zip_name}")
-html_path  <- glue("{target_dir}/{html_name}")
-lyr_path   <- glue("{target_dir}/{lyr_name}")
-meta_path  <- glue("{target_dir}/{zip_name}")
+target_dir <- file.path(here(), file_path, dir_name)
+zip_path <- file.path(target_dir, zip_name)
+html_path <- file.path(target_dir, html_name)
+lyr_path <- file.path(target_dir, lyr_name)
+meta_path <- file.path(target_dir, html_name) # Same as html_path
 
 # --- Create directory, download + unzip remove ZIP, dl metadata + layer ---
 log_summary <- download_ecoregion_resources(
-                                            target_dir,
-                                            zip_url, zip_path,
-                                            meta_url, meta_path,
-                                            lyr_url, lyr_path,
-                                            remove_zip = FALSE,
-                                            log_csv = here::here(
-                                                                 "data/log/download_log.csv"))
+  target_dir,
+  zip_url, zip_path,
+  meta_url, meta_path,
+  lyr_url, lyr_path,
+  remove_zip = FALSE,
+  log_csv = here(
+    "data/log/download_log.csv"
+  )
+)
 
 # --- Check summary ---
 log_summary
 
 # --- Level 4 Ecoregion Download ---
-file_path  <- "data/raw"     # top-level folder for spatial data
-dir_name   <- "ecoregions"            # subfolder for ecoregions
+file_path <- "data/raw" # top-level folder for spatial data
+dir_name <- "ecoregions" # subfolder for ecoregions
 zip_name <- "us_eco_lev04.zip"
-html_name  <- "us_epa_Eco_Level4.htm"
-lyr_name   <- "us_epa_Eco_Level4.lyr"
-meta_name  <- "us_epa_Eco_Level4.html"
+html_name <- "us_epa_Eco_Level4.htm"
+lyr_name <- "us_epa_Eco_Level4.lyr"
+meta_name <- "us_epa_Eco_Level4.html"
 
 # --- URLs for shapefile (ZIP), metadata (HTML), and layer file (LYR) ---
-zip_url <- "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/ORD/Ecoregions/us/us_eco_l4.zip"
+zip_url <- paste0(
+  "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com",
+  "/ORD/Ecoregions/us/us_eco_l4.zip"
+)
 meta_url <- paste0(
   "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com",
   "/ORD/Ecoregions/us/Eco_Level_IV_US.html"
 )
-lyr_url  <- paste0(
+lyr_url <- paste0(
   "https://dmap-prod-oms-edc.s3.us-east-1.amazonaws.com/",
   "ORD/Ecoregions/us/Eco_Level_IV_US.lyr"
 )
 
 # --- Local file paths ---
-target_dir <- glue("{here()}/{file_path}/{dir_name}")
-zip_path   <- glue("{target_dir}/{zip_name}")
-html_path  <- glue("{target_dir}/{html_name}")
-lyr_path   <- glue("{target_dir}/{lyr_name}")
-meta_path  <- glue("{target_dir}/{zip_name}")
+target_dir <- file.path(here(), file_path, dir_name)
+zip_path <- file.path(target_dir, zip_name)
+html_path <- file.path(target_dir, html_name)
+lyr_path <- file.path(target_dir, lyr_name)
+meta_path <- file.path(target_dir, html_name) # Same as html_path
 
 # --- Create directory, download + unzip sf, remove ZIP, dl metadata + layer ---
 log_summary <- download_ecoregion_resources(
@@ -225,8 +239,8 @@ log_summary <- download_ecoregion_resources(
   meta_url, meta_path,
   lyr_url, lyr_path,
   remove_zip = FALSE,
-  log_csv = here::here("data/log/download_log.csv")
-)  # nolint: line_length_linter.
+  log_csv = here("data/log/download_log.csv")
+)
 
 # --- check summary ---
 log_summary
@@ -234,10 +248,10 @@ log_summary
 # ------------------------------------------------------------------------------
 # 2. Clip the extent of Ecoregion Level 1 to Level 3 to CONUS extent
 # ------------------------------------------------------------------------------
-file_path  <- "data/raw"     # top-level folder for spatial data
-dir_name   <- "ecoregions"
-file_name  <- "us_eco_l4_no_st.shp"
-target_file <- glue("{here()}/{file_path}/{dir_name}/{file_name}")
+file_path <- "data/raw" # top-level folder for spatial data
+dir_name <- "ecoregions"
+file_name <- "us_eco_l4_no_st.shp"
+target_file <- file.path(here(), file_path, dir_name, file_name)
 
 # --- Read in ecoregions ---
 # Read in the Level 4 shapefile (the "CONUS" extent/boundary)
@@ -247,25 +261,24 @@ terra::crs(level4_usgs_albers)
 level4_albers <- st_transform(level4_usgs_albers, 5070)
 
 #  --- Read in the Level 1–3 ecoregions ---
-file_name  <- "NA_CEC_Eco_Level1.shp"
-target_file <- glue("{here()}/{file_path}/{dir_name}/{file_name}")
+file_name <- "NA_CEC_Eco_Level1.shp"
+target_file <- file.path(here(), file_path, dir_name, file_name)
 level1 <- st_read(target_file)
 
-file_name  <- "NA_CEC_Eco_Level2.shp"
-target_file <- glue("{here()}/{file_path}/{dir_name}/{file_name}")
+file_name <- "NA_CEC_Eco_Level2.shp"
+target_file <- file.path(here(), file_path, dir_name, file_name)
 level2 <- st_read(target_file)
 
-file_name  <- "NA_CEC_Eco_Level3.shp"
-target_file <- glue("{here()}/{file_path}/{dir_name}/{file_name}")
+file_name <- "NA_CEC_Eco_Level3.shp"
+target_file <- file.path(here(), file_path, dir_name, file_name)
 level3 <- st_read(target_file)
 
-# --- Check the CRS to ensure they match; if not, reproject --- 
+# --- Check the CRS to ensure they match; if not, reproject ---
 crs_level4 <- st_crs(level4_albers)$input
 # e.g. might show EPSG:5070
+crs_level1 <- st_crs(level1)$input # might show a Lambert Azimuthal
 
-crs_level1 <- st_crs(level1)$input     # might show a Lambert Azimuthal
-
-# --- Transform levels 1–3 into Level 4’s Albers --- 
+# --- Transform levels 1–3 into Level 4’s Albers ---
 level1_albers <- st_transform(level1, st_crs(level4_albers))
 level2_albers <- st_transform(level2, st_crs(level4_albers))
 level3_albers <- st_transform(level3, st_crs(level4_albers))
@@ -303,21 +316,18 @@ level3_conus <- st_cast(level3_conus, "MULTIPOLYGON")
 # 5.   Recalculate area in sq-km using a common CRS
 # ------------------------------------------------------------------------------
 # --- Drop length and area ---
-level1_conus <- level1_conus  %>% select(-c(Shape_Leng, Shape_Area))
-level2_conus <- level2_conus  %>% select(-c(Shape_Leng, Shape_Area))
-level3_conus <- level3_conus  %>% select(-c(Shape_Leng, Shape_Area))
+level1_conus <- level1_conus %>% select(-c(Shape_Leng, Shape_Area))
+level2_conus <- level2_conus %>% select(-c(Shape_Leng, Shape_Area))
+level3_conus <- level3_conus %>% select(-c(Shape_Leng, Shape_Area))
 level4_conus <- level4_albers %>% select(-c(Shape_Leng, Shape_Area))
 
 # --- Recalculate area ---
 level1_conus <- level1_conus %>%
   mutate(area_km2 = set_units(st_area(.), "km^2") %>% drop_units())
-
 level2_conus <- level2_conus %>%
   mutate(area_km2 = set_units(st_area(.), "km^2") %>% drop_units())
-
 level3_conus <- level3_conus %>%
   mutate(area_km2 = set_units(st_area(.), "km^2") %>% drop_units())
-
 level4_conus <- level4_conus %>%
   mutate(area_km2 = set_units(st_area(.), "km^2") %>% drop_units())
 
@@ -329,26 +339,31 @@ output_dir <- here("data/raw/us_ecoregions")
 
 # --- Write as GeoPackage (UTF-8, clean field names) ---
 st_write(level1_conus,
-         dsn = file.path(output_dir, "us-eco-levels.gpkg"),
-         layer = "us_eco_l1",
-         delete_layer = FALSE)
+  dsn = file.path(output_dir, "us-eco-levels.gpkg"),
+  layer = "us_eco_l1",
+  delete_layer = FALSE
+)
 
 st_write(level2_conus,
-         dsn = file.path(output_dir, "us-eco-levels.gpkg"),
-         layer = "us_eco_l2",
-         delete_layer = FALSE)
+  dsn = file.path(output_dir, "us-eco-levels.gpkg"),
+  layer = "us_eco_l2",
+  delete_layer = FALSE
+)
 
 st_write(level3_conus,
-         dsn = file.path(output_dir, "us-eco-levels.gpkg"),
-         layer = "us_eco_l3",
-         delete_layer = FALSE)
+  dsn = file.path(output_dir, "us-eco-levels.gpkg"),
+  layer = "us_eco_l3",
+  delete_layer = FALSE
+)
 
 st_write(level4_conus,
-         dsn = file.path(output_dir, "us-eco-levels.gpkg"),
-         layer = "us_eco_l4",
-         delete_layer = FALSE)
+  dsn = file.path(output_dir, "us-eco-levels.gpkg"),
+  layer = "us_eco_l4",
+  delete_layer = FALSE
+)
 
 st_write(level4_merged,
-         dsn = file.path(output_dir, "us-eco-levels.gpkg"),
-         layer = "us_eco_l4_merged",
-         delete_layer = FALSE)
+  dsn = file.path(output_dir, "us-eco-levels.gpkg"),
+  layer = "us_eco_l4_merged",
+  delete_layer = FALSE
+)

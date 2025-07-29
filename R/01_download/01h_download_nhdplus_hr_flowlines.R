@@ -2,25 +2,27 @@
 # Script Name:     01h_download_nhdplus_hr_flowlines.R
 # Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-05-19
-# Last Updated:    2025-07-23
+# Last Updated:    2025-07-28
 # Change Log:
 # - 2025-07-13 -   Recreated script that had potentially been deleted. Updated
 #                  file paths to avoid data/intermediate. Updated file names to
 #                  follow a consistent naming pattern. Added reusable naming
 #                  function, enhanced retry filtering, and CLI feedback.
 # - 2025-07-23     Update header information; 
-#                  move notes to `script-notes_and_developer-log`
+#                  move notes to `script-notes_and_developer-log`.
+# - 2025-07-28     Update script to use {here} consistently;
+#                  Run {styler}.
 #
 # Purpose:         Download and validate NHDPlus HR (1:24k) flowlines clipped to
 #                  Level IV Ecoregions of the Great Plains. Includes retry logic
 #                  and diagnostics for problematic AOIs.
 #
 # Workflow Summary:
-# 1. Load Great Plains Level IV ecoregions shapefile
-# 2. Loop through ecoregions and request NHDPlus HR flowlines (WFS)
-# 3. Write each region's result to disk as GeoPackage
-# 4. Log success/failure; retry failed regions with `retry_failed_aoi()`
-# 5. Diagnose geometry issues (e.g., slivers, complex AOIs)
+# 1. Load Great Plains Level IV ecoregions shapefile.
+# 2. Loop through ecoregions and request NHDPlus HR flowlines (WFS).
+# 3. Write each region's result to disk as GeoPackage.
+# 4. Log success/failure; retry failed regions with `retry_failed_aoi()`.
+# 5. Diagnose geometry issues (e.g., slivers, complex AOIs).
 #
 # Input/Data URLs:
 # - https://www.usgs.gov/national-hydrography/nhdplus-high-resolution
@@ -30,21 +32,20 @@
 # - Diagnostics PNG:           data/log/null_aois_diagnostics_facet_map.png
 #
 # Dependencies:
-# - cli            Status updates during downloads
-# - dplyr, readr   Data manipulation and export
-# - fs             File system ops (dir_create)
-# - glue           Interpret string literals
-# - here           Relative path handling
-# - mapview        Visualize results of download
-# - nhdplusTools   Download National Hydrography Dataset Plus (NHDPlus) data
-# - stringr        String operations
-# - sf             Spatial data (simple features)
-# - units          Unit conversion
+# - cli            Status updates during downloads.
+# - dplyr, readr   Data manipulation and export.
+# - fs             File system ops (dir_create).
+# - glue           Interpret string literals.
+# - here           Relative path handling.
+# - mapview        Visualize results of download.
+# - nhdplusTools   Download National Hydrography Dataset Plus (NHDPlus) data.
+# - stringr        String operations.
+# - sf             Spatial data (simple features).
+# - units          Unit conversion.
 #
 # Helper Functions:
 #
-# Related Milestone Reports: 
-# - milestone_01_download_prepare_covariates.Rmd
+# Related Milestone Reports:
 # - milestone_01_download_prepare_covariates.pdf
 # ==============================================================================
 suppressPackageStartupMessages({
@@ -64,11 +65,14 @@ suppressPackageStartupMessages({
 })
 
 # --- Constants ----------------------------------------------------------------
-output_dir <- "data/raw/nhdphr_flowlines/"
-log_file <- "data/log/nhdphr_download_log.csv"
-retry_log_file <- "data/log/nhdphr_retry_log.csv"
-null_summary_csv <- "data/log/null_aoi_summary.csv"
-null_diag_png <- "data/log/null_aois_diagnostics_facet_map.png"
+output_dir <- file.path(here(), "data", "raw", "nhdphr_flowlines")
+log_file <- file.path(here(), "data", "log", "nhdphr_download_log.csv")
+retry_log_file <- file.path(here(), "data", "log", "nhdphr_retry_log.csv")
+null_summary_csv <- file.path(here(), "data", "log", "null_aoi_summary.csv")
+null_diag_png <- file.path(
+  here(), "data", "log", "null_aois_diagnostics_facet_map.png"
+)
+
 default_crs <- 5070
 default_buffer <- 1000
 
@@ -90,8 +94,10 @@ region_name_to_filename <- function(name) {
 }
 
 # --- Load ecoregion boundaries ------------------------------------------------
-eco_lev4 <- st_read("data/processed/us_ecoregions/us-eco-levels.gpkg",
-                    layer = "us_eco_l4", quiet = TRUE)
+
+eco_in <- file.path(
+  here(), "data", "processed", "us_ecoregions", "us-eco-levels.gpkg")
+eco_lev4 <- st_read(eco_in, layer = "us_eco_l4", quiet = TRUE)
 
 log_tbl <- read_csv(log_file, show_col_types = FALSE)
 

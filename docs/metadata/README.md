@@ -3,8 +3,9 @@ Metadata Inventory
 CJ Tinant
 July 18, 2025
 
-- [Table of Contents](#table-of-contents)
-- [Metadata Files in docs/metadata](#metadata-files-in-docsmetadata)
+- [Metadata Inventory](#metadata-inventory)
+  - [Table of Contents](#table-of-contents)
+  - [Metadata Files in docs/metadata](#metadata-files-in-docsmetadata)
 
 <!--
 # Metadata Inventory
@@ -20,6 +21,7 @@ skew modeling workflow.
 ## Table of Contents
 
 - [Metadata Inventory](#metadata-inventory)
+  - [Table of Contents](#table-of-contents)
   - [Metadata Files in docs/metadata](#metadata-files-in-docsmetadata)
 
 ## Metadata Files in docs/metadata
@@ -31,7 +33,7 @@ skew modeling workflow.
 | data-dictionaries | peakflow-gage_data-dictionary_v01.csv | csv | \<1 KB | Peakflow gage site field descriptions |
 | data-dictionaries | peakflow-gage_site-criteria_data-dictionary.csv | csv | 3.2 KB | Peakflow gage site field descriptions |
 | data-dictionaries | statsgo2_data-dictionary_v01.csv | csv | \<1 KB | STATSGO2 map unit polygon field descriptions |
-| data-dictionaries | us-ecoregions_data-dictionary_v03.csv | csv | 1.5 KB | US Ecoregion Level I-IV data dictionary |
+| data-dictionaries | us_ecoregions_data-dictionary_v03.csv | csv | 1.5 KB | US Ecoregion Level I-IV data dictionary |
 | descriptions | covariate_metadata_v082.csv | csv | 24 KB | Descriptions of covariate datasets including notes, resolution, scale, and hierchial group membership |
 | descriptions | ned_data-dictionary-full_2014.pdf | pdf | 346.4 KB | National Elevation Dataset field definitions |
 | descriptions | ned_description.docx | docx | 16.7 KB | National Elevation Dataset data description |
@@ -70,5 +72,5 @@ skew modeling workflow.
 | vector-data-summaries | nhdv21-flowlines_layer_metadata_v01.csv | csv | \<1 KB | NHDplus flowlines spatial metadata |
 | vector-data-summaries | statsgo2_mupolygon_field_metadata_v01.csv | csv | \<1 KB | statsgo2 map unit field metadata |
 | vector-data-summaries | statsgo2_mupolygon_layer_metadata_v01.csv | csv | \<1 KB | statsgo2 map unit spatial metadata |
-| vector-data-summaries | us-ecoregions_field_metadata_v01.csv | csv | \<1 KB | US Ecoregions Level I-IV field metadata |
-| vector-data-summaries | us-ecoregions_layer_metadata_v01.csv | csv | \<1 KB | US Ecoregions Level I-IV spatial metadata |
+| vector-data-summaries | us_ecoregions_field_metadata_v01.csv | csv | \<1 KB | US Ecoregions Level I-IV field metadata |
+| vector-data-summaries | us_ecoregions_layer_metadata_v01.csv | csv | \<1 KB | US Ecoregions Level I-IV spatial metadata |

@@ -2,7 +2,7 @@
 # Script:          inventory_feature_data.R
 # Author:          Charles Jason Tinant — revised with ChatGPT 4o
 # Date Created:    2025-05
-# Last Updated:    2025-07-27
+# Last Updated:    2025-07-28
 # Change Log:
 # - 2025-07-13:    Improved duplicate logic to distinguish catchment and flowline
 #                  files with same base name in different folders
@@ -10,6 +10,7 @@
 # - 2025-07-27     Update header information;
 #                  move notes to `script-notes_and_developer-log`.
 #                  Add `here()` to library call.
+# - 2025-07-28     Run {styler}; Updated header metadata.
 #
 # Purpose: Create an inventory of feature (vector + tabular) files in a directory,
 #          flag duplicates, and write summary tables for review.

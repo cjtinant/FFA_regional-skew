@@ -11,7 +11,7 @@
 #                  into a parallel structure inside `data/raw/archives/`
 #
 # Workflow Summary:
-# 
+#
 # Input/Data URLs:
 # - `data/raw.zip`
 # Outputs:
@@ -60,9 +60,11 @@ move_zip_to_archives <- function(raw_root = here::here("data/raw"),
       total_moved <- total_moved + length(zip_files)
 
       if (verbose) {
-        cli::cli_alert_success(paste0("Moved {length(zip_files)} {file_pattern}",
-                                      "files from {.file {domain_name}} to",
-                                      "{.file archives/{domain_name}}"))
+        cli::cli_alert_success(paste0(
+          "Moved {length(zip_files)} {file_pattern}",
+          "files from {.file {domain_name}} to",
+          "{.file archives/{domain_name}}"
+        ))
       }
     } else if (verbose) {
       cli::cli_alert_info("No {file_pattern} files found in {.file {domain_name}}")

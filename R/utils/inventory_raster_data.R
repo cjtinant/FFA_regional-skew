@@ -13,6 +13,7 @@
 #                  Update output folder location from `~/to_check` to
 #                  `~/docs/metadata/`
 #                  Add `here()` to library call.
+# - 2025-07-28     Run {styler}; Updated header metadata.
 #
 # # Purpose:       Inventory raster files, detect duplicates, and write summary
 #                  CSVs for quality assurance. Optionally archives ZIP files.
@@ -88,15 +89,16 @@ inventory_raster_data <- function(input_dir = "data/raw",
         TRUE ~ "unknown"
       ),
       possible_duplicate = duplicated(basename) | duplicated(basename,
-                                                             fromLast = TRUE),
+        fromLast = TRUE
+      ),
       description = case_when(
-        file_type == "tif"  ~ "GeoTIFF raster",
-        file_type == "bil"  ~ "PRISM binary raster",
-        file_type == "img"  ~ "Erdas Imagine raster",
-        file_type == "hdr"  ~ "ENVI-style header",
-        file_type == "stx"  ~ "Raster stats sidecar",
-        file_type == "hdf"  ~ "Hierarchical Data Format raster",
-        TRUE                ~ "Other raster format"
+        file_type == "tif" ~ "GeoTIFF raster",
+        file_type == "bil" ~ "PRISM binary raster",
+        file_type == "img" ~ "Erdas Imagine raster",
+        file_type == "hdr" ~ "ENVI-style header",
+        file_type == "stx" ~ "Raster stats sidecar",
+        file_type == "hdf" ~ "Hierarchical Data Format raster",
+        TRUE ~ "Other raster format"
       )
     )
 
@@ -109,7 +111,7 @@ inventory_raster_data <- function(input_dir = "data/raw",
 
   # Define output CSV paths
   inventory_path <- path(output_path, "raster_data_inventory.csv")
-  dupes_path     <- path(output_path, "duplicate_raster_data_summary.csv")
+  dupes_path <- path(output_path, "duplicate_raster_data_summary.csv")
 
   # Write CSV summaries
   write_csv(raster_files, inventory_path)

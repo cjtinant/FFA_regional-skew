@@ -1,48 +1,40 @@
 # ==============================================================================
-# Script Name:    01j_download_plant-hardiness-zone-map.R
-# Author: Charles Jason Tinant — with ChatGPT 4o
-# Date Created:   2025-04-15
-# Last Updated:   2025-06-18      # split climate download scripts
+# Script Name:     01j_download_plant-hardiness-zone-map.R
+# Author:          Charles Jason Tinant — with ChatGPT 4o
+# Date Created:    2025-04-15
+# Last Updated:    2025-06-18      # split climate download scripts
+# Change Log:
+# - 2025-06-18     Split climate download scripts
+# - 2025-07-28     Update script to use {here} consistently;
+#                  Run {styler}; Updated header metadata
 #
-# Purpose: Download, processes, and project USDA Plant Hardiness Zone Map (PHZM)
-#
-# Data URLs:
-# -   Plant Hardiness Zones --
-#       https://prism.oregonstate.edu/projects/plant_hardiness_zones.php
+# Purpose: Download, processes, and project USDA Plant Hardiness Zone Map (PHZM).
 #
 # Workflow Summary:
 # 1. Download zipped archives, extract data and organize raster data
 # 2. Reproject rasters to a common CRS (US Albers Equal Area – EPSG:5070)
 # 3. Write results to data/processed
 #
-# Output:
-# Validated climate rasters projected to a common CRS
+# Inputs/Data URLs:
+# - https://prism.oregonstate.edu/projects/plant_hardiness_zones.php
+# Outputs:
+# - Validated climate rasters projected to a common CRS in
 #
-# Related Milestone Reports: 
-# - milestone_01_download_prepare_covariates.Rmd
+# Dependencies:
+# - fs             File system operations
+# - glue           String interpolation
+# - here           Consistent relative paths
+# - httr           Makes http easy
+# - purrr          Functional programming toolkit
+# - sf             Support for simple feature access, a standardized way to
+#                  encode and analyze spatial vector data. Binds to 'GDAL'
+# - terra          Spatial data analysis
+# - tidyverse      Data wrangling & visualization
+#
+# Helper Functions:
+#
+# Related Milestone Reports:
 # - milestone_01_download_prepare_covariates.pdf
-#
-# Dependencies:
-# -   tidyverse::dplyr -   Data manipulation
-# -   fs               -   File system operations
-# -   glue             -   Formats strings
-# -   here             -   Locates files relative to a project root
-# -   httr             -   Tools for working with URLs and HTTP
-# -   sf               -   Support for simple feature access, a standardized way
-#                          to encode and analyze spatial vector data. Binds to
-#                          'GDAL'
-# -   terra            -   Vector and raster data operations
-
-# Dependencies:
-# - fs:            File system operations
-# - glue:          String interpolation
-# - here:          Consistent relative paths
-# - httr:          Makes http easy
-# - purrr:         Functional programming toolkit
-# - sf:            Support for simple feature access, a standardized way to
-#                    encode and analyze spatial vector data. Binds to 'GDAL'
-# - terra:         Spatial data analysis
-# - tidyverse:     Data wrangling & visualization
 # ==============================================================================
 # Load Libraries
 library(fs)
@@ -55,18 +47,15 @@ library(terra)
 library(tidyverse)
 
 # ------------------------------------------------------------------------------
-# 2. # Download and unzip plant hardiness zone map (PHZM)
+# 1. Download and unzip plant hardiness zone map (PHZM)
 # ------------------------------------------------------------------------------
-file_path  <- "data/raw"
-dir_name   <- "phzm"
-zip_name   <- "phzm.zip"
-
-# URLs for shapefile (ZIP), metadata (HTML), and layer file (LYR)
+# --- URLs for shapefile (ZIP), metadata (HTML), and layer file (LYR) ---
 zip_url <- "https://prism.oregonstate.edu/projects/phm_data/phzm_us_grid_2023.zip"
 
-# Local file paths
-target_dir <- glue("{here()}/{file_path}/{dir_name}")
-zip_path   <- glue("{target_dir}/{zip_name}")
+# --- Local file paths ---
+zip_name <- "phzm.zip"
+target_dir <- file.path(here(), "data", "raw", "phzm")
+zip_path <- file.path(target_dir, zip_name)
 
 # Create target directory if it doesn't exist
 dir_create(target_dir, recurse = TRUE)
@@ -79,7 +68,7 @@ if (!file_exists(zip_path)) {
   message("ZIP file already exists: ", zip_path)
 }
 
-# Unzip the contents
+# --- Unzip the ZIP file contents ---
 phzm <- unzip(zip_path, exdir = target_dir)
 message("Unzipped to: ", target_dir)
 
@@ -88,8 +77,8 @@ message("Unzipped to: ", target_dir)
 # ------------------------------------------------------------------------------
 
 # (Re)load raster and check current CRS (should be GCS NAD83)
-
-rast_path <- glue("{target_dir}/phzm_us_grid_2023.bil")
+rast_file <- "phzm_us_grid_2023.bil"
+rast_path <- file.path(target_dir, rast_file)
 r <- rast(rast_path)
 
 r_proj <- project(r, "EPSG:5070", method = "bilinear")
@@ -102,13 +91,10 @@ is_proj_5070 <- grepl("5070", crs_new) || grepl("Conus Albers", crs_new)
 # 3. Write results to data/processed
 # ------------------------------------------------------------------------------
 # Define output path
-file_path  <- "data/processed"
-target_dir <- here(file_path, dir_name)
-
+target_dir <- file.path(here(), "data", "processed", "phzm")
 file_name  <- "phzm.tif"
 out_path   <- file.path(target_dir, file_name)
 
 # Create directory and write file
 dir_create(target_dir, recurse = TRUE)
-
 writeRaster(r_proj, filename = out_path, overwrite = TRUE)

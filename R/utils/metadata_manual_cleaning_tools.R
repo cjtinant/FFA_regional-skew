@@ -2,10 +2,12 @@
 # Script:          metadata_manual_cleaning_tools.R
 # Author:          Charles Jason Tinant — adapted with ChatGPT 4o
 # Date Created:    2025-07-17
-# Last Updated:    2025-07-27
+# Last Updated:    2025-07-28
 # Change Log:
 # - 2025-07-27     Update header information;
 #                  move notes to `script-notes_and_developer-log`
+# - 2025-07-28     Update script to use {here} consistently;
+#                  Run {styler}; Updated header metadata.
 #
 # Purpose:         Manual tools for metadata cleaning.
 #                  Section A: Compare CSV versions of covariate metadata
@@ -14,7 +16,7 @@
 #                  Section B:  Convert TXT to CSV
 #
 # Workflow Summary:
-#    Section A:
+# -- Section A: --
 # 1. Define paths to old and new CSV versions
 # 2. Read and clean both CSV files
 # 3. Reorder and align df_old to match df_new's structure
@@ -22,7 +24,7 @@
 # 5. Compare row-level differences using dplyr anti_join
 # 6. Compare selected variable by name using a join
 # 7. Compare row-level differences using dplyr anti_join
-#    Section B:
+# -- Section B: --
 # 1. Read text file
 # 2. Filter only lines that look like legend entries
 # 3. Extract fields using regex
@@ -31,7 +33,7 @@
 # Input/Data URLs:
 # - User defined
 # Outputs:
-# - User defined to ~/docs/metadata/ 
+# - User defined to ~/docs/metadata/
 #
 # Dependencies:
 # - here           Consistent relative paths
@@ -54,10 +56,14 @@ library(waldo)
 # ------------------------------------------------------------------------------
 # 1. Define paths to old and new CSV versions
 # ------------------------------------------------------------------------------
-old_csv <- here("docs", "metadata",
-                "ecoregion_data-dictionary_v01.csv")
-new_csv <- here("docs", "metadata",
-                "ecoregion_eco_l4_no_st_attributes.csv")
+old_csv <- here(
+  "docs", "metadata",
+  "ecoregion_data-dictionary_v01.csv"
+)
+new_csv <- here(
+  "docs", "metadata",
+  "ecoregion_eco_l4_no_st_attributes.csv"
+)
 
 # ------------------------------------------------------------------------------
 # 2. Read and clean both CSV files
@@ -79,8 +85,7 @@ if (nrow(df_old) < 1) {
   message("⚠️ df_old has 0 rows. Creating NA-filled aligned version.")
 
   df_old_extended <- tibble(!!!setNames(rep(list(NA), length(new_cols)), new_cols)) %>%
-    slice(rep(1, nrow(df_new)))  # Match new's row count
-
+    slice(rep(1, nrow(df_new))) # Match new's row count
 } else {
   # Identify any missing columns
   missing_cols <- setdiff(new_cols, names(df_old))
@@ -133,22 +138,28 @@ compare_metadata_column(df_old, df_new, "notes")
 # 7. Compare row-level differences using dplyr anti_join
 # ------------------------------------------------------------------------------
 # Save aligned old version for inspection
-write_csv(df_old_aligned, here("docs", "metadata", "covariates_metadata_split",
-                               "skew_covariates_metadata_v071.csv"))
+write_csv(df_old_aligned, here(
+  "docs", "metadata", "covariates_metadata_split",
+  "skew_covariates_metadata_v071.csv"
+))
 
 # ==============================================================================
 # Script Section B: Convert TXT to CSV
 # ==============================================================================
 # --- Path to input text file ---
-input_table <- here("docs", "metadata",
-                    "koppen-geiger_legend.txt")
+input_table <- here(
+  "docs", "metadata",
+  "koppen-geiger_legend.txt"
+)
 
 # ------------------------------------------------------------------------------
 # 1. Read text file
 # ------------------------------------------------------------------------------
 # --- Path to input text file ---
-input_table <- here("docs", "metadata",
-                    "koppen-geiger_legend.txt")
+input_table <- here(
+  "docs", "metadata",
+  "koppen-geiger_legend.txt"
+)
 
 # --- Read all lines ---
 legend_lines <- read_lines(input_table)
@@ -179,5 +190,7 @@ legend_df <- data_lines %>%
 # ------------------------------------------------------------------------------
 # 4. Write to CSV
 # ------------------------------------------------------------------------------
-write_csv(legend_df, here("docs", "metadata",
-                          "koppen-geiger_class_legend.csv"))
+write_csv(
+  legend_df,
+  file.path(here(), docs, metadata, koppen - geiger_class_legend.csv)
+)

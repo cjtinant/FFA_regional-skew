@@ -33,7 +33,7 @@ are stored in `data/processed/`. Status codes are described in
 
 | Dataset Name         | Folder Name     | Status Code | Notes |
 |:--------------------:|:---------------:|:-----------:|:-----:|
-| EPA Ecoregions       | us-ecoregions   | 06          | NA    |
+| EPA Ecoregions       | us_ecoregions   | 06          | NA    |
 | Koppen Geiger        | koppen-climate  | 06          | NA    |
 | MODIS 2016 NVDI      | modis           | 06          | NA    |
 | NED                  | ned             | 06          | NA    |

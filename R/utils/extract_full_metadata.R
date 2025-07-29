@@ -5,15 +5,16 @@
 # Last Updated:    2025-07-25
 # Change Log:
 # - 2025-07-25     Update header information;
-#                  move notes to `script-notes_and_developer-log`
+#                  move notes to `script-notes_and_developer-log`.
+# - 2025-07-28     Run {styler}; Updated header metadata.
 #
-# Purpose:        Extract and validate metadata from ISO or FGDC-style XML files.
+# Purpose:         Extract and validate metadata from ISO or FGDC-style XML files.
 
 # Workflow Summary
-# 1. Read and parses XML metadata files
+# 1. Read and parses XML metadata files.
 # 2. Extract title, abstract, originator, date, keywords, bounding box, CRS,
-#    and constraints
-# 3. Output a tidy summary for documentation or QA
+#    and constraints.
+# 3. Output a tidy summary for documentation or QA.
 #
 # Input/Data URLs:
 #   - XML metadata files (e.g., data/metadata/us_ecoregions/*.xml)
@@ -65,7 +66,14 @@ extract_full_metadata <- function(xml_path) {
   # Keywords (possibly multiple)
   keywords <- xml2::xml_find_all(xml, ".//keyword")
   keyword_list <- xml2::xml_text(keywords)
-  keyword_str <- if (length(keyword_list)) paste(keyword_list, collapse = "; ") else NA_character_
+  keyword_str <- if (length(keyword_list)) {
+    paste(
+      keyword_list,
+      collapse = "; "
+    )
+  } else {
+    NA_character_
+  }
 
   # Bounding Box
   xmin <- get_text(".//westbc | .//westBoundLongitude")
@@ -74,11 +82,17 @@ extract_full_metadata <- function(xml_path) {
   ymax <- get_text(".//northbc | .//northBoundLatitude")
 
   # Spatial reference (e.g., NAD83, Albers Equal Area)
-  spatial_ref <- get_text(".//horizdn | .//geodeticDatum | .//referenceSystemIdentifier//code")
+  spatial_ref <- get_text(
+    ".//horizdn | .//geodeticDatum | .//referenceSystemIdentifier//code"
+  )
 
   # Access/use constraints
-  access_constraint <- get_text(".//accconst | .//resourceConstraints//useLimitation")
-  use_constraint <- get_text(".//useconst | .//resourceConstraints//otherConstraints")
+  access_constraint <- get_text(
+    ".//accconst | .//resourceConstraints//useLimitation"
+  )
+  use_constraint <- get_text(
+    ".//useconst | .//resourceConstraints//otherConstraints"
+  )
 
   tibble::tibble(
     title = get_text(".//title"),

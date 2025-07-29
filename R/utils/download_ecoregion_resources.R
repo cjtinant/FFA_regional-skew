@@ -1,10 +1,11 @@
 # Script Name:     download_ecoregion_resources.R
 # Author:          CJ Tinant - with ChatGPT 4o
 # Date Created:    2025-05-12
-# Last Updated:    2025-07-25
+# Last Updated:    2025-07-28
 # Change Log:
 # - 2025-07-25     Update header information;
 #                  move notes to `script-notes_and_developer-log`
+# - 2025-07-28     Run {styler}; Updated header metadata.
 #
 # Purpose:         Download EPA ecoregion shapefiles, metadata, and layer files
 #                  for milestone 01a. The function uses here() to ensure

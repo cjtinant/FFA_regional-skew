@@ -7,7 +7,9 @@
 # - 2025-07-13     Update name and folder path to fit with naming conventions.
 #                  Update metadata in script header
 # - 2025-07-25     Update header information;
-#                  move notes to `script-notes_and_developer-log`
+#                  move notes to `script-notes_and_developer-log`.
+# - 2025-07-28     Update script to use {here} consistently;
+#                  Run {styler}; Updated header metadata.
 #
 # Purpose: Merge NHDPlus HR flowlines into a single GeoPackage.
 #
@@ -39,7 +41,7 @@
 # Helper Functions:
 #
 # Related Milestone Reports:
-#
+# - milestone_02_documentation.pdf
 # ==============================================================================
 # --- Load libraries ---
 library(tidyverse)
@@ -53,10 +55,10 @@ library(units)
 # 1. Read in downloaded nhdphr flowline files
 # ------------------------------------------------------------------------------
 # --- Get list of file names ---
-file_path  <- "data/raw"      # top-level folder for intermediate data
-dir_name   <- "nhdphr_flowlines/"   # subfolder for NHDPlus HR flowlines
+file_path <- file.path(here(), "data", "raw") # top-level folder for intermediate data
+dir_name <- "nhdphr_flowlines/" # subfolder for NHDPlus HR flowlines
 
-gpkg_files <- dir_ls(glue("{here()}/{file_path}/{dir_name}/", glob = "*.gpkg"))
+gpkg_files <- dir_ls(file.path(file_path, dir_name, glob = "*.gpkg"))
 
 # --- Get list of column types ---
 column_types <- map(gpkg_files, function(file) {
@@ -101,9 +103,10 @@ conflicts <- type_summary_table_regions %>%
   arrange(types)
 
 # --- log the conflicts ---
-write_csv(conflicts,
-          here("data/log/nhdphr_conflicts.csv"
-          ))
+write_csv(
+  conflicts,
+  file.path(here(), "data", "log", "nhdphr_conflicts.csv")
+)
 
 # ------------------------------------------------------------------------------
 # 3. QA check on potential coercions
@@ -115,11 +118,11 @@ conflicts_expanded <- conflicts %>%
   mutate(
     n_total = length(type_list),
     suggested_type = case_when(
-      "flowdir" %in% column ~ "integer",          # from data dictionary
-      "ftype" %in% column ~ "integer",            # from data dictionary
-      "hwtype"  %in% column ~ "integer",          # guess based on 'type'
-      "resolution" %in% column ~ "integer",       # from data dictionary
-      "thinner" %in% column ~ "integer",          # wild guess
+      "flowdir" %in% column ~ "integer", # from data dictionary
+      "ftype" %in% column ~ "integer", # from data dictionary
+      "hwtype" %in% column ~ "integer", # guess based on 'type'
+      "resolution" %in% column ~ "integer", # from data dictionary
+      "thinner" %in% column ~ "integer", # wild guess
       "POSIXct" %in% type_list ~ "POSIXct",
       "numeric" %in% type_list ~ "numeric",
       "integer" %in% type_list ~ "integer",
@@ -136,7 +139,8 @@ coercion_table <- conflicts_expanded %>%
 generate_coercion_function <- function(coercion_df) {
   lines <- coercion_df %>%
     mutate(code = glue::glue(
-      'if ("{column}" %in% names(sf_obj)) sf_obj${column} <- as.{suggested_type}(sf_obj${column})'
+      'if (
+      "{column}" %in% names(sf_obj)) sf_obj${column} <- as.{suggested_type}(sf_obj${column})'
     )) %>%
     pull(code)
 
@@ -159,8 +163,12 @@ safe_as_integer <- function(x) {
     warning("⚠️ Not numeric — skipping integer coercion")
     return(x)
   }
-  if (all(is.na(x))) return(as.integer(x))
-  if (all(x == floor(x), na.rm = TRUE)) return(as.integer(x))
+  if (all(is.na(x))) {
+    return(as.integer(x))
+  }
+  if (all(x == floor(x), na.rm = TRUE)) {
+    return(as.integer(x))
+  }
   warning("⚠️ Not integer-safe — coercing to numeric instead")
   #  return(as.numeric(x))
 }
@@ -168,33 +176,42 @@ safe_as_integer <- function(x) {
 coerce_column_types <- function(sf_obj) {
   # Handle fdate separately
   if ("fdate" %in% names(sf_obj)) {
-    tryCatch({
-      sf_obj$fdate <- as.character(sf_obj$fdate)
-    }, error = function(e) {
-      message(glue::glue("⚠️ Could not coerce `fdate` — {e$message}"))
-    })
+    tryCatch(
+      {
+        sf_obj$fdate <- as.character(sf_obj$fdate)
+      },
+      error = function(e) {
+        message(glue::glue("⚠️ Could not coerce `fdate` — {e$message}"))
+      }
+    )
   }
 
   # Columns that can safely be numeric (if integer-like)
   intish_cols <- c("avgqadjma", "gageqma", "qgadjma", "qgnavma", "hwnodesqkm")
 
   for (col in intersect(intish_cols, names(sf_obj))) {
-    tryCatch({
-      sf_obj[[col]] <- suppressWarnings(safe_as_integer(sf_obj[[col]]))
-    }, error = function(e) {
-      message(glue("⚠️ Skipped numeric coercion for `{col}` — {e$message}"))
-    })
+    tryCatch(
+      {
+        sf_obj[[col]] <- suppressWarnings(safe_as_integer(sf_obj[[col]]))
+      },
+      error = function(e) {
+        message(glue("⚠️ Skipped numeric coercion for `{col}` — {e$message}"))
+      }
+    )
   }
 
   # Columns with mixed character/numeric → standardize as character
   char_cols <- c("flowdir", "ftype", "resolution", "thinner", "hwtype")
 
   for (col in intersect(char_cols, names(sf_obj))) {
-    tryCatch({
-      sf_obj[[col]] <- as.character(sf_obj[[col]])
-    }, error = function(e) {
-      message(glue("⚠️ Skipped character coercion for `{col}` — {e$message}"))
-    })
+    tryCatch(
+      {
+        sf_obj[[col]] <- as.character(sf_obj[[col]])
+      },
+      error = function(e) {
+        message(glue("⚠️ Skipped character coercion for `{col}` — {e$message}"))
+      }
+    )
   }
 
   #  return(sf_obj)
@@ -206,14 +223,17 @@ flowlines_all <- map_dfr(gpkg_files, function(file) {
     str_remove("\\.gpkg$") %>%
     str_replace_all("_", " ")
 
-  tryCatch({
-    sf_obj <- read_sf(file)
-    sf_obj <- coerce_column_types(sf_obj)
-    sf_obj %>% mutate(ecoregion = region_name)
-  }, error = function(e) {
-    message(glue("⚠️ Failed to read or coerce: {region_name} — {e$message}"))
-    NULL
-  })
+  tryCatch(
+    {
+      sf_obj <- read_sf(file)
+      sf_obj <- coerce_column_types(sf_obj)
+      sf_obj %>% mutate(ecoregion = region_name)
+    },
+    error = function(e) {
+      message(glue("⚠️ Failed to read or coerce: {region_name} — {e$message}"))
+      NULL
+    }
+  )
 })
 
 # -----------------------------------------------------------------------------
@@ -246,18 +266,23 @@ flowlines_vars_sub <- flowlines_vars %>%
 
 # --- Write merged results ---
 # close any open processes prior to writing
-unlink(here("data/processed/nhdphr_flowlines/nhdhr_flowlines_combined.gpkg"))
+unlink(file.path(
+  here(), "data", "processed", "nhdphr_flowlines", "nhdhr_flowlines_combined.gpkg"))
 
 # write merged results
-sf::write_sf(flowlines_all[, flowlines_vars_sub$var_names],
-             here("data/processed/nhdphr_flowlines/nhdhr_flowlines_combined.gpkg"))
+sf::write_sf(
+  flowlines_all[, flowlines_vars_sub$var_names],
+  file.path(
+    here(), "data", "processed", "nhdphr_flowlines", "nhdhr_flowlines_combined.gpkg")
+)
 
 # -----------------------------------------------------------------------------
 # 5. Make data dictionary
 # -----------------------------------------------------------------------------
 flowlines_vars <- tibble(var_names = names(flowlines_all))
 
-fld <- c("Enabled", "FCode", "FDate", "FlowDir", "FType", "GNIS_ID",
+fld <- c(
+  "Enabled", "FCode", "FDate", "FlowDir", "FType", "GNIS_ID",
   "GNIS_Name", "InNetwork", "LengthKM", "MainPath", "NHDPlusID",
   "Permanent_Identifier", "ReachCode", "VisibilityFilter", "VPUID",
   "WBArea_Permanent_Identifier", "resolution", "streamleve",
@@ -277,7 +302,8 @@ fld <- c("Enabled", "FCode", "FDate", "FlowDir", "FType", "GNIS_ID",
   "pathtimema", "lakefract", "surfarea", "rareahload", "rpuid"
 )
 
-data_dict <- tibble(field = fld,
+data_dict <- tibble(
+  field = fld,
   description = c(
     "Participates in geometric network",
     "Five-digit feature code (type + subtype)",
@@ -381,9 +407,12 @@ data_dict <- tibble(field = fld,
 ) %>% mutate(var_names = tolower(field))
 
 data_dict <- left_join(flowlines_vars, data_dict,
-                       by = join_by(var_names)) %>%
+  by = join_by(var_names)
+) %>%
   arrange(field) %>%
   select(-var_names) %>%
   filter(!is.na(field))
 
-write_csv(data_dict, here("data/meta/flowlines_combined_data_dict.csv"))
+write_csv(data_dict, file.path(
+  here(), "data", "meta", "flowlines_combined_data_dict.csv")
+)

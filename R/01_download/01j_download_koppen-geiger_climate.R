@@ -8,8 +8,10 @@
 #                  whether raster exists before trying to reproject, Use
 #                  tryCatch() for rast() or unzip() in case something is missing
 #                  or corrupt.
-# - 2025-07-23     Update header information; 
+# - 2025-07-23     Update header information;
 #                  move notes to `script-notes_and_developer-log`.
+# - 2025-07-28     Update script to use {here} consistently;
+#                  Run {styler}.
 #
 # Purpose:         Download, process, and reproject Köppen-Geiger climate raster
 #                  data.
@@ -20,7 +22,7 @@
 # 2b. Reproject to EPSG:5070 (Conus Albers)
 # 3. Save to data/processed/koppen-climate/koppen-geiger.tif
 #
-# Input/Data URLs: 
+# Input/Data URLs:
 # - https://www.gloh2o.org/koppen/
 # Outputs:
 # - Reprojected Köppen-Geiger raster (EPSG:5070) ready for spatial analysis
@@ -35,8 +37,7 @@
 # - sf             Spatial data (simple features)
 # - terra           Vector and raster data operations
 #
-# Related Milestone Reports: 
-# - milestone_01_download_prepare_covariates.Rmd
+# Related Milestone Reports:
 # - milestone_01_download_prepare_covariates.pdf
 # ==============================================================================
 # --- Load libraries ---
@@ -52,9 +53,10 @@ library(terra)
 # 1. Download and unzip Köppen-Geiger data
 # ------------------------------------------------------------------------------
 
-zip_url   <- "https://www.gloh2o.org/koppen/koppen-geiger.zip"  # Define URL
-raw_dir   <- here("data", "raw", "koppen-climate")
-zip_path  <- path(raw_dir, "koppen-geiger.zip")
+zip_url <- "https://www.gloh2o.org/koppen/koppen-geiger.zip" # Define URL
+raw_file <- "koppen-geiger.zip"
+raw_dir <- file.path(here(), "data", "raw", "koppen_climate")
+zip_path <- path(raw_dir, raw_file)
 
 dir_create(raw_dir, recurse = TRUE)
 
@@ -91,8 +93,9 @@ if (!grepl("5070|Conus Albers", crs(r_proj))) {
 # 3. Write processed raster
 # ------------------------------------------------------------------------------
 
-processed_dir <- here("data", "processed", "koppen-climate")
-out_path      <- path(processed_dir, "koppen-geiger.tif")
+processed_dir <- file.path(here(), "data", "processed", "koppen_climate")
+out_file <- "koppen-geiger.tif"
+out_path <- path(processed_dir, out_file)
 
 dir_create(processed_dir, recurse = TRUE)
 writeRaster(r_proj, filename = out_path, overwrite = TRUE)

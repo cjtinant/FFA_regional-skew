@@ -3,15 +3,17 @@
 # Purpose:         Combine and clean NHDPlus HR catchments by Level IV ecoregion
 # Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-07-12
-# Last Update:     2025-07-25
+# Last Update:     2025-07-28
 # Change Log:
 # - 2025-07-25     Update header information;
-#                  move notes to `script-notes_and_developer-log`
+#                  move notes to `script-notes_and_developer-log`.
+# - 2025-07-28     Update script to use {here} consistently;
+#                  Run {styler}; Updated header metadata.
 #
 # Purpose: Merge NHDPlus HR flowlines into a single GeoPackage. This script reads
 # multiple NHDPlus HR catchment GeoPackages, performs geometry validation in
 # chunks to prevent memory issues, standardizes geometry types to MULTIPOLYGON,
-# and exports a combined spatial dataset. 
+# and exports a combined spatial dataset.
 #
 # Workflow Summary
 # 1. Load download log and filter to successful entries using download log.
@@ -41,7 +43,7 @@
 # Helper Functions:
 #
 # Related Milestone Reports:
-#
+# - milestone_02_documentation.pdf
 # ==============================================================================
 # --- load libraries ---
 library(dplyr)
@@ -56,7 +58,7 @@ library(janitor)
 # ------------------------------------------------------------------------------
 # 1. Load download log and filter to successful entries
 # ------------------------------------------------------------------------------
-log_file <- here("data/log/catchment_download_log.csv")
+log_file <- file.path(here(), "data", "log", "catchment_download_log.csv")
 
 log_tbl <- read_csv(log_file, show_col_types = FALSE) %>%
   group_by(us_l4name) %>%
@@ -66,8 +68,8 @@ log_tbl <- read_csv(log_file, show_col_types = FALSE) %>%
   filter(status == "success") %>%
   mutate(
     safe_name = str_replace_all(us_l4name, "[^A-Za-z0-9]+", "_"),
-    file_path = here("data", "raw", "nhdphr_catchments",
-                     paste0(safe_name, ".gpkg"))
+    file_path = here("data", "raw", "nhdphr_catchments", paste0(safe_name, ".gpkg")
+    )
   ) %>%
   filter(file_exists(file_path))
 
@@ -76,17 +78,20 @@ log_tbl <- read_csv(log_file, show_col_types = FALSE) %>%
 # ------------------------------------------------------------------------------
 
 read_safe_catchments <- function(path) {
-  tryCatch({
-    st_read(path, quiet = TRUE)
-  }, error = function(e) {
-    message("❌ Failed to read: ", path, "\n  → ", e$message)
-    NULL
-  })
+  tryCatch(
+    {
+      st_read(path, quiet = TRUE)
+    },
+    error = function(e) {
+      message("❌ Failed to read: ", path, "\n  → ", e$message)
+      NULL
+    }
+  )
 }
 
 # --- Use safe reader and filter NULLs ---
 catchments_list <- map(log_tbl$file_path, read_safe_catchments) %>%
-  compact()  # remove failed reads
+  compact() # remove failed reads
 
 # ------------------------------------------------------------------------------
 # 3. Combine, validate, clean, and reproject
@@ -126,7 +131,9 @@ catchments_valid <- st_cast(catchments_valid, "MULTIPOLYGON")
 # ------------------------------------------------------------------------------
 # 4. Export combined catchments
 # ------------------------------------------------------------------------------
-output_path <- here("data", "processed", "nhdphr", "nhdphr_catchments_combined.gpkg")
+output_path <- file.path(
+  here(), "data", "processed", "nhdphr", "nhdphr_catchments_combined.gpkg"
+)
 dir_create(dirname(output_path))
 st_write(catchments_valid, output_path, delete_dsn = TRUE)
 

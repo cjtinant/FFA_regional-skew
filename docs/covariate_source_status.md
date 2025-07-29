@@ -3,8 +3,9 @@ Covariate Source Inventory
 CJ Tinant
 2025-07-22 07:09:49
 
-- [Overview](#overview)
-  - [Table 1: Folder Names and Status](#table-1-folder-names-and-status)
+- [Covariate Source Inventory](#covariate-source-inventory)
+  - [Overview](#overview)
+    - [Table 1: Folder Names and Status](#table-1-folder-names-and-status)
 - [References](#references)
 
 ## Overview
@@ -28,7 +29,7 @@ described in `best-practices_reference.md`
 
 |     Dataset Name     |  Folder Name   | Status Code | Notes |
 |:--------------------:|:--------------:|:-----------:|:-----:|
-|    EPA Ecoregions    | us-ecoregions  |     06      |  NA   |
+|    EPA Ecoregions    | us_ecoregions  |     06      |  NA   |
 |    Koppen Geiger     | koppen-climate |     06      |  NA   |
 |   MODIS 2016 NVDI    |     modis      |     06      |  NA   |
 |         NED          |      ned       |     06      |  NA   |

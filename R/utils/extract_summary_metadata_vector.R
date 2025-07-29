@@ -7,6 +7,8 @@
 # - 2025-07-20:    Initial version.
 # - 2025-07-27     Update header information;
 #                  move notes to `script-notes_and_developer-log`
+# - 2025-07-28     Update script to use {here} consistently;
+#                  Run {styler}; Updated header metadata.
 #
 # Purpose:         Iterate over all layers in a GeoPackage and extract metadata;
 #                  summarize geometry, CRS, and attribute schema.
@@ -39,10 +41,13 @@ library(tibble)
 library(here)
 
 # --- Define input and output paths ---
-gpkg_file   <- here("data", "processed", "statsgo2",
-                    "statsgo2_mupolygon.gpkg")
+gpkg_file <- file.path(
+  here(), data, processed, statsgo2, statsgo2_mupolygon.gpkg
+)
 
-output_dir  <- here("docs", "metadata", "vector-data-summaries.csv")
+output_dir <- file.path(
+  here(), docs, metadata, vector - data - summaries.csv
+)
 if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
 
 if (!file.exists(gpkg_file)) {
@@ -71,7 +76,10 @@ for (layer in layer_names) {
   )
 
   # Write per-layer field metadata
-  write_csv(field_info, file.path(output_dir, paste0(layer, "_attribute_metadata_v01.csv")))
+  write_csv(
+    field_info,
+    file.path(output_dir, paste0(layer, "_attribute_metadata_v01.csv"))
+  )
 
   # Summarize layer
   summary_info <- tibble(
@@ -119,8 +127,12 @@ fields_summary <- fields_df %>%
 # --- Combine and write full summaries ---
 vector_summary <- bind_rows(summary_list)
 
-write_csv(vector_summary,
-          file.path(output_dir, "statsgo2_mupolygon_layer_metadata_v01.csv"))
+write_csv(
+  vector_summary,
+  file.path(output_dir, "statsgo2_mupolygon_layer_metadata_v01.csv")
+)
 
-write_csv(fields_summary,
-          file.path(output_dir, "statsgo2_mupolygon_attribute_metadata_v01.csv"))
+write_csv(
+  fields_summary,
+  file.path(output_dir, "statsgo2_mupolygon_attribute_metadata_v01.csv")
+)

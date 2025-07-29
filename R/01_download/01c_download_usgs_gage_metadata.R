@@ -1,10 +1,12 @@
 # ==============================================================================
 # Script Name:    01c_download_usgs_gage_metadata.R
 # Author:         Charles Jason Tinant — with ChatGPT
-# Date Created:   2025-07-05
+# Date Created:   2025-07-28
 #
 # Change Log:
 # - 2025-07-23     Move notes to notes/script-notes_and_developer-log
+# - 2025-07-28     Update script to use {here} consistently;
+#                  Run {styler}.
 #
 # Purpose:        This script retrieves and cleans metadata for a set of USGS
 #                 stream gaging stations for filtered USGS peak flow gages
@@ -37,15 +39,14 @@
 # - usgs_site_metadata_vars.csv
 # - usgs_sites_pk_ST_only.csv
 #
-# Related Milestone Reports: 
-# - milestone_01_download_prepare_covariates.Rmd
-# - milestone_01_download_prepare_covariates.pdf
-#
 # Dependencies:
-# - dataRetrieval: To retrieve USGS site metadata
-# - dplyr, readr:  For data manipulation and export
-# - here:          For consistent paths
-# - purrr:         Loop through download batches
+# - dataRetrieval  To retrieve USGS site metadata
+# - dplyr, readr   For data manipulation and export
+# - here           For consistent paths
+# - purrr          Loop through download batches
+#
+# Related Milestone Reports:
+# - milestone_01_download_prepare_covariates.pdf
 # ==============================================================================
 library(dataRetrieval)
 library(dplyr)
@@ -56,7 +57,8 @@ library(purrr)
 # ------------------------------------------------------------------------------
 # 1. Load site numbers from prior output
 # ------------------------------------------------------------------------------
-input_file <- here("data", "raw", "peakflow_gages", "sites_pk_eco_only.csv")
+input_file <- file.path(
+  here(), "data", "raw", "peakflow_gages", "sites_pk_eco_only.csv")
 sites_df <- read_csv(input_file, show_col_types = FALSE)
 
 site_ids <- unique(sites_df$site_no)
@@ -151,19 +153,13 @@ site_metadata_st <- site_metadata_clean %>%
 # 5. Write results
 # ------------------------------------------------------------------------------
 # --- write metadata results ---
-dict_output <- here("data",
-                    "raw",
-                    "peakflow_gages",
-                    "usgs_site_metadata_vars.csv")
+dict_output <- file.path(
+  here(), "data", "raw", "peakflow_gages", "usgs_site_metadata_vars.csv")
 write_csv(site_meta_vars, dict_output)
 
 # --- write results ---
-output_file <- here(
-  "data",
-  "raw",
-  "peakflow_gages",
-  "usgs_sites_pk_ST_only.csv"
-)
+output_file <- file.path(
+  here(), "data", "raw", "peakflow_gages", "usgs_sites_pk_ST_only.csv")
 
 write_csv(site_metadata_st, output_file)
 message("✅ Cleaned site metadata saved to: ", output_file)

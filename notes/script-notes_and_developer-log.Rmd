@@ -21,7 +21,9 @@ editor_options:
 
 ## Overview
 
-This document collects implementation notes, design decisions, and development comments across scripts used in the regional skew estimation project. It supports ongoing improvements and serves as a lightweight developer log.
+This document collects implementation notes, design decisions, and development
+comments across scripts used in the regional skew estimation project. It supports
+ongoing improvements and serves as a lightweight developer log.
 
 Use this log to track:
 
@@ -43,6 +45,18 @@ Use this log to track:
 
 ## TODO (General)
 
+📌 Update Script Header - Add this to the Dependencies block:
+
+- renv           optional: reproducible package environment (see renv.lock)
+- DESCRIPTION    lists project-wide dependencies
+
+And/or append a note at the end of the script like this:
+
+# ------------------------------------------------------------------------------
+Reproducibility Note:
+See DESCRIPTION and renv.lock for project-wide dependencies and package versions.
+
+
 <!--
 - [ ] Add version check for `{terra}` to all raster scripts
 - [ ] Write a unified function to extract raster metadata to `data/meta/`
@@ -52,6 +66,10 @@ Use this log to track:
 ---
 
 ## Future Ideas
+
+
+
+- Add {datapasta}	Paste as tribble / vector Transforms clipboard data to tidy formats
 
 -  Adopt a targets-based workflow {targets} after covariate extraction.
 
@@ -88,8 +106,7 @@ between exploratory output and final cleaned results.
 ### 01d_download_us_peakflow_data.R
 
 - The script inputs data from `01c_download_usgs_gage_metadata.R`
-- The script does not apply filtering on regulation, dam failure, or record
-    length.
+- The script does not apply filtering on regulation, dam failure, or record length.
 - Filtering occurs in the subsequent script -- `01e_filter_usgs_peakflow_data.R`
 
 ---
@@ -229,7 +246,8 @@ the following reasons:
 ### 02a_merge_nhdplus_hr_flowlines.R
 
 Type coercion is the process of converting a value or object from one data type
-to another. This can occur either automatically (implicitly) or intentionally (explicitly). Explicitly fixes issues using a file-reading loop with type
+to another. This can occur either automatically (implicitly) or intentionally
+(explicitly). Explicitly fixes issues using a file-reading loop with type
 coercion and error logging. The loop fixes the following issues:
 -   Only coerce if possible, using a safe test like is.integerish().
 -   Fallback to numeric when needed.
@@ -343,7 +361,7 @@ Linked notes:
 | --------------------- | ---------------------------------- |
 | ✍️ Atomic Notes       | Each `.md` = 1 idea = easier reuse |
 | 🔗 Links (`[[...]]`)  | Creates networked ideas, not silos |
-| 🗓️ Timestamps / IDs  | Keeps notes organized and unique   |
+| 🗓️ Timestamps / IDs   | Keeps notes organized and unique   |
 | 🧠 Emergent Structure | You discover themes organically    |
 | 🧾 Markdown Format    | Easy to version, edit, and render  |
 

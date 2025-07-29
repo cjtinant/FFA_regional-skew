@@ -2,15 +2,17 @@
 # Script Name:     01g_download_nhdplus_hr.R
 # Author:          Charles Jason Tinant — with ChatGPT
 # Date Created:    2025-06-06
-# Last Updated:    2025-07-22
-# Changelog: 
+# Last Updated:    2025-07-28
+# Change Log: 
 # - 2025-07-13:    Recreated script that had potentially been deleted. Updated file
 #                  paths to avoid data/intermediate. Updated file names to follow
 #                  a consistent naming pattern. Added reusable naming function,
 #                  enhanced retry filtering, and CLI feedback.
 # - 2025-07-22:    Update header to add workflow summary and key features.
 # - 2025-07-23     Update header information; 
-#                  move notes to `script-notes_and_developer-log`
+#                  move notes to `script-notes_and_developer-log`.
+# - 2025-07-28     Update script to use {here} consistently;
+#                  Run {styler}.
 #
 # Purpose:         Download NHDPlus HR (1:24k) catchment boundaries clipped to
 #                  Great Plains Level IV Ecoregions. Includes retry logic for
@@ -68,7 +70,6 @@
 # Helper Functions:
 #
 # Related Milestone Reports: 
-# - milestone_01_download_prepare_covariates.Rmd
 # - milestone_01_download_prepare_covariates.pdf
 # ==============================================================================
 suppressPackageStartupMessages({
@@ -89,19 +90,21 @@ suppressPackageStartupMessages({
 # 1. Setup
 # ------------------------------------------------------------------------------
 # --- Create folders ---
-dir_create(here("data", "log"))
-dir_create(here("data", "raw", "nhdphr_catchments"))
+dir_create(file.path(here(), data, log))
+dir_create(file.path(here(), data, raw, nhdphr_catchments))
 
 # --- Load or initialize log ---
-log_file <- here("data", "log", "catchment_download_log.csv")
-log_tbl <- if (file.exists(log_file)) read_csv(log_file, show_col_types = FALSE) else tibble()
+log_file <- file.path(here(), data, log, catchment_download_log.csv)
+log_tbl <- if (file.exists(log_file)) read_csv(
+  log_file, show_col_types = FALSE) else tibble()
+
 
 # ------------------------------------------------------------------------------
 # 2. Load data
 # ------------------------------------------------------------------------------
 # --- Load EPA Level IV Ecoregions ---
 eco_lev4 <- st_read(
-  here("data", "processed", "ecoregions", "us-eco-levels.gpkg"),
+  file.path(here(), data, processed, ecoregions, us-eco-levels.gpkg),
   layer = "us_eco_l4",
   quiet = TRUE
 )
@@ -129,10 +132,7 @@ walk2(eco_list, seq_along(eco_list), function(l4name, i) {
   cli::cli_alert_info("🟦 [{i}/{length(eco_list)}] Downloading {.strong {l4name}}")
 
   safe_name <- str_replace_all(l4name, "[^A-Za-z0-9]+", "_")
-  out_path <- here("data",
-                   "raw",
-                   "nhdphr_catchments",
-                   glue("{safe_name}.gpkg"))
+  out_path <- glue("{here()}/data/raw/nhdphr_catchments/{safe_name}.gpkg")
 
   if (l4name %in% log_tbl$us_l4name &&
         any(log_tbl$status[log_tbl$us_l4name == l4name] == "success")) {
@@ -270,7 +270,8 @@ walk(retry_catchments, function(l4name) {
   cli::cli_alert_info("🔁 Retrying catchment: {.strong {l4name}}")
 
   safe_name <- str_replace_all(l4name, "[^A-Za-z0-9]+", "_")
-  out_path <- here("data", "raw", "nhdphr_catchments", glue("{safe_name}.gpkg"))
+  out_path <- file.path(here(), data, raw, nhdphr_catchments,
+                        glue("{safe_name}.gpkg"))
 
   if (file.exists(out_path)) {
     cli::cli_alert_info("⚠️ File exists, skipping: {.strong {l4name}}")
@@ -366,7 +367,8 @@ log_latest <- read_csv(log_file, show_col_types = FALSE) %>%
   filter(status == "success") %>%
   mutate(
     safe_name = str_replace_all(us_l4name, "[^A-Za-z0-9]+", "_"),
-    file_path = here("data", "raw", "nhdphr_catchments", paste0(safe_name, ".gpkg"))
+    file_path = file.path(here(), data, raw, nhdphr_catchments, 
+    paste0(safe_name, ".gpkg"))
   )
 
 catchments <- map(log_latest$file_path, ~ st_read(.x, quiet = TRUE)) %>%

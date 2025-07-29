@@ -2,10 +2,12 @@
 # Script Name:     01n_download_ned.R
 # Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-06-25
-# Last Updated:    2025-07-24
+# Last Updated:    2025-07-28
 # Change Log:
 # - 2025-07-24     Update header information; 
 #                  move notes to `script-notes_and_developer-log`.
+# - 2025-07-28     Update script to use {here} consistently;
+#                  Run {styler}; Updated header metadata.
 #
 # Purpose:         Download NED (National Elevation Dataset) clipped to the Great
 #                  Plains. Calculate slope using (Fleming & Hoffer / Ritter
@@ -37,17 +39,16 @@
 # Output:
 # - Clipped and masked raster projected to a common CRS
 #
-# Related Milestone Reports:
-# - milestone_01_download_prepare_covariates.Rmd
-# - milestone_01_download_prepare_covariates.pdf
-#
 # Dependencies:
-# - elevatr:       Access to elevation data from various APIs
+# - elevatr        Access to elevation data from various APIs
 # - fs             File system operations
-# - here:          Consistent relative paths: locate files relative to proj root
+# - here           Consistent relative paths: locate files relative to proj root
 # - sf             Support for simple feature access, a standardized way to
-#                    encode and analyze spatial vector data. Binds to 'GDAL'
-# - terra:         Spatial data analysis-- wector and raster data operations
+#                  encode and analyze spatial vector data. Binds to 'GDAL'
+# - terra          Spatial data analysis-- wector and raster data operations
+#
+# Related Milestone Reports:
+# - milestone_01_download_prepare_covariates.pdf
 # ==============================================================================
 # --- Load libraries ---
 library(elevatr)
@@ -60,7 +61,8 @@ library(terra)
 # 1. Setup and make bounding box
 # ------------------------------------------------------------------------------
 # --- Read Great Plains vector ------------------------------------------------
-gpkg_file <- here("data", "processed", "ecoregions", "us-eco-levels.gpkg")
+gpkg_file <- file.path(
+  here(), "data", "processed", "ecoregions", "us_eco_levels.gpkg")
 
 gp_sf <- st_read(gpkg_file, layer = "us_eco_l1", quiet = TRUE) %>%
   dplyr::filter(NA_L1NAME == "GREAT PLAINS")
@@ -105,16 +107,16 @@ slope_mask <- mask(crop(slope_proj, gp_vect), gp_vect)
 # ------------------------------------------------------------------------------
 # 4. Save clipped rasters
 # ------------------------------------------------------------------------------
-dir_create(here("data", "processed", "ned"))
+dir_create(file.path(here(), "data", "processed", "ned"))
 
 writeRaster(
   elev_mask,
-  filename = here("data", "processed", "ned", "elev_30m_gp.tif"),
+  filename = file.path(here(), "data", "processed", "ned", "elev_30m_gp.tif"),
   overwrite = TRUE
 )
 
 writeRaster(
   slope_mask,
-  filename = here("data", "processed", "ned", "slope_30m_gp.tif"),
+  filename = file.path(here(), "data", "processed", "ned", "slope_30m_gp.tif"),
   overwrite = TRUE
 )

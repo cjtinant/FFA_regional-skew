@@ -2,9 +2,11 @@
 # Script Name:     01d_download_us_peakflow_data.R
 # Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    April 2025
-# Last Update:     2025-07-23
+# Last Update:     2025-07-28
 # Change Log:
 # - 2025-07-23     Move notes to notes/script-notes_and_developer-log.
+# - 2025-07-28     Update script to use {here} consistently;
+#                  Run {styler}.
 #
 # Purpose:         Downloads and combines USGS peak flow data for stream gages
 #                  located in the Great Plains Level I Ecoregion. Site list is
@@ -21,33 +23,31 @@
 # 6. Export the combined dataset for further processing
 #
 # Input/Data URLs
-# - data/raw/peakflow_gages/usgs_sites_pk_ST_only.csv 
-#     Site list is derived from `usgs_site_metadata.csv` (script 01c).
+# - data/raw/peakflow_gages/usgs_sites_pk_ST_only.csv
+# Site list is derived from `usgs_site_metadata.csv` (script 01c).
 # Outputs:
 # - data/raw/peakflow_gages/data_pk_all.csv — all retrieved peak flow records
 #
 # Dependencies:
-# - tidyverse      Data wrangling & visualization
-# - glue           String interpolation
+# - dataRetrieval  Access USGS NWIS data
 # - here           Robust file paths
 # - sf             Spatial data (simple features)
-# - dataRetrieval  Access USGS NWIS data
+# - tidyverse      Data wrangling & visualization
 #
-# Related Milestone Reports: 
-# - milestone_01_download_prepare_covariates.Rmd
+# Related Milestone Reports:
 # - milestone_01_download_prepare_covariates.pdf
 # ==============================================================================
 # --- Load required libraries ---
-library(tidyverse)
-library(glue)
-library(here)
 library(dataRetrieval)
+library(here)
+library(sf)
+library(tidyverse)
 
 # ------------------------------------------------------------------------------
 # 1. Load cleaned metadata for usable Great Plains gages
 # ------------------------------------------------------------------------------
 sites_meta <- read_csv(
-  here("data/raw/peakflow_gages/usgs_sites_pk_ST_only.csv")
+  file.path(here(), "data", "raw", "peakflow_gages", "usgs_sites_pk_ST_only.csv")
 )
 
 # ------------------------------------------------------------------------------
@@ -70,11 +70,11 @@ safe_read_peak <- safely(readNWISpeak)
 peak_data_list <- map(site_batches, function(batch) {
   message("Downloading batch of ", length(batch), " sites...")
   result <- safe_read_peak(batch)
-  Sys.sleep(0.5)  # brief pause between batches to avoid overwhelming API
+  Sys.sleep(0.5) # brief pause between batches to avoid overwhelming API
   if (!is.null(result$result)) {
-    result$result  # return the result if successful
+    result$result # return the result if successful
   } else {
-    tibble()       # return an empty tibble if an error occurred
+    tibble() # return an empty tibble if an error occurred
   }
 })
 
@@ -97,4 +97,5 @@ data_pk <- data_pk_raw %>%
 # ------------------------------------------------------------------------------
 # 5. Export full dataset (with raw and parsed dates) to CSV
 # ------------------------------------------------------------------------------
-write_csv(data_pk, here("data/raw/peakflow_gages/usgs_data_pk_all.csv"))
+write_csv(data_pk, file.path(
+  here(), "raw", "peakflow_gages", "usgs_data_pk_all.csv"))

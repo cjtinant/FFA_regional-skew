@@ -2,7 +2,7 @@
 # Script Name:     process_geometries.R
 # Author:          Charles Jason Tinant with ChatGPT 4o
 # Date Created:    2024-06-06
-# Last Updated:    2025-07-27
+# Last Updated:    2025-07-28
 # Change Log:
 # - 2025-07-28     Update header information;
 #                  move notes to `script-notes_and_developer-log`.

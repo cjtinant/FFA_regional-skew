@@ -2,10 +2,12 @@
 # Script Name:     01m_download_nlcd_2016.R
 # Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-06-23
-# Last Updated:    2025-07-23
+# Last Updated:    2025-07-28
 # Change Log:
-# - 2025-07-23     Update header information; 
+# - 2025-07-23     Update header information;
 #                  move notes to `script-notes_and_developer-log`.
+# - 2025-07-28     Update script to use {here} consistently;
+#                  Run {styler}; Updated header metadata.
 #
 # Purpose: Download NLCD 2016 Land Cover raster clipped to Great Plains.
 #
@@ -25,25 +27,13 @@
 # - dplyr:         Data manipulation
 # - fs             File system operations
 # - sf             Support for simple feature access, a standardized way to
-#                    encode and analyze spatial vector data. Binds to 'GDAL'
-# - terra:         Spatial data analysis-- wector and raster data operations
-
-# - mapview        Interactive viewing of spatial data
-# - nhdplusTools   Tools for traversing and working with National
-#                  Hydrography Dataset Plus (NHDPlus) data.
-# - purrr          Functional programming toolkit
-# - readr          Reads rectangular data
-# - stringr        Wrappers for string operations
-# - tidyverse:     Data wrangling & visualization
-# - units          Unit conversion -- to convert from m² to km²
-# - dataRetrieval: Access USGS NWIS data
+#                  encode and analyze spatial vector data. Binds to 'GDAL'
+# - terra          Spatial data analysis-- wector and raster data operations
 #
 # Helper Functions:
 #
-# Related Milestone Reports: 
-# - milestone_01_download_prepare_covariates.Rmd
+# Related Milestone Reports:
 # - milestone_01_download_prepare_covariates.pdf
-
 # ==============================================================================
 # --- Load libraries ---
 library(fs)
@@ -52,8 +42,10 @@ library(sf)
 library(terra)
 
 # --- Define file paths -------------------------------------------------------
-nlcd_file <- here("data", "raw", "nlcd", "Annual_NLCD_LndCov_2016_CU_C1V0.tif")
-gpkg_file <- here("data", "processed", "ecoregions", "us-eco-levels.gpkg")
+nlcd_file <- file.path(
+  here(), "data", "raw", "Annual_NLCD_LndCov_2016_CU_C1V0.tif")
+gpkg_file <- file.path(
+  here(), "data", "processed", "ecoregions", "us_eco_levels.gpkg")
 
 # --- Read raster and vector --------------------------------------------------
 r_nlcd <- rast(nlcd_file)
@@ -80,11 +72,11 @@ r_mask <- mask(r_crop, gp_vect)
 crs(r_mask)
 
 # --- Prepare to save clipped raster ------------------------------------------
-dir_create(here("data", "processed", "nlcd"))
+dir_create(file.path(here(), "data", "processed", "nlcd"))
 
 writeRaster(
   r_mask,
-  filename = here("data", "processed", "nlcd", "nlcd_2016_gp.tif"),
+  filename = file.path(here(), "processed", "nlcd", "nlcd_2016_gp.tif"),
   overwrite = TRUE
 )
 

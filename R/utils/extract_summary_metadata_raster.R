@@ -7,19 +7,22 @@
 # Change Log:
 # - 2025-07-19: Initial version to summarize CRS, resolution, and dimensions
 # - 2025-07-25     Update header information;
-#                  move notes to `script-notes_and_developer-log`
+#                  move notes to `script-notes_and_developer-log`.
+# - 2025-07-28     Update script to use {here} consistently;
+#                  Run {styler}; Updated header metadata.
 #
 # Purpose: Extract summary metadata from raster.
 #
 # Workflow Summary:
-# 1. Load raster
-# 2. Extract properties to tibble
-# 3. Write summary as CSV for documentation
+# 1. Load raster.
+# 2. Extract properties to tibble.
+# 3. Write summary as CSV for documentation.
 #
 # Input/Data URLs:
 # - xml data in a user-defined folder.
-# Outputs:         data/meta/<name>_attributes.csv
-#                 data/meta/<name>_spatial_metadata.csv
+# Outputs:
+# - data/meta/<name>_attributes.csv
+# - data/meta/<name>_spatial_metadata.csv
 #
 # Dependencies:
 # - dplyr, readr   General data wrangling, import and export.
@@ -37,11 +40,11 @@ library(readr)
 library(terra)
 library(tibble)
 
-input_path  <- here("data", "processed", "koppen-climate")
-output_path <- here("docs", "metadata", "raster-data-summaries")
+input_path <- file.path(here(), data, processed, koppen - climate)
+output_path <- file.path(here(), data, meta, raster - data - summaries)
 if (!dir.exists(output_path)) dir.create(output_path, recursive = TRUE)
 
-input_file   <- "koppen-geiger.tif"
+input_file <- "koppen-geiger.tif"
 output_summ_meta <- "koppen-geiger_summary_metadata_v01.csv"
 output_band_meta <- "koppen-geiger_band_metadata_v01.csv"
 
@@ -69,13 +72,13 @@ var_names <- names(in_raster)
 # --- Create tibble with atomic columns ---
 raster_info <- tibble(
   file = input_file,
-  crs = as.character(crs(in_raster, describe = TRUE)),       # <- FIXED
+  crs = as.character(crs(in_raster, describe = TRUE)),
   extent = as.character(ext(in_raster)),
-  resolution = paste(res(in_raster), collapse = " x "),       # <- FIXED
+  resolution = paste(res(in_raster), collapse = " x "),
   ncols = ncol(in_raster),
   nrows = nrow(in_raster),
   nbands = nlyr(in_raster),
-  names = list(names(in_raster))  # Store as list-column if needed
+  names = list(names(in_raster)) # Store as list-column if needed
 )
 
 # --- Add timestamp ---

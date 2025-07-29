@@ -78,8 +78,8 @@ Relevant folders and files
 | Step      | Task                                                    | Status |
 |-----------|------------------------------------------------------------|-----|
 | 2.1 | Standardize header blocks across R scripts                       | [X] |
-| 2.2 | Add `README.md` to each `R/` subfolder                           | [ ] |
-| 2.3 | Ensure all scripts are self-contained                            | [ ] |
+| 2.2 | Add `README.md` to each `R/` subfolder                           | [X] |
+| 2.3 | Ensure all scripts are self-contained                            | [X] |
 | 2.4 | Review document dependencies                                     | [ ] |
 | 2.5 | Review `data/meta/data_dictionary.csv` to define covariates      | [ ] |
 | 2.6 | Standardize use of `.Rmd` and `.md` for all folders              | [ ] |

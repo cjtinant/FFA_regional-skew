@@ -2,10 +2,12 @@
 # Script Name:     02c_validate_spatial_metadata.R
 # Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-06-28
-# Last Update:     2025-07-14
+# Last Update:     2025-07-29
 # Change Log:
 # - 2025-07-25     Update header information;
 #                  move notes to `script-notes_and_developer-log`
+# - 2025-07-29     Update script to use {here} consistently;
+#                  Run {styler}; Updated header metadata.
 #
 # Purpose:         Validate CRS and resolution of raster and vector files.
 #
@@ -27,7 +29,8 @@
 # - Vector summary: data/log/validate_spatial/vector_validation_summary.csv
 # - Raster summaries (batched):
 #        data/log/validate_spatial/raster_metadata_batch_XX.csv
-# - Rechecked raster output: data/log/validate_spatial/raster_recheck_results.csv
+# - Rechecked raster output:
+#        data/log/validate_spatial/raster_recheck_results.csv
 #
 # Dependencies:
 # - dplyr, readr   General data wrangling, import and export.
@@ -36,11 +39,12 @@
 # - here           Consistent relative paths.
 # - purrr          Apply a function to each element of a vector.
 # - sf             Handling spatial data.
-# - terra           Vector and raster data operations.
+# - terra          Vector and raster data operations.
 #
 # Helper Functions:
 #
 # Related Milestone Report:
+# - milestone_02_documentation.pdf
 # ==============================================================================
 # --- load libraries ---
 library(dplyr)
@@ -56,77 +60,87 @@ library(cli)
 # ------------------------------------------------------------------------------
 # 1. List vector and raster files separately
 # ------------------------------------------------------------------------------
-vector_files <- dir_ls(here("data/processed"),
-                       recurse = TRUE, regexp = "\\.(gpkg|shp)$")
-raster_files <- dir_ls(here("data/processed"),
-                       recurse = TRUE, regexp = "\\.tif$")
+vector_files <- dir_ls(file.path(here(), "data", "processed"),
+  recurse = TRUE, regexp = "\\.(gpkg|shp)$"
+)
+raster_files <- dir_ls(file.path(here(), "data", "processed"),
+  recurse = TRUE, regexp = "\\.tif$"
+)
 
 # ------------------------------------------------------------------------------
 # 2. Function: Validate vector files
 # ------------------------------------------------------------------------------
 validate_vector_metadata <- function(file) {
-  tryCatch({
-    layer <- st_layers(file)$name[1]
-    vec <- st_read(file, layer = layer, quiet = TRUE)
-    crs <- st_crs(vec)$input
-    bbox <- st_bbox(vec)
+  tryCatch(
+    {
+      layer <- st_layers(file)$name[1]
+      vec <- st_read(file, layer = layer, quiet = TRUE)
+      crs <- st_crs(vec)$input
+      bbox <- st_bbox(vec)
 
-    tibble(
-      file = path_rel(file, start = here()),
-      type = "vector",
-      crs = crs,
-      resolution = NA,
-      xmin = bbox["xmin"],
-      xmax = bbox["xmax"],
-      ymin = bbox["ymin"],
-      ymax = bbox["ymax"]
-    )
-  }, error = function(e) {
-    cli::cli_alert_warning("⚠️ Could not read vector file: {file}")
-    tibble(file = path_rel(file, start = here()), type = "vector", crs = NA,
-           resolution = NA, xmin = NA, xmax = NA, ymin = NA, ymax = NA)
-  })
+      tibble(
+        file = path_rel(file, start = here()),
+        type = "vector",
+        crs = crs,
+        resolution = NA,
+        xmin = bbox["xmin"],
+        xmax = bbox["xmax"],
+        ymin = bbox["ymin"],
+        ymax = bbox["ymax"]
+      )
+    },
+    error = function(e) {
+      cli::cli_alert_warning("⚠️ Could not read vector file: {file}")
+      tibble(
+        file = path_rel(file, start = here()), type = "vector", crs = NA,
+        resolution = NA, xmin = NA, xmax = NA, ymin = NA, ymax = NA
+      )
+    }
+  )
 }
 
 # ------------------------------------------------------------------------------
 # 3. Function: Validate raster files
 # ------------------------------------------------------------------------------
 validate_raster_metadata <- function(file) {
-  file <- as.character(file)[1]  # Force scalar
+  file <- as.character(file)[1] # Force scalar
 
-  tryCatch({
-    r <- rast(file)
-    crs_val <- as.character(crs(r))[1]
-    bbox <- ext(r)
-    resolution <- res(r) %>% paste(collapse = " x ")
+  tryCatch(
+    {
+      r <- rast(file)
+      crs_val <- as.character(crs(r))[1]
+      bbox <- ext(r)
+      resolution <- res(r) %>% paste(collapse = " x ")
 
-    tibble(
-      file = path_rel(file, start = here()),
-      type = "raster",
-      crs = crs_val,
-      resolution = resolution,
-      xmin = xmin(bbox),
-      xmax = xmax(bbox),
-      ymin = ymin(bbox),
-      ymax = ymax(bbox),
-      file_size_MB = round(file_info(file)$size[1] / 1024^2, 2),
-      error = NA
-    )
-  }, error = function(e) {
-    cli::cli_alert_warning("⚠️ Could not read: {basename(file)} — {e$message}")
-    tibble(
-      file = path_rel(file, start = here()),
-      type = "raster",
-      crs = NA,
-      resolution = NA,
-      xmin = NA,
-      xmax = NA,
-      ymin = NA,
-      ymax = NA,
-      file_size_MB = round(file_info(file)$size[1] / 1024^2, 2),
-      error = as.character(e$message)
-    )
-  })
+      tibble(
+        file = path_rel(file, start = here()),
+        type = "raster",
+        crs = crs_val,
+        resolution = resolution,
+        xmin = xmin(bbox),
+        xmax = xmax(bbox),
+        ymin = ymin(bbox),
+        ymax = ymax(bbox),
+        file_size_MB = round(file_info(file)$size[1] / 1024^2, 2),
+        error = NA
+      )
+    },
+    error = function(e) {
+      cli::cli_alert_warning("⚠️ Could not read: {basename(file)} — {e$message}")
+      tibble(
+        file = path_rel(file, start = here()),
+        type = "raster",
+        crs = NA,
+        resolution = NA,
+        xmin = NA,
+        xmax = NA,
+        ymin = NA,
+        ymax = NA,
+        file_size_MB = round(file_info(file)$size[1] / 1024^2, 2),
+        error = as.character(e$message)
+      )
+    }
+  )
 }
 
 # ------------------------------------------------------------------------------
@@ -138,7 +152,8 @@ vector_summary <- map_dfr(seq_along(vector_files), function(i) {
   validate_vector_metadata(vector_files[i])
 })
 
-out_path <- here("data/log/validate_spatial", "vector_validation_summary.csv")
+out_path <- file.path(
+  here(), "data", "log", "validate_spatial", "vector_validation_summary.csv")
 if (!dir_exists(dirname(out_path))) dir_create(dirname(out_path))
 
 write_csv(vector_summary, out_path)
@@ -151,8 +166,10 @@ cli::cli_alert_success("✅ Summary saved to {out_path}")
 cli::cli_h2("🌄 Validating raster files...")
 
 batch_size <- 100
-raster_chunks <- split(raster_files,
-                       ceiling(seq_along(raster_files) / batch_size))
+raster_chunks <- split(
+  raster_files,
+  ceiling(seq_along(raster_files) / batch_size)
+)
 
 for (i in seq_along(raster_chunks)) {
   cli::cli_h2("🌄 Processing raster batch {i}/{length(raster_chunks)}")
@@ -163,14 +180,16 @@ for (i in seq_along(raster_chunks)) {
   })
 
   batch_filename <- sprintf("raster_metadata_batch_%02d.csv", i)
-  batch_path <- here("data", "log", "validate_spatial", batch_filename)
+  batch_path <- data.path(
+    here(), "data", "log", "validate_spatial", batch_filename)
   stopifnot(length(batch_path) == 1, is.character(batch_path))
   write_csv(chunk_summary, file = batch_path)
 }
 
 # --- Path to metadata batch outputs ---
-batch_files <- dir_ls(here("data/log/validate_spatial"),
-                      regexp = "raster_metadata_batch_.*\\.csv$")
+batch_files <- dir_ls(data.path(here(), data, log, validate_spatial),
+  regexp = "raster_metadata_batch_.*\\.csv$"
+)
 
 # --- Combine all batch CSVs ---
 raster_validation_summary <- map_dfr(
@@ -185,7 +204,8 @@ raster_validation_summary <- map_dfr(batch_files, function(f) {
 })
 
 # --- Write a raster summary file ---
-out_path <- here("data/log/validate_spatial", "raster_validation_summary.csv")
+out_path <- data.path(
+  here(), "data", "log", "validate_spatial", "raster_validation_summary.csv")
 write_csv(raster_validation_summary, out_path)
 
 # ------------------------------------------------------------------------------
@@ -199,11 +219,11 @@ raster_errors <- raster_validation_summary %>%
 length(raster_errors)
 
 # --- Write a log file to compare ---
-raster_errors_log <- here("data/log/validate_spatial",
-                          "raster_error_recheck.csv")
+raster_errors_log <- data.path(
+  here(), "data", "log", "validate_spatial", "raster_error_recheck.csv")
 
 # --- Recheck only the failed files ---
-recheck_results <- map_dfr(raster_errors, ~{
+recheck_results <- map_dfr(raster_errors, ~ {
   cli::cli_alert("🔄 Rechecking: {.file {basename(.x)}}")
   validate_raster_metadata(here(.x))
 })
@@ -222,8 +242,12 @@ rast_validation_summ_updated <- raster_validation_summary %>%
   arrange(file)
 
 # --- Overwrite the master summary CSV ---
-write_csv(rast_validation_summ_updated,
-          here("data/log/validate_spatial", "raster_validation_summary.csv"))
+write_csv(
+  rast_validation_summ_updated,
+  file.path(
+    here(), "data", "log", "validate_spatial", "raster_validation_summary.csv"
+  )
+)
 
 cli::cli_alert_success("✅ Updated summary written to raster_validation_summary.csv")
 
@@ -236,7 +260,11 @@ cli::cli_alert_info("🚨 Remaining unreadable rasters: {nrow(remaining_errors)}
 # ------------------------------------------------------------------------------
 # 8. Check vector results for data issues
 # ------------------------------------------------------------------------------
-vec_summary <- read_csv(here("data/log/validate_spatial/vector_validation_summary.csv"))
+vec_summary <- read_csv(
+  data.path(
+    here(), "data", "log", "validate_spatial", "vector_validation_summary.csv"
+    )
+  )
 
 # Count unreadable files
 bad_vectors <- vec_summary %>%
@@ -246,7 +274,7 @@ cli::cli_alert_info("🚨 Unreadable vector files: {nrow(bad_vectors)}")
 
 # ---- Recheck unreadable files ----
 # Recheck vector files that failed
-recheck_vec_results <- purrr::map_dfr(bad_vectors$file, ~{
+recheck_vec_results <- purrr::map_dfr(bad_vectors$file, ~ {
   cli::cli_alert("🔄 Rechecking: {.file {basename(.x)}}")
   validate_vector_metadata(here::here(.x))
 })
@@ -258,8 +286,12 @@ vec_summary_updated <- vec_summary %>%
   arrange(file)
 
 # Write updated version
-write_csv(vec_summary_updated,
-          here("data/log/validate_spatial/vector_validation_summary.csv"))
+write_csv(
+  vec_summary_updated,
+  file.path(
+    here(), "data", "log", "validate_spatial", "vector_validation_summary.csv"
+  )
+)
 
 cli::cli_alert_success("✅ Vector summary updated after recheck.")
 
@@ -277,8 +309,10 @@ vec_summary_updated %>%
 # 9. Check vector results for minimum spatial extent
 # ------------------------------------------------------------------------------
 # ---- Load and Filter Level 1 ecoregions ----
-eco_l1_gp <- st_read(here("data/r/us_ecoregions/us-eco-levels.gpkg"),
-                     layer = "us_eco_l1", quiet = TRUE) %>%
+eco_l1_gp <- st_read(
+  file.path(here(), "data", "processed", "us_ecoregions", "us_eco_levels.gpkg"),
+  layer = "us_eco_l1", quiet = TRUE
+) %>%
   filter(NA_L1NAME == "GREAT PLAINS")
 
 # Union all features to create a bounding box or mask
@@ -314,9 +348,13 @@ vec_summary_bbox_check <- vec_summary_bbox_check %>%
     )
   )
 
-write_csv(vec_summary_bbox_check,
-          here("data/log/validate_spatial/vector_bbox_summary.csv"))
+write_csv(
+  vec_summary_bbox_check,
+  file.path(here(), "data", "log", "validate_spatial", "vector_bbox_summary.csv")
+)
 
 vec_summary_bbox_check %>%
   filter(scope == "partial GP" | scope == "unknown") %>%
-  write_csv(here("data/log/validate_spatial/vector_bbox_suspects.csv"))
+  write_csv(
+    file.path(here(), "data", "log", "validate_spatial", "vector_bbox_suspects.csv")
+    )

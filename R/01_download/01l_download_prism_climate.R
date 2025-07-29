@@ -5,8 +5,10 @@
 # Last Updated:    2025-07-22
 # Changelog:
 # - 2025-07-22     Updated to conform with other scripts. Archived prior version.
-# - 2025-07-23     Update header information; 
+# - 2025-07-23     Update header information;
 #                  move notes to `script-notes_and_developer-log`.
+# - 2025-07-28     Update script to use {here} consistently;
+#                  Run {styler}; Updated header metadata
 #
 # Purpose:         Download and process PRISM 30-year climate normals (1991–2020)
 #                  at 800m resolution:
@@ -26,8 +28,8 @@
 # climate data (https://prism.nacse.org/). Built-in `prism` functions allows
 # bulk downloads.
 # Outputs:
-# - Climate rasters in:       data/processed/prism/
-# - Download logs in:         data/log/prism_*.csv
+# - Climate rasters in `data/processed/prism/``
+# - Download logs in `data/log/prism_*.csv`
 #
 # Dependencies:
 # - dplyr, readr   Data manipulation and export
@@ -35,7 +37,7 @@
 # - glue           Interpret string literals
 # - here           Relative path handling
 # - httr           Tools for working with URLs and HTTP
-# prism            Access data from the Oregon State Prism Climate Project 
+# - prism          Access data from the Oregon State Prism Climate Project
 # - sf             Spatial data (simple features)
 # - terra          Vector and raster data operations
 # - stringr        Wrappers for string operations
@@ -44,7 +46,6 @@
 # verify_prism_archive.R
 #
 # Related Milestone Reports:
-# - milestone_01_download_prepare_covariates.Rmd
 # - milestone_01_download_prepare_covariates.pdf
 # ==============================================================================
 # --- Load libraries ---
@@ -59,22 +60,22 @@ library(sf)
 library(stringr)
 
 # --- Load custom function ---
-source(here("R/utils/qaqc/verify_prism_archive.R"))
+source(file.path(here(), R, utils, verify_prism_archive.R))
 
 # ------------------------------------------------------------------------------
 # 1. Download PRISM climate data
 # ------------------------------------------------------------------------------
-prism_set_dl_dir(here("data/raw/prism"))
+prism_set_dl_dir(file.path(here(), "data", "raw", "prism"))
 
 # --- Annual normals ---
 get_prism_normals("tmean", resolution = "800m", annual = TRUE)
-get_prism_normals("ppt",   resolution = "800m", annual = TRUE)
+get_prism_normals("ppt", resolution = "800m", annual = TRUE)
 
 # --- Monthly normals ---
 get_prism_normals("ppt", resolution = "800m", mon = 1:12)
 
 # --- Daily (climatology by month) ---
-get_prism_dailies("ppt",  resolution = "800m", mon = 1:12)
+get_prism_dailies("ppt", resolution = "800m", mon = 1:12)
 get_prism_dailies("tmax", resolution = "800m", mon = 1:12)
 get_prism_dailies("tmin", resolution = "800m", mon = 1:12)
 
@@ -82,18 +83,24 @@ get_prism_dailies("tmin", resolution = "800m", mon = 1:12)
 # 2. Log inventory of raw PRISM files
 # ------------------------------------------------------------------------------
 prism_files <- tibble(raw_files = prism_archive_ls())
-write_csv(prism_files, here("data/log/prism_file_inventory.csv"))
+write_csv(prism_files, file.path(here(), log, prism_file_inventory.csv))
 
 # ------------------------------------------------------------------------------
 # 3. Reproject and rename rasters
 # ------------------------------------------------------------------------------
-verify_prism_archive("data/raw/prism", output_csv = "data/log/prism_qc.csv")
+verify_prism_archive(file.path(here(), "data", "raw", "prism"),
+  output_csv = file.path(here(), "data", "log", "prism_qc.csv")
+)
 
 # This assumes rename_tbl() and summarise_raster_crs() are defined elsewhere
 rename_tbl <- rename_tbl() %>%
   mutate(
-    path_proj    = path("data/intermediate/prism_epsg5070", path_ext_set(fname_raw, "tif")),
-    path_renamed = path("data/intermediate/prism_epsg5070", fname_clean)
+    path_proj = file.path(
+      here(), "data", "raw", "prism_epsg5070",
+      path_ext_set(fname_raw, "tif")
+    ),
+    path_renamed = file.path(
+      here(), "data", "raw", "prism_epsg5070", fname_clean)
   )
 
 walk2(rename_tbl$path_proj, rename_tbl$path_renamed, file_move)
@@ -101,34 +108,45 @@ walk2(rename_tbl$path_proj, rename_tbl$path_renamed, file_move)
 # ------------------------------------------------------------------------------
 # 4. Stack and export climate rasters
 # ------------------------------------------------------------------------------
-intermediate_dir <- here("data/intermediate/prism_epsg5070")
-output_dir <- here("data/processed/prism")
+intermediate_dir <- file.path(here(), "data", "raw", "prism_epsg5070")
+output_dir <- file.path(here(), "data", "processed", "prism")
 
 # --- Stack annual temperature ---
-temp_ann_paths <- file.path(intermediate_dir, c("tmax_ann_C.tif", "tmean_ann_C.tif", "tmin_ann_C.tif"))
+temp_ann_paths <- file.path(
+  intermediate_dir,
+  c("tmax_ann_C.tif", "tmean_ann_C.tif", "tmin_ann_C.tif")
+)
 temp_stack <- rast(temp_ann_paths)
 names(temp_stack) <- c("tmax_ann_C", "tmean_ann_C", "tmin_ann_C")
-writeRaster(temp_stack, file.path(output_dir, "temp_ann_C_stack.tif"), overwrite = TRUE)
+writeRaster(temp_stack, file.path(output_dir, "temp_ann_C_stack.tif"),
+  overwrite = TRUE
+)
 
 # --- Stack monthly precipitation ---
 ppt_month_paths <- file.path(intermediate_dir, sprintf("ppt_m%02d_mm.tif", 1:12))
 ppt_month_stack <- rast(ppt_month_paths)
 names(ppt_month_stack) <- sprintf("ppt_m%02d_mm", 1:12)
-writeRaster(ppt_month_stack, file.path(output_dir, "ppt_monthly_stack.tif"), overwrite = TRUE)
+writeRaster(ppt_month_stack, file.path(output_dir, "ppt_monthly_stack.tif"),
+  overwrite = TRUE
+)
 
 # --- Export annual precipitation
 ppt_ann <- rast(file.path(intermediate_dir, "ppt_ann_mm.tif"))
 names(ppt_ann) <- "ppt_ann_mm"
-writeRaster(ppt_ann, file.path(output_dir, "ppt_ann_mm_stack.tif"), overwrite = TRUE)
+writeRaster(ppt_ann, file.path(output_dir, "ppt_ann_mm_stack.tif"),
+  overwrite = TRUE
+)
 
 # --- Copy daily rasters individually ---
 walk(
-  dir_ls(intermediate_dir, glob = "*.tif") %>% keep(~ str_detect(path_file(.x), "^(t(min|max)|ppt)_[0-9]{4}_")),
+  dir_ls(intermediate_dir, glob = "*.tif") %>% keep(
+    ~ str_detect(path_file(.x), "^(t(min|max)|ppt)_[0-9]{4}_")
+  ),
   ~ file_copy(.x, output_dir, overwrite = TRUE)
 )
 
 # ------------------------------------------------------------------------------
-# 5. Optional: Delete intermediate reprojected files
+# 5. Delete intermediate reprojected files
 # ------------------------------------------------------------------------------
 inter_files <- dir_ls(intermediate_dir, glob = "*.tif") %>% path_file()
 proc_files <- dir_ls(output_dir, glob = "*.tif") %>% path_file()

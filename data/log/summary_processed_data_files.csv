@@ -25,5 +25,5 @@ vector,prism,csv,12,NA,NA
 vector,statsgo2,csv,1,csv,1
 vector,statsgo2,csv,1,csv,1
 vector,statsgo2,csv,1,gpkg,1
-vector,us-ecoregions,NA,NA,gpkg,1
+vector,us_ecoregions,NA,NA,gpkg,1
 vector,us_ecoregions,shp,7,NA,NA

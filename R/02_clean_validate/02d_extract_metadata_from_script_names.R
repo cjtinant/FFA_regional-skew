@@ -2,10 +2,12 @@
 # Script Name:     02d_extract_metadata_from_script_names.R
 # Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-07-01
-# Last Updated:    2025-07-25
+# Last Updated:    2025-07-28
 # Change Log:
 # - 2025-07-25     Update header information;
-#                  move notes to `script-notes_and_developer-log`
+#                  move notes to `script-notes_and_developer-log`.
+# - 2025-07-28     Update script to use {here} consistently;
+#                  Run {styler}; Updated header metadata.
 #
 # Purpose:         Extract structured information from download scripts and
 #                  generate a CSV tracker. Results are used in
@@ -34,6 +36,7 @@
 # Helper Functions:
 #
 # Related Milestone Reports:
+# - milestone_02_documentation.pdf
 # =============================================================================
 # --- Load libraries ---
 library(tidyverse)
@@ -43,7 +46,7 @@ library(here)
 # ------------------------------------------------------------------------------
 # 1. List scripts
 # ------------------------------------------------------------------------------
-download_dir <- here("R/01_download")
+download_dir <- file.path(here(), "R", "01_download")
 script_paths <- dir_ls(download_dir, regexp = "\\.R$")
 
 # ------------------------------------------------------------------------------
@@ -64,7 +67,7 @@ script_tracker <- tibble(
 # ------------------------------------------------------------------------------
 # 3. Optionally standardize dataset names
 # ------------------------------------------------------------------------------
-name_lookup_path <- here("data/meta/script_name_mapping.csv")
+name_lookup_path <- file.path(here(), "data", "meta", "script_name_mapping.csv")
 if (file.exists(name_lookup_path)) {
   name_lookup <- read_csv(name_lookup_path, show_col_types = FALSE)
   script_tracker <- script_tracker %>%
@@ -85,5 +88,5 @@ script_tracker <- script_tracker %>%
 # ------------------------------------------------------------------------------
 # 5. Save output
 # ------------------------------------------------------------------------------
-output_path <- here("data/intermediate/download_script_tracker.csv")
+output_path <- file.path(here(), "data", "raw", "download_script_tracker.csv")
 write_csv(script_tracker, output_path)

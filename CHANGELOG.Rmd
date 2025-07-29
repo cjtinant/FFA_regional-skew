@@ -18,9 +18,13 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 
 ## [Unreleased]
 
+### Added
+
+### Changed
+
 ### In Progress
 
-- Milestone 2.3: Ensure all scripts are self-contained
+
 
 ## [v1.5.0] — 2025-07-28
 
@@ -41,11 +45,14 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
   - Moved milestone reports to `reports/milestones/`
 - Reorganized `results/` by moving pilot outputs to `results/20250415_pilot/`
 
+- Updated scripts to use here() for all file paths, applied tidyverse style with
+{styler}, minimize hard-coded paths or variables.
+
 ### Completed Milestones
 
 - **Milestone 2.1**: Improve script and metadata documentation for spatial downloads
 - **Milestone 2.2**: Document QA of tabular and raster input files
-
+- **Milestone 2.3**: Ensure all scripts are self-contained
 ---
 
 ## [v1.4.8] — 2025-07-22

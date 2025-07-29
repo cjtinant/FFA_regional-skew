@@ -29,10 +29,9 @@
 #
 # =============================================================================
 summarise_raster_crs <- function(
-  raster_dir = here::here("data/processed/prism"),
-  write_log = TRUE,
-  log_path = here("data/log/raster_crs_summary.csv")
-) {
+    raster_dir = here::here("data/processed/prism"),
+    write_log = TRUE,
+    log_path = here("data/log/raster_crs_summary.csv")) {
   library(terra)
   library(dplyr)
   library(purrr)
@@ -52,28 +51,31 @@ summarise_raster_crs <- function(
   message("📦 Processing ", length(raster_files), " raster files...")
 
   crs_summary <- map_dfr(raster_files, function(file) {
-    tryCatch({
-      r <- rast(file)
-      tibble(
-        file = path_file(file),
-        path = path_abs(file),
-        crs_name = crs(r, describe = TRUE),
-        epsg = terra::crs(r, proj = TRUE),
-        ncol = ncol(r),
-        nrow = nrow(r),
-        res_x = res(r)[1],
-        res_y = res(r)[2]
-      )
-    }, error = function(e) {
-      tibble(
-        file = path_file(file),
-        path = path_abs(file),
-        crs_name = NA,
-        epsg = NA,
-        ncol = NA, nrow = NA,
-        res_x = NA, res_y = NA
-      )
-    })
+    tryCatch(
+      {
+        r <- rast(file)
+        tibble(
+          file = path_file(file),
+          path = path_abs(file),
+          crs_name = crs(r, describe = TRUE),
+          epsg = terra::crs(r, proj = TRUE),
+          ncol = ncol(r),
+          nrow = nrow(r),
+          res_x = res(r)[1],
+          res_y = res(r)[2]
+        )
+      },
+      error = function(e) {
+        tibble(
+          file = path_file(file),
+          path = path_abs(file),
+          crs_name = NA,
+          epsg = NA,
+          ncol = NA, nrow = NA,
+          res_x = NA, res_y = NA
+        )
+      }
+    )
   })
 
   if (write_log) {

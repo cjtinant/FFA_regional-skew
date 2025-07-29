@@ -72,7 +72,7 @@ file_descriptions <- tribble(
   "peakflow-gage_site-criteria_data-dictionary.csv", "Peakflow gage site field descriptions",
   "peakflow-gage_data-dictionary_v01.csv", "Peakflow gage site field descriptions",
   "statsgo2_data-dictionary_v01.csv", "STATSGO2 map unit polygon field descriptions",
-  "us-ecoregions_data-dictionary_v03.csv", "US Ecoregion Level I-IV data dictionary",
+  "us_ecoregions_data-dictionary_v03.csv", "US Ecoregion Level I-IV data dictionary",
   "ned_data-dictionary-full_2014.pdf", "National Elevation Dataset field definitions",
   "covariate_metadata_v082.csv",
   "Covariate descriptions e.g. notes, resolution, scale, hierchial group membership",
@@ -113,8 +113,8 @@ file_descriptions <- tribble(
   "nhdv21-flowlines_layer_metadata_v01.csv", "NHDplus flowlines spatial metadata",
   "statsgo2_mupolygon_field_metadata_v01.csv", "statsgo2 map unit field metadata",
   "statsgo2_mupolygon_layer_metadata_v01.csv", "statsgo2 map unit spatial metadata",
-  "us-ecoregions_field_metadata_v01.csv", "US Ecoregions Level I-IV field metadata",
-  "us-ecoregions_layer_metadata_v01.csv", "US Ecoregions Level I-IV spatial metadata",
+  "us_ecoregions_field_metadata_v01.csv", "US Ecoregions Level I-IV field metadata",
+  "us_ecoregions_layer_metadata_v01.csv", "US Ecoregions Level I-IV spatial metadata",
   "peakflow-gage_peak-cd_flags.csv",
   "Indicates special conditions that affect how the peak flow values may be interpreted"
 )
