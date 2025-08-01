@@ -17,6 +17,34 @@ initials, and a brief summary.
 
 ### 2025-07-29 — C.J.T.
 
+`03a_update_covariate_metadata.R` — Covariate Metadata Cleanup and
+Linkage
+
+- Cleaned and standardized covariate metadata for modeling station skew
+  values.
+- Converted ordinal fields to categorical:
+  - `domain_ordinal` -\> `domain_cat`
+  - `concept_group_ordinal` -\> `concept_group_cat`
+- Updated effective_analytical_resolution and description fields to:
+  - Distinguish `NHDPlus v2.1 vs NHDPlusHD`
+  - Clarify use of catchments vs flowlines
+  - Differentiate NED elevation vs NED slope
+- Normalized dataset names using `dataset_normalization_lut` to enforce
+  one-to-one joins.
+- Joined covariate metadata to:
+  - Processed file locations (`data_locs_med_rare`)
+  - Zonal summary layers (`zonal_lut`)
+- Verified join integrity; resolved many-to-many conflicts.
+- Exported cleaned metadata as:
+  - `docs/metadata/descriptions/covariate_metadata_v085.csv`
+- Archived previous version:
+  - `docs/metadata/descriptions/archive/covariate_metadata_v084.csv`
+
+### 2025-07-29 — C.J.T.
+
+- Linked to Milestone 2.3: Improve code documentation and metadata
+- Standardized header blocks in all `R/01_download/` scripts
+- Updated README.Rmd and knitted to README.md
 - Standardized use of `.Rmd` and `.md` across all subfolders
 - Added `log_README.Rmd` to document folder-level decisions
 - Updated script headers in `R/01_download/` and `R/02_clean_validate/`

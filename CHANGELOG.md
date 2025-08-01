@@ -1,10 +1,11 @@
 Changelog
 ================
 CJ Tinant
-2025-07-29
+2025-08-01
 
 - [Changelog](#changelog)
   - [\[Untracked\]](#untracked)
+  - [\[v1.6.0\] — 2025-08-01](#v160--2025-08-01)
   - [\[v1.5.3\] — 2025-07-29](#v153--2025-07-29)
   - [\[v1.5.2\] — 2025-07-29](#v152--2025-07-29)
   - [\[v1.5.1\] — 2025-07-29](#v151--2025-07-29)
@@ -30,6 +31,48 @@ Changelog](https://keepachangelog.com/) format.*
 
 ### In Progress
 
+## \[v1.6.0\] — 2025-08-01
+
+### Added
+
+- `milestone_03_prepare_covariates.Rmd` in `reports/milestones/`
+- `data/covariates/` folder for joined covariates
+- Added Reproducibility Notes sections to
+  `milestone_02_documentation.pdf` and
+  `milestone_03_prepare_covariates.pdf`
+- `Script 03a_update_covariate_metadata.R` to clean, normalize, and
+  document covariate metadata used for modeling station skew.
+  - Lookup table (`dataset_normalization_lut`) ensures one-to-one joins
+    between covariates and data sources.
+
+### Changed
+
+- Moved legacy `03_covariate` scripts to `sandbox`
+- Updated `milestone_03_prepare_covariates.Rmd` Project Structure
+  - Converted `domain_ordinal` -\> `domain_cat` and
+    `concept_group_ordinal` -\> `concept_group_cat` to improve
+    categorical clarity.
+  - Updated metadata fields to clarify distinctions between:
+    - NHDPlus v2.1 vs. NHDPlusHD
+    - Catchments vs. Flowlines
+    - NED slope vs. NED elevation
+  - Normalized dataset names and descriptions for consistency and
+    traceability.
+  - Joined covariate metadata with:
+    - Processed dataset locations (`data_locs_med_rare`)
+    - Zonal summary spatial layers (`zonal_lut`)
+
+### Removed
+
+- Many-to-many relationships between covariate variables and dataset
+  sources through normalization.
+
+### Archived
+
+- Moved `covariate_metadata_v084.csv` to
+  `docs/metadata/descriptions/archive/`
+- Exported updated metadata as `covariate_metadata_v085.csv`
+
 ## \[v1.5.3\] — 2025-07-29
 
 ### Changed
@@ -38,6 +81,14 @@ Changelog](https://keepachangelog.com/) format.*
   milestones for improved documentation traceability.
 - Added milestone references to `R/log_README.Rmd` based on recent
   updates (Milestone 2.3).
+
+### Completed Milestones
+
+- **Milestone 2.8**: Standardize use of `.Rmd` and `.md` for all folders
+- **Milestone 2.9**: Develop `log_README.md` templates in `R/` and
+  `data/`
+
+**This closes Milestone 2**
 
 ## \[v1.5.2\] — 2025-07-29
 
@@ -190,8 +241,8 @@ Changelog](https://keepachangelog.com/) format.*
     dimensions, band names)
   - Captures band-level data types for all layers
   - Outputs written to:
-    - koppen-geiger_summary_metadata_v01.csv
-    - koppen-geiger_band_metadata_v01.csv
+  - koppen-geiger_summary_metadata_v01.csv
+  - koppen-geiger_band_metadata_v01.csv
   - Stored in docs/metadata/raster-data-summaries/
 
 ### Changed

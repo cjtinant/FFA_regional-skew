@@ -1,23 +1,21 @@
----
-title: "Milestone 03 — Prepare Covariates and Modeling Dataset"
-output: github_document
----
+Milestone 03 — Prepare Covariates and Modeling Dataset
+================
 
 # 🎯 Milestone 03 — Prepare Covariates and Modeling Dataset
 
-**Goal:**
-Clean, join, and document covariate data for modeling station skew values. Ensure all numeric predictors are harmonized, standardized, and traceable.
+**Goal:** Clean, join, and document covariate data for modeling station
+skew values. Ensure all numeric predictors are harmonized, standardized,
+and traceable.
 
----
+------------------------------------------------------------------------
 
 ## ✅ Objectives
 
-1. Clean and update covariate metadata
+1.  Clean and update covariate metadata
 
 <!--
 x. Organize covariate files from climate, terrain, and land cover sources.
-
-2. Standardize variable names and units for modeling compatibility.
+&#10;2. Standardize variable names and units for modeling compatibility.
 3. Join covariates to site locations (`site_no`, `latitude`, `longitude`).
 4. Handle missing values with clear rules and documentation.
 5. Create modeling-ready dataset in `data/derived/`.
@@ -25,9 +23,10 @@ x. Organize covariate files from climate, terrain, and land cover sources.
 7. Begin exploratory modeling prep (e.g., correlation, distributions, scaling).
 -->
 
----
+------------------------------------------------------------------------
 
 # Project Structure
+
 <!--
 Relevant folders and files
 -->
@@ -67,7 +66,7 @@ FFA_regional-skew/
 - `data/derived/skew_modeling_dataset.csv` *(pending)*
 - Updated logs in:
   - `docs/metadata/log_README.Rmd` *(upcoming)*
-  - `R/log_README.Rmd`  *(upcoming)*
+  - `R/log_README.Rmd` *(upcoming)*
 
 <!--
 - `data/derived/skew_modeling_dataset.csv`
@@ -78,45 +77,46 @@ FFA_regional-skew/
   - `R/log_README.Rmd`
 -->
 
----
+------------------------------------------------------------------------
 
 ## 🔧 Key Scripts
 
 - `R/03a_update_covariate_metadata.R`
-
 
 <!--
 - `03X_join_covariates.R`
 - `03b_clean_covariates.R`
 - `03c_check_missing_covariates.R`
 - `03d_create_modeling_dataset.R`
---> 
+-->
 
----
+------------------------------------------------------------------------
 
 ## 🧠 Notes
 
-- Use modeling-friendly standardized names (e.g., `ppt_ann_mm`, `tmean_jan_C`,
-`slope_pct`).
-- Move `site_no`, `latitude`, `longitude` fields to the front of the dataset.
+- Use modeling-friendly standardized names (e.g., `ppt_ann_mm`,
+  `tmean_jan_C`, `slope_pct`).
+- Move `site_no`, `latitude`, `longitude` fields to the front of the
+  dataset.
 - Track variables dropped due to collinearity or missingness.
-- Log all transformation and filtering rules in script headers and `log_README.Rmd`.
+- Log all transformation and filtering rules in script headers and
+  `log_README.Rmd`.
 
----
+------------------------------------------------------------------------
 
 ## 🔖 Target Version(s)
 
 - Version: **v1.6.0–v1.6.x** for primary milestone tasks
 - Follow-up work may extend into **v1.7.x** (exploratory modeling setup)
 
----
+------------------------------------------------------------------------
 
 ## 📝 Task Checklist
-| Step | Task                                                    | Status |
-|:----:|:--------------------------------------------------------|:------:|
-| 3.1  | Update covariate metadata                               | [X]    |
-| 3.2  | Create macrozone layer                                  | [ ]    |
 
+| Step | Task                      | Status |
+|:----:|:--------------------------|:------:|
+| 3.1  | Update covariate metadata | \[X\]  |
+| 3.2  | Create macrozone layer    | \[ \]  |
 
 <!--
 - [ ] Clean and stack covariate rasters
@@ -127,42 +127,51 @@ FFA_regional-skew/
 - [ ] Update data dictionary and README files
 - [ ] Write log entries in `log_README.Rmd`
 - [ ] Tag release `v1.6.x`
---> 
+-->
 
 ## Description of Tasks Completed or In Progress
 
 ### Milestone 3.1 Summary:
 
-- Implemented 03a_update_covariate_metadata.R to standardize and document
-covariate metadata.
-- Converted domain and concept group variables from ordinal to categorical form
-for modeling readability.
-- Clarified dataset descriptions, distinguishing NHDPlusHD vs. NHDPlus v2.1 and
-catchments vs. flowlines.
+- Implemented 03a_update_covariate_metadata.R to standardize and
+  document covariate metadata.
+
+- Converted domain and concept group variables from ordinal to
+  categorical form for modeling readability.
+
+- Clarified dataset descriptions, distinguishing NHDPlusHD vs. NHDPlus
+  v2.1 and catchments vs. flowlines.
+
 - Used a lookup table to normalize dataset names and enforce one-to-one
-relationships between variables and files.
-- Linked all covariates to corresponding processed files and zonal summary layers.
+  relationships between variables and files.
+
+- Linked all covariates to corresponding processed files and zonal
+  summary layers.
+
 - Archived previous metadata version (v084) and exported the updated
-covariate_metadata_v085.csv.
+  covariate_metadata_v085.csv.
 
 - Ensure this update is reflected in `CHANGELOG.md` and `log_README.Rmd`
 
 # Summary
+
 <!--
 Retrospective record of key results and an opportunity to reflect on what was
 accomplished.
 -->
----
+
+------------------------------------------------------------------------
 
 ## 🔁 Summary
 
 Milestone 03.1 established a clean, traceable foundation for covariate
-integration by formalizing metadata, resolving many-to-many joins, and linking
-each variable to a single, authoritative data source. With the metadata structure
-finalized, the next steps will focus on joining raster data to site locations
-and preparing a modeling-ready dataset with standardized variable names, units,
-and formats.
+integration by formalizing metadata, resolving many-to-many joins, and
+linking each variable to a single, authoritative data source. With the
+metadata structure finalized, the next steps will focus on joining
+raster data to site locations and preparing a modeling-ready dataset
+with standardized variable names, units, and formats.
 
 ### Reproducibility Notes
-- See DESCRIPTION and renv.lock for project-wide dependencies and package versions.
 
+- See DESCRIPTION and renv.lock for project-wide dependencies and
+  package versions.
