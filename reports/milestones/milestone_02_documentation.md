@@ -1,7 +1,7 @@
 Milestone 02 – Improve Script and Metadata Documentation
 ================
 C.J. Tinant
-July 29, 2025
+July 31, 2025
 
 - [Overview of v1.5.1](#overview-of-v151)
   - [Goal](#goal)
@@ -86,8 +86,8 @@ Relevant folders and files
 | 2.5 | Review `docs/metadata` covariates | \[X\] |
 | 2.6 | Standardize use of `.Rmd` and `.md` for all folders | \[X\] |
 | 2.7 | Develop `log_README.md` templates to include in `R/` and `data/` | \[X\] |
-| 2.8 | Link README-style metadata to milestone logs | \[ \] |
-| 2.9 | Commit and push changes as tag `v1.6-docs-enhancement` | \[ \] |
+| 2.8 | Link README-style metadata to milestone logs | \[X\] |
+| 2.9 | Commit and push changes as tag `v1.5.3-docs-enhancement` | \[X\] |
 
 ## Description of Tasks Completed or In Progress
 
@@ -183,16 +183,6 @@ that folder to capture:
 - Help maintain folder-level traceability for collaborative or long-term
   projects
 
-### Suggested Tags and Commit Messages
-
-If you’re versioning as you go:
-
-    Commit message:
-    Add standardized documentation headers to all R/01_download scripts; draft README for data download workflows
-
-    Tag for milestone completion:
-    v1.5.0-docs or v02-complete
-
 # Next Steps
 
 <!-- What follows this milestone — e.g., which milestone will build on this work.
@@ -210,3 +200,8 @@ documentation practices. It includes README templates for `R/`
 subfolders, a planned data dictionary, and introduces `log_README.md`
 documentation inside each milestone to clarify roles, assumptions, and
 outputs.
+
+### Reproducibility Notes
+
+- See DESCRIPTION and renv.lock for project-wide dependencies and
+  package versions.

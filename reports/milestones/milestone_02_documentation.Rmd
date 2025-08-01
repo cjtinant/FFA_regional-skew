@@ -3,15 +3,15 @@ title: "Milestone 02 – Improve Script and Metadata Documentation"
 author: "C.J. Tinant"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
-  github_document:
-    toc: true
-    toc_depth: 2
   pdf_document:
     toc: true
     toc_depth: 2
     number_sections: true
     latex_engine: xelatex
     fig_caption: true
+  github_document:
+    toc: true
+    toc_depth: 2
 params:
   version: "v1.5.1"
 editor_options:
@@ -193,4 +193,10 @@ Retrospective record of key results and an opportunity to reflect on what was
 accomplished.
 -->
 
-This milestone strengthens reproducibility by formalizing internal documentation practices. It includes README templates for `R/` subfolders, a planned data dictionary, and introduces `log_README.md` documentation inside each milestone to clarify roles, assumptions, and outputs.
+This milestone strengthens reproducibility by formalizing internal documentation
+practices. It includes README templates for `R/` subfolders, a planned data
+dictionary, and introduces `log_README.md` documentation inside each milestone to clarify roles, assumptions, and outputs.
+
+
+### Reproducibility Notes
+- See DESCRIPTION and renv.lock for project-wide dependencies and package versions.
