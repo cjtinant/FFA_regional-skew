@@ -35,6 +35,7 @@ Use this log to track:
 ---
 
 ## Project Notes (General)
+
 <!--
 - PRISM climate data naming should follow convention: `ppt_ann_mm`, `tmean_jan_C`, etc.
 - `data/meta/` stores all metadata CSVs, including raster and vector spatial info
@@ -45,38 +46,20 @@ Use this log to track:
 
 ## TODO (General)
 
-📌 Update Script Header - Add this to the Dependencies block:
-
-- renv           optional: reproducible package environment (see renv.lock)
-- DESCRIPTION    lists project-wide dependencies
-
-And/or append a note at the end of the script like this:
-
-# ------------------------------------------------------------------------------
-Reproducibility Note:
-See DESCRIPTION and renv.lock for project-wide dependencies and package versions.
-
-
 <!--
 - [ ] Add version check for `{terra}` to all raster scripts
 - [ ] Write a unified function to extract raster metadata to `data/meta/`
 - [ ] Add `README.Rmd` to `R/02_process/` with script overview
---> 
+-->
 
 ---
 
 ## Future Ideas
 
-
-
-- Add {datapasta}	Paste as tribble / vector Transforms clipboard data to tidy formats
-
--  Adopt a targets-based workflow {targets} after covariate extraction.
-
-- Distinguish between exploratory (`output/`) and final outputs (`results/`).
-
 - Add `docs/variable_scaffold.csv` after covariate extraction to distinguish
 between exploratory output and final cleaned results.
+
+-  Adopt a targets-based workflow {targets} after covariate extraction.
 
 <!--
 - Add script benchmarking to track execution time across revisions
@@ -96,10 +79,10 @@ between exploratory output and final cleaned results.
 
 ### 01b_download_USGS_gage_data.R
 
-- Requires internet access to download data from USGS NWIS
-- Bounding box grid helps avoid request size limitations in NWIS queries
-- Uses a batch download approach for peak flow data retrieval
-- Great Plains extent is defined using EPA Level 1 Ecoregion shapefiles
+- Requires internet access to download data from USGS NWIS.
+- Bounding box grid helps avoid request size limitations in NWIS queries.
+- Uses a batch download approach for peak flow data retrieval.
+- Great Plains extent is defined using EPA Level 1 Ecoregion shapefiles.
 
 ---
 
@@ -312,6 +295,32 @@ dimensions. This prevents logical errors when coords might be an unexpected type
 or structure. Rhe function more reliably ensures the data structure is correct
 before attempting to access its elements by using is.null along with checks for
 the number of rows and columns in `coords`
+
+---
+
+### 03a_update_covariate_metadata.R
+
+Notes on project data structure:
+- Project datasets consist of feature data, vector data, and raster data
+  stored in `~/data/processed/`
+- The response variable is station skew, which can be represented as vector
+  point data.
+- The 63 initial explanatory variables, i.e. covariates or 'covar' in the
+  script below, are structured by hierarchical scale (ordinal data) and domain
+  (categorical data)
+- The covariate data are aggregated at each scale:
+  Hierarchical Scale   Aggregated by:
+  0 - Station          NA
+  1 - Macroregional    Macrozone
+  2 - Regional         Level II Ecoregion
+  3 - Subregional      Level III Ecoregion
+  4 - Local            NHDPlusHD catchment
+
+  Domain Category
+  A - Climate
+  B - Land Cover
+  C - Topography
+  D - Watershed Metrics
 
 ---
 

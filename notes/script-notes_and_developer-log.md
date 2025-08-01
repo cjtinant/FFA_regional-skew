@@ -1,7 +1,7 @@
 Script Notes and Developer Log
 ================
 C.J. Tinant
-July 28, 2025
+July 31, 2025
 
 - [Overview](#overview)
 - [Project Notes (General)](#project-notes-general)
@@ -49,13 +49,10 @@ Use this log to track:
 
 ## Future Ideas
 
-- Adopt a targets-based workflow {targets} after covariate extraction.
-
-- Distinguish between exploratory (`output/`) and final outputs
-  (`results/`).
-
-- Add `data/meta/variable_scaffold.csv` after covariate extraction to
+- Add `docs/variable_scaffold.csv` after covariate extraction to
   distinguish between exploratory output and final cleaned results.
+
+- Adopt a targets-based workflow {targets} after covariate extraction.
 
 <!--
 - Add script benchmarking to track execution time across revisions
@@ -76,10 +73,11 @@ Use this log to track:
 
 ### 01b_download_USGS_gage_data.R
 
-- Requires internet access to download data from USGS NWIS
-- Bounding box grid helps avoid request size limitations in NWIS queries
-- Uses a batch download approach for peak flow data retrieval
-- Great Plains extent is defined using EPA Level 1 Ecoregion shapefiles
+- Requires internet access to download data from USGS NWIS.
+- Bounding box grid helps avoid request size limitations in NWIS
+  queries.
+- Uses a batch download approach for peak flow data retrieval.
+- Great Plains extent is defined using EPA Level 1 Ecoregion shapefiles.
 
 ------------------------------------------------------------------------
 
@@ -309,6 +307,23 @@ using is.null along with checks for the number of rows and columns in
 
 ------------------------------------------------------------------------
 
+### 03a_update_covariate_metadata.R
+
+Notes on project data structure: - Project datasets consist of feature
+data, vector data, and raster data stored in `~/data/processed/` - The
+response variable is station skew, which can be represented as vector
+point data. - The 63 initial explanatory variables, i.e. covariates or
+‘covar’ in the script below, are structured by hierarchical scale
+(ordinal data) and domain (categorical data) - The covariate data are
+aggregated at each scale: Hierarchical Scale Aggregated by: 0 - Station
+NA 1 - Macroregional Macrozone 2 - Regional Level II Ecoregion 3 -
+Subregional Level III Ecoregion 4 - Local NHDPlusHD catchment
+
+Domain Category A - Climate B - Land Cover C - Topography D - Watershed
+Metrics
+
+------------------------------------------------------------------------
+
 ## Zettelkasten-style markdown
 
 Zettelkasten-style markdown refers to using Markdown files to implement
@@ -376,5 +391,5 @@ notes and a script to open/edit them easily using RStudio.
 
 ## Notes
 
-- Last updated: 2025-07-28 12:34
+- Last updated: 2025-07-31 12:01
 - Maintained by: CJ Tinant
