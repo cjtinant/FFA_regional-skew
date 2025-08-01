@@ -32,13 +32,9 @@ funders, or journals.
 The `reports/` directory serves as a centralized archive for:
 
 -  PDF or HTML reports from rmarkdown::render()
-
 -  Poster files (posterdown, LaTeX, PDF)
-
 -  Quarto or RMarkdown manuscripts
-
 -  Slide decks
-
 -  Formal data appendices or export files
 
 ---
