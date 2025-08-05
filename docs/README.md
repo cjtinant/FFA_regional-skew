@@ -1,7 +1,7 @@
 README - docs/
 ================
 C.J. Tinant
-July 29, 2025
+August 05, 2025
 
 - [📁 Project Documentation
   (`docs/`)](#file_folder-project-documentation-docs)
@@ -23,7 +23,7 @@ logs, back-of-the-envelope calculations, etc.
 | Folder | Analogy | Example Use Case |
 |----|----|----|
 | `notes/` | **Field notebook** or scratchpad | Write a note on why GAM residuals were messy |
-| `docs/` | **Lab manual** or internal wiki | Atore raster metadata and covariate inventories |
+| `docs/` | **Lab manual** or internal wiki | Store raster metadata and covariate inventories |
 | `reports/` | **Final paper/poster/report** | Generate a posterdown PDF for AGU |
 
 ------------------------------------------------------------------------
@@ -64,8 +64,9 @@ docs/
 
 | File | Description |
 |:--:|:--:|
-| `covariate_source_inventory.md` | Dataset status and references |
-| `covariate data_dictionary.pdf` | Covariate metadata, data dictionary |
 | `best-practices_reference.md` | Documentation, versioning, tagging, and changelog conventions |
+| `covariate_source_status.md` | Dataset status and references |
+| `data_dictionary_covariates.pdf` | Covariate metadata, data dictionary |
 | `methods_covariate-selection.md` | Covariate domains, stratification, and macrozone delineation methods |
-| `covariates_metadata.csv` | Climate and terrain covariate metadata |
+| `covariates_metadata_vX.X.csv` | Climate and terrain covariate metadata |
+| `style_guide.pdf` | Naming, formatting, and style conventions |
