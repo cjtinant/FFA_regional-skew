@@ -20,6 +20,34 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 
 ### In Progress
 
+## [v1.6.1] — 2025-08-06
+
+### Added
+
+- `03b_make_macrozone_lut.R` to create
+`docs/metadata/look_up_tables/ecoregion_l3_metadata_lut.csv` and
+`docs/metadata/look_up_tables/ecoregion_l4_metadata_lut.csv`. The look-up tables
+are used to delineate Level IV Ecoregions (L4) into Tallgrass, Mixed-Grass, and
+Shortgrass Prairie macrozones. The tables also contain fields for: estimated_koppen,
+vege_lnd_use, hydrology, terrain, and eco_level.
+- Implemented `03c_make_macrozone_layer.R` and the look-up tables above to
+  - create initial macrozones after merging small polygons of less than 100 sq-km
+  with a nearest neighbor.
+  - Generalize macrozones by merging polygons of less than 1,000 sq-km with a
+  nearest neighbor.
+- `docs/style_guide.md` — Naming and Terminology Reference
+  - Created project-wide style guide for terminology, naming, and formatting
+  - Standardized macrozone names:
+    - Tallgrass Prairie (no hyphen)
+    - Mixed-Grass Prairie (hyphenated)
+    - Shortgrass-Steppe (hyphenated; omit “Prairie”)
+  - Added conventions for:
+    - snake_case variable naming
+    - units in variable suffixes (e.g., _mm, _pct, _C)
+    - column order for modeling datasets
+    - usage of acronyms and modifiers
+  - Linked to README.md and relevant metadata documentation
+
 ## [v1.6.0] — 2025-08-01
 
 ### Added

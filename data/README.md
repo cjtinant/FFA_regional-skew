@@ -1,7 +1,7 @@
 README - data
 ================
 CJ Tinant
-July 29, 2025
+August 06, 2025
 
 - [📁 Project Data (`data/`)](#file_folder-project-data-data)
   - [📚 Folder Purpose](#books-folder-purpose)
@@ -19,12 +19,11 @@ data are projected to a consistent geospatial format.
 The `data/` directory serves as a centralized archive for:
 
 - QAQC logs in `data/logs/`
-
 - Metadata in xml format in `data/meta/`
-
 - Processed data in `data/processed/`
+- Raw data downloads in `data/raw/`
 
-- ## Raw data downloads in `data/raw/`
+------------------------------------------------------------------------
 
 ## 🗂️ Subfolders
 

@@ -3,15 +3,15 @@ title: "Script Notes and Developer Log"
 author: "C.J. Tinant"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
+  github_document:
+    toc: true
+    toc_depth: 2
   pdf_document:
     toc: true
     toc_depth: 2
     number_sections: true
     latex_engine: xelatex
     fig_caption: true
-  github_document:
-    toc: true
-    toc_depth: 2
 params:
   version: "v1.5.1"
 editor_options:
@@ -321,6 +321,92 @@ Notes on project data structure:
   B - Land Cover
   C - Topography
   D - Watershed Metrics
+
+---
+
+### 03b_make_macrozone_layer.R
+
+The macrozone scale is the coarsest resolution scale for the study. EPA Level III
+(L3) and IV (L4) Ecoregions are aggregated into three macrozones: Tallgrass
+Prairie, Mixed-Grass Prairie, and Shortgrass Prairie macrozones. When possible macrozones are delineated at the L3 Ecoregion scale. Regions with greater
+variability at the L3 Ecoregion scale, e.g.the central and southern Great Plains
+States required delineation at the L4 Ecoregion scale. Vegetative composition
+described in State-level L4 descriptions by Omerick and others (see Related Files
+below) was the primary basis for macrozone classification. 
+
+The general characteristics of each macrozone are as follows:
+
+The **Tallgrass Prairie Macrozone** is located in the eastern portion of the Great
+Plains in the glacial till and loess plains of the Temperate Prairies (L2)
+Ecoregion, eastern portions of the South Central Semiarid Plains (L2) Ecoregion
+in the Flint Hills region, where a natural fire frequency has maintained this
+tallgrass remnant community. The Tallgrass Prairie Macrozone is an area of higher
+annual precipitation (typically \> 850 mm), deep, fertile soils with high water
+retention, and dense herbaceous vegetation, and extended baseflow. Characteristic
+species in the macrozone include: Andropogon gerardii (Big Bluestem), Panicum
+virgatum (Switchgrass), Sorghastrum nutans (Indiangrass).
+
+The **Mixed-Grass Prairie Macrozone** generally marks a transition from xeric 
+shortgrass steppe to the west and mesic tallgrass prairie to the east in the West
+Central Semi-Arid Prairies (L2) Ecoregion, the Northwestern Glaciated Plains (L2)
+Ecoregion, central portions of the South Central Semiarid Prairies (L2) Ecoregion,
+eastern portions of the Central Great Plains (L2) Ecoregion, and uplands portions
+of the Tamaulipas- Texas Semi-Arid Plain (L2) Ecoregion. The Mixed-Grass Prairie
+Macrozone is an area of moderate precipitation (typically 500–800 mm), and high
+interannual precipitation variability, variable soil textures, and a combination
+of event-driven flow and baseflow regimes. Vegetatively the macrozone is
+characterized by a mixture of tall, mid, and short grass species, including:
+Schizachyrium scoparium (Little Bluestem), Bouteloua curtipendula (sideoats grama),
+Bouteloua gracilis (sideoats grama), and Stipa sp. (Needlegrass species).
+
+The **Shortgrass-Steppe Macrozone** is located in the western portion of the Great
+Plains in the western portions of the South Central Semiarid Prairies (L2) and
+Western High Plains (L2), Central Great Plains (L2), and lowlands portions of the
+Tamaulipas-Texas Semi-Arid Plain (L2) and Southwestern Tablelands (L2). The
+Shortgrass Steppe is characteried by low precipitation, sparse vegetation, shallow
+soils with limited infiltration, rapid surface runoff, a rapid-response, event-
+driven hydrologic regime,  higher flood skew, driven by reduced canopy structure
+and limited ET buffering.
+
+### Related Files:
+- `l3_ecoregion_descriptions.Rmd`
+
+---
+
+### 03c_make_macrozone_layer.R
+
+Macrozones represent the coarsest analysis scale and are delineated along a
+composite gradient of moisture availability, soil development, and groundwater
+connectivity. These patterns are broadly reflected in three macrozones: Tallgrass
+Prairie, Mixed-Grass Prairie, and Shortgrass Steppe.
+
+The Texas-Louisiana Coastal Plain was removed from the analysis prior to developing
+custom macrozones. The reasons for removal include a high degree of fragmentation,
+a substantially different geography, e.g. coastal geography and barrier islands.
+Additionally, polygons less than 100 square kilometers were merged with nearest
+neighbors.
+
+Macrozones were generalized following aggregation to remove polygons smaller than 1,000 sq-km from the analysis.
+
+---
+
+# Check for later
+
+To ensure statistical robustness in regional analyses, polygons smaller than 1,000 km² or containing fewer than 30 stream gages were merged with the most ecologically similar adjacent Level III Ecoregions. The merging process followed a hierarchical decision rule:
+
+-   Primary criterion: adjacency with a unit sharing the same Level II ecoregion classification
+
+-   Secondary criterion: ecological similarity, evaluated using Euclidean distance in a multivariate space defined by:
+
+-   Land cover composition (e.g., cropland, forest, urban fractions)
+
+-   Terrain metrics (mean and standard deviation of slope)
+
+-   Vegetation seasonality (NDVI amplitude and timing of peak greenness)
+
+This approach preserved regional coherence while improving the gage count and spatial contiguity required for reliable skew estimation.
+
+
 
 ---
 

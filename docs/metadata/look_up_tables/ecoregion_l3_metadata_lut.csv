@@ -1,10 +1,10 @@
 NA_L3CODE,macrozone,estimated_koppen,vege_lnd_use,hydrology,terrain,eco_level
-9.2.1,tallgrass,"Dfb, Dwb",mostly farmland,"low-density streams, wetlands",flat to gently rolling plains composed of glacial moraine,L4
-9.2.2,tallgrass,"Dfb, Dwb","cropland, cottonwood, willow, bur oak, green ash, and elm riparian areas","low density, low-gradient streams; late winter flooding is common",flat to low rolling plains of moraine and lacustrine deposits,L4
-9.2.3,tallgrass,"Dfa, Dwa",mostly farmland,"intermittent and perennial streams, many of which have been channelized",nearly level to gently rolling glaciated till plains and hilly loess plains,L4
-9.2.4,tallgrass,"Dfa, Dwa, Cfa","mostly farmland, grassland/forest mosiac",perennial streams; in some areas many are channelized,Rolling and irregular plains with loess overlying glacial till in the north,L4
-9.4.4,tallgrass,"Dfa, Dwa",intact tallgrass prairie,intermittent and perennial streams; low to moderate gradient,Steep terrain with shallow limestone soils; fire-maintained tallgrass remnant,L4
-9.5.1,tallgrass,Cfb,cropland,low gradient intermittent and perennial streams; some channelized,Nearly flat coastal plain,L4
-9.3.1,mixed,BS,"Speargrass, blue grama, and wheatgrass, shrubs, sagebrush","mostly intermittent, some perennial streams; Prairie Potholes",transitional region between 9.2.1 and 9.3.3; terminal glaciation extent,L4
-9.3.3,mixed,BS,shortgrass and mixed grass species; sagebrush steppe; scattered ponderosa pine and Rocky Mountain juniper,mostly ephemeral and intermittent streams,Rolling shale-sandstone plain with occasional buttes; Badlands and river breaks,L4
-9.3.4,mixed,BS,grass-stabilized sand dunes; mid and tallgrass prairie,lakes and wetlands common; a lack of streams,"rolling to steep, irregular sand dunes",L4
+9.2.1,tallgrass,"Dfb, Dwb",mostly farmland,"low-density streams, wetlands",flat to gently rolling plains composed of glacial moraine,L3
+9.2.2,tallgrass,"Dfb, Dwb","cropland, cottonwood, willow, bur oak, green ash, and elm riparian areas","low density, low-gradient streams; late winter flooding is common",flat to low rolling plains of moraine and lacustrine deposits,L3
+9.2.3,tallgrass,"Dfa, Dwa",mostly farmland,"intermittent and perennial streams, many of which have been channelized",nearly level to gently rolling glaciated till plains and hilly loess plains,L3
+9.2.4,tallgrass,"Dfa, Dwa, Cfa","mostly farmland, grassland/forest mosiac",perennial streams; in some areas many are channelized,Rolling and irregular plains with loess overlying glacial till in the north,L3
+9.4.4,tallgrass,"Dfa, Dwa",intact tallgrass prairie,intermittent and perennial streams; low to moderate gradient,Steep terrain with shallow limestone soils; fire-maintained tallgrass remnant,L3
+9.5.1,tallgrass,Cfb,cropland,low gradient intermittent and perennial streams; some channelized,Nearly flat coastal plain,L3
+9.3.1,mixed,BS,"Speargrass, blue grama, and wheatgrass, shrubs, sagebrush","mostly intermittent, some perennial streams; Prairie Potholes",transitional region between 9.2.1 and 9.3.3; terminal glaciation extent,L3
+9.3.3,mixed,BS,shortgrass and mixed grass species; sagebrush steppe; scattered ponderosa pine and Rocky Mountain juniper,mostly ephemeral and intermittent streams,Rolling shale-sandstone plain with occasional buttes; Badlands and river breaks,L3
+9.3.4,mixed,BS,grass-stabilized sand dunes; mid and tallgrass prairie,lakes and wetlands common; a lack of streams,"rolling to steep, irregular sand dunes",L3

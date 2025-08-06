@@ -1,0 +1,312 @@
+---
+title: "Level III Descriptions"
+author: "CJ Tinant"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+
+## Level III Ecoregion US25 High Plains
+### Nebraska and Kansas ###
+In the rain shadow of the Rocky Mountains, the Western High Plains ecoregion
+[in Nebraska and Kansas] is characterized by a semi-arid to arid climate, with
+annual precipitation ranging from 13 to 20 inches. Higher and drier than the
+Central Great Plains to the east, much of the Western High Plains comprises a
+smooth to slightly irregular plain having a high percentage of dryland agriculture.
+Potential natural vegetation is dominated by drought tolerant shortgrass prairie
+and large areas of mixedgrass prairie in the northwest, especially in Nebraska.
+Center pivot irrigation, relying on ground water from the High Plains Aquifer, has
+increased dramatically in recent decades. Natural gas deposits, found in the south,
+yield a majority of natural gas produced in the Midwest (Chapman, 2001).
+
+In Oklahoma, Ecoregion 25 consists of smooth to irregular, semiarid plains that
+are studded with playas and stock ponds, widely mantled by loess or sand, and
+underlain by semiconsolidated sand and gravel deposits. Elevations range from
+2,400 to 4,800 feet, and are highest in the west. Overall, Ecoregion 25 is less
+dissected than the Southwestern Tablelands (26) and higher in elevation than the
+Central Great Plains (27). Precipitation increases eastward, averages only 17 to
+20 inches annually, and is erratic. Natural vegetation is mostly short grass
+prairie, but sagebrush–bluestem prairie is native on scattered sand plains and
+sand hills. Overall, natural vegetation is distinct from the mixed grass and tall
+grass prairies of moister ecoregions to the east. Today, cropland (mostly winter
+wheat and grain sorghum) is extensive. Rangeland (widely overgrazed) is found in
+areas that are too sandy or steep for farming. Both cropland and rangeland require
+proper management to limit wind erosion. Groundwater irrigation, drawing down the
+Ogallala Aquifer, has become increasingly common in recent decades. This has caused
+many streams to go dry, some to the point that no defined channels remain. The
+remaining streams and pools are shallow and have sandy substrates. Conditions in
+these intermittent streams are intensely stressful for many species of fish. As a
+result, both the diversity and richness of fish species are lower than in any other
+ecoregion in Oklahoma. The most common fishes in Ecoregion 25 are the red shiner
+and the plains killifish (Woods et.al, 2005).
+
+Higher and drier [in New Mexico] than the Central Great Plains (27) to the east,
+and in contrast to the irregular, mostly grassland or grazing land of the Northwestern
+Great Plains (43) to the north, much of the High Plains is characterized by smooth
+to slightly irregular plains with a high percentage of cropland. Grama-buffalo
+grass is the potential natural vegetation in this region as compared to mostly
+wheatgrass-needlegrass to the north, Trans-Pecos shrub savanna to the south, and
+taller grasses to the east. The ecoregion includes the plains area of the Llano
+Estacado. Thousands of playa lakes (seasonal depressional wetlands) occur in this
+area, many serving as recharge areas for the important Ogallala Aquifer. These
+playa lakes are also essential for waterfowl during their yearly migration along
+the Central Flyway of North America. Oil and gas production occurs in parts of
+the region (Griffith et.al, 2006).
+
+Higher and drier than the Central Great Plains (27) to the east [in Colorado],
+and in contrast to the irregular, mostly grassland or grazing land of the Northwestern
+Great Plains (43) to the north, much of the High Plains comprises smooth to slightly
+irregular plains having a high percentage of cropland. Grama-buffalo grass is the
+potential natural vegetation in this region as compared to mostly wheatgrass-
+needlegrass to the north, Trans-Pecos shrub savanna to the south, and taller grasses
+to the east. The northern boundary of this ecological region is also the approximate
+northern limit of winter wheat and sorghum and the southern limit of spring wheat.
+In Colorado, gas and oil fields are scattered throughout the region, with the greatest
+concentration found in the Denver Basin area (Chapman, 2006).
+
+The High Plains ecoregion [in Texas] is higher and drier than the Central Great
+Plains (27) to the east. And, in contrast to the characteristic irregular rangeland
+of the Northwestern Great Plains (43) to the north in the Dakotas and eastern
+Montana and Wyoming, much of the High Plains is expressed as smooth to slightly
+irregular plains with a high percentage of cropland. The potential natural
+vegetation in this region is grama-buffalo grass compared to mostly wheatgrass-
+needlegrass to the north, Trans-Pecos shrub savanna to the south, and tallgrass
+prairie to the east (Kuchler 1964, 1970). The northern boundary of this ecological
+region is also the approximate northern limit of winter wheat and sorghum and the
+southern limit of spring wheat. The ecoregion includes the plains area of the Llano
+Estacado. Thousands of playa lakes (seasonal depressional wetlands) occur in this
+area, many serving as recharge areas for the important Ogallala Aquifer. These playa
+lakes are also essential for waterfowl during their yearly migration along the
+Central Flyway of North America. Oil and gas production occurs in many parts
+of the region (Griffith et.al, 2007).
+
+## Level III Ecoregion US26 Southwestern Tablelands
+### Nebraska and Kansas ###
+During the Permian Period several thousand feet of brick-red shales, siltstone,
+sandstones, and gypsum were deposited in this region [of Nebraska and Kansas].
+Erosion has exposed these deposits giving the region its characteristic red butte
+and mesa appearance. Unlike most adjacent Great Plains ecoregions, little of this
+region is in cropland and much of its elevated tableland area is in sub-humid
+grassland and semiarid rangeland. The region has many spring-fed streams, and stream
+bottoms tend to be sandy, and the water is more mineralized than in adjacent regions
+(Chapman, 2001).
+
+Ecoregion 26 [in Oklahoma] is made up of dissected plains, hills, canyons,
+escarpments, plains, breaks, buttes, mesas, and terraces. It is more rugged than
+neighboring ecoregions. Rangeland and grassland occur but, unlike adjacent
+ecoregions, there is little cropland. In Oklahoma, mean annual rainfall ranges
+from 16 to 28 inches and is highly variable from year to year. Natural vegetation
+in this semiarid to dry-subhumid area is mostly short grass prairie; there is also
+mesquite–buffalograss in the southwest, sand sagebrush–bluestem prairie on dunes,
+and juniper–pinyon woodland in the western Panhandle. Small streams are often dry
+except after storms, but short, spring-fed runs occur. The diversity and richness
+of fish species is greater than in the High Plains (25), but less than in the
+Central Great Plains (27). Common fishes include the red shiner, sand shiner,
+suckermouth minnow, and plains killifish. Isolated populations of the Arkansas
+darter occur in a few spring-fed tributaries of the Cimarron River
+(Woods et.al, 2005).
+
+The [Texas] Southwestern Tablelands flank the High Plains (25) with red hued
+canyons, mesas, badlands, and dissected river breaks. Unlike most adjacent Great
+Plains ecological regions, little of the Southwestern Tablelands are in cropland.
+Much of this region is in sub-humid grassland and semiarid rangeland. The potential
+natural vegetation in this region is grama-buffalo grass with some mesquite-buffalo
+grass in the southeast, juniper-scrub oak-midgrass savanna on escarpment bluffs,
+and shinnery (midgrass prairie with low oak brush) along parts of the Canadian
+River. Soils in this region include Alfisols, Inceptisols, Entisols, and Mollisols
+(Griffith et.al, 2007).
+
+The Southwestern Tablelands flank the High Plains (25) with red hued canyons,
+mesas, badlands, and dissected river breaks. Unlike most adjacent Great Plains
+ecological regions, little of the Southwestern Tablelands is in cropland. Much of
+this region is in sub-humid grassland and semiarid rangeland. The boundary to the
+east in Colorado represents a transition from the more extensive cropland within
+the High Plains (25) to the generally more rugged and less arable land within the
+Southwestern Tablelands (26) ecoregion. The natural vegetation in the Colorado
+portion of this region is mostly grama-buffalograss, with some juniper-scrub oak-
+grass savanna on escarpment bluffs (Griffith et.al, 2006).
+
+## Level III Ecoregion US27 Central Great Plains
+### Nebraska and Kansas ###
+The Central Great Plains [in Nebraska and Kansas] are slightly lower, receive more
+precipitation, and are somewhat more irregular than the Western High Plains (25)
+to the west. Once a grassland, dominated by mixedgrass prairie with scattered low
+trees and shrubs in the south, much of this region is now in cropland, with the
+eastern boundary of the region marking the eastern limit of the major winter wheat
+growing area of the United States. Subsurface salt deposits and leaching contribute
+to the high salinity found in some streams (Chapman 2001)
+
+The Central Great Plains (27), in Oklahoma, are largely underlain by red, Permian-age
+sedimentary rocks and include scattered hills, breaks, salt plains, low mountains,
+gypsum karst, sandy flats, and sand dunes. Landform diversity is greater and
+elevations are lower than in the High Plains (25). Mean annual rainfall increases
+eastward, and varies from about 22 to 38 inches. Growing season increases towards
+the south. The upland natural vegetation in this dry-subhumid area is mostly mixed
+grass prairie, but mesquite–buffalograss and shinnery are native, respectively,
+to the south and to sandy areas; potential natural vegetation is distinct from the
+short grass prairie of the semiarid High Plains (25), the tall grass prairie of
+Ecoregions 28 and 40, and the oak savanna of the Cross Timbers (29). Riparian
+corridors can be wooded. The eastern boundary of Ecoregion 27 coincides with the
+eastern limit of America’s winter wheat belt. Cropland is extensive; main crops
+are wheat, alfalfa, and grain sorghum. In addition, soybeans are grown in the east,
+where rainfall is greatest, and cotton occurs, especially on irrigated, nearly
+flat land in the south. Rangeland and grassland are found in more rugged areas
+and are being invaded by eastern redcedar. Extensive oil and gas fields occur.
+Typically, after heavy rains, streams flow strongly and are laden with suspended
+sediment. Streams draining rangeland carry less sediment load than those that are
+downstream of cropland. Flow stops or nearly stops in the summer, but scattered
+pools endure and serve as summer refuges for aquatic fauna. Salt or gypsum deposits
+and leaching produce high mineral concentrations in many streams and rivers.
+Numerous streams have been channelized and/or impounded resulting in the loss of
+riparian forest, unnatural flow regimes, entrenchment, bank erosion, substrate
+alteration, and fauna modification. In Ecoregion 27, the plains killifish occurs
+in large numbers in some streams. The most common minnows include the red shiner,
+sand shiner, suckermouth minnow, and the plains minnow; the endemic (and threatened)
+Arkansas River shiner also occurs. Slenderhead darters are widespread in Ecoregion
+27. Freckled madtoms and isolated pockets of orangethroat and dusky darters also
+occur. The Red River pupfish is found in pools and backwaters of sandy-bottomed
+streams and rivers where temperature, salinity, and alkalinity are high
+(Woods et.al, 2005).
+
+The Central Great Plains [of New Mexico] are slightly lower, receive more
+precipitation, and are more irregular than the High Plains (25) to the west. The
+ecological region was once grassland, a mixed or transitional prairie from the
+tallgrass in the east to shortgrass farther west. Scattered low trees and shrubs
+occur in the south. Most of the ecoregion is now cropland. The eastern boundary
+of the region marks the eastern limits of the major winter wheat growing area of
+the United States. Soils in this region are generally deep with shallow soils on
+ridges and breaks (Griffith et.al, 2007).
+
+## Level III Ecoregion US29 Cross Timbers / Central Oklahoma / Texas Plains
+A mix of savanna, woodland, and prairie is native to the low hills, cuestas,
+ridges, and plains of Ecoregion 29 [in New Mexico], and separates the forests of
+eastern ecoregions from the prairies of drier, western ecoregions. The boundary
+between the Cross Timbers (29) and the nearly treeless Central Great Plains (27)
+coincides with the western limit of many mammals and insects. Post oak–blackjack
+oak woodland and savanna are native on porous, course-textured soils derived from
+sandstone; the percentage of blackjack oak increases westward. Tall grasses
+are native on fine-textured, moisture deficient soils derived from limestone,
+shale, or marl. Recent fire suppression has increased forest density and allowed
+eastern redcedar to invade many areas. Today, woodland, rangeland, pastureland,
+and several extensive, but declining, oil fields occur. Abandoned, depleted
+farmland is common. The remaining cropland is largely restricted to valleys near
+channelized streams whose degraded habitat supports very poor assemblages of
+aquatic fauna. Two types of streams are common. The first is characterized by
+a mixture of shaded riffles, runs, and pools that have gravel or cobble substrates.
+The second stream type has lower gradients and is found downstream of the first;
+it is characterized by wide, shallow, sand-choked channels. In the summer,
+surficial flow is often absent from wide, sandy, lower reaches. Erratic stream
+flow has led to the construction of many reservoirs. Generally, stream conditions
+in Ecoregion 29 are more stressful for fish than in eastern Oklahoma, but less
+rigorous than in the west. As a result, Ecoregion 29 lacks many sensitive eastern
+fish species as well as some river species. Other species are shared with adjacent
+regions. Common minnows include the red, sand, and redfin shiners and the
+suckermouth minnow. The redfin and orangethroat darters, smallmouth buffalo,
+river carpsucker, black and golden redhorses, and channel and flathead catfishes
+occur in many streams (Griffith et.al, 2007).
+
+A mix of savanna, woodland, and prairie is native to the low hills, cuestas,
+ridges, and plains of Ecoregion 29 [in Oklahoma], and separates the forests of
+eastern ecoregions from the prairies of drier, western ecoregions. The boundary
+between the Cross Timbers (29) and the nearly treeless Central Great Plains (27)
+coincides with the western limit of many mammals and insects. Post oak–blackjack
+oak woodland and savanna are native on porous, course-textured soils derived from
+sandstone; the percentage of blackjack oak increases westward. Tall grasses are
+native on fine-textured, moisture deficient soils derived from limestone, shale,
+or marl. Recent fire suppression has increased forest density and allowed eastern
+redcedar to invade many areas. Today, woodland, rangeland, pastureland, and several
+extensive, but declining, oil fields occur. Abandoned, depleted farmland is common.
+The remaining cropland is largely restricted to valleys near channelized streams
+whose degraded habitat supports very poor assemblages of aquatic fauna. Two types
+of streams are common. The first is characterized by a mixture of shaded riffles,
+runs, and pools that have gravel or cobble substrates. The second stream type has
+lower gradients and is found downstream of the first; it is characterized by wide,
+shallow, sand-choked channels. In the summer, surficial flow is often absent from
+wide, sandy, lower reaches. Erratic stream flow has led to the construction of many
+reservoirs. Generally, stream conditions in Ecoregion 29 are more stressful for
+fish than in eastern Oklahoma, but less rigorous than in the west. As a result,
+Ecoregion 29 lacks many sensitive eastern fish species as well as some river species.
+Other species are shared with adjacent regions. Common minnows include the red, sand,
+and redfin shiners and the suckermouth minnow. The redfin and orangethroat darters,
+smallmouth buffalo, river carpsucker, black and golden redhorses, and channel and
+flathead catfishes occur in many streams (Woods et.al, 2005).
+
+## Level III Ecoregion US30 Edwards Plateau
+
+This ecoregion is largely a dissected limestone plateau that is hillier to the
+south and east where it is easily distinguished from bordering ecological regions
+by a sharp fault line. The region contains a sparse network of perennial streams.
+Due to karst topography (related to dissolution of limestone substrate) and
+resulting underground drainage, streams are relatively clear and cool in temperature
+compared to those of surrounding areas. Soils in this region are mostly Mollisols
+with shallow and moderately deep soils on plateaus and hills, and deeper soils on
+plains and valley floors. Covered by juniper-oak savanna and mesquite-oak savanna,
+most of the region is used for grazing beef cattle, sheep, goats, exotic game
+mammals, and wildlife. Hunting leases are a major source of income. Combined with
+topographic gradients, fire was once an important factor controlling vegetation
+patterns on the Edwards Plateau. It is a region of many endemic vascular plants.
+With its rapid seed dispersal, low palatibility to browsers, and in the absence
+of fire, Ashe juniper has increased in some areas, reducing the extent of grassy
+savannas (Griffith et.al, 2007).
+
+## Level III Ecoregion US31 Southern Texas Plains
+These rolling to moderately dissected plains were once covered in many areas with
+grassland and savanna vegetation that varied during wet and dry cycles. Following
+long continued grazing and fire suppression, thorny brush, such as mesquite, is
+now the predominant vegetation type. Ceniza and blackbrush occur on caliche soils.
+Also known as the Tamualipan Thornscrub, or the “brush country” as it is called
+locally, the region has its greatest extent in Mexico. The subhumid to dry region
+contains a diverse mosaic of soils, mostly clay, clay loam, and sandy clay loam
+surface textures, and ranging from alkaline to slightly acid. The ecoregion also
+contains a high and distinct diversity of plant and animal life. It is generally
+lower in elevation with warmer winters than the Chihuahuan Deserts (24) to the
+northwest. Oil and natural gas production activities are widespread
+(Griffith et.al, 2007).
+
+## Level III Ecoregion US32 Texas Blackland Prairies
+The Texas Blackland Prairies form a disjunct ecological region, distinguished from
+surrounding regions by fine-textured, clayey soils and predominantly prairie
+potential natural vegetation. The predominance of Vertisols in this area is related
+to soil formation in Cretaceous shale, chalk, and marl parent materials. Unlike
+tallgrass prairie soils that are mostly Mollisols in states to the north, this
+region contains Vertisols, Alfisols, and Mollisols. Dominant grasses included
+little bluestem, big bluestem, yellow Indiangrass, and switchgrass. This region
+now contains a higher percentage of cropland than adjacent regions; pasture and
+forage production for livestock is common. Large areas of the region are being
+converted to urban and industrial uses. Before Anglo settlement, animal species
+included bison, pronghorn antelope, mountain lion, bobcat, ocelot, black bear,
+collared peccary, deer, coyote, fox, badger, and river otter among others
+(Schmidley 2002, Diggs et al., 1999). Typical game species today include mourning
+dove and northern bobwhite on uplands and eastern fox squirrel along stream
+bottomlands (Griffith et.al, 2007).
+
+
+### References
+
+Chapman, S.S., S.A. Bryce, J.M. Omernik, D.G. Despain, J. ZumBerge, and M. Conrad,
+2004. Ecoregions of Wyoming (Color Poster with Map, Descriptive Text, Summary Tables,
+and Photographs): Reston, Virginia. US Geological Survey (Map Scale 1: 1,400,000).
+
+Chapman, S.S., J.M. Omernik, J.A. Freeouf, D.G. Huggins, J.R. McCauley, C.C.
+Freeman, G. Steinauer, R.T. Angelo, and R.L. Schlepp, 2001. Ecoregions of Nebraska
+and Kansas (Color Poster with Map, Descriptive Text, Summary Tables, and Photographs).
+US Geological Survey, Reston, Virginia.
+
+Chapman, S.S., G.E. Griffith, J.M. Omernik, A.B. Price, J. Freeouf, and D.L.
+Schrupp, 2006. Ecoregions of Colorado (Color Poster with Map, Descriptive Text,
+Summary Tables, and Photographs): Reston, Virginia. US Geological Survey (Map Scale
+1: 1,200,000).
+
+Griffith, G.E., J.M. Omernik, M.M. McGraw, G.Z. Jacobi, C.M. Canavan, T.S. Schrader,
+D. Mercer, R. Hill, and B.C. Moran, 2006. Ecoregions of New Mexico (Color Poster
+with Map, Descriptive Text, Summary Tables, and Photographs). US Geological Survey,
+Reston.
+
+Griffith, G.E., S. Bryce, J.M. Omernik, and A. Rodgers, 2007. Ecoregions of Texas.
+Project Report, Texas Commission on Environmental Quality.
+
+Woods, A.J., Omernik, J.M., Butler, D.R., Ford, J.G., Henley, J.E., Hoagland,
+B.W., Arndt, D.S., and Moran, B.C., 2005, Ecoregions of Oklahoma (color poster
+with map, descriptive text, summary tables, and photographs): Reston, Virginia,
+U.S. Geological Survey (map scale 1:1,250,000)

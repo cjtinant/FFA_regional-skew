@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:     03b_make_macrozone_metadata.R
+# Script Name:     03b_make_macrozone_lut.R
 # Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-08-01
 # Last Updated:    2025-08-05
@@ -101,7 +101,7 @@ lut_l3_meta <- tribble(
   "lakes and wetlands common; a lack of streams",
   "rolling to steep, irregular sand dunes"
 )  %>%
-  mutate(eco_level = "L4")
+  mutate(eco_level = "L3")
 
 # ------------------------------------------------------------------------------
 # 3. Make L4 Ecoregion Descriptions
@@ -268,7 +268,7 @@ l4_us27_central_plains_meta <- tribble(
   "perhaps intermittent",
   "undulating to rolling sandy plains, dune areas",
   # 27d Prairie Tableland
-  "27d", "mixed-grass", "Cfa",
+  "27d", "mixed", "Cfa",
   "cropland; winter wheat; big and little bluestem, indiangrass, switchgrass",
   "perennial streams and numerous springs ,intermittent (type-F) low-gradient streams",
   "flat alluvial lowlands",
@@ -473,6 +473,7 @@ lut_l4_composite_meta <- bind_rows(
   l4_us27_central_plains_meta,
   l4_us29_cross_timbers_meta,
   l4_us30_edwards_plateau_meta,
+  l4_us31_southern_texas_plains_meta,
   l4_us32_northern_blackland_prairie_meta
   ) %>%
   rename(estimated_koppen = koppen) %>%

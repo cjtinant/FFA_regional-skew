@@ -1,8 +1,8 @@
 US_L4CODE,macrozone,estimated_koppen,vege_lnd_use,hydrology,terrain,eco_level
 25a,shortgrass,BSk,"buffalo grass, blue gramma, galleta; mostly rangeland",intermittent streams; perennial rivers,diverse from gently sloping to very steep,L4
-25b,mixed,Cfa,"rangeland; sandsage association: Havard shin oak, big sandreed, little bluestem, sand dropseed",low drainage density; occasional intermittent or spring fed streams,sandy undulating plains with small scattered areas of active sand dunes,L4
+25b,shortgrass,Cfa,"rangeland; sandsage association: Havard shin oak, big sandreed, little bluestem, sand dropseed",low drainage density; occasional intermittent or spring fed streams,sandy undulating plains with small scattered areas of active sand dunes,L4
 25c,shortgrass,Cfa,mixed-grass in north; shortgrass in south,mostly intermittent streams,moderate slope irregular loess and colluvial plains,L4
-25d,mixed,Cfa,mixed-grass in north; shortgrass in south,mostly intermittent streams,flat to rolling loess plains,L4
+25d,shortgrass,Cfa,mixed-grass in north; shortgrass in south,mostly intermittent streams,flat to rolling loess plains,L4
 25e,shortgrass,Cfa,"Short and sandsage prairie: blue, black, and hairy grama, buffalograss, silver bluestem",intermittent or spring fed streams,nearly level to rolling plains dissected by stream channels; some aeolean deposits,L4
 25f,shortgrass,BSk,ponderosa and lumber pine,likely intermittent to ephemeral,"Steep slopes, escarpments, river breaks, slump areas; calcareous soils",L4
 25g,shortgrass,BSk,gramma and buffalo grass; mesquite-buffalo grass,likely ephemeral due to deep permeable soils,tablelands; fine to loamy sands interspersed with lamellae,L4
@@ -33,7 +33,7 @@ tributary canyons",L4
 27a,mixed,Cfa,cropland; winter wheat,perhaps intermittent to perennial,undulating to hilly dissected plain,L4
 27b,mixed,Cfa,"big and little bluestem, blue and side-oats grama, needle-and-thread, western wheatgrass",perhaps intermittent to perennial,dissected plains with broad undulating ridge tops and hilly to steep valley sides,L4
 27c,mixed,Cfa,"cropland; winter wheat, sorghum, alfalfa; sand prairie-bunch grasses",perhaps intermittent,"undulating to rolling sandy plains, dune areas",L4
-27d,mixed-grass,Cfa,"cropland; winter wheat; big and little bluestem, indiangrass, switchgrass","perennial streams and numerous springs ,intermittent (type-F) low-gradient streams",flat alluvial lowlands,L4
+27d,mixed,Cfa,"cropland; winter wheat; big and little bluestem, indiangrass, switchgrass","perennial streams and numerous springs ,intermittent (type-F) low-gradient streams",flat alluvial lowlands,L4
 27e,mixed,Cfa,"rangeland, some cropland; big and little bluestem, sideoats and blue grama, western wheatgrass",perennial and intermittent streams,rolling dissected plains with deep loess layer,L4
 27f,tallgrass,Cfa,transitional: tallgrass prairie to the east and mixedgrass prairie in the west,"historically, extensive rainwater basins, and wetlands",flat to gently rolling loess-covered plains,L4
 27g,tallgrass,Cfa,lowland tallgrass prairie with areas of wet meadow and marsh,"shallow, interlacing streams on a sandy bed","flat, wide alluvial valley",L4
@@ -61,6 +61,10 @@ tributary canyons",L4
 30b,shortgrass,BSk,"oak savanna mixed with mesquite grassland: little bluestem, sideoats grama, Texas wintergrass","low to moderate gradient streams with cobble, boulder, and sandy substrates",flat to rolling terrain punctuated by ridges and bare rock outcrops,L4
 30c,mixed,BSk,"oak savanna; grasslands: little bluestem, indiangrass, sideoats grama, Texas wintergrass","moderate to high gradient streams with bedrock, cobble, and gravel substrates",dissected plateau and escarpment with stair step topography,L4
 30d,shortgrass,BSk,"little bluestem, buffalograss, forbs, Texas wintergrass, green sprangletop, threeawns",streams mostly ephemeral or intermittent,flat to gently rolling plateau dissected by canyons,L4
+31a,mixed,BSk,"cropland, rangeland; Mesquite-acacia savanna, little bluestem, sideoats grama, plains bristlegrass",NA_character_,"lighty to moderately dissected irregular plains, broad, gently sloping alluvial fans",L4
+31b,mixed,BSk,"rangeland; mesquite-acacia-savanna, slim tridens, red grama, purple threeawn, plains bristlegrass",springs and some perennial streams,"lightly to moderately dissected irregular plains, with alluvial fans",L4
+31c,mixed,BSk,"mesquite-acacia-savanna, some mesquite-live oak savanna, scattered mid and short grasses",NA_character_,lightly to moderately dissected irregular plains,L4
+31d,mixed,BSk,"woody riparian: hackberry, Mexican ash, cedar, elm, multiflowered false rhodesgrass, sacaton, cottontop, plains bristlegrass",NA_character_,floodplain and narrow terraces,L4
 32a,tallgrass,Cka or Cfa,"croplands; historically, tallgrass prairie: big and little bluestem, indiangrass","low to moderate gradient streams with silty, clayey, and sandy substrates","irregular plains, lightly to moderately dissected",L4
 32b,tallgrass,Cka or Cfa,"croplands; historically, tallgrass prairie: big and little bluestem, brownseed paspalum","low to moderate gradient streams with silty, clayey, and sandy substrates","irregular plains, lightly to moderately dissected",L4
 32c,tallgrass,Cka or Cfa,"Bottomland hardwood forest: bur, Shumard, post oak, green ash, pecan, cedar elm","low gradient streams with sand, silt, clay, and gravel substrates","flat floodplains with sloughs, natural levees, and associated alluvial low terraces",L4

@@ -1,7 +1,7 @@
 README - R/
 ================
 C.J. Tinant
-July 29, 2025
+August 06, 2025
 
 - [📁 Project Documentation
   (`R/`)](#file_folder-project-documentation-r)
@@ -49,9 +49,11 @@ Each major subfolder includes a README.Rmd and README.md that describe:
 
 Each script begins with a standardized header block including:
 
-- Script name, purpose, author, and changelog
+- Script name, author, date created and last updated, changelog
+- Purpose and generalized workflow
 - Inputs and outputs
 - Required packages
+- Related Files
 
 ------------------------------------------------------------------------
 

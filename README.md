@@ -11,9 +11,7 @@ README – FFA Regional Skew Estimation
 - [Methods Notes](#methods-notes)
   - [Rationale for Using 2016 as the Reference
     Year](#rationale-for-using-2016-as-the-reference-year)
-  - [Spatial Unit Merging Procedure](#spatial-unit-merging-procedure)
-  - [Prairie Macrozone Delineation](#prairie-macrozone-delineation)
-- [Project Structure (as of v0.4)](#project-structure-as-of-v04)
+- [Project Structure (as of v1.6)](#project-structure-as-of-v16)
 - [Project Milestones](#project-milestones)
   - [Milestone 00 – Project
     Initialization](#milestone-00--project-initialization)
@@ -298,227 +296,36 @@ modeling. Key justifications include:
 By standardizing on 2016, this project supports consistent, comparable
 modeling across datasets and scales.
 
-## Spatial Unit Merging Procedure
-
-To ensure statistical robustness in regional analyses, polygons smaller
-than 1,000 km² or containing fewer than 30 stream gages were merged with
-the most ecologically similar adjacent Level III Ecoregions. The merging
-process followed a hierarchical decision rule:
-
-- Primary criterion: adjacency with a unit sharing the same Level II
-  ecoregion classification
-
-- Secondary criterion: ecological similarity, evaluated using Euclidean
-  distance in a multivariate space defined by:
-
-- Land cover composition (e.g., cropland, forest, urban fractions)
-
-- Terrain metrics (mean and standard deviation of slope)
-
-- Vegetation seasonality (NDVI amplitude and timing of peak greenness)
-
-This approach preserved regional coherence while improving the gage
-count and spatial contiguity required for reliable skew estimation.
-
-## Prairie Macrozone Delineation
-
-The delineation of prairie macrozones (Tallgrass, Mixed-Grass, and
-Shortgrass) in this study is based on aggregations of EPA Level III and
-IV Ecoregions1, guided by ecological, climatic, and physiographic
-criteria. Boundaries were refined using expert knowledge of prairie
-vegetation transitions, precipitation gradients, soil characteristics,
-and land use patterns.
-
-*Where necessary, Level IV subdivisions were used to capture ecological
-nuance within broader Level III units.* The classification emphasizes
-hydrologically relevant differences in vegetation structure,
-infiltration dynamics, and climate variability, consistent with
-literature on prairie ecosystem function and landscape hydrology. This
-approach allows spatial generalization while preserving ecologically
-meaningful variability across the Great Plains region.
-
-The grouping captures regions with similar hydroclimatic dynamics and
-strong surface–subsurface hydrologic connectivity, important for flood
-response and baseflow recharge.
-
-#### Tallgrass Prairie Macrozone Description
-
-The Tallgrass Prairie macrozone represents the mesic end of the prairie
-continuum, with:
-
-- High annual precipitation (typically \> 850 mm)
-
-- Deep, fertile soils with high water retention
-
-- Dense herbaceous vegetation, including:
-
-  - Andropogon gerardii (Big Bluestem)
-
-  - Panicum virgatum (Switchgrass)
-
-  - Sorghastrum nutans (Indiangrass)
-
-Hydrologically, this zone exhibits strong vegetation–soil feedbacks:
-
-- strong surface–subsurface hydrologic connectivity,
-
-- high infiltration capacity,
-
-- and extended baseflow.
-
-Level III and IV Ecoregions in the Tallgrass Prairie macrozone include
-U.S portions of Level II Ecoregions, the Temperate Prairies (9.2),
-western portions of the South Central Semiarid Plains (9.4), and the
-Texas-Louisiana Coastal Plain (9.5).
-
-- 9.2.1 Northern Glaciated Plains (US 46): Flat to gently rolling
-  landscape composed of glacial till,
-
-- 9.2.2 Lake Agassiz Plain (US 48): Flat thick beds of lake sediments on
-  top of glacial till.
-
-- 9.2.3 Western Corn Belt Plains (US 47): Nearly flat to gently rolling
-  glaciated till plains and hilly loess plains,
-
-- 9.2.4 Central Irregular Plains (US 40): Rolling and irregular plains
-  with loess overlying glacial till in the north,
-
-- 9.4.4 Flint Hills (US 28): Steep terrain with shallow limestone soils;
-  fire-maintained tallgrass remnant.
-
-- 9.5.1 Western Gulf Coastal Plain (US 34): Nearly flat coastal plain.
-
-#### Mixed-Grass Prairie Macrozone Description
-
-The Mixed-Grass Prairie macrozone is a transitional zone between the
-wetter Tallgrass systems and the drier Shortgrass steppes characterized
-by:
-
-- Moderate precipitation (typically 500–800 mm)
-
-- strong interannual precipitation variability,
-
-- A mixture of tall, mid, and short grass species, including
-
-  - Schizachyrium scoparium (Little Bluestem)
-
-  - Bouteloua curtipendula (sideoats grama),
-
-  - Bouteloua gracilis (sideoats grama),
-
-  - Stipa sp. (Needlegrass species)
-
-Hydrologic behavior in this macrozone is a spatially heterogeneous
-hydrologically dynamic system with moderate infiltration and runoff, and
-variable soil texture.
-
-Level III and IV Ecoregions in the Mixed-Grass Prairie macrozone include
-U.S portions of Level II Ecoregions: the West Central Semi-Arid Prairies
-(9.3), central portions of the South Central Semiarid Prairies (9.4),
-and uplands portions of the Tamaulipas-Texas Semi-Arid Plain (9.6).
-
-- 9.3.1 Northwestern Glaciated Plains (US 42): a transitional region
-  between Northern Glaciated Plains and the Northwestern Great Plains
-  with a moderately high concentration of Prairie Potholes
-
-<!--
-**9.3.2** Piedmont
--->
-
-- 9.3.3 Northwestern Great Plains (US 43): Rolling plain of shale and
-  sandstone punctuated by occasional buttes, and
-
-- 9.3.4 Nebraska Sand Hills (US 44): Grass stabilized sand dunes.
-
-- 9.4.1 Western High Plains (US 25) eastern subregions:
-
-  - Rolling Sand Plains (25b) and 
-
-  - Flat to Rolling Plains (25d).
-
-- 9.4.2 Eastern portions of the Central Great Plains (US 27).
-
-- 9.6.1 Southwestern Tablelands (US 26) upland areas
-
-  - Canadian/Cimarron Breaks (26a)
-
-  - Semiarid Canadian Breaks (26d)
-
-#### Shortgrass Prairie Macrozone Description
-
-The Shortgrass Prairie macrozone marks the xeric end of the gradient,
-characterized by:
-
-- Low precipitation
-
-- Sparse vegetation
-
-- Shallow soils and limited infiltration
-
-Level III and IV Ecoregions in the Shortgrass Prairie macrozone include
-portions of Level II Ecoregions: western portions of the South Central
-Semiarid Prairies (9.4), and lowlands portions of the Tamaulipas-Texas
-Semi-Arid Plain (9.6).
-
-- 9.4.1 Western High Plains (US 25) western subregions (25a, 25c, 25e to
-  25l)
-
-- 9.4.2 Central Great Plains (US 27): western extents with lower
-  rainfall and shortgrass cover.
-
-- 9.6.1 Southwestern Tablelands (US 26) lowlands areas (25b, 25c, 25e to
-  25q)
-
-Hydrologic behavior in this macrozone is dominated by rapid surface
-runoff and higher flood skew, driven by reduced canopy structure and
-limited ET buffering.
-
 ------------------------------------------------------------------------
 
-# Project Structure (as of v0.4)
+# Project Structure (as of v1.6)
 
-    FFA_regional-skew/
-    ├── .gitignore                 # Ignore local/sensitive files
-    ├── arcgis_project/           # ArcGIS Pro project files
-    ├── data/
-    │   ├── meta/                 # Metadata inputs
-    │   │   ├── prism/
-    │   │   │   └── ppt_30yrnormals/
-    │   │   │       └── prism_ppt_30yrnormals_raw.bil
-    │   │   ├── epa/
-    │   │   │   └── nlcd_2021/
-    │   │   │       └── epa_nlcd_2021_raw.tif
-    │   │   └── usgs/
-    │   │       ├── nhdplus/
-    │   │       │   └── usgs_nhdplus_catchments_v21_raw.shp
-    │   │       └── waterdata/
-    │   │           ├── sites_all_in_bb.csv
-    │   │           └── sites_all_peak_in_bb.csv
-    │   ├── processed/            # Cleaned, derived datasets
-    │   └── raw/                  # Unmodified source data
-    ├── docs/                     # Reports, metadata, README guides
-    ├── FFA_regional-skew.Rproj  # RStudio project launcher
-    ├── log/                     # Logs and progress traces
-    ├── notebooks/               # Exploratory .Rmd or .qmd drafts
-    ├── notes/                   # Internal notes or meeting logs
-    ├── output/                  # Intermediate model/data outputs
-    │   ├── figs/
-    │   ├── models/
-    │   └── tables/
-    ├── R/                       # All analysis code
-    │   ├── 01_download/
-    │   ├── 02_clean/
-    │   ├── 03_covariates/
-    │   ├── 04_modeling/
-    │   ├── 05_eval/
-    │   └── utils/
-    ├── README.md                # GitHub-facing overview
-    ├── README.Rmd               # Full workflow documentation
-    ├── reports/                 # Knitted reports (.Rmd/.qmd)
-    ├── results/                 # Final outputs for publication
-    │   ├── posterdown/
-    │   └── slides/
-    ├── to_check/                # Staging area for review
+``` text
+FFA_regional-skew/
+  ├── .gitignore               # Prevents sensitive/local files from being pushed
+  ├── .lintr.R                 # Configures `lintr` to check for style adherence
+  ├── .Rprofile                # Configures project-level settings (renv)
+  ├── arcgis_project/          # ArcGIS Pro .aprx project and supporting layers
+  ├── CHANGELOG.md             # GitHub-readable changelog from .Rmd
+  ├── CHANGELOG.Rmd            # Human-readable changelog (semantic versioning)
+  ├── data/                    # Raw, processed, meta, intermediate, and QA data
+  ├── DESCRIPTION.txt          # Central repository for project metadata
+  ├── docs/                    # Documentation, workflow notes, metadata, checklists
+  ├── FFA_regional-skew.Rproj  # RStudio project file (keep in root)
+  ├── notebooks/               # Ad hoc .Rmd/.qmd experiments (empty or minimal)
+  ├── notes/                   # Team notes, meeting logs, brainstorms
+  ├── output/                  # Preliminary results and products from R scripts
+  ├── R/                       # Analysis scripts (milestone-organized)
+  ├── README_files             # Figures and other files called from README.Rmd
+  ├── README.md                # GitHub-readable overview and navigation aid
+  ├── README.Rmd               # RMarkdown version of overview and navigation aid
+  ├── RELEASE_CHECKLIST.Rmd    # ** not currently being used**
+  ├── renv                     # Reproducible package environment (see renv.lock)
+  ├── renv.lock                # Records package dependency state at a point in time.
+  ├── reports/                 # Knitted .Rmd/.qmd milestone reports
+  ├── results/                 # Manuscript-ready figures, models, and outputs
+  ├── sandbox/                 # Staging area for files to review
+```
 
 # Project Milestones
 

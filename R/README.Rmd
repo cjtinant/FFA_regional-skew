@@ -3,15 +3,15 @@ title: "README - R/"
 author: "C.J. Tinant"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
-  github_document:
-    toc: true
-    toc_depth: 2
   pdf_document:
     toc: true
     toc_depth: 2
     number_sections: true
     latex_engine: xelatex
     fig_caption: true
+  github_document:
+    toc: true
+    toc_depth: 2
 params:
   version: "v1.5.1"
 editor_options:
@@ -21,9 +21,14 @@ editor_options:
 
 # 📁 Project Documentation (`R/`)
 
-The `R/` directory contains all R scripts used in the end-to-end workflow of this project. Scripts are organized by milestone and task category to ensure clarity, reproducibility, and modularity.
+The `R/` directory contains all R scripts used in the end-to-end workflow of this
+project. Scripts are organized by milestone and task category to ensure clarity,
+reproducibility, and modularity.
 
-Each subfolder or script corresponds to a specific phase in the data pipeline, from raw data download to modeling and final outputs. All scripts are written in {tidyverse} style, use relative paths via {here}, and follow consistent documentation and naming conventions.
+Each subfolder or script corresponds to a specific phase in the data pipeline,
+from raw data download to modeling and final outputs. All scripts are written in
+{tidyverse} style, use relative paths via {here}, and follow consistent
+documentation and naming conventions.
 
 ---
 
@@ -42,6 +47,8 @@ Each subfolder or script corresponds to a specific phase in the data pipeline, f
 
 ---
 
+\newpage
+
 ## 🔖 Script Documentation
 
 Each major subfolder includes a README.Rmd and README.md that describe:
@@ -53,10 +60,11 @@ Each major subfolder includes a README.Rmd and README.md that describe:
 
 Each script begins with a standardized header block including:
 
-- Script name, purpose, author, and changelog
+- Script name, author, date created and last updated, changelog
+- Purpose and generalized workflow
 - Inputs and outputs
 - Required packages
-
+- Related Files
 
 ---
 

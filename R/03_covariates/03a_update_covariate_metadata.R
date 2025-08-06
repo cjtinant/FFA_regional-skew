@@ -2,11 +2,10 @@
 # Script Name:     03a_update_covariate_metadata.R
 # Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-07-29
-# Last Updated:    NA
+# Last Updated:    2025-08-01
 # Changelog:
 # - 2025-07-29     Begin initial script
 # - 2025-08-01     Complete initial script
-
 #
 # Purpose:         This script cleans covariate metadata, and documents links to
 #                  covariate datasets, and zonal summary datasets.
@@ -36,7 +35,7 @@
 # - script-notes_and_developer-log.pdf
 #
 # Next Steps:
-# Develop macrozone layer for zonal summaries -- 3b_develop_macrozone
+# - Develop macrozone layer for zonal summaries -- 3b_make_macrozone_layer
 # ==============================================================================
 # --- load libraries ---
 library(dplyr)

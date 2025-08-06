@@ -13,6 +13,30 @@ All entries are reverse chronological. Please include the date, your initials, a
 
 ## 📌 Log Entries
 
+### 2025-08-06 — C.J.T.
+`03c_make_macrozone_layer.R` — Aggregate Ecoregions and Generalize Macrozones
+
+- Aggregates Level IV (L4) Ecoregions into macrozones after combining polygons
+(slivers) of less than 100 sq-km with nearest neighbors.
+- Generalizes initial macrozone polygons by combining polygons of less than
+1,000 sq-km with nearest neighbors.
+
+- - Exported results as:
+  - `output/figs/macrozones_map.png`
+  - `data/processed/us_ecoregions/macrozones_gp.gpkg`
+
+### 2025-08-05 — C.J.T.
+`03b_make_macrozone_lut.R` — Macrozone Look-up Table Creation
+
+- Makes look-up tables to delineate Level IV Ecoregions (L4) into Tallgrass,
+Mixed-Grass, and Shortgrass Prairie macrozones.
+  - The tables also contain fields for: estimated_koppen, vege_lnd_use, hydrology,
+  terrain, and eco_level.
+
+- - Exported look-up tables as:
+  - `docs/metadata/look_up_tables/ecoregion_l3_metadata_lut.csv`
+  - `docs/metadata/look_up_tables/ecoregion_l4_metadata_lut.csv`
+  
 ### 2025-07-29 — C.J.T.
 
 `03a_update_covariate_metadata.R` — Covariate Metadata Cleanup and Linkage

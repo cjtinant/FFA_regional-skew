@@ -61,36 +61,25 @@ FFA_regional-skew/
 
 ## 📁 Expected Outputs
 
+- `output/figs/macrozones_map.png`
+- `data/processed/us_ecoregions/macrozones_gp.gpkg`
+- `docs/metadata/look_up_tables/ecoregion_l3_metadata_lut.csv`
+- `docs/metadata/look_up_tables/ecoregion_l4_metadata_lut.csv`
 - `docs/metadata/descriptions/covariate_metadata_v085.csv`
 - `docs/metadata/descriptions/covariate_metadata_v084.csv` *(archived)*
 - `data/meta/data_dictionary_covariates.csv` *(upcoming)*
 - `data/derived/skew_modeling_dataset.csv` *(pending)*
 - Updated logs in:
-  - `docs/metadata/log_README.Rmd` *(upcoming)*
-  - `R/log_README.Rmd`  *(upcoming)*
-
-<!--
-- `data/derived/skew_modeling_dataset.csv`
-- `data/meta/data_dictionary.csv` (updated with covariates)
-- `data/meta/README_covariates.md`
-- Updated logs in:
-  - `data/processed/log_README.Rmd`
+  - `docs/metadata/log_README.Rmd`
   - `R/log_README.Rmd`
--->
 
 ---
 
 ## 🔧 Key Scripts
 
 - `R/03a_update_covariate_metadata.R`
-
-
-<!--
-- `03X_join_covariates.R`
-- `03b_clean_covariates.R`
-- `03c_check_missing_covariates.R`
-- `03d_create_modeling_dataset.R`
---> 
+- `R/03b_make_macrozone_lut.R`
+- `R/03c_make_macrozone_layer.R`
 
 ---
 
@@ -115,8 +104,8 @@ FFA_regional-skew/
 | Step | Task                                                    | Status |
 |:----:|:--------------------------------------------------------|:------:|
 | 3.1  | Update covariate metadata                               | [X]    |
-| 3.2  | Create macrozone layer                                  | [ ]    |
-
+| 3.2  | Create macrozone layer                                  | [X]    |
+| 3.3  | Create zonal covar summaries at the macroregional scale | [ ]    |
 
 <!--
 - [ ] Clean and stack covariate rasters
@@ -133,7 +122,7 @@ FFA_regional-skew/
 
 ### Milestone 3.1 Summary:
 
-- Implemented 03a_update_covariate_metadata.R to standardize and document
+- Implemented `03a_update_covariate_metadata.R` to standardize and document
 covariate metadata.
 - Converted domain and concept group variables from ordinal to categorical form
 for modeling readability.
@@ -144,8 +133,21 @@ relationships between variables and files.
 - Linked all covariates to corresponding processed files and zonal summary layers.
 - Archived previous metadata version (v084) and exported the updated
 covariate_metadata_v085.csv.
+- Reflected update in `CHANGELOG.md` and `log_README.Rmd`
 
-- Ensure this update is reflected in `CHANGELOG.md` and `log_README.Rmd`
+### Milestone 3.2 Summary:
+
+- Implemented `03b_make_macrozone_lut.R` to create
+`docs/metadata/look_up_tables/ecoregion_l3_metadata_lut.csv` and
+`docs/metadata/look_up_tables/ecoregion_l4_metadata_lut.csv`. The look-up tables
+are used to delineate Level IV Ecoregions (L4) into Tallgrass, Mixed-Grass, and
+Shortgrass Prairie macrozones. The tables also contain fields for: estimated_koppen,
+vege_lnd_use, hydrology, terrain, and eco_level.
+- Implemented `03c_make_macrozone_layer.R` and the look-up tables above to
+  - create initial macrozones after merging small polygons of less than 100 sq-km
+  with a nearest neighbor.
+  - Generalize macrozones by merging polygons of less than 1,000 sq-km with a
+  nearest neighbor.
 
 # Summary
 <!--
@@ -156,7 +158,7 @@ accomplished.
 
 ## 🔁 Summary
 
-Milestone 03.1 established a clean, traceable foundation for covariate
+Milestone 3.1 established a clean, traceable foundation for covariate
 integration by formalizing metadata, resolving many-to-many joins, and linking
 each variable to a single, authoritative data source. With the metadata structure
 finalized, the next steps will focus on joining raster data to site locations
