@@ -18,7 +18,21 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 
 ## [Untracked]
 
+### Added
+
+- Added a README.Rmd for R/utils
+
+
+### Changed
+- Updated make_macrozone_layer_script to identify small disjunct polygons by
+physiography and large unconnected macrozone polygons by location.
+- Updated utils folder structure to improve readability
+
 ### In Progress
+Update analytical scale in covar metadata
+  - ned/ned_slope_30m_gp.tif -->  ned/slope_30m_gp.tif`
+  - ned/ned_elev_30m_gp.tif -->  ned/elev_30m_gp.tif`
+  	subfolder.x	file_name.x	subfolder.y	file_name.y	layer_name
 
 - update covariate metadata to reflect new aggregation file at macrozone level
 

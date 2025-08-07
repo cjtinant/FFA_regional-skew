@@ -1,0 +1,119 @@
+---
+title: "README - R/utils/"
+author: "C.J. Tinant"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    latex_engine: xelatex
+    fig_caption: true
+  github_document:
+    toc: true
+    toc_depth: 2
+params:
+  version: "v1.5.1"
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+# Utilities (`R/utils/`)
+
+This folder contains helper scripts and functions used across the project for
+spatial data processing, zonal summaries, and other repetitive tasks. Functions
+here are **modular** and  **reusable**, but are not meant to be run as standalone
+workflows.
+
+The goal is to keep scripts DRY (“Don’t Repeat Yourself”) and consistent across
+different processing steps.
+
+## Folder Organization
+
+- **metadata/** — Functions for extracting, summarizing, and cleaning metadata
+from raster and vector files.
+- **inventory/** — QA utilities for file inventory, duplicate detection, and
+archive management.
+- **spatial/** — Spatial preprocessing tools (e.g., reprojection, geometry cleanup,
+resource downloads).
+- **qa/** — Code quality and style check scripts.
+
+``` plaintext
+
+R/
+└── utils/
+    ├── metadata/         # Functions for metadata extraction and cleaning
+    │   ├── extract_full_metadata.R
+    │   ├── extract_summary_metadata_raster.R
+    │   ├── extract_summary_metadata_vector.R
+    │   ├── parse_metadata.R
+    │   ├── metadata_manual_cleaning_tools.R
+    │   └── summarise_raster_crs.R
+    │
+    ├── inventory/        # Inventory scripts for QA and archiving
+    │   ├── inventory_feature_data.R
+    │   ├── inventory_raster_data.R
+    │   ├── verify_prism_archive.R
+    │   ├── move_zip_to_archives.R
+    │
+    ├── spatial/          # Spatial processing utilities
+    │   ├── download_ecoregion_resources.R
+    │   ├── process_geometries.R
+    │   ├── reproject_to_epsg5070.R
+    │
+    ├── qa/               # Code quality utilities
+    │   └── run_linr_on_a_directory.R
+    │
+    ├── README.Rmd
+
+```
+
+---
+
+## Usage
+Functions in these scripts should be sourced in workflow scripts:
+
+```r
+source(here::here("R/utils/metadata/extract_full_metadata.R"))
+
+```
+
+- Spatial helpers are intended to be written to be format-agnostic where possible
+(e.g., can accept both sf and terra objects).
+
+- Spatial helpers are intended to return objects ready for use with {terra}
+workflows.
+
+### Unit Testing
+(future) For consistent unit testing, see the `tests/` folder and the `testthat`
+examples in the project root.
+
+---
+
+## Naming conventions
+
+- snake_case for function names and arguments.
+- Keep function scope narrow — one main purpose per function.
+- Avoid hard-coding file paths or project-specific constants; pass them as arguments.
+
+## Maintenance
+
+- If a helper is updated, check all scripts that use it to avoid breaking changes.
+- Add a brief header comment to each helper file:
+  - Script Name
+  - Author
+  - Last Updated
+  - Purpose
+  - Dependencies
+
+---
+
+## Notes
+
+- Keep each function focused on a single responsibility.
+- Avoid hard-coded paths; use here::here() for project portability.
+- Update this README when adding, renaming, or relocating utility scripts.
+
+---
+
