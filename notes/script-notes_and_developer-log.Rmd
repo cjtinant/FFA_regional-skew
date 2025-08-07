@@ -386,9 +386,79 @@ a substantially different geography, e.g. coastal geography and barrier islands.
 Additionally, polygons less than 100 square kilometers were merged with nearest
 neighbors.
 
-Macrozones were generalized following aggregation to remove polygons smaller than 1,000 sq-km from the analysis.
+Macrozones are generalized following aggregation to remove polygons smaller than
+1,000 sq-km from the analysis.
 
 ---
+# 03d_covar_zonal_summ_macro.R
+
+USE UNIQUE POLYGONS WITHIN MACROZONE
+Update analytical scale
+  - ned/ned_slope_30m_gp.tif -->  ned/slope_30m_gp.tif`
+  - ned/ned_elev_30m_gp.tif -->  ned/elev_30m_gp.tif`
+  
+Covariates on the macrozone scale include:
+
+variable_name	short_name	dataset	description	notes	unit	effective_analytical_resolution	scale	scale_ordinal	domain	domain_cat	concept_group	concept_group_cat	subfolder.x	file_name.x	subfolder.y	file_name.y	layer_name
+
+## Climate Patterns
+
+- **Climate Zone (dominant)** `climate_zone_kopp_geig`
+  - Dominant Koppen-Geiger climate class
+  - broad-scale climate context (humid continental vs. semi-arid).
+  - `data/processed/koppen_climate/koppen_geiger.tif`
+
+- **Plant Hardiness Zone (count)** `phzm_zone_count`
+  - Count of unique USDA Plant Hardiness Zones
+  - Reflects cold hardiness diversity
+
+- **Plant Hardiness Zone (dominant)** `phzm_zone_majority`
+  - Dominant USDA Plant Hardiness Zone
+  - Captures dominant cold tolerance regime based on minimum winter temperatures
+  - `data/processed/phzm/phzm.tif`
+
+- **Land Cover (proportion)** `frac_nlcd_cropland`
+  - Fraction of cropland (NLCD)
+  - Indicates anthropogenic land use in agricultural regions
+    - Associated with increased runoff, reduced infiltration, and higher ET demand
+  - `data/processed/nlcd/nlcd_2016_gp.tif`
+
+- **Land Cover (proportion)** `frac_nlcd_forest`
+  - Fraction of forested land (NLCD)
+  - Forest cover enhances interception and storage
+    - Typically reduces peak flows and lowers skew
+  - `data/processed/nlcd/nlcd_2016_gp.tif`
+
+- **Land Cover (proportion)** `frac_nlcd_grassland`
+  - Fraction of grassland (NLCD)
+  -  Moderates evapotranspiration and infiltration rates
+    - especially important in mixed rangeland systems
+  - `data/processed/nlcd/nlcd_2016_gp.tif`
+
+- **Land Cover (proportion)** `frac_nlcd_urban`
+  - Fraction of urban land (NLCD)
+  - Urban development increases imperviousness
+    - strongly associated with peak flow generation and positive flood skew
+  - `data/processed/nlcd/nlcd_2016_gp.tif`
+
+- **Topography (average)** `slope_mean`
+  - Mean slope (from NED)
+  - Describes average terrain steepness
+    - Helps distinguish rugged uplands from flatter plains
+  - `data/processed/ned/slope_30m_gp.tif`
+
+- **Topography (average)** `slope_median`
+  - Median slope (from NED)
+  - More robust to outliers than the mean
+    - useful for evaluating runoff tendency.
+  - `data/processed/ned/slope_30m_gp.tif`
+  
+- **Topography (average)** `altitude_mean`
+  - Mean elevation of gage locations
+  - Represents elevational regime
+    - Influences climate, snow duration, and runoff seasonality
+  - `data/processed/ned/slope_30m_gp.tif`
+
 
 # Check for later
 

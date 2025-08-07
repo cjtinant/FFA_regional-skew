@@ -20,6 +20,8 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 
 ### In Progress
 
+- update covariate metadata to reflect new aggregation file at macrozone level
+
 ## [v1.6.1] — 2025-08-06
 
 ### Added
