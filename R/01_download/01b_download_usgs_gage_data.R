@@ -39,7 +39,7 @@
 # - sf:            Spatial data (simple features)
 #
 # Helper Functions:
-# - process_geometries.R:  Custom helper functions for cleaning sf geometries
+# - metadata/process_geometries.R:  Custom helper functions for cleaning sf geometries
 #
 # Related Milestone Reports:
 # - milestone_01_download_prepare_covariates.pdf

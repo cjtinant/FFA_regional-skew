@@ -50,7 +50,6 @@
 #   - milestone_03_prepare_covariates.pdf
 # ==============================================================================
 # --- Load libraries ---
-
 library(here)
 library(ggrepel)
 library(RColorBrewer)

@@ -48,7 +48,7 @@ library(tidyverse)
 library(units)
 
 # Load function definitions
-source(here("R/utils/download_data/download_ecoregion_resources.R"))
+source(here("R/utils/download_data/metadata/download_ecoregion_resources.R"))
 
 # ------------------------------------------------------------------------------
 # 1. Download zipped archives

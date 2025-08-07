@@ -30,7 +30,7 @@ library(fs)
 library(here)
 
 # Load reusable functions
-source(here("R/utils/clean_organize_spatial_data/inventory_feature_data.R"))
+source(here("R/utils/clean_organize_spatial_data/inventory/inventory_feature_data.R"))
 source(here("R/utils/clean_organize_spatial_data/move_low_priority_duplicates.R"))
 source(here("R/utils/clean_organize_spatial_data/move_zip_to_archives.R"))
 source(here("R/utils/clean_organize_spatial_data/inventory_raster_data.R"))

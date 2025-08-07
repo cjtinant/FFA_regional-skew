@@ -43,7 +43,7 @@
 # - stringr        Wrappers for string operations
 #
 # Helper Functions:
-# verify_prism_archive.R
+# inventory/verify_prism_archive.R
 #
 # Related Milestone Reports:
 # - milestone_01_download_prepare_covariates.pdf
@@ -60,7 +60,7 @@ library(sf)
 library(stringr)
 
 # --- Load custom function ---
-source(file.path(here(), R, utils, verify_prism_archive.R))
+source(file.path(here(), R, utils, inventory/verify_prism_archive.R))
 
 # ------------------------------------------------------------------------------
 # 1. Download PRISM climate data
