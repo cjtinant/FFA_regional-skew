@@ -1,13 +1,22 @@
 # ==============================================================================
-# Script Name:     03d_covar_zonal_summ_macro.R
+# Script Name:     03c_make_macrozone_layer.R
 # Author:          Charles Jason Tinant — with ChatGPT 4o
-# Date Created:    2025-08-05
-# Last Updated:    2025-08-05
+# Date Created:    2025-08-01
+# Last Updated:    2025-08-12
 #
 # Changelog:
-# - 2025-08-05     Initialize script
+# - 2025-08-01     Create initial script
+# - 2025-08-04     Split initial script
+# - 2025-08-05     Added aggregate splinters logiz
+# - 2025-08-06     Finalize initial script
+#                  - Merged L4 slivers <100 sq-km with nearest neighbors.
+#                  - Dissolved to contiguous macrozone (mz) units
+#                  - Relabeled mz polygons <1000 sq-km using nearest neighbors
+#                  - Created generalized mz layer w clean spatial structure
+# - 2025-08-12     Merge generalized macrozone regions with low gage count step.
+#                  (working)
 #
-# Purpose:         Make zonal
+# Purpose:         Create custom macrozones:Tallgrass, Mixed-Grass, and Shortgrass
 #                  Prairie using metadata look-up tables created in
 #                  `03b_make_macrozone_lut.R`.
 #
@@ -19,7 +28,9 @@
 # 5. Aggregate ecoregions into macrozones.
 # 6. Generalize macrozones by relabeling macrozone polygons less than 1000 sq-km
 #    using nearest neighbors.
-# 7. Export results
+# 7. Visualize results and assign region names.
+# 8. Merge generalized macrozone regions with low gage count (working)
+# 9. Export results
 #
 # Input/Data URLs:
 #   - `us_eco_l4` layer within us_eco_levels.gpkg
@@ -31,7 +42,7 @@
 #   - data/processed/us_ecoregions/macrozones_gp.gpkg
 #
 # Dependencies:
-#   tidyverse, here, sf
+#   ggrepel, here, RColorBrewer, sf, tidyverse
 #
 # Related Files:
 #   - 03_make_macrozone_lut.R
@@ -40,23 +51,25 @@
 #   - R/README.pdf
 #   - notes/script-notes_and_developer-log.pdf
 #   - milestone_03_prepare_covariates.pdf
-#
-# Notes:
-03d_covar_zonal_summ_macro.R
 # ==============================================================================
 # --- Load libraries ---
-library(tidyverse)
 library(here)
+library(ggrepel)
+library(RColorBrewer)
 library(sf)
+library(tidyverse)
 
 # ------------------------------------------------------------------------------
 # 1. Load Level IV Great Plains Ecoregions
 # ------------------------------------------------------------------------------
 eco_path <- here("data", "processed", "us_ecoregions", "us_eco_levels.gpkg")
 layer_name <- "us_eco_l4"
+gage_path <- here("data", "processed", "us_ecoregions", "us_eco_levels.gpkg")
 
 eco_l4_gp <- st_read(eco_path, layer = layer_name) %>%
   filter(NA_L1NAME == "GREAT PLAINS")
+
+gages_df <- st_read(gage_path)
 
 # ------------------------------------------------------------------------------
 # 2. Check and remove regions out of scope with the project
@@ -293,22 +306,148 @@ macrozone_gen_exploded <- macro_gen_dissolved %>%
   mutate(region_id = row_number()) # Assign a unique ID per contiguous piece
 
 # ------------------------------------------------------------------------------
-# 7. Export Results
+# 7. Visualize Results and Assign Region Names
 # ------------------------------------------------------------------------------
-# --- plot and save results ---
-ggplot(macro_gen_dissolved) +
-  geom_sf(aes(fill = macrozone), color = "white", size = 0.2) +
+macrozone_map_initial <- macrozone_gen_exploded %>%
+#  filter(macrozone == "mixed") %>%
+#  filter(region_id < 10) %>%
+ggplot() +
+  geom_sf(aes(fill = macrozone), color = "gray", linewidth = 0.3) +
+  geom_sf_text(aes(label = region_id), size = 3, color = "white") +
   scale_fill_viridis_d() +
   theme_minimal() +
-  labs(title = "Generalized Macrozones (Fragments <1000 sq-km Relabeled)")
+  labs(
+    title = "Macrozone Regions with Region ID Labels",
+    subtitle = "Use this map to assign descriptive names to each region"
+  )
 
+# --- make a table of region names ---
+region_names <- tribble(
+  ~region_id, ~region_name,
+  1, "Mixed-Grass Tablelands Breaks and Valleys",
+  2, "Mixed-Grass Carbonate Cross-Timbers",
+  3, "Shortgrass-Steppe Sand Dunes",
+  4, "Shortgrass-Steppe Sand Dunes",
+  5, "Mixed-Grass Tablelands Breaks and Valleys",
+  6, "Mixed-Grass Tablelands Breaks and Valleys",
+  7, "Mixed-Grass Tablelands Breaks and Valleys",
+  8, "Shortgrass-Steppe Llano Uplift Basin",
+  9, "Mixed-Grass Pine-Oak Woodlands and Foothills",
+  10, "Tallgrass Fayette Prairie",
+  11, "Southern Mixed-Grass Prairie",
+  12, "Central Mixed-Grass Prairie",
+  13, "Shortgrass-Steppe",
+  14, "Northern Mixed-Grass Prairie",
+  15, "Prairie Tallgrass Prairie"
+)
+
+# --- join region name table ---
+macrozone_regions <- left_join(region_names, macrozone_gen_exploded, 
+                              by = join_by(region_id)) %>%
+  select(-region_id) %>%
+  arrange(macrozone, region_names) %>%
+  rename(geom = geometry)
+
+# --- assign colors ---
+region_colors <- c(
+  # Purples for Tallgrass
+  tallgrass_colors <- brewer.pal(3, "Purples")[2:3],  # skip lightest
+
+  # Oranges for Shortgrass
+  shortgrass_colors <- brewer.pal(5, "Oranges")[2:4],  # nice warm gradient
+
+  # Greens for Mixed-Grass
+  mixedgrass_colors <- brewer.pal(9, "YlGn")[4:9],  # medium to dark green shades
+
+  # Tallgrass (purples)
+  "Tallgrass Fayette Prairie" = tallgrass_colors[1],
+  "Prairie Tallgrass Prairie" = tallgrass_colors[2],
+
+  # Shortgrass (oranges)
+  "Shortgrass-Steppe Sand Dunes"          = shortgrass_colors[1],
+  "Shortgrass-Steppe Llano Uplift Basin"  = shortgrass_colors[2],
+  "Shortgrass-Steppe"                     = shortgrass_colors[3],
+
+  # Mixed-Grass (greens)
+  "Mixed-Grass Tablelands Breaks and Valleys"       = mixedgrass_colors[1],
+  "Mixed-Grass Carbonate Cross-Timbers"             = mixedgrass_colors[2],
+  "Mixed-Grass Pine-Oak Woodlands and Foothills"    = mixedgrass_colors[3],
+  "Southern Mixed-Grass Prairie"                    = mixedgrass_colors[4],
+  "Central Mixed-Grass Prairie"                     = mixedgrass_colors[5],
+  "Northern Mixed-Grass Prairie"                    = mixedgrass_colors[6]
+)
+
+ggplot(macrozone_regions) +
+  geom_sf(aes(fill = region_name, geometry = geom),
+          color = "white", linewidth = 0.2) +
+  scale_fill_manual(values = region_colors, name = "Named Region") +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "bottom",
+    legend.box = "vertical",
+    legend.title = element_text(size = 11, face = "bold"),
+    legend.text = element_text(size = 9),
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 12, hjust = 0.5)
+  ) +
+  labs(
+    title = "Generalized Macrozone Regions",
+    subtitle = "Colors grouped by macrozone: Tallgrass (purple), Mixed-Grass (green), Shortgrass (orange)"
+  ) +
+  guides(fill = guide_legend(
+    title.position = "top",
+    ncol = 2,                        # or ncol = 3
+    byrow = TRUE,
+    label.theme = element_text(size = 9)
+  ))
+
+# ------------------------------------------------------------------------------
+# 8. Merge Generalized Macrozone Regions With Low Gage Count
+# ------------------------------------------------------------------------------
+# --- prepare for gage counts
+macrozone_regions <- macrozone_regions %>%
+  rownames_to_column(var = "macro_id") %>%
+  mutate(macro_id = as.numeric(macro_id))
+
+
+# --- Prepare for gage count and ensure same CRS ---
+gages_sf  <- st_as_sf(gages)
+zones_sf  <- st_as_sf(macrozone_regions)
+if (st_crs(zones_sf) != st_crs(gages_sf)) {
+  gages_sf <- st_transform(gages_sf, st_crs(zones_sf))
+}
+
+# --- Count gages per macrozone (point must be strictly inside) ---
+gage_counts <- gages_sf %>%
+  st_join(zones_sf %>% select(macro_id), join = st_within, left = FALSE) %>%
+  st_drop_geometry() %>%
+  count(macro_id, name = "n_gages")
+
+# gage_counts <-st_join(gages_sf, zones_sf)
+#   
+#   gages_sf %>%
+# 
+# #%>%
+#             select(macro_id),
+#           join = st_within, left = FALSE)# %>%
+#   st_drop_geometry() %>%
+#   count(macro_id, name = "n_gages")
+
+
+# ------------------------------------------------------------------------------
+# 8. Export Results
+# ------------------------------------------------------------------------------
 out_path <- here("output", "figs", "macrozones_map.png")
 
 ggsave(out_path,
        bg = "white",
-       units = "in")
+       units = "in",
+       width = 11,
+       height = 9,
+       dpi = 300
+)
 
 # --- save generalized macrozones ---
 out_path <- here("data", "processed", "us_ecoregions", "macrozones_gp.gpkg")
 
-st_write(macro_gen_dissolved, out_path)
+st_write(macrozone_regions, out_path)

@@ -16,30 +16,94 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 
 ---
 
+<!--
 ## [Untracked]
-
 ### Added
 
 - Added a README.Rmd for R/utils
-
 
 ### Changed
 - Updated make_macrozone_layer_script to identify small disjunct polygons by
 physiography and large unconnected macrozone polygons by location.
 - Updated utils folder structure to improve readability
 
+
 ### In Progress
 Update analytical scale in covar metadata
-  - ned/ned_slope_30m_gp.tif -->  ned/slope_30m_gp.tif`
-  - ned/ned_elev_30m_gp.tif -->  ned/elev_30m_gp.tif`
-  	subfolder.x	file_name.x	subfolder.y	file_name.y	layer_name
+
 
 - update covariate metadata to reflect new aggregation file at macrozone level
+
+### To Do
+- write a consistent template for your @param documentation so R/utils functions
+clearly state accepted object types and constraints. That would make the utils
+folder more maintainable over time.
+
+### Items of Note
+- This commit focuses on a bug fix for an issue with finalizing macrozones based
+on a minimum number of gages (n = 30) within a zone. Prior output of station skew
+saved as gpkg were saved as polygons, rather than as points.
+- ChatGPT upgrade to GPT-5 on 20250808 for cjt. The upgrade substantially affected
+the code style. GPT-5 outputted complex functions that did not run. Bug fixes
+were challenging, as the tasks related to geospatial analysis for which my prior
+experience is using ArcGIS or ArcGIS Pro.
+- Created a new ChatGPT project on 20250812 after asking ChatGPT 5 to summarise
+prior instructions for the new project.
+
+### Added
+- `03b_make_macrozone_lut.R` to create
+`data/processed/peakflow_gages/stations_covars.gpkg` and
+`data/processed/peakflow_gages/stations_covars.csv`
+
+### Changed
+- Updated station metadata to `covariate_metadata_v086.csv`. Changes were made
+to the station level and macroregional scale metadata values for `variable_names`,
+`description`, `short_name`, and `raster_subfolder`:`layer_name`
+- Renamed `03b_make_macrozone_lut.R` to `03c_make_macrozone_lut.R`
+- Renamed `03c_make_macrozone_layer.R` to `03c_make_macrozone_layer.R`
+-->
+
+## [v1.6.2] — 2025-08-13
+
+### Items of Note
+
+- Rebuilt the station-level covariates as a point layer; this fixes downstream macrozone completeness checks that require ≥30 gages per zone.
+- Standardized CRS handling: inputs in geographic (NAD83/4269; NAD27/4267; WGS84/4326 detected) and persisted spatial outputs in EPSG:5070. CSV remains in table space with lat_dd/long_dd.
+- Normalized code style to tidyverse pipes (%>%) and <- for assignment.
+
+### Added
+
+- R/03_covariates/03b_station_covars.R
+  - Builds Level-0 covariates (lat_dd, long_dd, alt_m, wtsd_area_km2, optional skew_lp3) with unit conversions (sqmi to sqkm, ft to m).
+  - Datum-aware (NAD83/NAD27/WGS84); unknown datum rows retained in CSV.
+  - Writes:
+    - data/processed/stations/stations_covars.gpkg (layer = stations_covars, EPSG:5070)
+    - data/processed/stations/stations_covars.csv
+
+### Changed
+
+- Updated station metadata to covariate_metadata_v086.csv (edits to variable_name, description, short_name, and raster_subfolder:layer_name at Station and Macroregional scales).
+
+- Renamed R/03_covariates/03b_make_macrozone_lut.R → R/03_covariates/03c_make_macrozone_lut.R.
+
+### Fixed
+
+- Previously exported station skew GPKG was encoded as polygons; re-exported as points.
+- Resolved CRS binding errors by transforming per-datum groups before row-binding; guarded against empty groups to avoid Inf/-Inf bbox warnings.
+
+### Removed
+
+- None.
+
+### Migration / Action Items
+
+- Downstream scripts that consume station covariates should now read from data/processed/stations/ and (for spatial) layer stations_covars (EPSG:5070).
+
+- Re-run macrozone finalization after regenerating the station points.
 
 ## [v1.6.1] — 2025-08-06
 
 ### Added
-
 - `03b_make_macrozone_lut.R` to create
 `docs/metadata/look_up_tables/ecoregion_l3_metadata_lut.csv` and
 `docs/metadata/look_up_tables/ecoregion_l4_metadata_lut.csv`. The look-up tables

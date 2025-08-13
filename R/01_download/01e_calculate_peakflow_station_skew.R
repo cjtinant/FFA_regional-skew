@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:     01e_filter_usgs_peakflow_data.R
+# Script Name:     01e_calculate_peakflow_station_skew.R
 # Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    April 2025
 # Last Updated:    2025-07-28
