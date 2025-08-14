@@ -1,7 +1,7 @@
 Changelog
 ================
 CJ Tinant
-2025-08-13
+2025-08-14
 
 - [Changelog](#changelog)
   - [\[v1.6.2\] — 2025-08-13](#v162--2025-08-13)
@@ -77,14 +77,13 @@ to the station level and macroregional scale metadata values for `variable_names
 - Standardized CRS handling: inputs in geographic (NAD83/4269;
   NAD27/4267; WGS84/4326 detected) and persisted spatial outputs in
   EPSG:5070. CSV remains in table space with lat_dd/long_dd.
-- Normalized code style to tidyverse pipes (%\>%) and \<- for
-  assignment.
 
 ### Added
 
 - R/03_covariates/03b_station_covars.R
-  - Builds Level-0 covariates (lat_dd, long_dd, alt_m, wtsd_area_km2,
-    optional skew_lp3) with unit conversions (sqmi to sqkm, ft to m).
+  - Builds station scale (L0) covariates:lat_dd, long_dd, alt_m,
+    wtsd_area in SI units.
+  - Inherits skew_lp3 response variable.
   - Datum-aware (NAD83/NAD27/WGS84); unknown datum rows retained in CSV.
   - Writes:
     - data/processed/stations/stations_covars.gpkg (layer =
@@ -93,12 +92,12 @@ to the station level and macroregional scale metadata values for `variable_names
 
 ### Changed
 
-- Updated station metadata to covariate_metadata_v086.csv (edits to
-  variable_name, description, short_name, and
-  raster_subfolder:layer_name at Station and Macroregional scales).
-
-- Renamed R/03_covariates/03b_make_macrozone_lut.R →
-  R/03_covariates/03c_make_macrozone_lut.R.
+- Updated `covariate_metadata_v085.csv` to `covariate_metadata_v085.csv`
+  - edits to station and macroregion-scale (L0 and L1, respectively)
+    observations for the fields: variable_name, description, short_name,
+    and raster_subfolder:layer_name.
+- Renamed `R/03_covariates/03b_make_macrozone_lut.R` to
+  `R/03_covariates/03c_make_macrozone_lut.R.`
 
 ### Fixed
 
@@ -114,11 +113,8 @@ to the station level and macroregional scale metadata values for `variable_names
 
 ### Migration / Action Items
 
-- Downstream scripts that consume station covariates should now read
-  from data/processed/stations/ and (for spatial) layer stations_covars
-  (EPSG:5070).
-
 - Re-run macrozone finalization after regenerating the station points.
+- Merge `R/utils/spatial` functions.
 
 ## \[v1.6.1\] — 2025-08-06
 
