@@ -1,7 +1,7 @@
 README - data
 ================
 CJ Tinant
-August 06, 2025
+August 17, 2025
 
 - [📁 Project Data (`data/`)](#file_folder-project-data-data)
   - [📚 Folder Purpose](#books-folder-purpose)
@@ -52,12 +52,16 @@ docs/
         ├── nlcd/                       # National Land Cover Dataset (NLCD)
         |       ├── nlcd_2016_gp.tif
         ├── peakflow_gages/
-        |       ├── gage_summary_skew.csv    # USGS gage skew and covariate data
-        |       ├── gage_summary_skew.gpkg   # USGS gage skew and covariate data
-        |       ├── usgs_pk_data.csv         # USGS peakflow gage data
-        ├── phzm/                            # USDA Plant Hardiness Zone map
+        |       ├── archive/
+        |       |       ├── gage_summary_skew.csv    # USGS gage skew and covar data
+        |       |       ├── gage_summary_skew.gpkg   # USGS gage skew and covar data
+        |       |       ├── usgs_pk_data.csv         # USGS peakflow gage data
+        |       ├── gage_covars_all.gpkg   # Inc coast & disjunct gage to drop
+        |       ├── gage_covars_dropped    # Coastal & disjunct gages dropped
+        |       ├── gage_covars.gpkg       # Current USGS skew and covar data
+        ├── phzm/                              # USDA Plant Hardiness Zone map
         |       ├── phzm.tif
-        ├── prism/                         # Prism data normals 2010 - 2020
+        ├── prism/                             # Prism data normals 2010 - 2020
         |       ├── ppt_MMDD_mm.tif            # PRISM daily precip in mm
         |       ├── ppt_ann_mm_stack.tif       # PRISM annual precip in mm
         |       ├── ppt_monthly_mm_stack.tif   # PRISM annual precip in mm
