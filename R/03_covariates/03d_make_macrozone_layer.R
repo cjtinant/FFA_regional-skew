@@ -17,9 +17,9 @@
 #                  uses a greedy loop to iteratively merge regions until all have
 #                  at least 30 gages.
 #
-# Purpose:         Create custom macrozones:Tallgrass, Mixed-Grass, and Shortgrass
-#                  Prairie using metadata look-up tables created in
-#                  `03b_make_macrozone_lut.R`.
+# Purpose:         Create custom macrozones: Tallgrass Prairie, Mixed-Grass
+#                  Prairie, and Shortgrass Steppe using metadata look-up tables
+#                  created in `03b_make_macrozone_lut.R`.
 #
 # Workflow:
 #  1. Load ecoregions and metadata look-up tables

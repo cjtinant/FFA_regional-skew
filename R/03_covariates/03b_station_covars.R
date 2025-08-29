@@ -39,9 +39,6 @@
 # - Keep lat_dd/long_dd columns in decimal degrees
 # - Join key: site_no
 #
-# Next Steps:
-# - Run lintr to standardize code
-#
 # ==============================================================================
 # --- load libraries ---
 suppressPackageStartupMessages({
@@ -65,7 +62,7 @@ out_layer <- "stations_covars"
 crs_nad83 <- 4269 # NAD83 geographic (decimal degrees)
 crs_wgs84 <- 4326 # WGS84 geographic (decimal degrees)
 crs_nad27 <- 4267 # NAD27 geographic (Clarke 1866)
-crs_out <- 5070 # CONUS Albers Equal Area (repo standard)
+crs_out   <- 5070 # CONUS Albers Equal Area (repo standard)
 
 # ------------------------------------------------------------------------------
 # 1. Read and clean sites

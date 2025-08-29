@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:     03b_make_macrozone_lut.R
+# Script Name:     03c_make_macrozone_lut.R
 # Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-08-01
 # Last Updated:    2025-08-05
@@ -21,7 +21,7 @@
 #                  Oklahoma, New Mexico, and Texas, exhibit a one to many
 #                  cardinality at the L3 scale, and therefore are delineated
 #                  at the Level IV (L4) Ecoregion scale. The L4 designations follow
-#                  the United States Level III Ecoregion nomenclature (US_L4CODE),
+#                  the United States Level IV Ecoregion nomenclature (US_L4CODE),
 #                  e.g. 25b the Rolling Sand Plains L4 Ecoregion of the High Plains.
 #
 # Workflow Summary:
