@@ -1,5 +1,5 @@
 # =============================================================================
-# Script Name:     reproject_to_epsg5070.R
+# Script Name:     reproject_bil_to_epsg5070.R
 # Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-05-12
 # Last Updated:    2025-07-28
@@ -33,7 +33,8 @@
 # =============================================================================
 reproject_to_epsg5070 <- function(bil_files,
                                   out_dir = here("data/raw/prism_epsg5070"),
-                                  log_path = here("data/log/prism_crs_log.csv")) {
+                                  log_path = here(
+                                    "data/log/prism_crs_log.csv")) {
   library(dplyr)
   library(fs)
   library(here)
