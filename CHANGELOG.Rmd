@@ -17,22 +17,30 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 ---
 
 <!--
+
+
+
+
 ## [Untracked]
+
+### In Progress -- 2025-08-14
+
+- Refactor 03d_make_macrozone_layer.R
+
+- Updated project README.Rmd to create a landing page.
+
+
+## Untracked changes prior to v1.6.2
 ### Added
 
 - Added a README.Rmd for R/utils
 
 ### Changed
-- Updated make_macrozone_layer_script to identify small disjunct polygons by
+
+- Updated make_macrozone_layer script to identify small disjunct polygons by
 physiography and large unconnected macrozone polygons by location.
+
 - Updated utils folder structure to improve readability
-
-
-### In Progress
-Update analytical scale in covar metadata
-
-
-- update covariate metadata to reflect new aggregation file at macrozone level
 
 ### To Do
 - write a consistent template for your @param documentation so R/utils functions
@@ -43,10 +51,12 @@ folder more maintainable over time.
 - This commit focuses on a bug fix for an issue with finalizing macrozones based
 on a minimum number of gages (n = 30) within a zone. Prior output of station skew
 saved as gpkg were saved as polygons, rather than as points.
+
 - ChatGPT upgrade to GPT-5 on 20250808 for cjt. The upgrade substantially affected
 the code style. GPT-5 outputted complex functions that did not run. Bug fixes
 were challenging, as the tasks related to geospatial analysis for which my prior
 experience is using ArcGIS or ArcGIS Pro.
+
 - Created a new ChatGPT project on 20250812 after asking ChatGPT 5 to summarise
 prior instructions for the new project.
 

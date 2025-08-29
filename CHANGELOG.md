@@ -1,7 +1,7 @@
 Changelog
 ================
 CJ Tinant
-2025-08-14
+2025-08-29
 
 - [Changelog](#changelog)
   - [\[v1.6.2\] — 2025-08-13](#v162--2025-08-13)
@@ -29,18 +29,20 @@ Changelog](https://keepachangelog.com/) format.*
 ------------------------------------------------------------------------
 
 <!--
+&#10;
+&#10;
 ## [Untracked]
+&#10;### In Progress -- 2025-08-14
+&#10;- Refactor 03d_make_macrozone_layer.R
+&#10;- Updated project README.Rmd to create a landing page.
+&#10;
+## Untracked changes prior to v1.6.2
 ### Added
 &#10;- Added a README.Rmd for R/utils
 &#10;### Changed
-- Updated make_macrozone_layer_script to identify small disjunct polygons by
+&#10;- Updated make_macrozone_layer script to identify small disjunct polygons by
 physiography and large unconnected macrozone polygons by location.
-- Updated utils folder structure to improve readability
-&#10;
-### In Progress
-Update analytical scale in covar metadata
-&#10;
-- update covariate metadata to reflect new aggregation file at macrozone level
+&#10;- Updated utils folder structure to improve readability
 &#10;### To Do
 - write a consistent template for your @param documentation so R/utils functions
 clearly state accepted object types and constraints. That would make the utils
@@ -49,11 +51,11 @@ folder more maintainable over time.
 - This commit focuses on a bug fix for an issue with finalizing macrozones based
 on a minimum number of gages (n = 30) within a zone. Prior output of station skew
 saved as gpkg were saved as polygons, rather than as points.
-- ChatGPT upgrade to GPT-5 on 20250808 for cjt. The upgrade substantially affected
+&#10;- ChatGPT upgrade to GPT-5 on 20250808 for cjt. The upgrade substantially affected
 the code style. GPT-5 outputted complex functions that did not run. Bug fixes
 were challenging, as the tasks related to geospatial analysis for which my prior
 experience is using ArcGIS or ArcGIS Pro.
-- Created a new ChatGPT project on 20250812 after asking ChatGPT 5 to summarise
+&#10;- Created a new ChatGPT project on 20250812 after asking ChatGPT 5 to summarise
 prior instructions for the new project.
 &#10;### Added
 - `03b_make_macrozone_lut.R` to create

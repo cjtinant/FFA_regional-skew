@@ -3,15 +3,15 @@ title: "Script Notes and Developer Log"
 author: "C.J. Tinant"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
+  github_document:
+    toc: true
+    toc_depth: 2
   pdf_document:
     toc: true
     toc_depth: 2
     number_sections: true
     latex_engine: xelatex
     fig_caption: true
-  github_document:
-    toc: true
-    toc_depth: 2
 params:
   version: "v1.5.1"
 editor_options:
@@ -328,7 +328,8 @@ Notes on project data structure:
 
 The macrozone scale is the coarsest resolution scale for the study. EPA Level III
 (L3) and IV (L4) Ecoregions are aggregated into three macrozones: Tallgrass
-Prairie, Mixed-Grass Prairie, and Shortgrass Prairie macrozones. When possible macrozones are delineated at the L3 Ecoregion scale. Regions with greater
+Prairie, Mixed-Grass Prairie, and Shortgrass Prairie macrozones. When possible
+macrozones are delineated at the L3 Ecoregion scale. Regions with greater
 variability at the L3 Ecoregion scale, e.g.the central and southern Great Plains
 States required delineation at the L4 Ecoregion scale. Vegetative composition
 described in State-level L4 descriptions by Omerick and others (see Related Files
@@ -435,8 +436,6 @@ duration, and runoff seasonality.
 
 ### NLCD Classes
 
-
-
 **Developed**
 21 *Developed, Open Space* -- areas with a mixture of some constructed materials,
 but mostly vegetation in the form of lawn grasses. Impervious surfaces account
@@ -498,7 +497,8 @@ a hierarchical decision rule:
 -   Primary criterion: adjacency with a unit sharing the same Level II ecoregion
 classification
 
--   Secondary criterion: ecological similarity, evaluated using Euclidean distance in a multivariate space defined by:
+-   Secondary criterion: ecological similarity, evaluated using Euclidean 
+distance in a multivariate space defined by:
 
 -   Land cover composition (e.g., cropland, forest, urban fractions)
 
@@ -506,9 +506,8 @@ classification
 
 -   Vegetation seasonality (NDVI amplitude and timing of peak greenness)
 
-This approach preserved regional coherence while improving the gage count and spatial contiguity required for reliable skew estimation.
-
-
+This approach preserved regional coherence while improving the gage count and
+spatial contiguity required for reliable skew estimation.
 
 ---
 
