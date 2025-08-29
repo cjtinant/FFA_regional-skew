@@ -1,13 +1,14 @@
 Script Notes and Developer Log
 ================
 C.J. Tinant
-August 06, 2025
+August 29, 2025
 
 - [Overview](#overview)
 - [Project Notes (General)](#project-notes-general)
 - [TODO (General)](#todo-general)
 - [Future Ideas](#future-ideas)
 - [Notes by Script](#notes-by-script)
+- [03d_covar_macro_zonal_summary.R](#03d_covar_macro_zonal_summaryr)
 - [Check for later](#check-for-later)
   - [Zettelkasten-style markdown](#zettelkasten-style-markdown)
   - [Notes](#notes)
@@ -395,17 +396,119 @@ degree of fragmentation, a substantially different geography,
 e.g. coastal geography and barrier islands. Additionally, polygons less
 than 100 square kilometers were merged with nearest neighbors.
 
-Macrozones were generalized following aggregation to remove polygons
+Macrozones are generalized following aggregation to remove polygons
 smaller than 1,000 sq-km from the analysis.
 
 ------------------------------------------------------------------------
 
+# 03d_covar_macro_zonal_summary.R
+
+Macrozones are used to calculate zonal summaries for climate patterns,
+land cover, and topography. Climate pattern summaries include dominant
+Koppen-Geiger climate class and dominant and count of plant hardiness.
+The climate pattern summaries indicate broad-scale climate context,
+e.g. humid continental vs. semi-arid, cold hardiness diversity, and cold
+tolerance regimes based on minimum winter temperatures.
+
+Land cover proportion summaries include the fraction of cropland,
+forest, grassland, and urban land. Fraction of cropland indicates
+anthropogenic land use in agricultural regions associated with increased
+runoff, reduced infiltration, and higher ET demand. The fraction of
+forested land (cover) enhances interception and storage, which typically
+reduces peak flows and lowers skew. The fraction of grassland moderates
+evapotranspiration and infiltration rates, which is especially important
+in mixed rangeland systems. The fraction of urban land indicates
+increased imperviousness, which is strongly associated with peak flow
+generation and positive flood skew.
+
+Topography summaries include mean and median slope and mean altitude.
+Mean slope describes average terrain steepness, which helps distinguish
+rugged uplands from flatter plains. Median slope is another measure of
+average slope, which is more robust to outliers than the mean, and is
+useful for evaluating runoff tendency. Mean altitude describes the
+elevation regime, which influences climate, snow duration, and runoff
+seasonality.
+
+### Naming convention
+
+|      Short Name      |       Sataset        | Summary Type |  Variable Name   |
+|:--------------------:|:--------------------:|:------------:|:----------------:|
+|     Climate Zone     |    Koppen-Geiger     |   Dominant   |  kopp_geig_dom   |
+|   PHZM Zone Count    | Plant Hardiness Zone |    Count     |     phzm_cnt     |
+| PHZM Zone (Dominant) | Plant Hardiness Zone |   Dominant   |     phzm_dom     |
+|  Cropland Fraction   | NLCD 2016 Land Cover |   Fraction   | nlcd_crppst_frac |
+|   Forest Fraction    | NLCD 2016 Land Cover |   Fraction   | nlcd_forst_frac  |
+|  Grassland Fraction  | NLCD 2016 Land Cover |   Fraction   | nlcd_grass_frac  |
+|    Urban Fraction    | NLCD 2016 Land Cover |   Fraction   | nlcd_urban_frac  |
+|      Mean Slope      |      NED Slope       |     Mean     |   ned_slp_mean   |
+|     Median Slope     |      NED Slope       |    Median    |   ned_slp_med    |
+|    Altitude Zone     |    NED Elevation     |     Mean     |  ned_elev_mean   |
+
+### NLCD Classes
+
+**Developed** 21 *Developed, Open Space* – areas with a mixture of some
+constructed materials, but mostly vegetation in the form of lawn
+grasses. Impervious surfaces account for less than 20% of total cover.
+These areas most commonly include large-lot single-family housing units,
+parks, golf courses, and vegetation planted in developed settings for
+recreation, erosion control, or aesthetic purposes.
+
+22 *Developed, Low Intensity* – areas with a mixture of constructed
+materials and vegetation. Impervious surfaces account for 20% to 49%
+percent of total cover. These areas most commonly include single-family
+housing units.
+
+23 *Developed, Medium Intensity* – areas with a mixture of constructed
+materials and vegetation. Impervious surfaces account for 50% to 79% of
+the total cover. These areas most commonly include single-family housing
+units.
+
+24 *Developed High Intensity* – highly developed areas where people
+reside or work in high numbers. Examples include apartment complexes,
+row houses and commercial/industrial. Impervious surfaces account for
+80% to 100% of the total cover.
+
+**Forest**
+
+41 *Deciduous Forest* – areas dominated by trees generally greater than
+5 meters tall, and greater than 20% of total vegetation cover. More than
+75% of the tree species shed foliage simultaneously in response to
+seasonal change.
+
+42 *Evergreen Forest* – areas dominated by trees generally greater than
+5 meters tall, and greater than 20% of total vegetation cover. More than
+75% of the tree species maintain their leaves all year. Canopy is never
+without green foliage.
+
+43 *Mixed Forest* – areas dominated by trees generally greater than 5
+meters tall, and greater than 20% of total vegetation cover. Neither
+deciduous nor evergreen species are greater than 75% of total tree
+cover.
+
+**Grassland**
+
+71 *Grassland/Herbaceous*- areas dominated by gramanoid or herbaceous
+vegetation, generally greater than 80% of total vegetation. These areas
+are not subject to intensive management such as tilling, but can be
+utilized for grazing.
+
+**Planted/Cultivated** 81 *Pasture/Hay* – areas of grasses, legumes, or
+grass-legume mixtures planted for livestock grazing or the production of
+seed or hay crops, typically on a perennial cycle. Pasture/hay
+vegetation accounts for greater than 20% of total vegetation.
+
+82 *Cultivated Crops* — areas used for the production of annual crops,
+such as corn, soybeans, vegetables, tobacco, and cotton, and also
+perennial woody crops such as orchards and vineyards. Crop vegetation
+accounts for greater than 20% of total vegetation. This class also
+includes all land being actively tilled.
+
 # Check for later
 
 To ensure statistical robustness in regional analyses, polygons smaller
-than 1,000 km² or containing fewer than 30 stream gages were merged with
-the most ecologically similar adjacent Level III Ecoregions. The merging
-process followed a hierarchical decision rule:
+than 1,000 sq-km or containing fewer than 30 stream gages were merged
+with the most ecologically similar adjacent Level III Ecoregions. The
+merging process followed a hierarchical decision rule:
 
 - Primary criterion: adjacency with a unit sharing the same Level II
   ecoregion classification
@@ -491,5 +594,5 @@ notes and a script to open/edit them easily using RStudio.
 
 ## Notes
 
-- Last updated: 2025-08-06 11:08
+- Last updated: 2025-08-29 08:29
 - Maintained by: CJ Tinant
