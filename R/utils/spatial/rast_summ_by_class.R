@@ -1,7 +1,7 @@
 # ==============================================================================
 # Script Name:     Zonal raster helpers.R
-# Purpose:         Prep rasters to zones; compute dominant class, class counts,
-#                  and class fractions with area-weighted exact extraction.
+# Purpose:         Compute dominant class, class counts, and class fractions
+#                  with area-weighted exact extraction.
 # Author:          CJ Tinant — with GPT 4o
 # Date Created:    2025-08-07
 # Last Updated:    2025-09-01
@@ -100,9 +100,9 @@ category_counts <- function(r, zones, id_col = "macro_id") {
       v  <- df[[1]]  # first (only) band
       ok <- !is.na(v)
       if (!any(ok)) return(NULL)
-      dplyr::tibble(value = v[ok], area = df$coverage_fraction[ok]) |>
-        dplyr::group_by(value) |>
-        dplyr::summarise(area = sum(area), .groups = "drop") |>
+      dplyr::tibble(value = v[ok], area = df$coverage_fraction[ok]) %>%
+        dplyr::group_by(value) %>%
+        dplyr::summarise(area = sum(area), .groups = "drop") %>%
         dplyr::mutate(!!id_col := unique(df[[id_col]]))
     },
     include_cols   = id_col,
@@ -110,9 +110,11 @@ category_counts <- function(r, zones, id_col = "macro_id") {
     progress       = FALSE
   )
   
-  res |> purrr::compact() |> dplyr::bind_rows() |> dplyr::relocate(!!rlang::sym(id_col))
+  res %>%
+    purrr::compact() %>%
+    dplyr::bind_rows() %>%
+    dplyr::relocate(!!rlang::sym(id_col))
 }
-
 
 #' Proportion of zone covered by selected classes
 #'
@@ -149,9 +151,11 @@ class_fraction <- function(r, zones, classes,
 # ---- internal helpers --------------------------------------------------------
 
 .require_namespace <- function(pkgs) {
-  missing <- pkgs[!vapply(pkgs, requireNamespace, FUN.VALUE = logical(1), quietly = TRUE)]
+  missing <- pkgs[!vapply(pkgs, requireNamespace, FUN.VALUE = logical(1),
+                          quietly = TRUE)]
   if (length(missing)) {
-    stop("Missing required packages: ", paste(missing, collapse = ", "), call. = FALSE)
+    stop("Missing required packages: ", paste(missing, collapse = ", "),
+         call. = FALSE)
   }
 }
 

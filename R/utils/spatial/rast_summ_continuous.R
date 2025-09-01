@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:     continuous_rast_summ_by_zone.R
+# Script Name:     raster_summaries_continuous.R
 # Purpose:         Calculate continuous raster summaries by zone
 # Author:          CJ Tinant — with GPT-5 Thinking
 # Date Created:    2025-08-07
