@@ -1,35 +1,28 @@
 # =============================================================================
 # Script Name:     reproject_bil_to_epsg5070.R
+# Purpose:         Helper function to reproject .bil files to EPSG5070.
 # Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-05-12
-# Last Updated:    2025-07-28
+# Last Updated:    2025-08-29
 # Change Log:
 # - 2025-07-28     Update header information;
 #                  Move notes to `script-notes_and_developer-log`.
 #                  Update output to `data/raw/``
+# - 2025-08-29     Rename function for clarity of use.
 #
-# Purpose:         Helper function to reproject .bil files to EPSG5070.
+# Description:
 #
 # Workflow Summary:
 # 1. Check if a .bil file already in EPSG:5070.
 # 2. Reproject to EPSG:5070 if the .bil has another coordinate system.
 # 3. Export reprojected files and log.
 #
-# Input/Data URLs:
+# User Inputs:
 # - user-defined .bil file.
-# Outputs:
+# Function Outputs:
 # - reprojected .bil file saved to `data/raw/prism_epsg5070`.
 #
-# Dependencies:
-# - dplyr, readr   General data wrangling, import and export.
-# - fs             File interface system.
-# - here           Consistent relative paths.
-# - terra          Vector and raster data operations.
-#
-# Helper Functions:
-#
-# Related Milestone Reports:
-#
+# Depends: dplyr, fs, here, readr, terra
 # =============================================================================
 reproject_to_epsg5070 <- function(bil_files,
                                   out_dir = here("data/raw/prism_epsg5070"),

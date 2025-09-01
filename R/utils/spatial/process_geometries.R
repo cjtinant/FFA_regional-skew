@@ -1,13 +1,15 @@
-# ============================================================================
+# ==============================================================================
 # Script Name:     process_geometries.R
+# Purpose:         Adds columns for centroid coordinates to an sf object
 # Author:          Charles Jason Tinant with ChatGPT 4o
 # Date Created:    2024-06-06
 # Last Updated:    2025-07-28
 # Change Log:
 # - 2025-07-28     Update header information;
 #                  move notes to `script-notes_and_developer-log`.
+# - 2025-08-29     Update header metadata
 #
-# Purpose:         The function is returns a modified sf object with additional
+# Discussion:      The function is returns a modified sf object with additional
 #                  columns for centroid coordinates.
 #
 # Workflow Summary:
@@ -18,18 +20,13 @@
 # 4. Implicitly return a modified sf object with new columns: text_x and text_y
 #    sf object -- 'return(sf_object)' is not needed in the function.
 #
-# Input/Data URLs:
+# User Inputs:
 # - A user-defined sf object.
-# Output:
-# - A modified sf object with additional columns,
 #
-# Dependencies:
-# - sf             Spatial data and geometry operations
-# - tidyverse      General data wrangling (used here for loading)
+# Function Outputs:
+# - A modified sf object with additional columns.
 #
-# Helper Functions
-#
-# Related Milestone Reports:
+# Depends: sf, tidyverse
 #
 # ==============================================================================
 # --- load libraries ---
