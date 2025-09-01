@@ -32,7 +32,7 @@ documentation and naming conventions.
 
 ---
 
-## 🔖 Structure Overview
+## File Structure Overview
 
 | Subfolder / File     | Purpose       |
 | -------------------- | ------------------------------------------------ |
@@ -48,8 +48,8 @@ documentation and naming conventions.
 ---
 
 \newpage
-
-## 🔖 Script Documentation
+ 
+## Script Documentation
 
 Each major subfolder includes a README.Rmd and README.md that describe:
 
