@@ -1,16 +1,26 @@
 # ==============================================================================
-# Title:           Zonal raster helpers
+# Script Name:     Zonal raster helpers.R
 # Purpose:         Prep rasters to zones; compute dominant class, class counts,
 #                  and class fractions with area-weighted exact extraction.
-# Author:          CJ Tinant — with ChatGPT
-# Created:         2025-08-07
-# Last-Edit:       2025-08-08
-#
+# Author:          CJ Tinant — with GPT 4o
+# Date Created:    2025-08-07
+# Last Updated:    2025-09-01
 # Change Log:
-# 2025-08-08        Moved the align function to `prep_and_align.R`.
-# 2025-08-08        Updated dominant class function
-
+# - 2025-08-08     Moved the align function to `prep_and_align.R`.
+# - 2025-08-08     Updated dominant class function.
+# - 2025-09-01     Update script header metadata.
 #
+# Discussion:      The original function was a single use helper function to
+#                  "assert inputs are ok" prior to zonal aggregation with a
+#                  custom macroregion. "Asserting inputs are ok" originally
+#                  consisted of checking the file path and class, i.e. the vector
+#                  type, and whether an ID colum existed.
+#
+# Workflow Summary:
+#
+# User Inputs:
+#
+# Function Outputs:
 # Notes:
 # - Depends on an existing align_zones_to(zones, r) helper.
 # - Works with terra SpatRaster + sf/SpatVector polygons.
