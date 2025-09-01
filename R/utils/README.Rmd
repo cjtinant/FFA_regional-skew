@@ -29,48 +29,6 @@ workflows.
 The goal is to keep scripts DRY (“Don’t Repeat Yourself”) and consistent across
 different processing steps.
 
-## Folder Organization
-
-- **metadata/** — Functions for extracting, summarizing, and cleaning metadata
-from raster and vector files.
-- **inventory/** — QA utilities for file inventory, duplicate detection, and
-archive management.
-- **spatial/** — Spatial preprocessing tools (e.g., reprojection, geometry cleanup,
-resource downloads).
-- **qa/** — Code quality and style check scripts.
-
-``` plaintext
-
-R/
-└── utils/
-    ├── metadata/         # Functions for metadata extraction and cleaning
-    │   ├── extract_full_metadata.R
-    │   ├── extract_summary_metadata_raster.R
-    │   ├── extract_summary_metadata_vector.R
-    │   ├── parse_metadata.R
-    │   ├── metadata_manual_cleaning_tools.R
-    │   └── summarise_raster_crs.R
-    │
-    ├── inventory/        # Inventory scripts for QA and archiving
-    │   ├── inventory_feature_data.R
-    │   ├── inventory_raster_data.R
-    │   ├── verify_prism_archive.R
-    │   ├── move_zip_to_archives.R
-    │
-    ├── spatial/          # Spatial processing utilities
-    │   ├── download_ecoregion_resources.R
-    │   ├── process_geometries.R
-    │   ├── reproject_to_epsg5070.R
-    │
-    ├── qa/               # Code quality utilities
-    │   └── run_linr_on_a_directory.R
-    │
-    ├── README.Rmd
-
-```
-
----
-
 ## Usage
 Functions in these scripts should be sourced in workflow scripts:
 
@@ -84,6 +42,58 @@ source(here::here("R/utils/metadata/extract_full_metadata.R"))
 
 - Spatial helpers are intended to return objects ready for use with {terra}
 workflows.
+
+## Folder Organization
+
+- **metadata/** — Functions for extracting, summarizing, and cleaning metadata
+from raster and vector files.
+- **inventory/** — QA utilities for file inventory, duplicate detection, and
+archive management.
+- **spatial/** — Spatial preprocessing tools (e.g., reprojection, geometry cleanup,
+resource downloads).
+- **qa/** — Code quality and style check scripts.
+
+
+
+\newpage
+
+``` plaintext
+
+R/
+└── utils/
+    ├── inventory/        # Inventory scripts for QA and archiving
+    │   ├── inventory_feature_data.R
+    │   ├── inventory_raster_data.R
+    │   ├── verify_prism_archive.R
+    │   ├── move_zip_to_archives.R
+    │
+    ├── metadata/         # Functions for metadata extraction and cleaning
+    │   ├── extract_full_metadata.R
+    │   ├── extract_summary_metadata_raster.R
+    │   ├── extract_summary_metadata_vector.R
+    │   ├── parse_metadata.R
+    │   ├── metadata_manual_cleaning_tools.R
+    │   └── summarise_raster_crs.R
+    ├── qa/               # Code quality utilities
+    │   └── run_linr_on_a_directory.R
+    │
+    ├── spatial/          # Spatial processing utilities
+    │   ├── assert_inputs_ok.R         # Pre-flight checks for zonal aggregation
+    │   ├── continuous_rast_summ_by_zone.R  # continuous raster summaries by zone
+    │   ├── download_ecoregion_resources.R  # DL EPA ecoregion layers, metadata
+    │   ├── prep_and_align.R                # Align polygon zones to raster CRS
+    │                                       # and prepare a raster for zonal work
+    │   ├── process_geometries.R            # Adds columns for centroid coordinates     │                                       # to an sf object
+    │   ├── reproject_bil_to_epsg5070.R
+    │   ├── vector_helpers.R 
+    │
+    ├── README.Rmd
+
+```
+
+---
+
+
 
 ### Unit Testing
 (future) For consistent unit testing, see the `tests/` folder and the `testthat`
