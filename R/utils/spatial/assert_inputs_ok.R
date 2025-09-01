@@ -11,7 +11,7 @@
 #                  "assert inputs are ok" prior to zonal aggregation with a
 #                  custom macroregion. "Asserting inputs are ok" originally
 #                  consisted of checking the file path and class, i.e. the vector
-#                  type, and whether an ID colum existed.
+#                  type, and whether an ID column existed.
 #
 # Workflow Summary:
 # 1. Verify that rasters can be opened.
