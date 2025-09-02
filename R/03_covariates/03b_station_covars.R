@@ -8,8 +8,8 @@
 # - 2025-08-13     Initial script from GPT-5 output
 # - 2025-08-13     Update script using 03d_make_macrozone_layer as a template.
 #
-# Purpose:         Create a geospatial layer of station-level (Level 0) covariates
-#                 and station skew coefficients calculated
+# Purpose:         Create a geospatial layer of station-level (Level 0)
+#                  covariates and station skew coefficients in CSV format.
 #
 # Workflow:
 # 0. Define paths & project CRS.
