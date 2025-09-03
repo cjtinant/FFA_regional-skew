@@ -4,17 +4,26 @@
 #                  (b) prepare a raster for zonal work (optional crop/mask).
 # Author:          CJ Tinant — with GPT-5 Thinking
 # Date Created:    2025-08-08
-# Last Updated:    2025-08-08
+# Last Updated:    2025-09-03
 #
 # Changelog:
 # - 2025-08-08     Merge zonal_raster_helpers.R and align_zones_to.R which both
 #                  have a prep_raster function.
 # - 2025-08-29     Update header metadata
-# - 2025-09-01     Add suggested workflow
+# - 2025-09-03     Add `Discussion` to explain what the function does.
 #
-# Discussion:
-#
-# Workflow Summary:
+# Discussion: What each function does (in plain terms)
+# - align_zones_to(zones, rst, ...)
+#     - Takes polygon zones (sf or SpatVector) and a raster (SpatRaster or path).
+#     - Ensures zones are valid (optional), converts to SpatVector, and
+#       reprojects zones to the raster’s CRS (no raster warping).
+#     - Returns a SpatVector (polygons) in the same CRS as the raster.
+# - prep_raster(rst, zones, do_crop = TRUE, do_mask = TRUE, ...)
+#     - Opens the raster (or path) as a SpatRaster.
+#     - Calls align_zones_to() to get zones in the raster CRS.
+#     - Optionally crops the raster to the zones bbox and masks it to the polygon
+#       shapes.
+#     - Returns list(r = <SpatRaster>, zones = <SpatVector>).
 #
 # User Inputs:
 # - 
