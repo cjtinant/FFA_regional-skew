@@ -5,7 +5,11 @@
 # Date Created:    2025-08-08
 # Last Updated:    2025-08-29
 # Change Log:
-# - 2025-08-29     Updated the original script to increase functionality
+# - 2025-08-29     Updated the original script to increase functionality.
+# - 2025-09-03     Add safeguards to function:
+#                    - drop Z/M if present (can trip exactextractr)
+#                    - ensure valid geometries (repair if needed)
+#                    - ensure non-empty geometries
 #
 # Discussion:      The original function was a single use helper function to
 #                  "assert inputs are ok" prior to zonal aggregation with a
