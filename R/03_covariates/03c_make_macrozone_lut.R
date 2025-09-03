@@ -1,5 +1,9 @@
 # ==============================================================================
 # Script Name:     03c_make_macrozone_lut.R
+# Purpose:         The script creates the metadata to delineate ecoregions into
+#                  custom macrozones: Tallgrass Prairie, Mixed-Grass Prairie,
+#                  and Shortgrass Steppe.
+
 # Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-08-01
 # Last Updated:    2025-08-05
@@ -7,22 +11,6 @@
 # - 2025-08-01     Create initial script
 # - 2025-08-04     Split initial script
 # - 2025-08-05     Finalize initial script
-#
-# Purpose:         This script creates the metadata to delineate Ecoregions into
-#                  Tallgrass, Mixed-Grass, and Shortgrass Prairie macrozones.
-#                  When possible macrozones are delineated at the Level III (L3)
-#                  Ecoregion scale. The L3 designations follow North American
-#                  Ecoregion nomenclature (NA_L3CODE), e.g. 9.4.1 refers to:
-#                  9 GREAT PLAINS dot 4 SOUTH CENTRAL SEMI-ARID PRAIRIES dot
-#                  1 HIGH PLAINS. The 9 dot 4 dot 1 HIGH PLAINS NA_L3CODE also
-#                  corresponds with United States Level III Ecoregion nomenclature
-#                  (US_L3CODE) , e.g. 25 High Plains. Macrozones in the central
-#                  and southern Great Plains states, i.e. Colorado, Kansas,
-#                  Oklahoma, New Mexico, and Texas, exhibit a one to many
-#                  cardinality at the L3 scale, and therefore are delineated
-#                  at the Level IV (L4) Ecoregion scale. The L4 designations follow
-#                  the United States Level IV Ecoregion nomenclature (US_L4CODE),
-#                  e.g. 25b the Rolling Sand Plains L4 Ecoregion of the High Plains.
 #
 # Workflow Summary:
 # 1. Load L4 Ecoregions for reference.
