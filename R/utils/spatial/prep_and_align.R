@@ -10,11 +10,11 @@
 # - 2025-08-08     Merge zonal_raster_helpers.R and align_zones_to.R which both
 #                  have a prep_raster function.
 # - 2025-08-29     Update header metadata
-# - 2025-09-03     Add `Discussion` to explain what the function does.
+# - 2025-09-03     Add `Discussion` to explain what the function does;
+#                  Update `User Inputs` and `Function Outputs` descriptions.
 #
 # Discussion: What each function does (in plain terms)
 # - align_zones_to(zones, rst, ...)
-#     - Takes polygon zones (sf or SpatVector) and a raster (SpatRaster or path).
 #     - Ensures zones are valid (optional), converts to SpatVector, and
 #       reprojects zones to the raster’s CRS (no raster warping).
 #     - Returns a SpatVector (polygons) in the same CRS as the raster.
@@ -26,7 +26,7 @@
 #     - Returns list(r = <SpatRaster>, zones = <SpatVector>).
 #
 # User Inputs:
-# - 
+#   - polygon zones (sf or SpatVector) and a raster (SpatRaster or path).
 # Function Outputs:
 #   - align_zones_to(): SpatVector (polygons) in the raster CRS
 #   - prep_raster():    list(r = SpatRaster, zones = SpatVector)
