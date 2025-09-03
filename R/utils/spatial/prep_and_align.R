@@ -10,6 +10,7 @@
 # - 2025-08-08     Merge zonal_raster_helpers.R and align_zones_to.R which both
 #                  have a prep_raster function.
 # - 2025-08-29     Update header metadata
+# - 2025-09-01     Add suggested workflow
 #
 # Discussion:
 #
@@ -22,6 +23,9 @@
 #   - prep_raster():    list(r = SpatRaster, zones = SpatVector)
 #
 # Depends: terra, sf, cli
+#
+# Suggested workflow:
+# utils/assert_inputs_ok.R, prep_and_align, rast_summaries_x
 # ==============================================================================
 
 # ---- internal namespace check ------------------------------------------------

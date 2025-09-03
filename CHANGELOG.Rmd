@@ -18,64 +18,52 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 
 <!--
 
+## [Untracked] -- 2025-08-14
 
+## Untracked changes prior to v1.6.4
 
+## [v1.6.2] — 2025-08-13
 
-## [Untracked]
-
-### In Progress -- 2025-08-14
-
-- Refactor 03d_make_macrozone_layer.R
-
-- Updated project README.Rmd to create a landing page.
-
-
-## Untracked changes prior to v1.6.2
 ### Added
 
 - Added a README.Rmd for R/utils
 
+- Added `style_guide_and_glossary.Rmd` to `/docs`. The document combines the
+older style guide which defines project naming, formatting, and style conventions with a dictionary of project-specific vocabulary.
+
+- Added `analysis_layout.Rmd` to `/docs`. Previously, the data was part of the
+project README.Rmd`.
+
 ### Changed
 
-- Updated make_macrozone_layer script to identify small disjunct polygons by
-physiography and large unconnected macrozone polygons by location.
+- Refactored project `README.Rmd` to create a landing page.
 
-- Updated utils folder structure to improve readability
+- Refactored `03d_make_macrozone_layer.R` to aggregate macrozones containing
+lt 30 gages.
+
+- Updated `\utils` folder structure to improve readability.
+
+### In Progress
+
+- `03e_intersect_sites_macrozones.R`
 
 ### To Do
-- write a consistent template for your @param documentation so R/utils functions
+
+- write a consistent template for @param documentation so R/utils functions
 clearly state accepted object types and constraints. That would make the utils
 folder more maintainable over time.
 
-### Items of Note
-- This commit focuses on a bug fix for an issue with finalizing macrozones based
-on a minimum number of gages (n = 30) within a zone. Prior output of station skew
-saved as gpkg were saved as polygons, rather than as points.
-
-- ChatGPT upgrade to GPT-5 on 20250808 for cjt. The upgrade substantially affected
-the code style. GPT-5 outputted complex functions that did not run. Bug fixes
-were challenging, as the tasks related to geospatial analysis for which my prior
-experience is using ArcGIS or ArcGIS Pro.
-
-- Created a new ChatGPT project on 20250812 after asking ChatGPT 5 to summarise
-prior instructions for the new project.
-
-### Added
-- `03b_make_macrozone_lut.R` to create
-`data/processed/peakflow_gages/stations_covars.gpkg` and
-`data/processed/peakflow_gages/stations_covars.csv`
-
-### Changed
-- Updated station metadata to `covariate_metadata_v086.csv`. Changes were made
-to the station level and macroregional scale metadata values for `variable_names`,
-`description`, `short_name`, and `raster_subfolder`:`layer_name`
-- Renamed `03b_make_macrozone_lut.R` to `03c_make_macrozone_lut.R`
-- Renamed `03c_make_macrozone_layer.R` to `03c_make_macrozone_layer.R`
 -->
 
 ## [v1.6.2] — 2025-08-13
 
 ### Items of Note
+- Created a new ChatGPT project on 20250812 after asking ChatGPT 5 to summarise
+prior instructions for the new project.
+- ChatGPT upgrade to GPT-5 on 20250808 for cjt. The upgrade substantially affected
+the code style. GPT-5 outputted complex functions that did not run. Bug fixes
+were challenging, as the tasks related to geospatial analysis for which my prior
+experience is using ArcGIS or ArcGIS Pro.
 
 - Rebuilt the station-level covariates as a point layer; this fixes downstream
 macrozone completeness checks that require ≥30 gages per zone.

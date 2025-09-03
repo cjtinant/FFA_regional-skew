@@ -324,62 +324,75 @@ Notes on project data structure:
 
 ---
 
-### 03b_make_macrozone_layer.R
+### 03b_station_covars.R
 
-The macrozone scale is the coarsest resolution scale for the study. EPA Level III
-(L3) and IV (L4) Ecoregions are aggregated into three macrozones: Tallgrass
-Prairie, Mixed-Grass Prairie, and Shortgrass Prairie macrozones. When possible
-macrozones are delineated at the L3 Ecoregion scale. Regions with greater
-variability at the L3 Ecoregion scale, e.g.the central and southern Great Plains
-States required delineation at the L4 Ecoregion scale. Vegetative composition
-described in State-level L4 descriptions by Omerick and others (see Related Files
-below) was the primary basis for macrozone classification. 
+Station-level (Level 0) data include three location parameters: longitude,
+latitude and altitude, and one scale parameter: watershed area. Altitude and
+watershed area are reported in SI units and transformed to EPSG:5070.
 
-The general characteristics of each macrozone are as follows:
+The parameters for drainage area and contributing drainage area were coalesced
+prior to dropping gages with missing drainage area or altitude data.
+
+### 03c_make_macrozone_lut.R
+
+Macrozones, which represent the coarsest analysis scale for the project, are
+delineated along a composite gradient of moisture availability, soil development,
+and groundwater connectivity. These patterns are broadly reflected in three
+macrozones: Tallgrass Prairie, Mixed-Grass Prairie, and Shortgrass Steppe.
+
+Ecoregion Level designations follow both North American Ecoregion nomenclature
+and United States (US) Ecoregion nomenclature. For example, NA_L3CODE == 9.4.1
+refers to: 9 GREAT PLAINS dot 4 SOUTH CENTRAL SEMI-ARID PRAIRIES dot 1 HIGH PLAINS
+and correspond with US_L3CODE == 25 High Plains. The L4 designations follow the
+Level IV Ecoregion nomenclature (US_L4CODE), e.g. 25b the Rolling Sand Plains L4
+Ecoregion of the High Plains. Macrozones are delineated at the L3 Ecoregion scale, when possible. Regions with greater variability at the L3 Ecoregion scale, e.g.
+the central and southern Great Plains States , i.e. Colorado, Kansas, Oklahoma,
+New Mexico, and Texas, exhibit a one to many cardinality at the L3 scale, and are
+delineated at the Level IV (L4) Ecoregion scale. Vegetative composition described
+in State-level L4 descriptions by Omerick and others (see Related Files below) was
+the primary basis for macrozone classification.
+
+The general characteristics of the custom macrozones are as follows:
 
 The **Tallgrass Prairie Macrozone** is located in the eastern portion of the Great
-Plains in the glacial till and loess plains of the Temperate Prairies (L2)
-Ecoregion, eastern portions of the South Central Semiarid Plains (L2) Ecoregion
-in the Flint Hills region, where a natural fire frequency has maintained this
-tallgrass remnant community. The Tallgrass Prairie Macrozone is an area of higher
-annual precipitation (typically \> 850 mm), deep, fertile soils with high water
+Plains in the glacial till and loess plains of the Temperate Prairies Ecoregion,
+eastern portions of the South Central Semiarid Plains Ecoregion in the Flint
+Hills region, where a natural fire frequency has maintained this tallgrass remnant
+community. The Tallgrass Prairie macrozone is an area of higher annual
+precipitation (typically \> 850 mm), deep, fertile soils with high water
 retention, and dense herbaceous vegetation, and extended baseflow. Characteristic
 species in the macrozone include: Andropogon gerardii (Big Bluestem), Panicum
 virgatum (Switchgrass), Sorghastrum nutans (Indiangrass).
 
-The **Mixed-Grass Prairie Macrozone** generally marks a transition from xeric 
-shortgrass steppe to the west and mesic tallgrass prairie to the east in the West
-Central Semi-Arid Prairies (L2) Ecoregion, the Northwestern Glaciated Plains (L2)
-Ecoregion, central portions of the South Central Semiarid Prairies (L2) Ecoregion,
-eastern portions of the Central Great Plains (L2) Ecoregion, and uplands portions
-of the Tamaulipas- Texas Semi-Arid Plain (L2) Ecoregion. The Mixed-Grass Prairie
-Macrozone is an area of moderate precipitation (typically 500–800 mm), and high
-interannual precipitation variability, variable soil textures, and a combination
-of event-driven flow and baseflow regimes. Vegetatively the macrozone is
-characterized by a mixture of tall, mid, and short grass species, including:
-Schizachyrium scoparium (Little Bluestem), Bouteloua curtipendula (sideoats grama),
-Bouteloua gracilis (sideoats grama), and Stipa sp. (Needlegrass species).
+The **Mixed-Grass Prairie Macrozone** generally marks a transition from mesic
+Tallgrass Prairie in the eastern Great Plains and xeric Shortgrass Steppe in the
+western portion of the region, and consist of the L2 ecoregions: West Central
+Semi-Arid Prairies, the Northwestern Glaciated Plains, central portions of the South Central Semiarid Prairies, eastern portions of the Central Great Plains,
+and uplands portions of the Tamaulipas-Texas Semi-Arid Plains. The macrozone is
+an area of moderate precipitation (typically 500–800 mm), and high interannual
+precipitation variability, variable soil textures, and a combination of
+event-driven flow and baseflow regimes. The macrozone is characterized by a
+mixture of tall, mid, and short grass species, including: Schizachyrium scoparium
+(Little Bluestem), Bouteloua curtipendula (Sideoats Grama), Bouteloua gracilis
+(Blue Grama), and Stipa sp. (Needlegrass species).
 
 The **Shortgrass-Steppe Macrozone** is located in the western portion of the Great
-Plains in the western portions of the South Central Semiarid Prairies (L2) and
-Western High Plains (L2), Central Great Plains (L2), and lowlands portions of the
-Tamaulipas-Texas Semi-Arid Plain (L2) and Southwestern Tablelands (L2). The
-Shortgrass Steppe is characteried by low precipitation, sparse vegetation, shallow
-soils with limited infiltration, rapid surface runoff, a rapid-response, event-
-driven hydrologic regime,  higher flood skew, driven by reduced canopy structure
-and limited ET buffering.
+Plains in the western portions of the South Central Semiarid Prairies, Western
+High Plains, Central Great Plains, and lowlands portions of the Tamaulipas-Texas
+Semi-Arid Plain and Southwestern Tablelands. The Shortgrass Steppe is characterized
+by low precipitation, sparse vegetation, shallow soils with limited infiltration,
+rapid surface runoff, a rapid-response, event-driven hydrologic regime,  higher
+flood skew, driven by reduced canopy structure and limited ET buffering.
 
 ### Related Files:
 - `l3_ecoregion_descriptions.Rmd`
 
 ---
 
-### 03c_make_macrozone_layer.R
+START HERE
 
-Macrozones represent the coarsest analysis scale and are delineated along a
-composite gradient of moisture availability, soil development, and groundwater
-connectivity. These patterns are broadly reflected in three macrozones: Tallgrass
-Prairie, Mixed-Grass Prairie, and Shortgrass Steppe.
+### 03d_make_macrozone_layer.R
+
 
 The Texas-Louisiana Coastal Plain was removed from the analysis prior to developing
 custom macrozones. The reasons for removal include a high degree of fragmentation,
