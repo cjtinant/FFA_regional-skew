@@ -133,6 +133,27 @@ assert_inputs_ok <- function(raster_paths,
   if (!isTRUE(sf::st_is_longlat(z)) && grepl("longlat", crs_r, ignore.case = TRUE)) {
     say("Note: zones are projected but first raster is geographic (longlat). Check intended CRS mix.")
   }
-  
+
+  # added -- did not check on 2025-09-02
+  # drop Z/M if present (can trip exactextractr)
+  if (any(sf::st_is(z, c("POLYGON Z", "MULTIPOLYGON Z", "POLYGON M", "MULTIPOLYGON M",
+                         "POLYGON ZM", "MULTIPOLYGON ZM")))) {
+    z <- sf::st_zm(z, drop = TRUE, what = "ZM")
+  }
+
+# added -- did not check on 2025-09-02
+  # ensure valid geometries (repair if needed)
+  if (!all(sf::st_is_valid(z))) {
+    if (!quiet) say("Found invalid geometries; repairing with st_make_valid().")
+    z <- sf::st_make_valid(z)
+  }
+
+  # added -- did not check on 2025-09-02
+  # ensure non-empty geometries
+  if (any(sf::st_is_empty(z$geom))) {
+    bad_n <- sum(sf::st_is_empty(z$geom))
+    stop(bad_n, " zone geometries are empty after normalization.")
+  }
+   
   return(z)
 }
