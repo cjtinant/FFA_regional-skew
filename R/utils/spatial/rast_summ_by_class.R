@@ -34,6 +34,10 @@
 # If a macrozone is ~95% one class, the “dominant” label is very representative;
 # if it’s ~55%, that’s basically a coin toss.
 #
+# The top_n_categories() returns top-N classes and their proportions per zone,
+# using area-weighted counts from category_counts() to explore heterogeneous
+# zones where a single dominant category is not representative.
+#
 # See individual helper functions for User Inputs and Function Outputs:
 #
 # ==============================================================================
