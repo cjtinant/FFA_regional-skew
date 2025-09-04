@@ -18,8 +18,9 @@
 #                  Add a single counts pass for class_fraction() to avoid multiple
 #                  passes (e.g., NLCD developed/forest/grass/cultivated). See
 #                  below for a use case.
-# - 2025-09-03     Added dominance fraction to the dominant (modal) category by
-#                  zone using area weights function, i.e. `dominant_category()`
+# - 2025-09-04     Added dominance fraction to the dominant (modal) category by
+#                  zone using area weights function, i.e. `dominant_category()`;
+#                  Added a function to get top n Köppen classes per macrozone
 #
 # Discussion:
 # The helper functions are thin wrappers for {exactextractr}. They define the
@@ -79,6 +80,59 @@ dominant_category <- function(r, zones, id_col = "macro_id") {
   tibble::tibble(!!id_col := zones[[id_col]]) %>%
     dplyr::bind_cols(dom)
 }
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# # Get top 2 Köppen classes per macrozone
+# top2 <- top_n_categories(r_koppen, z_koppen_sf, n = 2, id_col = "macro_id")
+# 
+# top2
+# # A tibble like:
+# #   macro_id  rank  value  prop
+# #       1       1      7  0.71
+# #       1       2     11  0.23
+# #       2       1      7  0.56
+# #       2       2     14  0.33
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Top-N categories per zone with proportions
+#'
+#' @param r A single-band categorical `terra::SpatRaster`.
+#' @param zones `sf` polygons (same CRS as `r`) or `SpatVector`.
+#' @param n Number of top classes to return (default 2).
+#' @param id_col Name of the identifier column in `zones`.
+#'
+#' @return Tibble with columns: `id_col`, `rank`, `value`, `prop`.
+#'         One row per class per zone (up to `n` per zone).
+#' @export
+top_n_categories <- function(r, zones, n = 2, id_col = "macro_id") {
+  zones_sf <- .ensure_sf_polygons(zones)
+  .assert_single_band(r)
+  .assert_has_id(zones_sf, id_col)
+  
+  # Get weighted counts (area fractions not yet normalized)
+  counts_long <- category_counts(r, zones_sf, id_col)
+  
+  # Normalize to proportions
+  counts_long <- counts_long %>%
+    dplyr::group_by(.data[[id_col]]) %>%
+    dplyr::mutate(prop = area / sum(area)) %>%
+    dplyr::ungroup()
+  
+  # Slice top-n per zone
+  topn <- counts_long %>%
+    dplyr::group_by(.data[[id_col]]) %>%
+    dplyr::slice_max(order_by = prop, n = n, with_ties = FALSE) %>%
+    dplyr::arrange(.data[[id_col]], dplyr::desc(prop)) %>%
+    dplyr::mutate(rank = dplyr::row_number(), .by = !!rlang::sym(id_col)) %>%
+    dplyr::ungroup()
+  
+  topn %>%
+    dplyr::select(!!id_col, rank, value, prop)
+}
+
+
+
+
+
 
 
 #' Area-weighted counts by category per zone (long table)
