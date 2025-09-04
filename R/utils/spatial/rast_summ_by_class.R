@@ -18,34 +18,36 @@
 #                  Add a single counts pass for class_fraction() to avoid multiple
 #                  passes (e.g., NLCD developed/forest/grass/cultivated). See
 #                  below for a use case.
+# - 2025-09-03     Added dominance fraction to the dominant (modal) category by
+#                  zone using area weights function, i.e. `dominant_category()`
 #
 # Discussion:
-# The helper functions are thin wrappers for {exactextractr}. The helpers define
-# the project’s API (id column first, tidy tibbles, naming), while delegating
-# calculation to a well-maintained library.{exactextractr} streams efficiently;
-# and helpers can compute multiple outputs from one pass if needed (see below).
-# Additionally, {exactextractr} is able to reliably handle edge cases such as:
-# partial pixels, holes, multipart polygons, antimeridian weirdness, etc.
+# The helper functions are thin wrappers for {exactextractr}. They define the
+# project’s API (id column first, tidy tibbles, naming), can be used to
+# compute multiple outputs from one pass, e.g. NDVI classes, and to return
+# the dominance fraction. Calculation is delegated to {exactextractr}, which is
+# able to reliably handle edge cases such as:partial pixels, holes, multipart
+# polygons, antimeridian weirdness, etc.
 #
-# User Inputs:
-# - Depends on an existing align_zones_to(zones, r) helper.
-# - Works with terra SpatRaster + sf/SpatVector polygons.
+# Dominance fraction is a clean way to measure confidence in the modal class.
+# If a macrozone is ~95% one class, the “dominant” label is very representative;
+# if it’s ~55%, that’s basically a coin toss.
 #
-# Function Outputs:
-# - Returns tibbles with id_col as the first column.
-# Notes:
+# See individual helper functions for User Inputs and Function Outputs:
 #
 # ==============================================================================
 
-#' Dominant (modal) category by zone using area weights
+#' Dominant (modal) category by zone using area weights 
 #'
 #' @param r A single-band categorical `terra::SpatRaster`.
-#' @param zones `sf` polygons (same CRS as `r`).
+#' @param zones `sf` polygons (same CRS as `r`) or `SpatVector`.
 #' @param id_col Name of the identifier column in `zones`.
 #'
-#' @return Tibble with columns: `id_col`, `.dominant` (integer class code).
+#' @return Tibble with columns:
+#'   - `id_col`      : zone identifier
+#'   - `.dominant`   : integer class code of the weighted mode
+#'   - `.dom_frac`   : dominance fraction in [0,1] = (area of modal class) / (area of all classes)
 #' @export
-# Robust dominant class using the per-polygon data.frame from exactextractr
 dominant_category <- function(r, zones, id_col = "macro_id") {
   if (terra::nlyr(r) != 1) r <- r[[1]]
   if (inherits(zones, "SpatVector")) zones <- sf::st_as_sf(zones)
@@ -53,20 +55,31 @@ dominant_category <- function(r, zones, id_col = "macro_id") {
   
   dfs <- exactextractr::exact_extract(r, zones, progress = FALSE)
   
-  dom_vals <- purrr::map_int(dfs, function(df) {
-    if (!nrow(df)) return(NA_integer_)
+  dom <- purrr::map_dfr(dfs, function(df) {
+    if (!nrow(df)) return(tibble::tibble(.dominant = NA_integer_, .dom_frac = NA_real_))
+    
     v <- df[[1]]
-    w <- df$coverage_fraction %||% rep(1, length(v))  # safety
-    # normalize
+    w <- if (!is.null(df$coverage_fraction)) df$coverage_fraction else rep(1, length(v))
+    
+    # normalize inputs
     if (is.factor(v)) v <- as.integer(v)
     ok <- !is.na(v) & !is.na(w)
-    if (!any(ok)) return(NA_integer_)
+    if (!any(ok)) return(tibble::tibble(.dominant = NA_integer_, .dom_frac = NA_real_))
+    
     sums <- tapply(w[ok], v[ok], sum)
-    as.integer(names(which.max(sums)))
+    if (length(sums) == 0 || sum(sums) <= 0) {
+      return(tibble::tibble(.dominant = NA_integer_, .dom_frac = NA_real_))
+    }
+    max_class <- as.integer(names(which.max(sums)))
+    dom_frac  <- as.numeric(max(sums) / sum(sums))
+    
+    tibble::tibble(.dominant = max_class, .dom_frac = dom_frac)
   })
   
-  tibble::tibble(!!id_col := zones[[id_col]], .dominant = dom_vals)
+  tibble::tibble(!!id_col := zones[[id_col]]) %>%
+    dplyr::bind_cols(dom)
 }
+
 
 #' Area-weighted counts by category per zone (long table)
 #'
@@ -142,27 +155,23 @@ class_fraction <- function(r, zones, classes,
 #   nlcd_frac_forest     = 41:43,
 #   nlcd_frac_grassland  = 71,
 #   nlcd_frac_cultivated = 81:82
-#   )
-#
-# nlcd_tbl <- class_fractions_multi(r_nlcd, zones_aligned_sf, nlcd_groups,
-#                                   id_col = "macro_id")
 
 class_fractions_multi <- function(r, zones, groups, id_col = "macro_id") {
   # `groups` = named list, e.g. list(dev = 21:24, forest = 41:43, grass = 71,
   #                                  cult = 81:82)
   counts_long <- category_counts(r, zones, id_col) # value, area per zone
-  totals <- counts_long |>
-    dplyr::group_by(.data[[id_col]]) |>
+  totals <- counts_long %>%
+    dplyr::group_by(.data[[id_col]]) %>%
     dplyr::summarise(area_tot = sum(area), .groups = "drop")
   fracs <- purrr::imap_dfr(groups, function(cls, nm) {
-    counts_long |>
-      dplyr::filter(value %in% cls) |>
-      dplyr::group_by(.data[[id_col]]) |>
-      dplyr::summarise(area_grp = sum(area), .groups = "drop") |>
-      dplyr::right_join(totals, by = id_col) |>
-      dplyr::mutate("{nm}" := dplyr::if_else(area_tot > 0, area_grp / area_tot, NA_real_)) |>
+    counts_long %>%
+      dplyr::filter(value %in% cls) %>%
+      dplyr::group_by(.data[[id_col]]) %>%
+      dplyr::summarise(area_grp = sum(area), .groups = "drop") %>%
+      dplyr::right_join(totals, by = id_col) %>%
+      dplyr::mutate("{nm}" := dplyr::if_else(area_tot > 0, area_grp / area_tot, NA_real_)) %>%
       dplyr::select(all_of(id_col), dplyr::all_of(nm))
-  }) |>
+  }) %>%
     purrr::reduce(~ dplyr::full_join(.x, .y, by = id_col))
   fracs[order(fracs[[id_col]]), , drop = FALSE]
 }
