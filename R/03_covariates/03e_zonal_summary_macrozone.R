@@ -1,17 +1,18 @@
 # ==============================================================================
-# Script Name:      03e_calculate_macrozone_stats.R
+# Script Name:      03e_zonal_summary_macrozone.R
 # Purpose:          Calculate covariate stats at the macrozone scale.
 # Author:           Charles Jason Tinant with ChatGPT 5 thinking
 # Date Created:     2025-09-01
-# Last Updated:     2025-09-03
+# Last Updated:     2025-09-04
 #
 # Changelog:
-# - 2025-09-01  Initialize script
-# - 2025-09-02  Add zonal summaries (KG, PHZM, NLCD, slope, gage elev);
-#               write CSV/GPKG.
-# - 2025-09-03  Wire in assert_inputs_ok(); lazy-load rasters; minor hardening;
-#               Add first attempt at uniform code to prep and align, summarise,
-#               and add metadata to result.
+# - 2025-09-01     Initialize script
+# - 2025-09-02     Add zonal summaries (KG, PHZM, NLCD, slope, gage elev);
+#                  write CSV/GPKG.
+# - 2025-09-03     Wire in assert_inputs_ok(); lazy-load rasters; minor hardening;
+#                  Add first attempt at uniform code to prep and align, summarise,
+#                  and add metadata to result.
+# - 2025-09-04     Rename script
 #
 # Generalized Workflow:
 # 1. Load rasters and zones.
@@ -60,10 +61,10 @@
 # Related Files:
 # - Metadata to join from /docs/metadata:
 #   - Koppen-Geiger class lut: /look_up_tables/koppen-geiger_class_lut.csv
+#   - 03d_make_macrozone_layer.R
 #
 # - Documentation files to check/update
 #   - CHANGELOG.md
-#   - 03d_make_macrozone_layer.R
 #   - output/figs/macrozones_map.png
 #   - data/log_README.pdf
 #   - R/log_README.pdf
