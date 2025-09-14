@@ -197,6 +197,164 @@ git push origin v0.3-refactor
 
 ---
 
+## Documenting Changes
+
+### Tiny “definition of done” (per change)
+
+- CHANGELOG updated ✅
+- If scripts added/renamed → R/README + R/log updated ✅
+- If data outputs changed → data/log updated ✅
+- Notes/dev log has decisions/issues ✅
+- Milestone updated if boundary crossed ✅
+
+### What to include (per file)
+
+**CHANGELOG.md (always when behavior/output changes)**
+
+- **Entry format:** YYYY-MM-DD [Added|Changed|Fixed|Removed]
+- **Scope bullets:** what changed (scripts, helpers, fields, outputs), why,
+and any breaking changes.
+- **Version bump/tag (optional):** v0.8.6 → v0.8.7.
+- **Example:**
+  - Added: top_n_categories(); dominant_category() now returns .dom_frac.
+  - Changed: 03e_* now computes NLCD fractions via single-pass counts.
+  - Outputs: macrozones_covars.csv adds kg_dom_frac.
+
+### R/README.pdf (script map & how-to run)
+
+Update when scripts are added/renamed or run order/inputs change.
+
+- **Contents:**
+  - Pipeline graph (01b → 01d → 03d → 03e …).
+  - For each script: purpose, inputs (paths), outputs, key flags (CRS, seed).
+  - Quickstart block: “to reproduce 03e: …”.
+  - Dependencies/version pinning highlights (renv status).
+- **Checklist:** script names current; here() paths; expected runtime;
+memory notes.
+
+### R/log_README.pdf (dev log for codebase)
+
+Update for refactors, file moves, helper APIs.
+
+- **Contents:**
+  - “What moved/renamed” table (from → to).
+  - Helper APIs (function signatures) and changes.
+  - Known tech debt / TODOs with owner and target date.
+
+- **Checklist:**  deprecations called out; search/replace hints;
+cross-refs to commits.
+
+### data/log_README.pdf (data products ledger)
+
+Update when any data path/format/fields change.
+
+- **Contents:**
+  - Dataset inventory: filename, description, schema (columns + types + units),
+  CRS, spatial extent.
+  - Provenance: script + commit SHA that produced it, source rasters/versions.
+  - QA notes: row counts, NA rates, checksum (optional).
+
+- **Checklist:**  CRS = EPSG:4269 unless noted; join keys (e.g., macro_id)
+explicit; units (e.g., slope %).
+
+### notes/script-notes_and_developer-log.pdf (narrative log)
+
+Update when decisions/assumptions/bugs occur.
+
+- **Contents:**
+  - “Decision” entries (what/why/alternatives).
+  - “Issue → Fix” entries with minimal repro and commit SHA.
+  - Open questions & next steps.
+
+- **Checklist:**  keep concise; link to PRs; include figures/screenshots if helpful.
+
+### milestone_03_prepare_covariates.pdf (phase summary)
+
+Update only at phase boundaries (e.g., 03 done or revised).
+
+- **Contents:**
+  - Objective recap + scope.
+  - Final pipeline diagram for the phase.
+  - Deliverables table (files, sizes, schemas).
+  - Validation summary (spot checks, maps, stats).
+  - Limitations/outstanding tasks → pointers to next milestone.
+
+- **Checklist:**  executive-level clarity; reproducibility statement; date stamped.
+
+### When in the workflow to update
+
+**Before commit:** jot quick bullets in notes/script-notes_... while context is fresh.
+
+**At commit:** update CHANGELOG.md (and R/log_README.pdf if code structure changed).
+
+**After successful run/generation:** update data/log_README.pdf with schemas
+and paths; if the phase is done, refresh the milestone PDF and R/README.pdf.
+
+
+
+
+### Flow Chart (when to update what)
+``` text
+Start
+  |
+  v
+Make code/data change? -------------- No --> Stop
+  |
+  Yes
+  |
+  v
+Does it change behavior, outputs,
+or user-facing UX (filenames, cols,
+ranges, CRS, seed, params)? 
+  |                         |
+  | Yes                     | No (minor refactor only)
+  v                         v
+Update CHANGELOG.md         Update R/log_README.pdf (if code layout moved)
+  |
+  v
+Did you add/rename scripts, utils,
+or change run order/inputs/outputs?
+  |                         |
+  | Yes                     | No
+  v                         v
+Update R/README.pdf         Skip
+(and R/log_README.pdf)
+  |
+  v
+Did you change data products,
+paths, formats, or metadata?
+  |                         |
+  | Yes                     | No
+  v                         v
+Update data/log_README.pdf  Skip
+  |
+  v
+Did you change analysis plan,
+rationale, or encountered issues
+worth remembering?
+  |                         |
+  | Yes                     | No
+  v                         v
+Update notes/script-notes_
+and_developer-log.pdf       Skip
+  |
+  v
+Is a milestone completed or a
+phase boundary crossed (e.g., 03
+covariates ready)?
+  |                         |
+  | Yes                     | No
+  v                         v
+Update milestone_03_prepare_
+covariates.pdf              Stop
+  |
+  v
+Stop
+
+```
+
+---
+
 ## 📓 CHANGELOG Format (Keep a Changelog)
 
 - Use a CHANGELOG.md file at the root of your project.
