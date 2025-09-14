@@ -401,18 +401,121 @@ Additionally, polygons less than 100 square kilometers were merged with nearest
 neighbors.
 
 Macrozones are generalized following aggregation to remove polygons smaller than
-1,000 sq-km from the analysis.
+1,000 sq-km or containing fewer than 30 stream gages were merged with the most
+ecologically similar adjacent Level III Ecoregion. The idea behind generalization
+is to preserve regional coherence while improving the gage count and spatial
+contiguity required for reliable skew estimation. 
+
+CHECK THIS
+The merging process followed
+a hierarchical decision rule:
+
+-   Primary criterion: adjacency with a unit sharing the same Level II ecoregion
+classification
+
+-   Secondary criterion: ecological similarity, evaluated using Euclidean 
+distance in a multivariate space defined by:
+
+-   Land cover composition (e.g., cropland, forest, urban fractions)
+
+-   Terrain metrics (mean and standard deviation of slope)
+
+-   Vegetation seasonality (NDVI amplitude and timing of peak greenness)
 
 ---
 
-# 03d_covar_macro_zonal_summary.R
+# 03e_ zonal summaries
 
-Macrozones are used to calculate zonal summaries for climate patterns, land cover,
-and topography. Climate pattern summaries include dominant Koppen-Geiger climate
+## Overview
+
+Zonal summaries are used to calculate macrozone-scale patterns in climate, land
+cover, and topography. 
+
+The climate pattern summaries indicate broad-scale climate context, e.g. humid
+continental vs. semi-arid, cold hardiness diversity, and cold tolerance regimes
+based on minimum winter temperatures. 
+
+The scripts call utility scripts prior to calculating
+zonal summaries. 
+
+## Naming convention
+
+| Short Name         | Dataset              | Summary Type | Variable Name      |
+|:------------------:|:--------------------:|:------------:|:------------------:|
+| Climate Zone       | Koppen-Geiger        | Dominant     | `kopp_geig_dom`    |
+| PHZM Zone Count    | Plant Hardiness Zone | Count        | `phzm_cnt`         |
+| PHZM Zone Dominant | Plant Hardiness Zone | Dominant     | `phzm_dom`         |
+| Cropland Fraction  | NLCD 2016 Land Cover | Fraction     | `nlcd_crppst_frac` |
+| Forest Fraction    | NLCD 2016 Land Cover | Fraction     | `nlcd_forst_frac`  |
+| Grassland Fraction | NLCD 2016 Land Cover | Fraction     | `nlcd_grass_frac`  |
+| Urban Fraction     | NLCD 2016 Land Cover | Fraction     | `nlcd_urban_frac`  |
+| Mean Slope         | NED Slope            | Mean         | `ned_slp_mean`     |
+| Median Slope       | NED Slope            | Median       | `ned_slp_med`      |
+| Altitude Zone      | NED Elevation        | Mean         | `ned_elev_mean`    |
+
+## Generalized Workflow Prior to Performing a Zonal Summary
+
+First, run a pre-flight check with `utils/spatial/assert_inputs_ok.R` that
+performs the following:
+ - Verify that rasters can be opened.
+ - Enforce CRS and polygonal geometry.
+ - Standardize the geometry column as `geom`.
+ - Guarantees unique, non-NA IDs.
+ - Optionally reproject to the project CRS: NAD83 / EPSG:4269.
+
+Second, prep and align raster and zone `utils/spatial/prep_and_align.R`. The
+function performs the following:
+ - Ensures zones are valid (optional), converts to SpatVector, and reprojects
+   zones to the raster’s CRS (no raster warping).
+ - Returns a SpatVector (polygon) in the same CRS as the raster.
+ - Prep the raster to get zones in the raster CRS.
+ - Optionally, crop the raster to the zones bbox and mask it to polygon shapes.
+
+This returns a list that needs to be extracted then converted from a SpatVector
+to an sf object prior to {exactextractor} in `utils/spatial/rast_summ_by_class.R`
+
+## 03e_macrozone_fix_join_key.R
+Fix join key to fix an issue with Tallgrass Prairie and provide some ordinal
+order.
+
+| region_name                  | macro_id |
+|:----------------------------:|:--------:|
+| Shortgrass-Steppe            |    1     |
+| Northern Mixed-Grass Prairie |    2     |
+| Central Mixed-Grass Prairie  |    3     |
+| Southern Mixed-Grass Prairie |    4     |
+| Tallgrass Prairie            |    5     |
+
+## 03f_covar_macro_koppen_summary.R
+The original Koppen-Geiger summary was a single dominant class. After an initial
+analysis, the zonal summary was expanded to the top n classes.
+
+Table of e Koppen n values -- recheck
+min_frac  n-vals   max_unexpl
+# #    NA       
+# #    0.01              0.212
+# #    0.05      0.212
+# #    0.1       0.299
+# #    0.15      0.441
+# #    0.2       0.441
+# #    0.33      0.441
+# #    0.5       0.441
+
+
+Climate pattern summaries include dominant Koppen-Geiger climate
+class and dominant and count of plant hardiness. 
+
+
+## 03g_covar_macro_phzm_summary.R
+
+#
+Climate pattern summaries include dominant Koppen-Geiger climate
 class and dominant and count of plant hardiness. The climate pattern summaries
 indicate broad-scale climate context, e.g. humid continental vs. semi-arid, cold
 hardiness diversity, and cold tolerance regimes based on minimum winter
 temperatures.
+
+
 
 Land cover proportion summaries include the fraction of cropland, forest,
 grassland, and urban land. Fraction of cropland indicates anthropogenic land use
@@ -431,20 +534,7 @@ robust to outliers than the mean, and is useful for evaluating runoff tendency.
 Mean altitude describes the elevation regime, which influences climate, snow
 duration, and runoff seasonality.
 
-### Naming convention 
 
-| Short Name           | Sataset              | Summary Type | Variable Name    |
-|:--------------------:|:--------------------:|:------------:|:----------------:|
-| Climate Zone         | Koppen-Geiger        | Dominant     | kopp_geig_dom    |
-| PHZM Zone Count      | Plant Hardiness Zone | Count        | phzm_cnt         |
-| PHZM Zone (Dominant) | Plant Hardiness Zone | Dominant     | phzm_dom         |
-| Cropland Fraction    | NLCD 2016 Land Cover | Fraction     | nlcd_crppst_frac |
-| Forest Fraction      | NLCD 2016 Land Cover | Fraction     | nlcd_forst_frac  |
-| Grassland Fraction   | NLCD 2016 Land Cover | Fraction     | nlcd_grass_frac  |
-| Urban Fraction       | NLCD 2016 Land Cover | Fraction     | nlcd_urban_frac  |
-| Mean Slope           | NED Slope            | Mean         | ned_slp_mean     |
-| Median Slope         | NED Slope            | Median       | ned_slp_med      |
-| Altitude Zone        | NED Elevation        | Mean         | ned_elev_mean    |
 
 
 ### NLCD Classes
@@ -500,27 +590,6 @@ corn, soybeans, vegetables, tobacco, and cotton, and also perennial woody crops
 such as orchards and vineyards. Crop vegetation accounts for greater than 20% of
 total vegetation. This class also includes all land being actively tilled.
 
-# Check for later
-
-To ensure statistical robustness in regional analyses, polygons smaller than
-1,000 sq-km or containing fewer than 30 stream gages were merged with the most
-ecologically similar adjacent Level III Ecoregions. The merging process followed
-a hierarchical decision rule:
-
--   Primary criterion: adjacency with a unit sharing the same Level II ecoregion
-classification
-
--   Secondary criterion: ecological similarity, evaluated using Euclidean 
-distance in a multivariate space defined by:
-
--   Land cover composition (e.g., cropland, forest, urban fractions)
-
--   Terrain metrics (mean and standard deviation of slope)
-
--   Vegetation seasonality (NDVI amplitude and timing of peak greenness)
-
-This approach preserved regional coherence while improving the gage count and
-spatial contiguity required for reliable skew estimation.
 
 ---
 

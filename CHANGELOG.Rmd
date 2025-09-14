@@ -18,11 +18,31 @@ _This project strives to follow [Semantic Versioning](https://semver.org) and th
 
 <!--
 
+- Changed 03e_intersect_sites_macrozones.R` Koppen-Geiger dominant() now
+calculated with top_n_categories(); dominant_category() now returns .dom_frac.
+
+–Added: rast_summ_by_class.R top_n_categories() function
+
+### In Progress
+
+- `03e_intersect_sites_macrozones.R`
+
+- Changed 03e_intersect_sites_macrozones.R` now computes NLCD fractions via
+single-pass counts.
+
+### To Do
+
+- write a consistent template for @param documentation so R/utils functions
+clearly state accepted object types and constraints. That would make the utils
+folder more maintainable over time.
+
+-->
+
 ## [Untracked] -- 2025-08-14
 
 ## Untracked changes prior to v1.6.4
 
-## [v1.6.2] — 2025-08-13
+## [v1.6.3] — 2025-09-02
 
 ### Added
 
@@ -43,17 +63,21 @@ lt 30 gages.
 
 - Updated `\utils` folder structure to improve readability.
 
-### In Progress
+- Split 03e_intersect_sites_macrozones.R into multiple parts. The original
+script design was a single script, to perform all of the macro-scale zonal
+summaries. The script was split into parts by input rasters to reduce memory
+use, better manage metadata integration, and as each raster has unique edge-cases
+requiring different hardening approaches.
 
-- `03e_intersect_sites_macrozones.R`
+- 03e_covar_macrozone_fix_join_key.R
+- 03f_covar_macro_koppen_summary.R
+- 03g_covar_macro_phzm_summary.R
+- 03h_covar_macro_nlcd_summary.R
+- 03i_covar_macro_slope_summary.R
+- 03j_covar_macro_gage_summary.R
 
-### To Do
 
-- write a consistent template for @param documentation so R/utils functions
-clearly state accepted object types and constraints. That would make the utils
-folder more maintainable over time.
 
--->
 
 ## [v1.6.2] — 2025-08-13
 
