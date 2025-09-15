@@ -69,7 +69,6 @@ library(RColorBrewer)
 library(sf)
 library(tidyverse)
 library(units)
-#set.seed(42)
 
 # --- Load custom functions ---
 source(file.path(here(), "R", "utils", "spatial", "vector_helpers.R"))
