@@ -45,15 +45,13 @@
 #   raster:      data/processed/koppen_climate/koppen_geiger.tif
 #
 # Outputs:
-#                    (layer "macrozones_gp")
+#   data/covars/macro_koppen.csv -- table of dominant classes in each macrozone.
 #
 # Conventions: EPSG:4269, 'geom' active geometry, join key = macro_id
 #
 # Dependencies: here, sf, terra, tidyverse, exactextractr
 #
 # Related Files:
-# - Metadata to join from /docs/metadata:
-#   - Koppen-Geiger class lut: /look_up_tables/koppen-geiger_class_lut.csv
 #
 # - Documentation files to check/update
 #   - notes/script-notes_and_developer-log.pdf
@@ -96,7 +94,6 @@ meta_koppen <- read_csv(meta_koppen_path)
 zone_path <- here("data", "processed", "us_ecoregions", "macrozones_gp.gpkg")
 layer_name <- "macrozones_gp"
 
-# --- correct join key ---
 zones <- st_read(zone_path, layer = layer_name, quiet = TRUE)
 
 # ------------------------------------------------------------------------------
