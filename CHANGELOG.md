@@ -1,9 +1,15 @@
 Changelog
 ================
 CJ Tinant
-2025-08-29
+2025-09-15
 
 - [Changelog](#changelog)
+  - [\[Untracked\] – 2025-08-14](#untracked--2025-08-14)
+  - [Untracked changes prior to
+    v1.6.5](#untracked-changes-prior-to-v165)
+  - [\[v1.6.4\] — 2025-08-15](#v164--2025-08-15)
+  - [\[v1.6.3\] — 2025-08-14](#v163--2025-08-14)
+  - [\[v1.6.3\] — 2025-08-14](#v163--2025-08-14-1)
   - [\[v1.6.2\] — 2025-08-13](#v162--2025-08-13)
   - [\[v1.6.1\] — 2025-08-06](#v161--2025-08-06)
   - [\[v1.6.0\] — 2025-08-01](#v160--2025-08-01)
@@ -28,54 +34,143 @@ Changelog](https://keepachangelog.com/) format.*
 
 ------------------------------------------------------------------------
 
+## \[Untracked\] – 2025-08-14
+
+## Untracked changes prior to v1.6.5
+
+### Added:
+
+phzm_eval_quality() to score PHZM summaries, flag ambiguous polygons,
+and produce a quick QA map (alpha = dominance).
+
+### In Progress
+
+- update CHANGELOG.md and CHANGELOG.pdf
+- calculate zonal summaries of the phzm raster by macrozone.
+
 <!--
-&#10;
-&#10;
-## [Untracked]
-&#10;### In Progress -- 2025-08-14
-&#10;- Refactor 03d_make_macrozone_layer.R
-&#10;- Updated project README.Rmd to create a landing page.
-&#10;
-## Untracked changes prior to v1.6.2
-### Added
-&#10;- Added a README.Rmd for R/utils
-&#10;### Changed
-&#10;- Updated make_macrozone_layer script to identify small disjunct polygons by
-physiography and large unconnected macrozone polygons by location.
-&#10;- Updated utils folder structure to improve readability
+- `03e_intersect_sites_macrozones.R`
+&#10;- Changed 03e_intersect_sites_macrozones.R` now computes NLCD fractions via
+single-pass counts.
 &#10;### To Do
-- write a consistent template for your @param documentation so R/utils functions
+&#10;- write a consistent template for @param documentation so R/utils functions
 clearly state accepted object types and constraints. That would make the utils
 folder more maintainable over time.
-&#10;### Items of Note
-- This commit focuses on a bug fix for an issue with finalizing macrozones based
-on a minimum number of gages (n = 30) within a zone. Prior output of station skew
-saved as gpkg were saved as polygons, rather than as points.
-&#10;- ChatGPT upgrade to GPT-5 on 20250808 for cjt. The upgrade substantially affected
-the code style. GPT-5 outputted complex functions that did not run. Bug fixes
-were challenging, as the tasks related to geospatial analysis for which my prior
-experience is using ArcGIS or ArcGIS Pro.
-&#10;- Created a new ChatGPT project on 20250812 after asking ChatGPT 5 to summarise
-prior instructions for the new project.
-&#10;### Added
-- `03b_make_macrozone_lut.R` to create
-`data/processed/peakflow_gages/stations_covars.gpkg` and
-`data/processed/peakflow_gages/stations_covars.csv`
-&#10;### Changed
-- Updated station metadata to `covariate_metadata_v086.csv`. Changes were made
-to the station level and macroregional scale metadata values for `variable_names`,
-`description`, `short_name`, and `raster_subfolder`:`layer_name`
-- Renamed `03b_make_macrozone_lut.R` to `03c_make_macrozone_lut.R`
-- Renamed `03c_make_macrozone_layer.R` to `03c_make_macrozone_layer.R`
--->
+&#10;-->
+
+## \[v1.6.4\] — 2025-08-15
+
+### Changed
+
+- Split `03e_intersect_sites_macrozones.R` into multiple scripts.
+- dominant_category() in `utils\rast_summ_by_class.R` now returns
+  .dom_frac, which is the fraction of the class is dominant.
+- Koppen-Geiger dominant in macrozones now calculated with
+  top_n_categories()
+
+### Added
+
+– rast_summ_by_class.R top_n_categories() function in
+`utils\rast_summ_by_class.R` -
+`R/03_covariates/03e_macrozone_fix_join_key.R` to fix naming and apply
+ordinal arrangement to `macro_id` field. -
+`R/03_covariates/03f/covar_macro_koppen_summary.R` to return top 3
+dominant values then simultaniously minimize the final number of
+observations of dominant climate within each macrozone and the percent
+unexplained in each macrozone. - `data/covars` folder to output zonal
+summary results - `data/covars/macro_koppen.csv` to summarise zonal
+summary of the dominant Koppen-Geiger climate classes in each macrozone.
+
+## \[v1.6.3\] — 2025-08-14
+
+### Added
+
+- Added a README.Rmd for R/utils
+
+- Added `style_guide_and_glossary.Rmd` to `/docs`. The document combines
+  the older style guide which defines project naming, formatting, and
+  style conventions with a dictionary of project-specific vocabulary.
+
+- Added `analysis_layout.Rmd` to `/docs`. Previously, the data was part
+  of the project README.Rmd\`.
+
+### Changed
+
+- Refactored project `README.Rmd` to create a landing page.
+
+- Refactored `03d_make_macrozone_layer.R` to aggregate macrozones
+  containing lt 30 gages.
+
+- Updated `\utils` folder structure to improve readability.
+
+- Split 03e_intersect_sites_macrozones.R into multiple parts. The
+  original script design was a single script, to perform all of the
+  macro-scale zonal summaries. The script was split into parts by input
+  rasters to reduce memory use, better manage metadata integration, and
+  as each raster has unique edge-cases requiring different hardening
+  approaches.
+
+- 03e_covar_macrozone_fix_join_key.R
+
+- 03f_covar_macro_koppen_summary.R
+
+- 03g_covar_macro_phzm_summary.R
+
+- 03h_covar_macro_nlcd_summary.R
+
+- 03i_covar_macro_slope_summary.R
+
+- 03j_covar_macro_gage_summary.R
+
+## \[v1.6.3\] — 2025-08-14
+
+### Added
+
+- Added a README.Rmd for R/utils
+
+- Added `style_guide_and_glossary.Rmd` to `/docs`. The document combines
+  the older style guide which defines project naming, formatting, and
+  style conventions with a dictionary of project-specific vocabulary.
+
+- Added `analysis_layout.Rmd` to `/docs`. Previously, the data was part
+  of the project README.Rmd\`.
+
+### Changed
+
+- Refactored project `README.Rmd` to create a landing page.
+
+- Refactored `03d_make_macrozone_layer.R` to aggregate macrozones
+  containing lt 30 gages.
+
+- Updated `\utils` folder structure to improve readability.
+
+### In Progress
+
+- `03e_intersect_sites_macrozones.R`
+
+### To Do
+
+- write a consistent template for @param documentation so R/utils
+  functions clearly state accepted object types and constraints. That
+  would make the utils folder more maintainable over time.
 
 ## \[v1.6.2\] — 2025-08-13
 
 ### Items of Note
 
+- Created a new ChatGPT project on 20250812 after asking ChatGPT 5 to
+  summarise prior instructions for the new project.
+
+- ChatGPT upgrade to GPT-5 on 20250808 for cjt. The upgrade
+  substantially affected the code style. GPT-5 outputted complex
+  functions that did not run. Bug fixes were challenging, as the tasks
+  related to geospatial analysis for which my prior experience is using
+  ArcGIS or ArcGIS Pro.
+
 - Rebuilt the station-level covariates as a point layer; this fixes
   downstream macrozone completeness checks that require ≥30 gages per
   zone.
+
 - Standardized CRS handling: inputs in geographic (NAD83/4269;
   NAD27/4267; WGS84/4326 detected) and persisted spatial outputs in
   EPSG:5070. CSV remains in table space with lat_dd/long_dd.
@@ -290,8 +385,6 @@ to the station level and macroregional scale metadata values for `variable_names
   spatial downloads
 - **Milestone 2.2**: Document QA of tabular and raster input files
 
-------------------------------------------------------------------------
-
 ## \[v1.4.8\] — 2025-07-22
 
 ### Added
@@ -450,8 +543,6 @@ to the station level and macroregional scale metadata values for `variable_names
 ### Fixed
 
 - Silenced UTF-8 encoding warnings in `.Rmd` rendering
-
-------------------------------------------------------------------------
 
 ## \[v1.2.0\] - 2025-05-08
 
