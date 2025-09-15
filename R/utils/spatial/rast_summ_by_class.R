@@ -438,7 +438,6 @@ category_counts <- function(
     dplyr::mutate(value = as.integer(value))
 }
 
-
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # top_n_categories(): top-N classes per polygon with proportions
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -478,14 +477,61 @@ top_n_categories <- function(r, zones, n = 3, id_col = "macro_id") {
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # phzm_summary(): compact PHZM zonal summary with auto-binning & labels
 # ------------------------------------------------------------------------------
-# Returns one row per zone with:
+# Arguments:
+#   r =                 Input raster. A single-band PHZM raster (SpatRaster from
+#                       {terra}). Should contain the numeric zone codes
+#                       (e.g., 5, 5.5, 6).
+# zones =               Input layer file with polygons to summarize. Polygon
+#                       zones (e.g., catchments, ecoregions, sites) over which
+#                       the summarize the raster.
+#                       Can be sf or SpatVector.
+# id_col =              The join key. The name of the unique identifier column
+#                       in zones that will be used to group results
+#                       (default = "macro_id").
+# min_prop =            Helps remove slivers. Minimum proportion threshold: drops
+#                       categories that cover less than this fraction of the
+#                       polygon.
+#                       e.g. a global floor applied up front during the summary.
+#                       Categories that cover less than this fraction of a
+#                       polygon are ignored entirely when computing proportions.
+#                       Example: if min_prop = 0.02, anything <2% of a zone just
+#                       never enters the results table.
+# drop_minor =          Helps remove slivers. If TRUE, removes very minor
+#                       categories per polygon (based on drop_thresh).
+# drop_thresh =         Helps remove slivers. Threshold for drop_minor: removes
+#                       categories that occupy less than some percent of a zone,
+#                       (0.05 is 5%).
+#                       A post-processing cleanup. All categories are first
+#                       tallied, then—if drop_minor = TRUE—categories with
+#                       proportion < drop_thresh are removed from the final output.
+#                       Example: if drop_thresh = 0.05, any categories <5% are
+#                       stripped out after the full table has been built.
+# auto_recode =         Controls value/label cleaning. If TRUE, the function will
+#                       automatically recode PHZM raster values (e.g., USDA
+#                       raster encodes 0.5 steps like 5a = 5.0, 5b = 5.5).
+# temp_units =          Controls value/label cleaning. Unit system for labeling
+#                       zones.
+#                         - "auto" = whatever USDA uses (F, half-zones).
+#                         - "C" or "F" = convert to Celsius or Fahrenheit
+#                           equivalents if metadata supports it.
+# force_recode =        Controls value/label cleaning. If TRUE, forces recoding
+#                       of raster values even if they look correct already.
+#                       Default is FALSE.
+# label_cols =          If TRUE, adds human-readable label columns to the output
+#                       (e.g., phzm_label = "Zone 5a").
+# label_style =         Controls labeling style:
+#                         - "short" = "5a".
+#                         - "long" = "Zone 5a".
+# return_halfzones =    Controls outputs. If TRUE, keeps half-zone detail
+#                       (e.g., 5a, 5b → 5.0, 5.5).
+#                       If FALSE, collapses to whole numbers.
+# return_raster =       Controls outputs. If TRUE, also returns the recoded PHZM
+#                       raster (useful for debugging or mapping). 
+#                       If FALSE, returns only the summary table.
+#
+# The table returns one row per zone with:
 #   id_col, phzm_dominant, phzm_dom_frac, phzm_class_count,
 #   phzm_top1, phzm_top1_prop, phzm_top2, phzm_top2_prop
-# Options:
-#   - force/auto recode of °C/°F surface to USDA half-zones (1..26)
-#   - convert codes to half-zone numbers (12.5, 13.0) and/or labels ("12b", "Zone 12b")
-#   - drop_minor: hide top-N entries below a min fraction (cleaner tables)
-#   - return_raster: also return the (re)coded raster for reproducibility
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 phzm_summary <- function(r, zones,
                          id_col           = "macro_id",
