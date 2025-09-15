@@ -488,18 +488,41 @@ order.
 
 ## 03f_covar_macro_koppen_summary.R
 The original Koppen-Geiger summary was a single dominant class. After an initial
-analysis, the zonal summary was expanded to the top n classes.
+analysis, the zonal summary was expanded to the top n classes. 
 
-Table of e Koppen n values -- recheck
-min_frac  n-vals   max_unexpl
-# #    NA       
-# #    0.01              0.212
-# #    0.05      0.212
-# #    0.1       0.299
-# #    0.15      0.441
-# #    0.2       0.441
-# #    0.33      0.441
-# #    0.5       0.441
+Used n = 3. The original result contains 15 results. This was filtered using
+min_frac to minimize the number of categories and the total amount unexplained.
+The final result contains nine climate types across five macrozone categories
+with 29.9% of the variance unexplained.
+
+| n-vals | max_tot_unexpl | min_frac | num_cat |
+|:------:|:--------------:|:--------:|:-------:|
+|  15    |    0.212       |  NA      |    5    |
+|  14    |    0.212       | 0.07     |    5    |
+|  13    |    0.212       | 0.08     |    5    |
+|  12    |    0.299       | 0.09     |    5    |
+|  11    |    0.299       | 0.11     |    5    |
+|  10    |    0.299       | 0.135    |    5    |
+|  09    |    0.299       | 0.14     |    5    |   <-- used this one
+|  08    |    0.441       | 0.15     |    5    |
+|  07    |    0.441       | 0.25     |    5    |
+|  06    |    0.441       | 0.35     |    5    |
+|  05    |    0.618       | 0.37     |    5    |
+
+Table of Results:
+Tallgrass Prairie            -- Dfa- Cold, no dry season, hot summer
+
+Northern Mixed-Grass Prairie -- Dfa - Cold, no dry season, hot summer
+Northern Mixed-Grass Prairie -- BSk - Arid, steppe, cold
+
+Central Mixed-Grass Prairie  -- Dfa - Cold, no dry season, hot summer
+Central Mixed-Grass Prairie  -- Cfa - Temperate, no dry season, hot summer
+
+Southern Mixed-Grass Prairie -- Cfa - Temperate, no dry season, hot summer
+Southern Mixed-Grass Prairie -- BSh - Arid, steppe, hot
+
+Shortgrass-Steppe            -- BSk - Arid, steppe, cold
+
 
 
 Climate pattern summaries include dominant Koppen-Geiger climate
