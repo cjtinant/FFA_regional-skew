@@ -487,13 +487,15 @@ order.
 | Tallgrass Prairie            |    5     |
 
 ## 03f_covar_macro_koppen_summary.R
-The original Koppen-Geiger summary was a single dominant class. After an initial
-analysis, the zonal summary was expanded to the top n classes. 
+Dominant Koppen-Geiger climate classes provides a broad-scale context on climate,
+e.g. humid continental vs. semi-arid.
 
-Used n = 3. The original result contains 15 results. This was filtered using
-min_frac to minimize the number of categories and the total amount unexplained.
-The final result contains nine climate types across five macrozone categories
-with 29.9% of the variance unexplained.
+The original Koppen-Geiger summary was a single dominant class. After an initial
+analysis, the zonal summary was expanded to the top n classes.  Used n = 3.
+The original result contains 15 results. This was filtered using min_frac to
+minimize the number of categories and the total amount unexplained. The final
+result contains nine climate types across five macrozone categories with 29.9%
+of the variance unexplained.
 
 **Table of Results of Koppen-Geiger Climate Zonal Summary:**
 | n-vals | max_tot_unexpl | min_frac | num_cat |
@@ -528,19 +530,23 @@ Shortgrass-Steppe            -- BSk - Arid, steppe, cold
 ---
 
 ## 03g_covar_macro_phzm_summary.R
-Climate pattern summaries include dominant Koppen-Geiger climate
-class and dominant and count of plant hardiness. 
+Outputs the top-3 dominant and count of phzm zones, and qa plots as a sanity
+check. The top-3 dominant and count of phzm zones indicates a broad-scale
+context on climate based on cold tolerance regimes based on minimum winter
+temperatures, and cold hardiness diversity. The QA plots phzm count vs area and
+phzm count vs latitude. The interpretation of the QA plots is as follows:
 
+Theb phzm class count reflects both latitudinal span and region size, but the
+orientation of the macrozone seems to be the stronger driver, although the
+graph is of the centroid of the latitude.: 
 
-#
-Climate pattern summaries include dominant Koppen-Geiger climate
-class and dominant and count of plant hardiness. The climate pattern summaries
-indicate broad-scale climate context, e.g. humid continental vs. semi-arid, cold
-hardiness diversity, and cold tolerance regimes based on minimum winter
-temperatures.
+_ The southern Mixed Grass Prairie (round) has very few PHZM classes. The class
+count increases in a northerly direction. However, this is because the zones
+become increasingly oriented in an elongated NS direction (Tallgrass), and
+ class count jumps. Area effect is layered in: Tallgrass Prairie has both high
+NS orientation, a huge area, and the highest class count (20).
 
-
-
+## 03h_covar_macro_landcover_summary.R
 Land cover proportion summaries include the fraction of cropland, forest,
 grassland, and urban land. Fraction of cropland indicates anthropogenic land use
 in agricultural regions associated with increased runoff, reduced infiltration,
