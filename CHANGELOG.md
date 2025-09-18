@@ -1,13 +1,11 @@
 Changelog
 ================
 CJ Tinant
-2025-09-15
+2025-09-18
 
 - [Changelog](#changelog)
-  - [\[Untracked\] – 2025-08-14](#untracked--2025-08-14)
-  - [Untracked changes prior to
-    v1.6.5](#untracked-changes-prior-to-v165)
-  - [\[v1.6.4\] — 2025-08-15](#v164--2025-08-15)
+  - [\[v1.6.5\] — 2025-09-18](#v165--2025-09-18)
+  - [\[v1.6.4\] — 2025-09-15](#v164--2025-09-15)
   - [\[v1.6.3\] — 2025-08-14](#v163--2025-08-14)
   - [\[v1.6.3\] — 2025-08-14](#v163--2025-08-14-1)
   - [\[v1.6.2\] — 2025-08-13](#v162--2025-08-13)
@@ -34,22 +32,12 @@ Changelog](https://keepachangelog.com/) format.*
 
 ------------------------------------------------------------------------
 
-## \[Untracked\] – 2025-08-14
-
-## Untracked changes prior to v1.6.5
-
-### Added:
-
-phzm_eval_quality() to score PHZM summaries, flag ambiguous polygons,
-and produce a quick QA map (alpha = dominance).
-
-### In Progress
-
-- update CHANGELOG.md and CHANGELOG.pdf
-- calculate zonal summaries of the phzm raster by macrozone.
-
 <!--
-- `03e_intersect_sites_macrozones.R`
+## [Untracked] -- 2025-09-18
+&#10;## Untracked changes prior to v1.6.6
+&#10;### Added:
+&#10;### In Progress
+&#10;- `03e_intersect_sites_macrozones.R`
 &#10;- Changed 03e_intersect_sites_macrozones.R` now computes NLCD fractions via
 single-pass counts.
 &#10;### To Do
@@ -58,7 +46,48 @@ clearly state accepted object types and constraints. That would make the utils
 folder more maintainable over time.
 &#10;-->
 
-## \[v1.6.4\] — 2025-08-15
+## \[v1.6.5\] — 2025-09-18
+
+### Added
+
+PHZM covariate summary workflow and outputs:
+
+R/03_covariates/03g_covar_macro_phzm_summary.R to compute summaries and
+generate QA plots. (03c302a)
+
+data/covars/macro_phzm.csv (PHZM summaries by macrozone). (559239c)
+
+QA plots: output/qa_checks/macro_phzm_vs_area_qa.png,
+output/qa_checks/macro_phzm_vs_lat_qa.png. (559239c)
+
+### Changed
+
+Breaking: macrozone join key now uses updated PHZM codes; update any
+joins/merges accordingly. (R/03_covariates/03e_macrozone_fix_join_key.R,
+54e3a38)
+
+PHZM summary now returns top 3 classes (updates in
+R/utils/spatial/rast_summ_by_class.R). (85fbfa5)
+
+QA checks expanded and covariate summary/plot generation updated.
+(03c302a)
+
+### Fixed / Build
+
+renv / R upgrade: migrate project to R 4.5.1, refresh renv.lock, and
+stabilize macOS installs. (renv.lock, renv/activate.R, 29e7641)
+
+### Removed
+
+Deprecated/unused PHZM quality eval script:
+R/utils/qa/phzm_eval_quality.R. (c365330)
+
+### Docs
+
+Script notes & developer log updated for PHZM workflow.
+(notes/script-notes_and_developer-log.Rmd, 022868d)
+
+## \[v1.6.4\] — 2025-09-15
 
 ### Changed
 
