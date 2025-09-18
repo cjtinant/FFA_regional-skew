@@ -23,12 +23,12 @@ layer_name <- "macrozones_gp"
 # --- correct join key ---
 zones <- st_read(zone_path, layer = layer_name, quiet = TRUE) %>%
   mutate(macro_id = case_when(
-    region_name == "Shortgrass-Steppe" ~ 1,
-    region_name == "Northern Mixed-Grass Prairie" ~ 2,
-    region_name == "Central Mixed-Grass Prairie" ~ 3,
-    region_name == "Southern Mixed-Grass Prairie" ~ 4,
     region_name == "Prairie Tallgrass Prairie" ~ 5,
     region_name == "Tallgrass Prairie" ~ 5,
+    region_name == "Northern Mixed-Grass Prairie" ~ 4,
+    region_name == "Central Mixed-Grass Prairie" ~ 3,
+    region_name == "Southern Mixed-Grass Prairie" ~ 2,
+    region_name == "Shortgrass-Steppe" ~ 1,
     TRUE ~ -9999
   )) %>%
   mutate(region_name = case_when(
@@ -44,4 +44,3 @@ st_write(zones,
          dsn = out_path,
          layer = "macrozones_gp",
          delete_layer = TRUE)
-
