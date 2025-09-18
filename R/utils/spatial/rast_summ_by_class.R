@@ -531,20 +531,25 @@ top_n_categories <- function(r, zones, n = 3, id_col = "macro_id") {
 #
 # The table returns one row per zone with:
 #   id_col, phzm_dominant, phzm_dom_frac, phzm_class_count,
-#   phzm_top1, phzm_top1_prop, phzm_top2, phzm_top2_prop
+#   phzm_top1, phzm_top1_prop,
+#   phzm_top2, phzm_top2_prop,
+#   phzm_top3, phzm_top3_prop
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-phzm_summary <- function(r, zones,
-                         id_col           = "macro_id",
-                         min_prop         = 0,
-                         auto_recode      = TRUE,
-                         temp_units       = c("auto","C","F"),
-                         force_recode     = FALSE,
-                         return_halfzones = TRUE,   # 12.0/12.5/...
-                         label_cols       = TRUE,   # *_label columns
-                         label_style      = c("short","long"),  # "12b" | "Zone 12b"
-                         drop_minor       = TRUE,   # hide top1/top2 < drop_thresh
-                         drop_thresh      = 0.05,
-                         return_raster    = FALSE) {
+phzm_summary <- function(
+    r,
+    zones,
+    id_col           = "macro_id",
+    min_prop         = 0,
+    auto_recode      = TRUE,
+    temp_units       = c("auto","C","F"),
+    force_recode     = FALSE,
+    return_halfzones = TRUE,   # 12.0/12.5/...
+    label_cols       = TRUE,   # *_label columns
+    label_style      = c("short","long"),  # "12b" | "Zone 12b"
+    drop_minor       = TRUE,   # hide top1/top2/top3 < drop_thresh
+    drop_thresh      = 0.05,
+    return_raster    = FALSE
+) {
   
   temp_units  <- match.arg(temp_units)
   label_style <- match.arg(label_style)
@@ -560,40 +565,52 @@ phzm_summary <- function(r, zones,
   if (isTRUE(auto_recode) || isTRUE(force_recode)) {
     needs_recode <- force_recode || !terra::is.int(r)
     
-    # If integer already, check if it's likely 1..26 half-zone codes
     if (!needs_recode) {
-      probe <- tryCatch(terra::values(r, n = 50000, na.rm = TRUE),
-                        error = function(e) numeric())
+      probe <- tryCatch(
+        terra::values(r, n = 50000, na.rm = TRUE),
+        error = function(e) numeric()
+      )
       if (length(probe)) {
         looks_halfzone_codes <- all(probe >= 1 & probe <= 26, na.rm = TRUE)
         needs_recode <- !looks_halfzone_codes
       }
     }
     
-    # Unit inference for °C vs °F
     rng <- tryCatch({
       m <- terra::global(r, fun = "range", na.rm = TRUE)
       as.numeric(m[1, ])
     }, error = function(e) c(NA_real_, NA_real_))
     
-    to_f <- switch(temp_units,
-                   C    = function(x) x * 9/5 + 32,
-                   F    = function(x) x,
-                   auto = { if (
-                     is.finite(
-                       rng[2]) && rng[2] < 60) function(x) x * 9/5 + 32 else function(x) x }
+    to_f <- switch(
+      temp_units,
+      C    = function(x) x * 9/5 + 32,
+      F    = function(x) x,
+      auto = {
+        if (is.finite(rng[2]) && rng[2] < 60) {
+          function(x) x * 9/5 + 32
+        } else {
+          function(x) x
+        }
+      }
     )
     
     if (needs_recode) {
-      r <- terra::app(r, fun = function(x) {
-        ifelse(is.na(x), NA_integer_, {
-          f  <- to_f(x)
-          z  <- floor((f + 60) / 10) + 1         # 1..13
-          z  <- pmax(1, pmin(13, z))
-          is_b <- ((f + 60) %% 10) >= 5
-          as.integer(z * 2 + as.integer(is_b))   # 1..26
-        })
-      })
+      r <- terra::app(
+        r,
+        fun = function(x) {
+          ifelse(
+            is.na(x),
+            NA_integer_,
+            {
+              f   <- to_f(x)
+              z   <- floor((f + 60) / 10) + 1        # 1..13
+              z   <- pmax(1, pmin(13, z))
+              isb <- ((f + 60) %% 10) >= 5
+              as.integer(z * 2 + as.integer(isb))    # 1..26
+            }
+          )
+        }
+      )
       recoded <- TRUE
       looks_halfzone_codes <- TRUE
     }
@@ -601,20 +618,31 @@ phzm_summary <- function(r, zones,
   
   # ---- 2) Summarizer over polygons ------------------------------------------
   summarizer <- function(df) {
-    v <- df[[1]]
-    w <- if (!is.null(df$coverage_fraction)) df$coverage_fraction else rep(1, length(v))
+    
+    v  <- df[[1]]
+    w  <- if (!is.null(df$coverage_fraction)) df$coverage_fraction else rep(1, length(v))
     ok <- !is.na(v) & !is.na(w)
+    
     if (!any(ok)) {
-      return(c(dom = NA_real_, dom_frac = NA_real_, class_count = 0,
-               top1 = NA_real_, top1_prop = NA_real_,
-               top2 = NA_real_, top2_prop = NA_real_))
+      return(c(
+        dom = NA_real_, dom_frac = NA_real_, class_count = 0,
+        top1 = NA_real_, top1_prop = NA_real_,
+        top2 = NA_real_, top2_prop = NA_real_,
+        top3 = NA_real_, top3_prop = NA_real_
+      ))
     }
+    
     if (is.factor(v)) v <- as.integer(v)
+    
     sums <- tapply(w[ok], v[ok], sum)
+    
     if (length(sums) == 0 || sum(sums) <= 0) {
-      return(c(dom = NA_real_, dom_frac = NA_real_, class_count = 0,
-               top1 = NA_real_, top1_prop = NA_real_,
-               top2 = NA_real_, top2_prop = NA_real_))
+      return(c(
+        dom = NA_real_, dom_frac = NA_real_, class_count = 0,
+        top1 = NA_real_, top1_prop = NA_real_,
+        top2 = NA_real_, top2_prop = NA_real_,
+        top3 = NA_real_, top3_prop = NA_real_
+      ))
     }
     
     tot    <- sum(sums)
@@ -628,86 +656,122 @@ phzm_summary <- function(r, zones,
     prps <- as.numeric(props[ord])
     
     keep <- prps >= min_prop
-    vals <- vals[keep]; prps <- prps[keep]
-    vals <- c(vals, NA_real_, NA_real_)[1:2]
-    prps <- c(prps, NA_real_, NA_real_)[1:2]
+    vals <- vals[keep]
+    prps <- prps[keep]
     
-    c(dom = dom_id, dom_frac = dom_fr, class_count = k,
+    # pad to top 3
+    vals <- c(vals, NA_real_, NA_real_, NA_real_)[1:3]
+    prps <- c(prps, NA_real_, NA_real_, NA_real_)[1:3]
+    
+    c(
+      dom = dom_id, dom_frac = dom_fr, class_count = k,
       top1 = vals[1], top1_prop = prps[1],
-      top2 = vals[2], top2_prop = prps[2])
+      top2 = vals[2], top2_prop = prps[2],
+      top3 = vals[3], top3_prop = prps[3]
+    )
   }
   
-  out <- exactextractr::exact_extract(r, zones, fun = summarizer,
-                                      progress = FALSE, summarize_df = TRUE)
+  out <- exactextractr::exact_extract(
+    r,
+    zones,
+    fun          = summarizer,
+    progress     = FALSE,
+    summarize_df = TRUE
+  )
   
   # ---- Normalize output shape/names (bullet-proof) ---------------------------
-  expected <- c("dom","dom_frac","class_count","top1","top1_prop","top2","top2_prop")
-  out_df <- tryCatch(as.data.frame(out, stringsAsFactors = FALSE), error = function(e) NULL)
+  expected <- c(
+    "dom","dom_frac","class_count",
+    "top1","top1_prop",
+    "top2","top2_prop",
+    "top3","top3_prop"
+  )
+  
+  out_df <- tryCatch(
+    as.data.frame(out, stringsAsFactors = FALSE),
+    error = function(e) NULL
+  )
+  
   if (is.null(out_df) || ncol(out_df) != length(expected)) {
     vec <- suppressWarnings(as.numeric(unlist(out)))
     nrow_guess <- if (length(vec)) length(vec) / length(expected) else 1
     nrow_guess <- if (is.finite(nrow_guess) && nrow_guess >= 1) nrow_guess else 1
-    out_df <- as.data.frame(matrix(vec, ncol = length(expected), byrow = TRUE),
-                            stringsAsFactors = FALSE)
+    out_df <- as.data.frame(
+      matrix(vec, ncol = length(expected), byrow = TRUE),
+      stringsAsFactors = FALSE
+    )
   }
+  
   colnames(out_df) <- expected
-  for (nm in expected) out_df[[nm]] <- suppressWarnings(as.numeric(out_df[[nm]]))
+  for (nm in expected) {
+    out_df[[nm]] <- suppressWarnings(as.numeric(out_df[[nm]]))
+  }
   
   # ---- 3) Optional: drop minor top-N (threshold) -----------------------------
   if (isTRUE(drop_minor)) {
     out_df$top1      <- ifelse(out_df$top1_prop >= drop_thresh, out_df$top1, NA_real_)
     out_df$top1_prop <- ifelse(is.na(out_df$top1), NA_real_, out_df$top1_prop)
+    
     out_df$top2      <- ifelse(out_df$top2_prop >= drop_thresh, out_df$top2, NA_real_)
     out_df$top2_prop <- ifelse(is.na(out_df$top2), NA_real_, out_df$top2_prop)
+    
+    out_df$top3      <- ifelse(out_df$top3_prop >= drop_thresh, out_df$top3, NA_real_)
+    out_df$top3_prop <- ifelse(is.na(out_df$top3), NA_real_, out_df$top3_prop)
   }
   
   # ---- 4) Convert classes to half-zone numbers (12.5) if we have codes -------
   vals_are_halves <- FALSE
   if (isTRUE(return_halfzones) && (recoded || looks_halfzone_codes)) {
+    
     halfify <- function(x) ifelse(is.na(x), NA_real_, x / 2)
+    
     out_df$dom  <- halfify(out_df$dom)
     out_df$top1 <- halfify(out_df$top1)
     out_df$top2 <- halfify(out_df$top2)
+    out_df$top3 <- halfify(out_df$top3)
+    
     vals_are_halves <- TRUE
   }
   
   # ---- 5) Human-readable labels (robust) ------------------------------------
   .label_from_codes <- function(code, style = c("short","long")) {
     style <- match.arg(style)
-    z  <- floor(code / 2)
-    is_b <- (code %% 2) == 1
-    lab <- paste0(z, ifelse(is_b, "b", "a"))
+    z     <- floor(code / 2)
+    is_b  <- (code %% 2) == 1
+    lab   <- paste0(z, ifelse(is_b, "b", "a"))
     if (style == "long") paste("Zone", lab) else lab
   }
+  
   .label_from_halves <- function(half, style = c("short","long")) {
     style <- match.arg(style)
-    z  <- floor(half)
-    is_b <- abs(half - z - 0.5) < 1e-8
-    lab <- paste0(z, ifelse(is_b, "b", "a"))
+    z     <- floor(half)
+    is_b  <- abs(half - z - 0.5) < 1e-8
+    lab   <- paste0(z, ifelse(is_b, "b", "a"))
     if (style == "long") paste("Zone", lab) else lab
   }
+  
   add_labels <- function(df_vals) {
     lab_fun <- if (vals_are_halves) .label_from_halves else .label_from_codes
     tibble::tibble(
-      phzm_dominant_label = ifelse(is.na(df_vals$dom),
-                                   NA_character_, lab_fun(df_vals$dom,  label_style)),
-      phzm_top1_label     = ifelse(is.na(df_vals$top1),
-                                   NA_character_, lab_fun(df_vals$top1, label_style)),
-      phzm_top2_label     = ifelse(is.na(df_vals$top2),
-                                   NA_character_, lab_fun(df_vals$top2, label_style))
+      phzm_dominant_label = ifelse(is.na(df_vals$dom),  NA_character_, lab_fun(df_vals$dom,  label_style)),
+      phzm_top1_label     = ifelse(is.na(df_vals$top1), NA_character_, lab_fun(df_vals$top1, label_style)),
+      phzm_top2_label     = ifelse(is.na(df_vals$top2), NA_character_, lab_fun(df_vals$top2, label_style)),
+      phzm_top3_label     = ifelse(is.na(df_vals$top3), NA_character_, lab_fun(df_vals$top3, label_style))
     )
   }
   
   # ---- 6) Build/return -------------------------------------------------------
   out_tbl <- tibble::tibble(
-    !!id_col := zones[[id_col]],
-    phzm_dominant     = out_df[["dom"]],
-    phzm_dom_frac     = out_df[["dom_frac"]],
-    phzm_class_count  = out_df[["class_count"]],
-    phzm_top1         = out_df[["top1"]],
-    phzm_top1_prop    = out_df[["top1_prop"]],
-    phzm_top2         = out_df[["top2"]],
-    phzm_top2_prop    = out_df[["top2_prop"]]
+    !!id_col             := zones[[id_col]],
+    phzm_dominant        = out_df[["dom"]],
+    phzm_dom_frac        = out_df[["dom_frac"]],
+    phzm_class_count     = out_df[["class_count"]],
+    phzm_top1            = out_df[["top1"]],
+    phzm_top1_prop       = out_df[["top1_prop"]],
+    phzm_top2            = out_df[["top2"]],
+    phzm_top2_prop       = out_df[["top2_prop"]],
+    phzm_top3            = out_df[["top3"]],
+    phzm_top3_prop       = out_df[["top3_prop"]]
   )
   
   if (isTRUE(label_cols)) {
@@ -720,6 +784,11 @@ phzm_summary <- function(r, zones,
     return(out_tbl)
   }
 }
+
+
+
+
+
 
 #' Area-weighted counts by category per zone (long table)
 #'
