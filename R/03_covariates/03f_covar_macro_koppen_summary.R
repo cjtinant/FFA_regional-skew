@@ -15,6 +15,7 @@
 # - 2025-09-04     Rename script; update Koppen zonal summary to top n classes
 # - 2025-09-14     Split original script into parts.
 # - 2025-09-15     Update metadata
+# - 2025-09-22     Add QA check on CRS
 #
 # Generalized Workflow:
 # 1. Load rasters and zones.
@@ -47,7 +48,10 @@
 # Outputs:
 #   data/covars/macro_koppen.csv -- table of dominant classes in each macrozone.
 #
-# Conventions: EPSG:4269, 'geom' active geometry, join key = macro_id
+# Conventions: 
+# - Common CRS for spatial analysis -- US Albers Equal Area = EPSG:5070
+# - Active geometry = 'geom'
+# - Join key = macro_id
 #
 # Dependencies: here, sf, terra, tidyverse, exactextractr
 #
@@ -106,7 +110,7 @@ zones <- assert_inputs_ok(
   zones          = zones,
   req_cols       = "macro_id",
   id_col         = "macro_id",
-  target_crs     = 4269,
+  target_crs     = 4269,               # <-- double-check thru outputs 
   enforce_unique = TRUE,
   quiet          = FALSE
 )
@@ -124,6 +128,12 @@ r_koppen    <- prep_koppen$r
 
 z_koppen_sf <- sf::st_as_sf(
   prep_koppen$zones); sf::st_geometry(z_koppen_sf) <- "geom"
+
+# --- perform QA ---
+qa_crs_r <- tibble(crs(r_koppen))
+
+qa_crs_z <- tibble(crs(r_koppen))
+
 
 # --- make a table of explained and unexplained ---
 #       note: check n, should be 3
@@ -147,7 +157,7 @@ tbl_koppen <- top_n_categories(r_koppen,
   arrange(macro_id)
 
 # ------------------------------------------------------------------------------
-# 4. Simplify results to maximize information gain
+# 5. Simplify results to maximize information gain
 # ------------------------------------------------------------------------------
 # Apply a minimum fraction threshold
 min_frac <- .14
@@ -164,11 +174,11 @@ tbl_koppen_filtered <- left_join(tbl_koppen_filtered, meta_koppen,
 )
 
 tbl_koppen_filtered <- left_join(zones, tbl_koppen_filtered,
-                        join_by(macro_id))
+                        join_by(macro_id)
+)
 
 # ------------------------------------------------------------------------------
 # 5. Export results
 # ------------------------------------------------------------------------------
 out_path <- here("data", "covars", "macro_koppen.csv")
 write_csv(tbl_koppen_filtered, out_path)
-
