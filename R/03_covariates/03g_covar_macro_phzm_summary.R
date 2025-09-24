@@ -4,7 +4,7 @@
 #                   macrozone scale
 # Author:           Charles Jason Tinant with ChatGPT 5 thinking
 # Date Created:     2025-09-01
-# Last Updated:     2025-09-15
+# Last Updated:     2025-09-24
 #
 # Changelog:
 # - 2025-09-01     Initialize script
@@ -16,7 +16,8 @@
 # - 2025-09-15     Split original script into parts; add qa check.
 # - 2025-09-15     Drop original QA check, add summary and visual QA as a
 #                  sanity check.
-# - 2025-09-18     Finalize QA check; output results; update header metadata.
+# - 2025-09-18     Continue QA check; output results; update header metadata.
+# - 2025-09-24     Add QA safety check for CRS.
 #
 # Generalized Workflow:
 # Steps 1-3 check `03f_covar_macro_koppen_summary.R`` for details.
@@ -61,7 +62,7 @@ suppressPackageStartupMessages({
 source(file.path(here(), "R", "utils", "spatial", "assert_inputs_ok.R"))
 source(file.path(here(), "R", "utils", "spatial", "prep_and_align.R"))
 source(file.path(here(), "R", "utils", "spatial", "rast_summ_by_class.R"))
-source(file.path(here(), "R", "utils", "qa", "phzm_eval_quality.R"))
+#source(file.path(here(), "R", "utils", "qa", "phzm_eval_quality.R"))
 
 # ------------------------------------------------------------------------------
 # 1. Load inputs
@@ -123,6 +124,10 @@ phzm_tbl <- left_join(zones, phzm_tbl,
   relocate(phzm_dominant, .after = phzm_top3_label) %>%
   relocate(phzm_dom_frac, .after = phzm_dominant) %>%
   relocate(phzm_prop_sum, .after = n_gages)
+
+# --- check crs one more time ---
+qa_crs_r <- crs(r_phzm)
+qa_crs_z <- crs(z_phzm_sf)
 
 # ------------------------------------------------------------------------------
 # 4. Make a visual QA check on PHZM by dominant class and count results
