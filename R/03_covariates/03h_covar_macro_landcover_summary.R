@@ -49,7 +49,6 @@
 #   - milestone_03_prepare_covariates.pdf
 #
 # Notes:
-# - NEXT STEPS add nlcd_groups
 #
 # ==============================================================================
 suppressPackageStartupMessages({
