@@ -94,32 +94,13 @@ layer_name <- "macrozones_gp"
 zones <- sf::st_read(zone_path, layer = layer_name, quiet = TRUE)
 
 # ------------------------------------------------------------------------------
-# 3) Preflight (CRS = NAD83 / EPSG:4269; geometry name = 'geom')
+# 3) Rebuild NLCD raster
 # ------------------------------------------------------------------------------
-# raster_paths <- c(nlcd = nlcd_path)
-# 
-# zones <- assert_inputs_ok(
-#   raster_paths   = raster_paths,
-#   zones          = zones,
-#   req_cols       = "macro_id",
-#   id_col         = "macro_id",
-#   target_crs     = 4269,
-#   enforce_unique = TRUE,
-#   quiet          = FALSE
-# )
-# sf::st_geometry(zones) <- "geom"
-
-
-# ------------------------------------------------------------------------------
-# 4-new) Prep raster (crop + mask for speed)
-# ------------------------------------------------------------------------------
-# Rebuild clean NLCD (5070) subset in R
+# --- Rebuild clean NLCD (5070) subset in R ---
 r0 <- terra::rast(nlcd_path)
 gp <- zones
-# r0 <- terra::rast(here("data/raw/nlcd/nlcd_2016_land_cover_l48_20210604.tif"))  # example
-# gp <- sf::st_read(here("data/processed/us_ecoregions/macrozones_gp.gpkg"), quiet = TRUE)
 
-# project AOI to raster CRS
+# --- project AOI to raster CRS ---
 gp_5070 <- sf::st_transform(gp, terra::crs(r0))
 
 # crop + mask with nearest-neighbor (no reproject of raster!)
