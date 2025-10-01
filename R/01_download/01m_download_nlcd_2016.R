@@ -8,26 +8,23 @@
 #                  move notes to `script-notes_and_developer-log`.
 # - 2025-07-28     Update script to use {here} consistently;
 #                  Run {styler}; Updated header metadata.
-# - 2025-10-10     Add CRS checks. Add sanity checks
-
-
-# UPDATE BELOW
+# - 2025-10-01     Add CRS checks. Add sanity checks
 #
-# Purpose: Download NLCD 2016 Land Cover raster clipped to Great Plains.
+# Purpose: Reproject, clip and mask NLCD 2016 Land Cover raster.
 #
 # Workflow Summary:
 # 1.   Manually download zipped archive and move to outdir (see notes)
-
-
 # 2.   Reproject raster to a common CRS (US Albers Equal Area – EPSG:5070)
-#        for spatial analysis.
-# 3.   Clip and mask raster
+#        for spatial analysis -- using appropriate QA checks
 # 4.   Export clipped and masked raster to ~data/processed.
 #
 # Input/Data URLs:
 # - Data are downloaded from https://www.mrlc.gov/data.
 # Output:
-# Clipped and masked raster projected to a common CRS
+# Clipped and masked raster projected to a common CRS as INT1U
+#   - data/processed/nlcd/nlcd_2016_gp_nn.tif
+#                  where `gp` stands for Great Plains and 
+#                        `nn` stands for nearest neighbor (resampling)
 #
 # Dependencies:
 # - dplyr:         Data manipulation
@@ -35,8 +32,6 @@
 # - sf             Support for simple feature access, a standardized way to
 #                  encode and analyze spatial vector data. Binds to 'GDAL'
 # - terra          Spatial data analysis-- vector and raster data operations
-#
-# Helper Functions:
 #
 # Related Milestone Reports:
 # - milestone_01_download_prepare_covariates.pdf
