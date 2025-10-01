@@ -3,15 +3,15 @@ title: "Script Notes and Developer Log"
 author: "C.J. Tinant"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
-  github_document:
-    toc: true
-    toc_depth: 2
   pdf_document:
     toc: true
     toc_depth: 2
     number_sections: true
     latex_engine: xelatex
     fig_caption: true
+  github_document:
+    toc: true
+    toc_depth: 2
 params:
   version: "v1.5.1"
 editor_options:
@@ -163,6 +163,30 @@ Next, the script applies the following functions:
   fall outside the exact shape.
 - mask() -- Replaces all raster cells outside the exact shape with NA. Keeps
   only values within the actual polygon boundary.
+  
+Added later: Paying attention to raster type is an important safeguard. I ran 
+into a  time-consuming issue when summarizing raster values for a categorical
+classification. The issue was that the raster was being automatically saved
+as floating point, FLT4S (see below). 
+
+The fix was to redownload the raster and ensure the raster is saved as INT1U.
+
+The range of NLCD raster integer values should be between 11 to 95, which
+represents different types of land cover (see NLCD LUT in /docs). Thus, saving
+as 'INT1U', an unsigned 8-bit integer raster, enforces that values stay
+integers, and it signals downstream tools not to expect fractions.
+
+The appropriate format for saving an 'INT1U' raster is as follows:
+  INT = integer
+  1 byte = 8 bits per pixel = e.g. 2^8 = 256, so values range from 0–255
+  U = unsigned (can’t store negatives)
+
+Other common terra datatypes are:
+  INT1U = unsigned 8-bit integer
+  INT2S = signed 16-bit integer (–32,768 to 32,767)
+  INT2U = unsigned 16-bit integer (0 to 65,535)
+  FLT4S = 32-bit float
+  FLT8S = 64-bit float (double precision)
 
 ---
 
@@ -345,7 +369,8 @@ and United States (US) Ecoregion nomenclature. For example, NA_L3CODE == 9.4.1
 refers to: 9 GREAT PLAINS dot 4 SOUTH CENTRAL SEMI-ARID PRAIRIES dot 1 HIGH PLAINS
 and correspond with US_L3CODE == 25 High Plains. The L4 designations follow the
 Level IV Ecoregion nomenclature (US_L4CODE), e.g. 25b the Rolling Sand Plains L4
-Ecoregion of the High Plains. Macrozones are delineated at the L3 Ecoregion scale, when possible. Regions with greater variability at the L3 Ecoregion scale, e.g.
+Ecoregion of the High Plains. Macrozones are delineated at the L3 Ecoregion scale,
+when possible. Regions with greater variability at the L3 Ecoregion scale, e.g.
 the central and southern Great Plains States , i.e. Colorado, Kansas, Oklahoma,
 New Mexico, and Texas, exhibit a one to many cardinality at the L3 scale, and are
 delineated at the Level IV (L4) Ecoregion scale. Vegetative composition described
@@ -367,7 +392,8 @@ virgatum (Switchgrass), Sorghastrum nutans (Indiangrass).
 The **Mixed-Grass Prairie Macrozone** generally marks a transition from mesic
 Tallgrass Prairie in the eastern Great Plains and xeric Shortgrass Steppe in the
 western portion of the region, and consist of the L2 ecoregions: West Central
-Semi-Arid Prairies, the Northwestern Glaciated Plains, central portions of the South Central Semiarid Prairies, eastern portions of the Central Great Plains,
+Semi-Arid Prairies, the Northwestern Glaciated Plains, central portions of the
+South Central Semiarid Prairies, eastern portions of the Central Great Plains,
 and uplands portions of the Tamaulipas-Texas Semi-Arid Plains. The macrozone is
 an area of moderate precipitation (typically 500–800 mm), and high interannual
 precipitation variability, variable soil textures, and a combination of
@@ -389,10 +415,7 @@ flood skew, driven by reduced canopy structure and limited ET buffering.
 
 ---
 
-START HERE
-
 ### 03d_make_macrozone_layer.R
-
 
 The Texas-Louisiana Coastal Plain was removed from the analysis prior to developing
 custom macrozones. The reasons for removal include a high degree of fragmentation,
@@ -546,6 +569,11 @@ become increasingly oriented in an elongated NS direction (Tallgrass), and
  class count jumps. Area effect is layered in: Tallgrass Prairie has both high
 NS orientation, a huge area, and the highest class count (20).
 
+## 03h_covar_make_NLCD_meta
+See docs/metadata/look_up_tables/nlcd_metadata_lut.csv")
+
+# CHECK INTO DAGS for looking into covars.
+
 ## 03h_covar_macro_landcover_summary.R
 Land cover proportion summaries include the fraction of cropland, forest,
 grassland, and urban land. Fraction of cropland indicates anthropogenic land use
@@ -563,9 +591,6 @@ flatter plains. Median slope is another measure of average slope, which is more
 robust to outliers than the mean, and is useful for evaluating runoff tendency.
 Mean altitude describes the elevation regime, which influences climate, snow
 duration, and runoff seasonality.
-
-
-
 
 ### NLCD Classes
 
@@ -619,7 +644,6 @@ vegetation.
 corn, soybeans, vegetables, tobacco, and cotton, and also perennial woody crops
 such as orchards and vineyards. Crop vegetation accounts for greater than 20% of
 total vegetation. This class also includes all land being actively tilled.
-
 
 ---
 

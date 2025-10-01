@@ -1,15 +1,25 @@
 Script Notes and Developer Log
 ================
 C.J. Tinant
-August 29, 2025
+October 01, 2025
 
 - [Overview](#overview)
 - [Project Notes (General)](#project-notes-general)
 - [TODO (General)](#todo-general)
 - [Future Ideas](#future-ideas)
 - [Notes by Script](#notes-by-script)
-- [03d_covar_macro_zonal_summary.R](#03d_covar_macro_zonal_summaryr)
-- [Check for later](#check-for-later)
+- [03e\_ zonal summaries](#03e_-zonal-summaries)
+  - [Overview](#overview-1)
+  - [Naming convention](#naming-convention)
+  - [Generalized Workflow Prior to Performing a Zonal
+    Summary](#generalized-workflow-prior-to-performing-a-zonal-summary)
+  - [03e_macrozone_fix_join_key.R](#03e_macrozone_fix_join_keyr)
+  - [03f_covar_macro_koppen_summary.R](#03f_covar_macro_koppen_summaryr)
+  - [03g_covar_macro_phzm_summary.R](#03g_covar_macro_phzm_summaryr)
+  - [03h_covar_make_NLCD_meta](#03h_covar_make_nlcd_meta)
+- [CHECK INTO DAGS for looking into
+  covars.](#check-into-dags-for-looking-into-covars)
+  - [03h_covar_macro_landcover_summary.R](#03h_covar_macro_landcover_summaryr)
   - [Zettelkasten-style markdown](#zettelkasten-style-markdown)
   - [Notes](#notes)
 
@@ -170,6 +180,29 @@ Next, the script applies the following functions:
 - mask() – Replaces all raster cells outside the exact shape with NA.
   Keeps only values within the actual polygon boundary.
 
+Added later: Paying attention to raster type is an important safeguard.
+I ran into a time-consuming issue when summarizing raster values for a
+categorical classification. The issue was that the raster was being
+automatically saved as floating point, FLT4S (see below).
+
+The fix was to redownload the raster and ensure the raster is saved as
+INT1U.
+
+The range of NLCD raster integer values should be between 11 to 95,
+which represents different types of land cover (see NLCD LUT in /docs).
+Thus, saving as ‘INT1U’, an unsigned 8-bit integer raster, enforces that
+values stay integers, and it signals downstream tools not to expect
+fractions.
+
+The appropriate format for saving an ‘INT1U’ raster is as follows: INT =
+integer 1 byte = 8 bits per pixel = e.g. 2^8 = 256, so values range from
+0–255 U = unsigned (can’t store negatives)
+
+Other common terra datatypes are: INT1U = unsigned 8-bit integer INT2S =
+signed 16-bit integer (–32,768 to 32,767) INT2U = unsigned 16-bit
+integer (0 to 65,535) FLT4S = 32-bit float FLT8S = 64-bit float (double
+precision)
+
 ------------------------------------------------------------------------
 
 ### 01n_download_ned.R
@@ -326,55 +359,75 @@ Metrics
 
 ------------------------------------------------------------------------
 
-### 03b_make_macrozone_layer.R
+### 03b_station_covars.R
 
-The macrozone scale is the coarsest resolution scale for the study. EPA
-Level III (L3) and IV (L4) Ecoregions are aggregated into three
-macrozones: Tallgrass Prairie, Mixed-Grass Prairie, and Shortgrass
-Prairie macrozones. When possible macrozones are delineated at the L3
-Ecoregion scale. Regions with greater variability at the L3 Ecoregion
-scale, e.g.the central and southern Great Plains States required
-delineation at the L4 Ecoregion scale. Vegetative composition described
-in State-level L4 descriptions by Omerick and others (see Related Files
-below) was the primary basis for macrozone classification.
+Station-level (Level 0) data include three location parameters:
+longitude, latitude and altitude, and one scale parameter: watershed
+area. Altitude and watershed area are reported in SI units and
+transformed to EPSG:5070.
 
-The general characteristics of each macrozone are as follows:
+The parameters for drainage area and contributing drainage area were
+coalesced prior to dropping gages with missing drainage area or altitude
+data.
+
+### 03c_make_macrozone_lut.R
+
+Macrozones, which represent the coarsest analysis scale for the project,
+are delineated along a composite gradient of moisture availability, soil
+development, and groundwater connectivity. These patterns are broadly
+reflected in three macrozones: Tallgrass Prairie, Mixed-Grass Prairie,
+and Shortgrass Steppe.
+
+Ecoregion Level designations follow both North American Ecoregion
+nomenclature and United States (US) Ecoregion nomenclature. For example,
+NA_L3CODE == 9.4.1 refers to: 9 GREAT PLAINS dot 4 SOUTH CENTRAL
+SEMI-ARID PRAIRIES dot 1 HIGH PLAINS and correspond with US_L3CODE == 25
+High Plains. The L4 designations follow the Level IV Ecoregion
+nomenclature (US_L4CODE), e.g. 25b the Rolling Sand Plains L4 Ecoregion
+of the High Plains. Macrozones are delineated at the L3 Ecoregion scale,
+when possible. Regions with greater variability at the L3 Ecoregion
+scale, e.g. the central and southern Great Plains States ,
+i.e. Colorado, Kansas, Oklahoma, New Mexico, and Texas, exhibit a one to
+many cardinality at the L3 scale, and are delineated at the Level IV
+(L4) Ecoregion scale. Vegetative composition described in State-level L4
+descriptions by Omerick and others (see Related Files below) was the
+primary basis for macrozone classification.
+
+The general characteristics of the custom macrozones are as follows:
 
 The **Tallgrass Prairie Macrozone** is located in the eastern portion of
 the Great Plains in the glacial till and loess plains of the Temperate
-Prairies (L2) Ecoregion, eastern portions of the South Central Semiarid
-Plains (L2) Ecoregion in the Flint Hills region, where a natural fire
+Prairies Ecoregion, eastern portions of the South Central Semiarid
+Plains Ecoregion in the Flint Hills region, where a natural fire
 frequency has maintained this tallgrass remnant community. The Tallgrass
-Prairie Macrozone is an area of higher annual precipitation (typically
+Prairie macrozone is an area of higher annual precipitation (typically
 \> 850 mm), deep, fertile soils with high water retention, and dense
 herbaceous vegetation, and extended baseflow. Characteristic species in
 the macrozone include: Andropogon gerardii (Big Bluestem), Panicum
 virgatum (Switchgrass), Sorghastrum nutans (Indiangrass).
 
 The **Mixed-Grass Prairie Macrozone** generally marks a transition from
-xeric shortgrass steppe to the west and mesic tallgrass prairie to the
-east in the West Central Semi-Arid Prairies (L2) Ecoregion, the
-Northwestern Glaciated Plains (L2) Ecoregion, central portions of the
-South Central Semiarid Prairies (L2) Ecoregion, eastern portions of the
-Central Great Plains (L2) Ecoregion, and uplands portions of the
-Tamaulipas- Texas Semi-Arid Plain (L2) Ecoregion. The Mixed-Grass
-Prairie Macrozone is an area of moderate precipitation (typically
-500–800 mm), and high interannual precipitation variability, variable
-soil textures, and a combination of event-driven flow and baseflow
-regimes. Vegetatively the macrozone is characterized by a mixture of
-tall, mid, and short grass species, including: Schizachyrium scoparium
-(Little Bluestem), Bouteloua curtipendula (sideoats grama), Bouteloua
-gracilis (sideoats grama), and Stipa sp. (Needlegrass species).
+mesic Tallgrass Prairie in the eastern Great Plains and xeric Shortgrass
+Steppe in the western portion of the region, and consist of the L2
+ecoregions: West Central Semi-Arid Prairies, the Northwestern Glaciated
+Plains, central portions of the South Central Semiarid Prairies, eastern
+portions of the Central Great Plains, and uplands portions of the
+Tamaulipas-Texas Semi-Arid Plains. The macrozone is an area of moderate
+precipitation (typically 500–800 mm), and high interannual precipitation
+variability, variable soil textures, and a combination of event-driven
+flow and baseflow regimes. The macrozone is characterized by a mixture
+of tall, mid, and short grass species, including: Schizachyrium
+scoparium (Little Bluestem), Bouteloua curtipendula (Sideoats Grama),
+Bouteloua gracilis (Blue Grama), and Stipa sp. (Needlegrass species).
 
 The **Shortgrass-Steppe Macrozone** is located in the western portion of
 the Great Plains in the western portions of the South Central Semiarid
-Prairies (L2) and Western High Plains (L2), Central Great Plains (L2),
-and lowlands portions of the Tamaulipas-Texas Semi-Arid Plain (L2) and
-Southwestern Tablelands (L2). The Shortgrass Steppe is characteried by
-low precipitation, sparse vegetation, shallow soils with limited
-infiltration, rapid surface runoff, a rapid-response, event- driven
-hydrologic regime, higher flood skew, driven by reduced canopy structure
-and limited ET buffering.
+Prairies, Western High Plains, Central Great Plains, and lowlands
+portions of the Tamaulipas-Texas Semi-Arid Plain and Southwestern
+Tablelands. The Shortgrass Steppe is characterized by low precipitation,
+sparse vegetation, shallow soils with limited infiltration, rapid
+surface runoff, a rapid-response, event-driven hydrologic regime, higher
+flood skew, driven by reduced canopy structure and limited ET buffering.
 
 ### Related Files:
 
@@ -382,13 +435,7 @@ and limited ET buffering.
 
 ------------------------------------------------------------------------
 
-### 03c_make_macrozone_layer.R
-
-Macrozones represent the coarsest analysis scale and are delineated
-along a composite gradient of moisture availability, soil development,
-and groundwater connectivity. These patterns are broadly reflected in
-three macrozones: Tallgrass Prairie, Mixed-Grass Prairie, and Shortgrass
-Steppe.
+### 03d_make_macrozone_layer.R
 
 The Texas-Louisiana Coastal Plain was removed from the analysis prior to
 developing custom macrozones. The reasons for removal include a high
@@ -397,18 +444,153 @@ e.g. coastal geography and barrier islands. Additionally, polygons less
 than 100 square kilometers were merged with nearest neighbors.
 
 Macrozones are generalized following aggregation to remove polygons
-smaller than 1,000 sq-km from the analysis.
+smaller than 1,000 sq-km or containing fewer than 30 stream gages were
+merged with the most ecologically similar adjacent Level III Ecoregion.
+The idea behind generalization is to preserve regional coherence while
+improving the gage count and spatial contiguity required for reliable
+skew estimation.
+
+CHECK THIS The merging process followed a hierarchical decision rule:
+
+- Primary criterion: adjacency with a unit sharing the same Level II
+  ecoregion classification
+
+- Secondary criterion: ecological similarity, evaluated using Euclidean
+  distance in a multivariate space defined by:
+
+- Land cover composition (e.g., cropland, forest, urban fractions)
+
+- Terrain metrics (mean and standard deviation of slope)
+
+- Vegetation seasonality (NDVI amplitude and timing of peak greenness)
 
 ------------------------------------------------------------------------
 
-# 03d_covar_macro_zonal_summary.R
+# 03e\_ zonal summaries
 
-Macrozones are used to calculate zonal summaries for climate patterns,
-land cover, and topography. Climate pattern summaries include dominant
-Koppen-Geiger climate class and dominant and count of plant hardiness.
+## Overview
+
+Zonal summaries are used to calculate macrozone-scale patterns in
+climate, land cover, and topography.
+
 The climate pattern summaries indicate broad-scale climate context,
 e.g. humid continental vs. semi-arid, cold hardiness diversity, and cold
 tolerance regimes based on minimum winter temperatures.
+
+The scripts call utility scripts prior to calculating zonal summaries.
+
+## Naming convention
+
+|     Short Name     |       Dataset        | Summary Type |   Variable Name    |
+|:------------------:|:--------------------:|:------------:|:------------------:|
+|    Climate Zone    |    Koppen-Geiger     |   Dominant   |  `kopp_geig_dom`   |
+|  PHZM Zone Count   | Plant Hardiness Zone |    Count     |     `phzm_cnt`     |
+| PHZM Zone Dominant | Plant Hardiness Zone |   Dominant   |     `phzm_dom`     |
+| Cropland Fraction  | NLCD 2016 Land Cover |   Fraction   | `nlcd_crppst_frac` |
+|  Forest Fraction   | NLCD 2016 Land Cover |   Fraction   | `nlcd_forst_frac`  |
+| Grassland Fraction | NLCD 2016 Land Cover |   Fraction   | `nlcd_grass_frac`  |
+|   Urban Fraction   | NLCD 2016 Land Cover |   Fraction   | `nlcd_urban_frac`  |
+|     Mean Slope     |      NED Slope       |     Mean     |   `ned_slp_mean`   |
+|    Median Slope    |      NED Slope       |    Median    |   `ned_slp_med`    |
+|   Altitude Zone    |    NED Elevation     |     Mean     |  `ned_elev_mean`   |
+
+## Generalized Workflow Prior to Performing a Zonal Summary
+
+First, run a pre-flight check with `utils/spatial/assert_inputs_ok.R`
+that performs the following: - Verify that rasters can be opened. -
+Enforce CRS and polygonal geometry. - Standardize the geometry column as
+`geom`. - Guarantees unique, non-NA IDs. - Optionally reproject to the
+project CRS: NAD83 / EPSG:4269.
+
+Second, prep and align raster and zone `utils/spatial/prep_and_align.R`.
+The function performs the following: - Ensures zones are valid
+(optional), converts to SpatVector, and reprojects zones to the raster’s
+CRS (no raster warping). - Returns a SpatVector (polygon) in the same
+CRS as the raster. - Prep the raster to get zones in the raster CRS. -
+Optionally, crop the raster to the zones bbox and mask it to polygon
+shapes.
+
+This returns a list that needs to be extracted then converted from a
+SpatVector to an sf object prior to {exactextractor} in
+`utils/spatial/rast_summ_by_class.R`
+
+## 03e_macrozone_fix_join_key.R
+
+Fix join key to fix an issue with Tallgrass Prairie and provide some
+ordinal order.
+
+|         region_name          | macro_id |
+|:----------------------------:|:--------:|
+|      Shortgrass-Steppe       |    1     |
+| Northern Mixed-Grass Prairie |    2     |
+| Central Mixed-Grass Prairie  |    3     |
+| Southern Mixed-Grass Prairie |    4     |
+|      Tallgrass Prairie       |    5     |
+
+## 03f_covar_macro_koppen_summary.R
+
+Dominant Koppen-Geiger climate classes provides a broad-scale context on
+climate, e.g. humid continental vs. semi-arid.
+
+The original Koppen-Geiger summary was a single dominant class. After an
+initial analysis, the zonal summary was expanded to the top n classes.
+Used n = 3. The original result contains 15 results. This was filtered
+using min_frac to minimize the number of categories and the total amount
+unexplained. The final result contains nine climate types across five
+macrozone categories with 29.9% of the variance unexplained.
+
+**Table of Results of Koppen-Geiger Climate Zonal Summary:** \| n-vals
+\| max_tot_unexpl \| min_frac \| num_cat \|
+\|:——:\|:————–:\|:——–:\|:——-:\| \| 15 \| 0.212 \| NA \| 5 \| \| 14 \|
+0.212 \| 0.07 \| 5 \| \| 13 \| 0.212 \| 0.08 \| 5 \| \| 12 \| 0.299 \|
+0.09 \| 5 \| \| 11 \| 0.299 \| 0.11 \| 5 \| \| 10 \| 0.299 \| 0.135 \| 5
+\| \| 09 \| 0.299 \| 0.14 \| 5 \| \<– used this one \| 08 \| 0.441 \|
+0.15 \| 5 \| \| 07 \| 0.441 \| 0.25 \| 5 \| \| 06 \| 0.441 \| 0.35 \| 5
+\| \| 05 \| 0.618 \| 0.37 \| 5 \|
+
+**Table of Results of Koppen-Geiger Climate Zonal Summary:** Tallgrass
+Prairie – Dfa- Cold, no dry season, hot summer
+
+Northern Mixed-Grass Prairie – Dfa - Cold, no dry season, hot summer
+Northern Mixed-Grass Prairie – BSk - Arid, steppe, cold
+
+Central Mixed-Grass Prairie – Dfa - Cold, no dry season, hot summer
+Central Mixed-Grass Prairie – Cfa - Temperate, no dry season, hot summer
+
+Southern Mixed-Grass Prairie – Cfa - Temperate, no dry season, hot
+summer Southern Mixed-Grass Prairie – BSh - Arid, steppe, hot
+
+Shortgrass-Steppe – BSk - Arid, steppe, cold
+
+------------------------------------------------------------------------
+
+## 03g_covar_macro_phzm_summary.R
+
+Outputs the top-3 dominant and count of phzm zones, and qa plots as a
+sanity check. The top-3 dominant and count of phzm zones indicates a
+broad-scale context on climate based on cold tolerance regimes based on
+minimum winter temperatures, and cold hardiness diversity. The QA plots
+phzm count vs area and phzm count vs latitude. The interpretation of the
+QA plots is as follows:
+
+Theb phzm class count reflects both latitudinal span and region size,
+but the orientation of the macrozone seems to be the stronger driver,
+although the graph is of the centroid of the latitude.:
+
+\_ The southern Mixed Grass Prairie (round) has very few PHZM classes.
+The class count increases in a northerly direction. However, this is
+because the zones become increasingly oriented in an elongated NS
+direction (Tallgrass), and class count jumps. Area effect is layered in:
+Tallgrass Prairie has both high NS orientation, a huge area, and the
+highest class count (20).
+
+## 03h_covar_make_NLCD_meta
+
+See docs/metadata/look_up_tables/nlcd_metadata_lut.csv”)
+
+# CHECK INTO DAGS for looking into covars.
+
+## 03h_covar_macro_landcover_summary.R
 
 Land cover proportion summaries include the fraction of cropland,
 forest, grassland, and urban land. Fraction of cropland indicates
@@ -428,21 +610,6 @@ average slope, which is more robust to outliers than the mean, and is
 useful for evaluating runoff tendency. Mean altitude describes the
 elevation regime, which influences climate, snow duration, and runoff
 seasonality.
-
-### Naming convention
-
-|      Short Name      |       Sataset        | Summary Type |  Variable Name   |
-|:--------------------:|:--------------------:|:------------:|:----------------:|
-|     Climate Zone     |    Koppen-Geiger     |   Dominant   |  kopp_geig_dom   |
-|   PHZM Zone Count    | Plant Hardiness Zone |    Count     |     phzm_cnt     |
-| PHZM Zone (Dominant) | Plant Hardiness Zone |   Dominant   |     phzm_dom     |
-|  Cropland Fraction   | NLCD 2016 Land Cover |   Fraction   | nlcd_crppst_frac |
-|   Forest Fraction    | NLCD 2016 Land Cover |   Fraction   | nlcd_forst_frac  |
-|  Grassland Fraction  | NLCD 2016 Land Cover |   Fraction   | nlcd_grass_frac  |
-|    Urban Fraction    | NLCD 2016 Land Cover |   Fraction   | nlcd_urban_frac  |
-|      Mean Slope      |      NED Slope       |     Mean     |   ned_slp_mean   |
-|     Median Slope     |      NED Slope       |    Median    |   ned_slp_med    |
-|    Altitude Zone     |    NED Elevation     |     Mean     |  ned_elev_mean   |
 
 ### NLCD Classes
 
@@ -502,28 +669,6 @@ such as corn, soybeans, vegetables, tobacco, and cotton, and also
 perennial woody crops such as orchards and vineyards. Crop vegetation
 accounts for greater than 20% of total vegetation. This class also
 includes all land being actively tilled.
-
-# Check for later
-
-To ensure statistical robustness in regional analyses, polygons smaller
-than 1,000 sq-km or containing fewer than 30 stream gages were merged
-with the most ecologically similar adjacent Level III Ecoregions. The
-merging process followed a hierarchical decision rule:
-
-- Primary criterion: adjacency with a unit sharing the same Level II
-  ecoregion classification
-
-- Secondary criterion: ecological similarity, evaluated using Euclidean
-  distance in a multivariate space defined by:
-
-- Land cover composition (e.g., cropland, forest, urban fractions)
-
-- Terrain metrics (mean and standard deviation of slope)
-
-- Vegetation seasonality (NDVI amplitude and timing of peak greenness)
-
-This approach preserved regional coherence while improving the gage
-count and spatial contiguity required for reliable skew estimation.
 
 ------------------------------------------------------------------------
 
@@ -594,5 +739,5 @@ notes and a script to open/edit them easily using RStudio.
 
 ## Notes
 
-- Last updated: 2025-08-29 10:18
+- Last updated: 2025-10-01 16:46
 - Maintained by: CJ Tinant

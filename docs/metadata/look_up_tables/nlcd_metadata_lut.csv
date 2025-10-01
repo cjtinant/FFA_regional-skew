@@ -1,0 +1,17 @@
+value,class,classification,description
+11,Water,Open Water,open water with lt 25pct vege or soil cover
+12,Water,Perennial Ice/Snow,perennial ice or snow cover gt 25pct
+21,Developed,Open Space,"mostly lawn grass, impervious lt 20pct"
+22,Developed,Low Intensity,"construct and vege mix, imperv 20-49pct"
+23,Developed,Med Intensity,"construct and vege mix, imperv 50-79pct"
+24,Developed,High Intensity,"highly developed, imperv 80-100pct"
+31,Barren,Barren Land,"bedrock, desert pavement, sand dunes, vege lt 15pct"
+41,Forest,Deciduous Forest,"trees gt 20pct, decid gt 75pct, ht gt 5m"
+42,Forest,Evergreen Forest,"trees gt 20pct, evergreen gt 75pct, ht gt 5m"
+43,Forest,Mixed Forest,"trees gt 20pct, decid and evergrn lt 75pct, ht gt 5m"
+52,Shrubland,Shrub/Scrub,"shrubs lt 5m, canopy gt 20pct, true shrubs, young trees"
+71,Grassland,Grassland/Herbaceous,"grass or herbs gt 80pct, can be grazed"
+81,Cultivated,Pasture/Hay,planted grass and/or legumes for grazing or hay
+82,Crops,Cultivated Crops,"tilled, annual corn, soybeans, veges, orchards"
+90,Wetlands,Woody Wetlands,periodically saturated forest or shrubland
+95,"Wetlands,",Emergent Herbaceous Wetlands,pdic saturated perranial herbs
