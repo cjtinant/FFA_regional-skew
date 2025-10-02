@@ -62,7 +62,6 @@ suppressPackageStartupMessages({
 source(file.path(here(), "R", "utils", "spatial", "assert_inputs_ok.R"))
 source(file.path(here(), "R", "utils", "spatial", "prep_and_align.R"))
 source(file.path(here(), "R", "utils", "spatial", "rast_summ_by_class.R"))
-#source(file.path(here(), "R", "utils", "qa", "phzm_eval_quality.R"))
 
 # ------------------------------------------------------------------------------
 # 1. Load inputs
