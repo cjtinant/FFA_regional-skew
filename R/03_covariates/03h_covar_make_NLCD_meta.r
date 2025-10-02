@@ -3,7 +3,7 @@
 # Purpose:          Rebuild NLCD raster and develop metadata
 # Author:           Charles Jason Tinant with ChatGPT 5 thinking
 # Date Created:     2025-09-22
-# Last Updated:     2025-10-01
+# Last Updated:     2025-10-02
 #
 # Changelog:
 # - 2025-09-22     Split from 03i_covar_macro_landcover_summary to try to fix an
@@ -11,6 +11,10 @@
 # - 2025-10-01     Found issue was in the way the raw raster was reprojected
 #                  in R/01_download/01m_download_nlcd_2016.R. The refactored
 #                  code in this script only makes a LUT.
+# - 2025-10-02     Merged NLCD Shrub/Scrub (52) with Grassland/Herbaceous (71)
+#                  and Pasture/Hay (81)) into a single Rangeland bucket.
+#                  Hydrologically they behave more alike than with Forest or
+#                  Crops, and it avoids a potential sparse class (Shrubland).
 #
 # Generalized Workflow:
 # 1. Make NLCD lookup table.
@@ -51,10 +55,10 @@ nlcd_lut <- tribble(
   41, "Forest", "Deciduous Forest", "trees gt 20pct, decid gt 75pct, ht gt 5m",
   42, "Forest", "Evergreen Forest", "trees gt 20pct, evergreen gt 75pct, ht gt 5m",
   43, "Forest", "Mixed Forest", "trees gt 20pct, decid and evergrn lt 75pct, ht gt 5m",
-  52, "Shrubland", "Shrub/Scrub", "shrubs lt 5m, canopy gt 20pct, true shrubs, young trees",
-  71, "Grassland", "Grassland/Herbaceous", "grass or herbs gt 80pct, can be grazed",
-  81, "Cultivated", "Pasture/Hay", "planted grass and/or legumes for grazing or hay",
-  82, "Crops", "Cultivated Crops", "tilled, annual corn, soybeans, veges, orchards",
+  52, "Rangeland", "Shrub/Scrub", "shrubs lt 5m, canopy gt 20pct, true shrubs, young trees",
+  71, "Rangeland", "Grassland/Herbaceous", "grass or herbs gt 80pct, can be grazed",
+  81, "Rangeland", "Pasture/Hay", "planted grass and/or legumes for grazing or hay",
+  82, "Cultivated", "Cultivated Crops", "tilled, annual corn, soybeans, veges, orchards",
   90, "Wetlands", "Woody Wetlands", "periodically saturated forest or shrubland",
   95, "Wetlands", "Emergent Herbaceous Wetlands", "periodically saturated perrannual herbs"
 )
