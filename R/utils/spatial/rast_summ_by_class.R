@@ -1,11 +1,10 @@
 # ==============================================================================
-# Script Name:     Zonal raster helpers.R
-# Purpose:         Calls {exactextractr} to compute dominant class, i.e category,
-#                  class counts, and class fractions.
-#                  with area-weighted exact extraction.
-# Author:          CJ Tinant — with GPT 4o
+# Script Name:     rast_summ_by_class.R
+# Purpose:         Computes dominant class, i.e category, class counts, and
+#                  class fractions with area-weighted exact extraction.
+# Author:          CJ Tinant (with Gepeto) — GPT 4o and GPT 5 - thinking
 # Date Created:    2025-08-07
-# Last Updated:    2025-09-5
+# Last Updated:    2025-10-02
 # Change Log:
 # - 2025-08-08     Moved the align function to `prep_and_align.R`.
 # - 2025-08-08     Updated dominant class function.
@@ -28,9 +27,22 @@
 #                  Updated category_counts() to fix a memory issue.
 # - 2025-09-07     Added category_counts_tiled() function to deal with a RAM
 #                  sawtooth or “one big raster + many polygons” behavior leading
-#                  to an abort. The fu Let’s hard-cap memory by tiling the raster
+#                  to an abort. The function hard-caps memory by tiling the raster
 #                  and summing results across tiles to avoid any single
 #                  exact_extract() run building huge working sets.
+# - 2025-09-22     Added a bug-fixs to category_counts_tiled() function to fix
+#                  (I) a “length mismatch” at the root by: (1) always validating
+#                  geometry,(2) optionally dissolving to one row per id_col,
+#                  (3) using include_cols = id_col so IDs are never “attached”
+#                  post-hoc, and (4) computing area with include_area = TRUE to
+#                  just sum coverage_area, safely aggregates across tiles.
+#                  (II ) to remove dependency on cell_area column; compute pixel
+#                  area from raster res; use summarize_df=TRUE with ID carried
+#                  via include_cols; derive constant cell area from terra::res()
+#                  for NLCD/Albers tiles; fallback to provided cell_area when
+#                  available; guard against lon/lat rasters.
+# - 2025-10-02     Added nlcd_fractions_tiled(). Standardized individual function
+#                  metadata.
 #
 # Discussion:
 # The helper functions are thin wrappers for {exactextractr}. They define the
@@ -40,32 +52,268 @@
 # able to reliably handle edge cases such as:partial pixels, holes, multi-part
 # polygons, anti-meridian weirdness, etc.
 #
-# Dominant (modal) category by zone using area weights gives the majority
-# class.
+# See individual helper functions for User Inputs and Function Outputs.
 #
+# ==============================================================================
+# Function: nlcd_fractions_tiled()
+# Purpose : Area-weighted NLCD class fractions by zone (robust tiling workflow)
+# Inputs  :
+#   r               SpatRaster or path to NLCD (categorical; keep native grid)
+#   zones           sf/sfc object OR path to vector; if path, supply 'layer'
+#   layer           layer name if 'zones' is a path to a GPKG
+#   id_col          zone ID column (default: "macro_id")
+#   allowed_codes   integer NLCD codes to keep
+#   nx, ny          tile grid (increase if memory is tight; e.g., 10, 10)
+#   simplify_tol    meters; simplify zones before tiling (0 = none)
+#   memfrac         terra mem fraction hint
+#   progress        logical; print per-tile progress
+# Outputs :
+#   A list with:
+#     $long  = tibble(id_col, code, prop)
+#     $wide  = tibble(one row/zone; columns nlcd_frac_<code>)
+#     $qa    = tibble(id_col, sum_prop)   # should be ~1
+# Dependencies: here, sf, terra, exactextractr, tidyverse, purrr
+# Notes   :
+#   - Do NOT reproject the NLCD. Transform zones to the raster CRS.
+#   - Requires integer NLCD (e.g., *_nn.tif). Will stop() otherwise.
+#   - Tiling avoids giant per-cell tables and OOM/aborts.
+# ==============================================================================
+
+nlcd_fractions_tiled <- function(
+    r,
+    zones,
+    layer           = NULL,
+    id_col          = "macro_id",
+    allowed_codes   = c(11,12,21,22,23,24,31,41,42,43,52,71,81,82,90,95),
+    nx              = 8,
+    ny              = 8,
+    simplify_tol    = 0,
+    memfrac         = 0.6,
+    progress        = TRUE
+) {
+  
+  suppressPackageStartupMessages({
+    library(sf)
+    library(terra)
+    library(tidyverse)
+    library(exactextractr)
+  })
+  
+  `%||%` <- function(a, b) if (!is.null(a)) a else b
+  set.seed(42)
+  terra::terraOptions(memfrac = memfrac, todisk = TRUE, progress = as.integer(progress))
+  options(exactextractr.max_cells_in_memory = 1e7)
+  
+  # ---- 0) Ingest ----------------------------------------------------------------
+  
+  # Raster
+  r <- if (inherits(r, "SpatRaster")) r else terra::rast(r)
+  if (!grepl("^INT", terra::datatype(r))) {
+    stop("NLCD raster must be integer (INT*). Got: ", terra::datatype(r),
+         ". Use the categorical LandCover (e.g., *_nn.tif).")
+  }
+  
+  # Zones
+  if (inherits(zones, "character")) {
+    if (is.null(layer)) stop("zones is a path; please supply 'layer'.")
+    zones <- sf::st_read(zones, layer = layer, quiet = !progress)
+  }
+  stopifnot(inherits(zones, "sf"))
+  stopifnot(id_col %in% names(zones))
+  
+  # CRS align (vector -> raster)
+  zones <- zones %>%
+    sf::st_make_valid() %>%
+    sf::st_transform(terra::crs(r))
+  
+  # Enforce 'geom' active geometry if present per project convention
+  if ("geometry" %in% names(zones)) {
+    zones <- dplyr::rename(zones, geom = geometry)
+    sf::st_geometry(zones) <- "geom"
+  }
+  
+  # Optional simplify (pre-tiling)
+  if (simplify_tol > 0) {
+    zones <- sf::st_simplify(zones, dTolerance = simplify_tol, preserveTopology = TRUE)
+  }
+  
+  # ---- 1) Tiler -----------------------------------------------------------------
+  
+  make_tiles <- function(x, nx = 8, ny = 8, crs = NULL) {
+    if (inherits(x, "bbox")) {
+      bb  <- x
+      crs <- crs %||% sf::st_crs(NA)
+    } else if (inherits(x, "sf") || inherits(x, "sfc")) {
+      bb  <- sf::st_bbox(x)
+      crs <- crs %||% sf::st_crs(x)
+    } else if (inherits(x, "SpatRaster") || inherits(x, "SpatVector")) {
+      e   <- terra::ext(x)
+      bb  <- c(xmin = e$xmin, ymin = e$ymin, xmax = e$xmax, ymax = e$ymax)
+      crs <- crs %||% sf::st_crs(terra::crs(x))
+    } else {
+      stop("Unsupported input to make_tiles().")
+    }
+    
+    xs <- seq(bb[["xmin"]], bb[["xmax"]], length.out = nx + 1L)
+    ys <- seq(bb[["ymin"]], bb[["ymax"]], length.out = ny + 1L)
+    
+    bbox_to_sfg <- function(xmin, ymin, xmax, ymax, crs) {
+      sf::st_as_sfc(
+        sf::st_bbox(c(xmin = xmin, ymin = ymin, xmax = xmax, ymax = ymax), crs = crs)
+      )[[1]]
+    }
+    
+    grid <- expand.grid(ix = seq_len(nx), iy = seq_len(ny))
+    polys_sfg <- purrr::pmap(
+      grid,
+      \(ix, iy) bbox_to_sfg(xs[ix], ys[iy], xs[ix + 1L], ys[iy + 1L], crs)
+    )
+    
+    sf::st_sf(
+      tile_id = seq_along(polys_sfg),
+      geom    = sf::st_sfc(polys_sfg, crs = crs)
+    )
+  }
+  
+  tiles <- make_tiles(zones, nx = nx, ny = ny)
+  
+  # ---- 2) Summarizer (df form; exactextractr passes columns: value, coverage_fraction) ----
+  
+  summarize_codes <- function(df, ...) {
+    df %>%
+      dplyr::filter(!is.na(value)) %>%
+      dplyr::mutate(code = as.integer(round(value))) %>%
+      dplyr::count(code, wt = coverage_fraction, name = "w_sum") %>%
+      dplyr::select(code, w_sum)
+  }
+  
+  # ---- 3) Loop tiles -----------------------------------------------------------
+  
+  parts <- vector("list", nrow(tiles))
+  
+  s2_prev <- sf::sf_use_s2()
+  sf::sf_use_s2(FALSE)
+  on.exit(sf::sf_use_s2(s2_prev), add = TRUE)
+  
+  for (i in seq_len(nrow(tiles))) {
+    
+    tpoly <- tiles[i, ]
+    
+    # pick all zones that intersect this tile
+    idx <- which(lengths(sf::st_intersects(zones, tpoly)) > 0L)
+    if (length(idx) == 0L) next
+    
+    z_tile <-
+      zones[idx, ] %>%
+      sf::st_make_valid() %>%
+      suppressWarnings(sf::st_intersection(tpoly)) %>%
+      dplyr::filter(sf::st_is(geom, c("POLYGON","MULTIPOLYGON")),
+                    sf::st_is_valid(geom))
+    
+    if (nrow(z_tile) == 0L) next
+    
+    r_tile <- try(terra::crop(r, terra::ext(sf::st_bbox(tpoly))), silent = TRUE)
+    if (inherits(r_tile, "try-error")) next
+    
+    res_list <- try(
+      exactextractr::exact_extract(
+        r_tile, z_tile,
+        summarize_df = TRUE, progress = FALSE, fun = summarize_codes
+      ),
+      silent = TRUE
+    )
+    if (inherits(res_list, "try-error")) next
+    if (is.data.frame(res_list)) res_list <- list(res_list)
+    if (length(res_list) == 0L) next
+    
+    res_tile <- purrr::imap_dfr(
+      res_list,
+      ~ {
+        x <- .x; j <- .y
+        if (is.null(x) || !is.data.frame(x) || nrow(x) == 0L) return(NULL)
+        dplyr::mutate(x, !!rlang::sym(id_col) := z_tile[[id_col]][[j]])
+      }
+    )
+    
+    if (nrow(res_tile) > 0L) {
+      parts[[i]] <- res_tile %>% dplyr::filter(code %in% allowed_codes)
+    }
+    
+    if (progress) {
+      message(sprintf("Tile %d/%d: %d rows",
+                      i, nrow(tiles), ifelse(is.null(parts[[i]]), 0L, nrow(parts[[i]]))))
+    }
+    if (i %% 8 == 0) { gc(); Sys.sleep(0.02) }
+  }
+  
+  # ---- 4) Combine tiles -> per-zone fractions ---------------------------------
+  
+  nlcd_counts <-
+    parts %>%
+    purrr::compact() %>%
+    dplyr::bind_rows() %>%
+    dplyr::group_by(!!rlang::sym(id_col), code) %>%
+    dplyr::summarise(w_sum = sum(w_sum), .groups = "drop")
+  
+  if (nrow(nlcd_counts) == 0L) {
+    stop("No NLCD counts produced. Check inputs, tiling, and code filters.")
+  }
+  
+  nlcd_long <-
+    nlcd_counts %>%
+    dplyr::group_by(!!rlang::sym(id_col)) %>%
+    dplyr::mutate(prop = w_sum / sum(w_sum)) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(!!rlang::sym(id_col), code, prop)
+  
+  nlcd_wide <-
+    nlcd_long %>%
+    tidyr::pivot_wider(
+      names_from   = code,
+      values_from  = prop,
+      values_fill  = 0,
+      names_prefix = "nlcd_frac_"
+    ) %>%
+    dplyr::arrange(!!rlang::sym(id_col))
+  
+  qa_sum <-
+    nlcd_long %>%
+    dplyr::group_by(!!rlang::sym(id_col)) %>%
+    dplyr::summarise(sum_prop = sum(prop), .groups = "drop")
+  
+  if (any(abs(qa_sum$sum_prop - 1) > 1e-6)) {
+    warning("Some zones have NLCD fractions that do not sum to 1. ",
+            "Check geometry validity or nodata at the AOI edge.")
+  }
+  
+  list(
+    long = nlcd_long,
+    wide = nlcd_wide,
+    qa   = qa_sum
+  )
+}
+
+# ==============================================================================
+# Function: dominant_category
+# Purpose : Use area weights to give the majority class or dominant (modal)
+#           category
+# Inputs  :
+#   r               A single-band categorical `terra::SpatRaster`.
+#   zones           `sf` polygons (same CRS as `r`) or `SpatVector`.
+#   id_col         Name of the identifier column in `zones`.
+# Outputs :
+#   Tibble with columns:
+#     $id_col      zone identifier
+#     $.dominant   integer class code of the weighted mode
+#     $.dom_frac   dominance fraction in [0,1] = 
+#                            (area of modal class) / (area of all classes)
+# Dependencies: exactextractr,  purrr
+# Notes:
 # Dominance fraction is a clean way to measure confidence in the modal class.
 # If a macrozone is ~95% one class, the “dominant” label is very representative;
 # if it’s ~55%, that’s basically a coin toss.
-#
-# The top_n_categories() returns top-N classes and their proportions per zone,
-# using area-weighted counts from category_counts() to explore heterogeneous
-# zones where a single dominant category is not representative.
-#
-# See individual helper functions for User Inputs and Function Outputs:
-#
 # ==============================================================================
 
-#' Dominant (modal) category by zone using area weights 
-#'
-#' @param r A single-band categorical `terra::SpatRaster`.
-#' @param zones `sf` polygons (same CRS as `r`) or `SpatVector`.
-#' @param id_col Name of the identifier column in `zones`.
-#'
-#' @return Tibble with columns:
-#'   - `id_col`      : zone identifier
-#'   - `.dominant`   : integer class code of the weighted mode
-#'   - `.dom_frac`   : dominance fraction in [0,1] = (area of modal class) / (area of all classes)
-#' @export
 dominant_category <- function(r, zones, id_col = "macro_id") {
   if (terra::nlyr(r) != 1) r <- r[[1]]
   if (inherits(zones, "SpatVector")) zones <- sf::st_as_sf(zones)
@@ -99,11 +347,21 @@ dominant_category <- function(r, zones, id_col = "macro_id") {
 }
 
 # ==============================================================================
-# category_counts_tiled(): low-RAM, tile-wise categorical tallies
-# Author: CJ Tinant — with Gepeto
+# Function: category_counts_tiled()
 # Purpose: area-weighted counts for categorical rasters (e.g., NLCD),
-#          robust to very large rasters and many polygons.
-# Notes:
+#          robust to very large rasters and many polygons. Uses low-RAM,
+#          tile-wise categorical tallies
+# Inputs  :
+#   r                   SpatRaster or path
+#   zones               sf/sfc object OR path to vector; if path, supply 'layer'
+#   id_col              zone ID column (default: "macro_id")
+#   nx, ny              tile grid (increase if memory is tight; e.g., 10, 10)
+#   zones_simplify_tol  meters; simplify zones before tiling (0 = none)
+#   tmp_dir             = here::here("tmp", "zonal_partials"),
+# Outputs :
+#
+# Dependencies: here, fs, sf, terra, exactextractr, tidyverse, purrr
+# Notes   :
 #   - Vector-signature summarizer (values, coverage_fractions, ...)
 #   - Tiled raster processing; sum across tiles at the end.
 #   - Writes per-tile partials to disk to cap heap growth.
@@ -113,14 +371,16 @@ dominant_category <- function(r, zones, id_col = "macro_id") {
 category_counts_tiled <- function(
     r,
     zones,
-    id_col             = "macro_id",
-    nx                 = 6,
-    ny                 = 6,
-    zones_simplify_tol = 0,
-    tmp_dir            = here::here("tmp", "zonal_partials"),
-    progress           = FALSE
+    id_col              = "macro_id",
+    nx                  = 6,
+    ny                  = 6,
+    zones_simplify_tol  = 0,
+    dissolve_by_id      = TRUE,
+    tmp_dir             = here::here("tmp", "zonal_partials"),
+    progress            = FALSE
 ) {
   
+  # ---- inputs & guards --------------------------------------------------------
   zones_sf <- .ensure_sf_polygons(zones)
   .assert_single_band(r)
   .assert_has_id(zones_sf, id_col)
@@ -129,19 +389,35 @@ category_counts_tiled <- function(
     r <- r[[1L]]
   }
   
-  # ensure integer categories, encourage disk i/o
+  # integer categories; encourage disk I/O
   r <- terra::as.int(r)
   terra::terraOptions(memfrac = 0.6)
   fs::dir_create(tmp_dir)
   
+  # S2 off for robust polygon ops
   s2_prev <- sf::sf_use_s2()
   sf::sf_use_s2(FALSE)
   on.exit({ sf::sf_use_s2(s2_prev) }, add = TRUE)
   
+  # Always validate; simplify if requested
+  zones_sf <- zones_sf %>%
+    sf::st_make_valid()
+  
   if (zones_simplify_tol > 0) {
     zones_sf <- zones_sf %>%
-      sf::st_make_valid() %>%
-      sf::st_simplify(dTolerance = zones_simplify_tol, preserveTopology = TRUE)
+      sf::st_simplify(
+        dTolerance       = zones_simplify_tol,
+        preserveTopology = TRUE
+      )
+  }
+  
+  # Optional dissolve to guarantee one feature per id
+  if (isTRUE(dissolve_by_id)) {
+    zones_sf <- zones_sf %>%
+      dplyr::select(!!rlang::sym(id_col)) %>%
+      dplyr::group_by(!!rlang::sym(id_col)) %>%
+      dplyr::summarise(do_union = TRUE, .groups = "drop") %>%
+      sf::st_make_valid()
   }
   
   # ---- tile grid --------------------------------------------------------------
@@ -149,10 +425,11 @@ category_counts_tiled <- function(
   dx <- (e$xmax - e$xmin) / nx
   dy <- (e$ymax - e$ymin) / ny
   
-  tiles <- tidyr::expand_grid(
-    ix = seq_len(nx),
-    iy = seq_len(ny)
-  ) %>%
+  tiles <-
+    tidyr::expand_grid(
+      ix = seq_len(nx),
+      iy = seq_len(ny)
+    ) %>%
     dplyr::mutate(
       xmin = e$xmin + (ix - 1) * dx,
       xmax = e$xmin + ix * dx,
@@ -162,26 +439,6 @@ category_counts_tiled <- function(
     )
   
   part_files <- character(nrow(tiles))
-  
-  # helper: coerce any result to tibble
-  .as_tbl <- function(x) {
-    if (is.null(x)) return(NULL)
-    if (is.numeric(x)) {
-      nm <- names(x)
-      if (!is.null(nm) && length(nm) == length(x)) {
-        return(
-          tibble::tibble(
-            value = as.integer(nm),
-            area  = as.numeric(unname(x))
-          )
-        )
-      } else {
-        return(NULL)
-      }
-    }
-    if (is.data.frame(x)) return(tibble::as_tibble(x))
-    NULL
-  }
   
   # ---- per-tile loop ----------------------------------------------------------
   for (k in seq_len(nrow(tiles))) {
@@ -193,73 +450,55 @@ category_counts_tiled <- function(
     if (inherits(r_k, "try-error") || is.null(r_k)) next
     if (is.na(terra::ncell(r_k)) || terra::ncell(r_k) == 0) next
     
-    # prefer raster extent intersect (tighter than raw bbox)
+    # Prefer raster extent intersect (tighter than raw bbox)
     ext_poly <- sf::st_as_sfc(
       sf::st_bbox(terra::ext(r_k), crs = sf::st_crs(zones_sf))
     )
-    sel <- sf::st_intersects(zones_sf, ext_poly, sparse = TRUE) %>% lengths() > 0
+    
+    sel <- sf::st_intersects(zones_sf, ext_poly, sparse = TRUE) %>%
+      lengths() > 0
+    
     if (!any(sel)) next
     
     z_k <- zones_sf[sel, , drop = FALSE]
     
-    # ---- exact_extract with robust summarizer ---------------------------------
+    # ---- exact_extract with id carried in, and coverage area -----------------
+    # Guard: we expect projected (meters) — NLCD is Albers/5070.
+    if (terra::is.lonlat(r_k)) {
+      stop("Raster is in lon/lat. Reproject to an equal-area CRS (e.g., EPSG:5070) before extraction.")
+    }
+    
+    # Constant cell area for this tile (m²) = xres * yres in projected CRS
+    area_per_cell_k <- abs(prod(terra::res(r_k)))
+    
     res_k <- exactextractr::exact_extract(
       r_k,
       z_k,
-      fun = function(values, coverage_fractions, ...) {
-        ok <- !is.na(values)
-        if (!any(ok)) {
+      include_cols = id_col,   # carry IDs inside the DF
+      # (Do NOT rely on include_cell_area; some versions don't emit it.)
+      summarize_df = TRUE,     # we pass a data-frame function(df, ...)
+      progress     = progress,
+      fun = function(df, ...) {
+        # df has: value, coverage_fraction, and id_col; may or may not have cell_area
+        if (!("value" %in% names(df) && "coverage_fraction" %in% names(df) && id_col %in% names(df))) {
           return(NULL)
         }
-        vv <- as.integer(values[ok])
-        ww <- coverage_fractions[ok]
         
-        # guarantee names via factor levels
-        u_levels <- sort(unique(vv))
-        tab <- tapply(
-          X     = ww,
-          INDEX = factor(vv, levels = u_levels),
-          FUN   = sum
-        )
+        # if cell_area is missing, fall back to constant area from raster resolution
+        if (!"cell_area" %in% names(df)) {
+          df$cell_area <- area_per_cell_k
+        }
         
-        tibble::tibble(
-          value = as.integer(names(tab)),
-          area  = as.numeric(unname(tab))
-        )
-      },
-      summarize_df = FALSE,
-      progress     = progress
+        df %>%
+          dplyr::filter(!is.na(.data$value)) %>%
+          dplyr::mutate(coverage_area = .data$coverage_fraction * .data$cell_area) %>%
+          dplyr::group_by(.data[[id_col]], .data$value) %>%
+          dplyr::summarise(area = sum(.data$coverage_area, na.rm = TRUE), .groups = "drop")
+      }
     )
-    
-    # normalize outputs before combine
-    res_k <- purrr::map(res_k, .as_tbl)
-    
-    # ---- index-safe combine (handles length mismatch) -------------------------
-    ids_k  <- z_k[[id_col]]
-    n_res  <- length(res_k)
-    n_ids  <- length(ids_k)
-    n_iter <- min(n_res, n_ids)
-    
-    if (n_res != n_ids) {
-      warning(
-        "Tile ", tk$tid, ": exact_extract returned ", n_res,
-        " result(s) for ", n_ids, " polygon(s); attaching ids for the first ", n_iter, "."
-      )
-    }
-    
-    part_list <- vector("list", n_iter)
-    
-    for (i in seq_len(n_iter)) {
-      xi <- res_k[[i]]
-      if (is.null(xi)) next
-      xi <- .as_tbl(xi)
-      if (is.null(xi) || nrow(xi) == 0) next
-      xi[[id_col]] <- ids_k[i]
-      part_list[[i]] <- xi
-    }
-    
+    # Combine polygon-wise results for this tile
     part_k <-
-      part_list %>%
+      res_k %>%
       purrr::compact() %>%
       dplyr::bind_rows()
     
@@ -285,6 +524,7 @@ category_counts_tiled <- function(
     )
   }
   
+  # vroom if available; otherwise batch read
   if (requireNamespace("vroom", quietly = TRUE)) {
     
     final <-
@@ -296,11 +536,11 @@ category_counts_tiled <- function(
       ) %>%
       dplyr::mutate(
         !!id_col := as.integer(.data[[id_col]]),
-        value    = as.integer(value),
-        area     = as.numeric(area)
+        value    = as.integer(.data$value),
+        area     = as.numeric(.data$area)
       ) %>%
-      dplyr::group_by(!!rlang::sym(id_col), value) %>%
-      dplyr::summarise(area = sum(area), .groups = "drop") %>%
+      dplyr::group_by(!!rlang::sym(id_col), .data$value) %>%
+      dplyr::summarise(area = sum(.data$area, na.rm = TRUE), .groups = "drop") %>%
       dplyr::relocate(!!rlang::sym(id_col))
     
   } else {
@@ -313,30 +553,31 @@ category_counts_tiled <- function(
           dplyr::bind_rows() %>%
           dplyr::mutate(
             !!id_col := as.integer(.data[[id_col]]),
-            value    = as.integer(value),
-            area     = as.numeric(area)
+            value    = as.integer(.data$value),
+            area     = as.numeric(.data$area)
           ) %>%
-          dplyr::group_by(!!rlang::sym(id_col), value) %>%
-          dplyr::summarise(area = sum(area), .groups = "drop")
+          dplyr::group_by(!!rlang::sym(id_col), .data$value) %>%
+          dplyr::summarise(area = sum(.data$area, na.rm = TRUE), .groups = "drop")
       }) %>%
       dplyr::bind_rows()
     
     final <-
       partial_reduced %>%
-      dplyr::group_by(!!rlang::sym(id_col), value) %>%
-      dplyr::summarise(area = sum(area), .groups = "drop") %>%
+      dplyr::group_by(!!rlang::sym(id_col), .data$value) %>%
+      dplyr::summarise(area = sum(.data$area, na.rm = TRUE), .groups = "drop") %>%
       dplyr::relocate(!!rlang::sym(id_col))
   }
   
   final
 }
 
-
-
-
 # ==============================================================================
-# category_counts(): area-weighted category tallies with strict memory bounds
-# Author: CJ Tinant — with Gepeto
+# Function: category_counts():
+# Purpose : Area-weighted category tallies with strict memory bounds
+# Inputs  :
+# Outputs :
+# Dependencies: here, sf, terra, exactextractr, tidyverse, purrr
+# Notes   :
 # Notes:
 #   - Works best if r is categorical integer (e.g., NLCD).
 #   - Batches zones to cap peak memory. Tweak zones_batch.
@@ -438,9 +679,21 @@ category_counts <- function(
     dplyr::mutate(value = as.integer(value))
 }
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# top_n_categories(): top-N classes per polygon with proportions
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ==============================================================================
+# Function: top_n_categories(): 
+# Purpose : Top-N classes per polygon with proportions
+# Inputs  :
+#   r               SpatRaster or path to NLCD (categorical; keep native grid)
+#   zones           sf/sfc object OR path to vector; if path, supply 'layer'
+#   id_col          zone ID column (default: "macro_id")
+#   n
+# Outputs :
+# Dependencies: here, sf, terra, exactextractr, tidyverse, purrr
+# Notes   :
+# The top_n_categories() returns top-N classes and their proportions per zone,
+# using area-weighted counts from category_counts() to explore heterogeneous
+# zones where a single dominant category is not representative.
+# ==============================================================================
 top_n_categories <- function(r, zones, n = 3, id_col = "macro_id") {
   zones_sf <- .ensure_sf_polygons(zones)
   .assert_single_band(r); .assert_has_id(zones_sf, id_col)
@@ -474,10 +727,10 @@ top_n_categories <- function(r, zones, n = 3, id_col = "macro_id") {
     dplyr::relocate(!!rlang::sym(id_col))
 }
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# phzm_summary(): compact PHZM zonal summary with auto-binning & labels
-# ------------------------------------------------------------------------------
-# Arguments:
+# ==============================================================================
+# Function: phzm_summary()
+# Purpose : Compact PHZM zonal summary with auto-binning & labels
+# Inputs / Arguments:
 #   r =                 Input raster. A single-band PHZM raster (SpatRaster from
 #                       {terra}). Should contain the numeric zone codes
 #                       (e.g., 5, 5.5, 6).
@@ -528,13 +781,16 @@ top_n_categories <- function(r, zones, n = 3, id_col = "macro_id") {
 # return_raster =       Controls outputs. If TRUE, also returns the recoded PHZM
 #                       raster (useful for debugging or mapping). 
 #                       If FALSE, returns only the summary table.
-#
+# Outputs :
 # The table returns one row per zone with:
 #   id_col, phzm_dominant, phzm_dom_frac, phzm_class_count,
 #   phzm_top1, phzm_top1_prop,
 #   phzm_top2, phzm_top2_prop,
 #   phzm_top3, phzm_top3_prop
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Dependencies: here, sf, terra, exactextractr, tidyverse, purrr
+# Notes   :
+# ==============================================================================
+
 phzm_summary <- function(
     r,
     zones,
@@ -785,21 +1041,19 @@ phzm_summary <- function(
   }
 }
 
+# ==============================================================================
+# Function: category_counts()
+# Purpose : Area-weighted counts by category per zone (long table)
+# Inputs  :
+#   r               A single-band categorical `terra::SpatRaster`.
+#   zones           `sf` polygons (same CRS as `r`).
+#   id_col          zone ID column (default: "macro_id")
+# Outputs :
+#   Tibble with columns: `id_col`, `value` (class), `area` (weighted sum).
+# Dependencies: here, sf, terra, exactextractr, tidyverse, purrr
+# Notes   :
+# ==============================================================================
 
-
-
-
-
-#' Area-weighted counts by category per zone (long table)
-#'
-#' @param r A single-band categorical `terra::SpatRaster`.
-#' @param zones `sf` polygons (same CRS as `r`).
-#' @param id_col Name of the identifier column in `zones`.
-#'
-#' @return Tibble with columns: `id_col`, `value` (class), `area` (weighted sum).
-#' @export
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 category_counts <- function(
     r,
     zones,
@@ -856,19 +1110,23 @@ category_counts <- function(
     dplyr::mutate(value = as.integer(value))
 }
 
-#' Proportion of zone covered by selected classes
-#'
-#' Reclassifies the raster to binary (1 = in `classes`, 0 = otherwise) and
-#' computes the area-weighted mean, which equals the area fraction.
-#'
-#' @param r A single-band categorical `terra::SpatRaster`.
-#' @param zones `sf` polygons (same CRS as `r`).
-#' @param classes Integer vector of class codes to treat as 1.
-#' @param id_col Identifier column in `zones`.
-#' @param out_name Output column name for the fraction (default "prop").
-#'
-#' @return Tibble with columns: `id_col`, `out_name` (numeric fraction in [0,1]).
-#' @export
+# ==============================================================================
+# Function: class_fraction()
+# Purpose : Proportion of zone covered by selected classes
+# Inputs  :
+#   r               A single-band categorical `terra::SpatRaster`.
+#   zones           `sf` polygons (same CRS as `r`).
+#   classes         Integer vector of class codes to treat as 1.
+#   id_col          zone ID column (default: "macro_id")
+#   outname         Output column name for the fraction (default "prop").
+# Outputs :
+#    Tibble with columns: `id_col`, `out_name` (numeric fraction in [0,1]).
+# Dependencies: here, sf, terra, exactextractr, tidyverse, purrr
+# Notes   :
+#   Reclassifies the raster to binary (1 = in `classes`, 0 = otherwise) and
+#   computes the area-weighted mean, which equals the area fraction.
+# ==============================================================================
+
 class_fraction <- function(r, zones, classes,
                            id_col = "macro_id",
                            out_name = "prop") {
