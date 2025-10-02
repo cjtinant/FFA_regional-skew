@@ -83,12 +83,15 @@ writeLines(c(
 
 metadata <- read_csv(
   here(
-       "docs/metadata/descriptions/covariate_metadata_v083.csv")
+       "docs/metadata/descriptions/covariate_metadata_v087.csv")
 ) %>%
   sanitize_metadata() %>%
   mutate(
-    Description = str_wrap(Description, 70),
-    Notes = str_wrap(Notes, 70)
+    Description = str_wrap(description, 70),
+    Notes = str_wrap(notes, 70),
+    Scale = str_wrap(scale, 70),
+    'Short Name' = str_wrap(short_name, 70),
+    Unit = str_wrap(unit, 70)
   )
 ```
 
@@ -96,7 +99,7 @@ metadata <- read_csv(
 
 # Unique domains
 unique_domains <- metadata %>%
-  pull(Domain) %>%
+  pull(domain) %>%
   unique()
 
 options(knitr.kable.NA = "")
@@ -107,7 +110,7 @@ for (d in unique_domains) {
   #  cat(paste0("\\section{", d, "}\n\n"))
   cat("\\section*{", d, "}\n\\addcontentsline{toc}{section}{", d, "}\n\n")
 
-  df <- metadata %>% filter(Domain == d)
+  df <- metadata %>% filter(domain == d)
 
   # Table A
   table_a <- df %>%
