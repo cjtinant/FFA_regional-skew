@@ -17,27 +17,38 @@ the [Keep a Changelog](https://keepachangelog.com/) format._
 
 ---
 
+## [v1.6.6] — 2025-10-02
+
 <!--
 ## [Untracked] -- 2025-09-18
 
 ## Untracked changes prior to v1.6.6
 
-### Added:
 
 ### In Progress
+Need to update rangeland NLCD group classification across othe documentation.
 
-- `03e_intersect_sites_macrozones.R`
-
-- Changed 03e_intersect_sites_macrozones.R` now computes NLCD fractions via
-single-pass counts.
-
-### To Do
-
-- write a consistent template for @param documentation so R/utils functions
-clearly state accepted object types and constraints. That would make the utils
-folder more maintainable over time.
 
 -->
+
+
+
+### Added
+
+Added CRS/grid guards, source-type checks, integer and legend-code QA, and
+INT1U tiled/LZW output for NLCD 2016 Land Cover.
+
+- nlcd_fractions_tiled() for area-weighted class fractions (OOM-safe)
+
+### Changed
+
+- R/01_download/01m_download_nlcd_2016.R -- ensure NLCD 2016 Land Cover is saved
+as INT1U
+
+- R/03_covars/03h_covar_make_NLCD_meta.R renamed and only makes LUT. Changed
+Grasslands to Rangelands in NLCD group classification
+
+- R/03_covars/03i_covar_make_NLCD_summary.R -- updated so it works now.
 
 ## [v1.6.5] — 2025-09-18
 

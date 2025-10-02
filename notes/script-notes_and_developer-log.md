@@ -1,7 +1,7 @@
 Script Notes and Developer Log
 ================
 C.J. Tinant
-October 01, 2025
+October 02, 2025
 
 - [Overview](#overview)
 - [Project Notes (General)](#project-notes-general)
@@ -17,9 +17,9 @@ October 01, 2025
   - [03f_covar_macro_koppen_summary.R](#03f_covar_macro_koppen_summaryr)
   - [03g_covar_macro_phzm_summary.R](#03g_covar_macro_phzm_summaryr)
   - [03h_covar_make_NLCD_meta](#03h_covar_make_nlcd_meta)
+  - [03h_covar_macro_NLC_summary.R](#03h_covar_macro_nlc_summaryr)
 - [CHECK INTO DAGS for looking into
   covars.](#check-into-dags-for-looking-into-covars)
-  - [03h_covar_macro_landcover_summary.R](#03h_covar_macro_landcover_summaryr)
   - [Zettelkasten-style markdown](#zettelkasten-style-markdown)
   - [Notes](#notes)
 
@@ -370,6 +370,8 @@ The parameters for drainage area and contributing drainage area were
 coalesced prior to dropping gages with missing drainage area or altitude
 data.
 
+------------------------------------------------------------------------
+
 ### 03c_make_macrozone_lut.R
 
 Macrozones, which represent the coarsest analysis scale for the project,
@@ -527,6 +529,8 @@ ordinal order.
 | Southern Mixed-Grass Prairie |    4     |
 |      Tallgrass Prairie       |    5     |
 
+------------------------------------------------------------------------
+
 ## 03f_covar_macro_koppen_summary.R
 
 Dominant Koppen-Geiger climate classes provides a broad-scale context on
@@ -584,32 +588,29 @@ direction (Tallgrass), and class count jumps. Area effect is layered in:
 Tallgrass Prairie has both high NS orientation, a huge area, and the
 highest class count (20).
 
+------------------------------------------------------------------------
+
 ## 03h_covar_make_NLCD_meta
 
-See docs/metadata/look_up_tables/nlcd_metadata_lut.csv”)
+See docs/metadata/look_up_tables/nlcd_metadata_lut.csv”) Changed
+classification to add Rangeland which combines Grassland, Hay/Pasture,
+and Shrubland. A substantial fraction of the Southern Mixed-grass
+Prairie is Shrubland.
 
-# CHECK INTO DAGS for looking into covars.
+------------------------------------------------------------------------
 
-## 03h_covar_macro_landcover_summary.R
+## 03h_covar_macro_NLC_summary.R
 
 Land cover proportion summaries include the fraction of cropland,
-forest, grassland, and urban land. Fraction of cropland indicates
+forest, rangeland, and urban land. Fraction of cropland indicates
 anthropogenic land use in agricultural regions associated with increased
 runoff, reduced infiltration, and higher ET demand. The fraction of
 forested land (cover) enhances interception and storage, which typically
-reduces peak flows and lowers skew. The fraction of grassland moderates
+reduces peak flows and lowers skew. The fraction of rangeland moderates
 evapotranspiration and infiltration rates, which is especially important
 in mixed rangeland systems. The fraction of urban land indicates
 increased imperviousness, which is strongly associated with peak flow
 generation and positive flood skew.
-
-Topography summaries include mean and median slope and mean altitude.
-Mean slope describes average terrain steepness, which helps distinguish
-rugged uplands from flatter plains. Median slope is another measure of
-average slope, which is more robust to outliers than the mean, and is
-useful for evaluating runoff tendency. Mean altitude describes the
-elevation regime, which influences climate, snow duration, and runoff
-seasonality.
 
 ### NLCD Classes
 
@@ -654,15 +655,22 @@ cover.
 
 **Grassland**
 
+52 *Shrub/Scrub*- areas dominated by shrubs; less than 5 meters tall
+with shrub canopy typically greater than 20% of total vegetation. This
+class includes true shrubs, young trees in an early successional stage
+or trees stunted from environmental conditions.
+
 71 *Grassland/Herbaceous*- areas dominated by gramanoid or herbaceous
 vegetation, generally greater than 80% of total vegetation. These areas
 are not subject to intensive management such as tilling, but can be
 utilized for grazing.
 
-**Planted/Cultivated** 81 *Pasture/Hay* – areas of grasses, legumes, or
-grass-legume mixtures planted for livestock grazing or the production of
-seed or hay crops, typically on a perennial cycle. Pasture/hay
-vegetation accounts for greater than 20% of total vegetation.
+81 *Pasture/Hay* – areas of grasses, legumes, or grass-legume mixtures
+planted for livestock grazing or the production of seed or hay crops,
+typically on a perennial cycle. Pasture/hay vegetation accounts for
+greater than 20% of total vegetation.
+
+**Planted/Cultivated**
 
 82 *Cultivated Crops* — areas used for the production of annual crops,
 such as corn, soybeans, vegetables, tobacco, and cotton, and also
@@ -671,6 +679,16 @@ accounts for greater than 20% of total vegetation. This class also
 includes all land being actively tilled.
 
 ------------------------------------------------------------------------
+
+# CHECK INTO DAGS for looking into covars.
+
+Topography summaries include mean and median slope and mean altitude.
+Mean slope describes average terrain steepness, which helps distinguish
+rugged uplands from flatter plains. Median slope is another measure of
+average slope, which is more robust to outliers than the mean, and is
+useful for evaluating runoff tendency. Mean altitude describes the
+elevation regime, which influences climate, snow duration, and runoff
+seasonality.
 
 ## Zettelkasten-style markdown
 
@@ -739,5 +757,5 @@ notes and a script to open/edit them easily using RStudio.
 
 ## Notes
 
-- Last updated: 2025-10-01 16:46
+- Last updated: 2025-10-02 10:46
 - Maintained by: CJ Tinant
