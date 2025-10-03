@@ -14,7 +14,11 @@
 #
 # Generalized Workflow:
 # 1. Load and check rasters and zones.
-# 2. 
+# 2. Run a preflight check:
+#    - Verify that rasters can be opened.
+#    - Enforce CRS and polygonal geometry.
+#    - Standardize the geometry column as `geom`.
+#    - Guarantees unique, non-NA IDs.
 # 2-4. Check `03f_covar_macro_koppen_summary.R`` for details.
 # 5. Count NLCD class areas via robust tiler -- IDs carried through;
 #    coverage_area summed; outputs  macro_id, value (NLCD class), area (m^2)
@@ -77,17 +81,88 @@ layer_name <- "macrozones_gp"
 
 zones <- st_read(zone_path, layer = layer_name, quiet = TRUE)
 
+# ------------------------------------------------------------------------------
+# 2. Run a Preflight Check
+# ------------------------------------------------------------------------------
+raster_paths <- c(slope  = rast_path)
+
+zones <- assert_inputs_ok(
+  raster_paths   = raster_paths,
+  zones          = zones,
+  req_cols       = "macro_id",
+  id_col         = "macro_id",
+  target_crs     = 4269,
+  enforce_unique = TRUE,
+  quiet          = FALSE
+)
+
 # --- ensure raster and zone are prepped and aligned ---
 slope_prep <- prep_raster(rast_path, zones, do_crop = TRUE, do_mask = FALSE)
 r_slope    <- slope_prep$r
 z_slope_sf <- sf::st_as_sf(slope_prep$zones); sf::st_geometry(z_slope_sf) <- "geom"
 
 # ------------------------------------------------------------------------------
-# 2. Calculate summary stats
+# 3. Sanity checks (run once before cont_summary)
 # ------------------------------------------------------------------------------
 
+# 1) Raster: class + single band
+stopifnot(inherits(r_slope, "SpatRaster"))
+stopifnot(terra::nlyr(r_slope) == 1L)
+
+# 2) Zones: sf polygons + id present + not all NA
+stopifnot(inherits(z_slope_sf, "sf"))
+geom_type <- unique(sf::st_geometry_type(z_slope_sf, by_geometry = TRUE))
+stopifnot(all(geom_type %in% c("POLYGON", "MULTIPOLYGON")))
+stopifnot("macro_id" %in% names(z_slope_sf))
+stopifnot(!all(is.na(z_slope_sf$macro_id)))
+
+# 3) CRS alignment: identical proj4/WKT (exactextractr expects same CRS)
+r_crs  <- terra::crs(r_slope, proj = TRUE)
+z_crs  <- sf::st_crs(z_slope_sf)$wkt
+if (!identical(r_crs, z_crs)) {
+  # prefer transforming polygons to raster CRS to avoid resampling slope
+  z_slope_sf <- sf::st_transform(z_slope_sf, r_crs)
+  sf::st_geometry(z_slope_sf) <- "geom"  # keep project convention
+}
+
+# 4) Valid geometries + not empty
+stopifnot(all(sf::st_is_valid(z_slope_sf)))
+stopifnot(nrow(z_slope_sf) > 0)
+
+# 5) Optional: duplicates and NA coverage checks
+stopifnot(!anyDuplicated(z_slope_sf$macro_id))
+na_frac <- terra::global(is.na(r_slope), "mean", na.rm = TRUE)[[1]]
+message(sprintf("Raster NA fraction: %.3f", na_frac))
+
+# 6) Optional: spot-check resolution looks sane (30 m ≈ 0.00027° if in EPSG:4269)
+res_xy <- terra::res(r_slope)
+message(sprintf("Raster resolution: %g x %g (in raster CRS units)", res_xy[1], res_xy[2]))
 
 
+# Following up with result -- Raster NA fraction: 0.523
+cov_ok <- exactextractr::exact_extract(
+  r_slope, z_slope_sf,
+  function(vals, cov) sum(!is.na(vals[[1]]) & cov > 0),
+  summarize_df = TRUE
+)
+z_zero_cov <- z_slope_sf[ cov_ok[[1]] == 0, ]
+if (nrow(z_zero_cov)) {
+  cli::cli_warn("{nrow(z_zero_cov)} zones have zero valid slope coverage.")
+}
+
+
+# ------------------------------------------------------------------------------
+# 3. Calculate summary stats
+# ------------------------------------------------------------------------------
+
+# cont_summary <- function(r, zones, id_col = "macro_id",
+#                          stats = c("mean", "median"),
+#                          probs = NULL)
+slope_tbl <- cont_summary(r_slope,
+                          z_slope_sf,
+                          id_col = "macro_id",
+                          stats = c("mean", "median")
+)
 
 
 
