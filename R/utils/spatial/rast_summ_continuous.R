@@ -146,3 +146,64 @@ cont_summary <- function(r, zones, id_col = "macro_id",
     if (is.na(idx)) tail(x, 1) else x[idx]
   }, numeric(1))
 }
+
+# ---- tiny internal helpers ---------------------------------------------------
+
+.require_namespace <- function(pkgs) {
+  missing <- pkgs[!vapply(pkgs, requireNamespace, FUN.VALUE = logical(1), quietly = TRUE)]
+  if (length(missing)) {
+    stop("Missing required packages: ", paste(missing, collapse = ", "), call. = FALSE)
+  }
+}
+
+.assert_single_band <- function(r) {
+  if (!inherits(r, "SpatRaster")) {
+    stop("`r` must be a terra::SpatRaster.", call. = FALSE)
+  }
+  if (terra::nlyr(r) != 1L) {
+    stop("`r` must be single-band; got ", terra::nlyr(r), " layers.", call. = FALSE)
+  }
+}
+
+.ensure_sf_polygons <- function(z) {
+  # Accept sf polygons/multipolygons or SpatVector polygons
+  if (inherits(z, "SpatVector")) z <- sf::st_as_sf(z)
+  if (!inherits(z, "sf")) {
+    stop("`zones` must be sf or terra::SpatVector.", call. = FALSE)
+  }
+  if (!inherits(sf::st_geometry(z), "sfc_POLYGON") &&
+      !inherits(sf::st_geometry(z), "sfc_MULTIPOLYGON")) {
+    stop("`zones` must be polygonal (POLYGON/MULTIPOLYGON).", call. = FALSE)
+  }
+  
+  # Make valid + normalize type
+  s2_prev <- sf::sf_use_s2()
+  sf::sf_use_s2(FALSE)
+  on.exit(sf::sf_use_s2(s2_prev), add = TRUE)
+  
+  z <- z %>%
+    sf::st_make_valid() %>%
+    sf::st_cast("MULTIPOLYGON", warn = FALSE)
+  
+  # Project to raster CRS if both have CRS and they differ (silent, safe)
+  z
+}
+
+.assert_has_id <- function(zones_sf, id_col) {
+  if (!id_col %in% names(zones_sf)) {
+    stop("`id_col` '", id_col, "' not found in `zones`.", call. = FALSE)
+  }
+  if (all(is.na(zones_sf[[id_col]]))) {
+    stop("`id_col` '", id_col, "' is all NA in `zones`.", call. = FALSE)
+  }
+  invisible(TRUE)
+}
+
+# If you prefer geometry column name 'geom' across the project:
+.set_geom_name <- function(x) {
+  # keep sf semantics but use 'geom' as active column name
+  if (inherits(x, "sf")) {
+    sf::st_geometry(x) <- "geom"
+  }
+  x
+}
