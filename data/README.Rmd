@@ -3,17 +3,17 @@ title: "README - data"
 author: "CJ Tinant"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
+  github_document:
+    toc: true
+    toc_depth: 2
   pdf_document:
     toc: true
     toc_depth: 2
     number_sections: true
     latex_engine: xelatex
     fig_caption: true
-  github_document:
-    toc: true
-    toc_depth: 2
 params:
-  version: "v1.5.1"
+  version: "v1.6.7"
 editor_options:
   markdown:
     wrap: 72
@@ -85,6 +85,9 @@ docs/
         |       ├── statsgo2_mapunit.csv     # STATSGO2 mapunits data for GP
         |       ├── statsgo2_mapunit.csv     # STATSGO2 mapunit polygons for GP
         |       ├── statsgo2_mapunit.gpkg    # STATSGO2 mapunit polygons for GP
+        ├── study_area/
+        |       ├── great_plains_outline.gpkg    # STATSGO2 mapunit polygons for GP
+        |                                        # layer = gp_outline_5070
         ├── us- ecoregions/
                 ├── us-eco-levels.gpkg    # US Ecoregions Levels 1-4
     ├── raw/                      # Unmodified input data

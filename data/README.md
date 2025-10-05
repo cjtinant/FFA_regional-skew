@@ -1,7 +1,7 @@
 README - data
 ================
 CJ Tinant
-August 17, 2025
+October 05, 2025
 
 - [📁 Project Data (`data/`)](#file_folder-project-data-data)
   - [📚 Folder Purpose](#books-folder-purpose)
@@ -72,6 +72,9 @@ docs/
         |       ├── statsgo2_mapunit.csv     # STATSGO2 mapunits data for GP
         |       ├── statsgo2_mapunit.csv     # STATSGO2 mapunit polygons for GP
         |       ├── statsgo2_mapunit.gpkg    # STATSGO2 mapunit polygons for GP
+        ├── study_area/
+        |       ├── great_plains_outline.gpkg    # STATSGO2 mapunit polygons for GP
+        |                                        # layer = gp_outline_5070
         ├── us- ecoregions/
                 ├── us-eco-levels.gpkg    # US Ecoregions Levels 1-4
     ├── raw/                      # Unmodified input data
