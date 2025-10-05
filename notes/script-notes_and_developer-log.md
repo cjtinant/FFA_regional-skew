@@ -1,23 +1,13 @@
 Script Notes and Developer Log
 ================
 C.J. Tinant
-October 02, 2025
+October 05, 2025
 
 - [Overview](#overview)
 - [Project Notes (General)](#project-notes-general)
 - [TODO (General)](#todo-general)
 - [Future Ideas](#future-ideas)
 - [Notes by Script](#notes-by-script)
-- [03e\_ zonal summaries](#03e_-zonal-summaries)
-  - [Overview](#overview-1)
-  - [Naming convention](#naming-convention)
-  - [Generalized Workflow Prior to Performing a Zonal
-    Summary](#generalized-workflow-prior-to-performing-a-zonal-summary)
-  - [03e_macrozone_fix_join_key.R](#03e_macrozone_fix_join_keyr)
-  - [03f_covar_macro_koppen_summary.R](#03f_covar_macro_koppen_summaryr)
-  - [03g_covar_macro_phzm_summary.R](#03g_covar_macro_phzm_summaryr)
-  - [03h_covar_make_NLCD_meta](#03h_covar_make_nlcd_meta)
-  - [03h_covar_macro_NLC_summary.R](#03h_covar_macro_nlc_summaryr)
 - [CHECK INTO DAGS for looking into
   covars.](#check-into-dags-for-looking-into-covars)
   - [Zettelkasten-style markdown](#zettelkasten-style-markdown)
@@ -286,6 +276,30 @@ and safest for uncertain timestamp formats.
 
 ------------------------------------------------------------------------
 
+### 02b_merge_nhdplus_hr_catchments.R
+
+### 02c_validate_spatial_metadata.R
+
+### 02d_extract_metadata_from_script_names.R
+
+### 02e_gp_parts_qc_and_outline.R
+
+------------------------------------------------------------------------
+
+The original extent for the Great Plains Level 1 Ecoregion contains
+small polygons along the Texas-Louisiana Coastal Plain and the disjunct
+Texas Blackland Prairies.
+
+The Texas Blackland Prairies region forms a disjunct ecological region,
+distinguished from surrounding regions by fine-textured, clayey soils
+and predominantly prairie potential natural vegetation. The predominance
+of Vertisols in this area is related to soil formation in Cretaceous
+shale, chalk, and marl parent materials. Unlike tallgrass prairie soils
+that are mostly Mollisols in states to the north, this region contains
+Vertisols, Alfisols, and Mollisols.
+
+------------------------------------------------------------------------
+
 ### utils/process_geometries.R
 
 Centroid locations, which the function extracts are useful for map
@@ -452,7 +466,7 @@ The idea behind generalization is to preserve regional coherence while
 improving the gage count and spatial contiguity required for reliable
 skew estimation.
 
-CHECK THIS The merging process followed a hierarchical decision rule:
+The merging process followed a hierarchical decision rule:
 
 - Primary criterion: adjacency with a unit sharing the same Level II
   ecoregion classification
@@ -468,9 +482,7 @@ CHECK THIS The merging process followed a hierarchical decision rule:
 
 ------------------------------------------------------------------------
 
-# 03e\_ zonal summaries
-
-## Overview
+### 03e\_ zonal summaries
 
 Zonal summaries are used to calculate macrozone-scale patterns in
 climate, land cover, and topography.
@@ -481,7 +493,7 @@ tolerance regimes based on minimum winter temperatures.
 
 The scripts call utility scripts prior to calculating zonal summaries.
 
-## Naming convention
+### Naming convention
 
 |     Short Name     |       Dataset        | Summary Type |   Variable Name    |
 |:------------------:|:--------------------:|:------------:|:------------------:|
@@ -496,7 +508,7 @@ The scripts call utility scripts prior to calculating zonal summaries.
 |    Median Slope    |      NED Slope       |    Median    |   `ned_slp_med`    |
 |   Altitude Zone    |    NED Elevation     |     Mean     |  `ned_elev_mean`   |
 
-## Generalized Workflow Prior to Performing a Zonal Summary
+### Generalized Workflow Prior to Performing a Zonal Summary
 
 First, run a pre-flight check with `utils/spatial/assert_inputs_ok.R`
 that performs the following: - Verify that rasters can be opened. -
@@ -516,7 +528,7 @@ This returns a list that needs to be extracted then converted from a
 SpatVector to an sf object prior to {exactextractor} in
 `utils/spatial/rast_summ_by_class.R`
 
-## 03e_macrozone_fix_join_key.R
+### 03e_macrozone_fix_join_key.R
 
 Fix join key to fix an issue with Tallgrass Prairie and provide some
 ordinal order.
@@ -531,7 +543,7 @@ ordinal order.
 
 ------------------------------------------------------------------------
 
-## 03f_covar_macro_koppen_summary.R
+### 03f_covar_macro_koppen_summary.R
 
 Dominant Koppen-Geiger climate classes provides a broad-scale context on
 climate, e.g. humid continental vs. semi-arid.
@@ -543,14 +555,21 @@ using min_frac to minimize the number of categories and the total amount
 unexplained. The final result contains nine climate types across five
 macrozone categories with 29.9% of the variance unexplained.
 
-**Table of Results of Koppen-Geiger Climate Zonal Summary:** \| n-vals
-\| max_tot_unexpl \| min_frac \| num_cat \|
-\|:——:\|:————–:\|:——–:\|:——-:\| \| 15 \| 0.212 \| NA \| 5 \| \| 14 \|
-0.212 \| 0.07 \| 5 \| \| 13 \| 0.212 \| 0.08 \| 5 \| \| 12 \| 0.299 \|
-0.09 \| 5 \| \| 11 \| 0.299 \| 0.11 \| 5 \| \| 10 \| 0.299 \| 0.135 \| 5
-\| \| 09 \| 0.299 \| 0.14 \| 5 \| \<– used this one \| 08 \| 0.441 \|
-0.15 \| 5 \| \| 07 \| 0.441 \| 0.25 \| 5 \| \| 06 \| 0.441 \| 0.35 \| 5
-\| \| 05 \| 0.618 \| 0.37 \| 5 \|
+**Table of Results of Koppen-Geiger Climate Zonal Summary:**
+
+| n-vals | max_tot_unexpl | min_frac | num_cat |
+|:------:|:--------------:|:--------:|:-------:|
+|   15   |     0.212      |    NA    |    5    |
+|   14   |     0.212      |   0.07   |    5    |
+|   13   |     0.212      |   0.08   |    5    |
+|   12   |     0.299      |   0.09   |    5    |
+|   11   |     0.299      |   0.11   |    5    |
+|   10   |     0.299      |  0.135   |    5    |
+|   09   |     0.299      |   0.14   |    5    |
+|   08   |     0.441      |   0.15   |    5    |
+|   07   |     0.441      |   0.25   |    5    |
+|   06   |     0.441      |   0.35   |    5    |
+|   05   |     0.618      |   0.37   |    5    |
 
 **Table of Results of Koppen-Geiger Climate Zonal Summary:** Tallgrass
 Prairie – Dfa- Cold, no dry season, hot summer
@@ -568,7 +587,7 @@ Shortgrass-Steppe – BSk - Arid, steppe, cold
 
 ------------------------------------------------------------------------
 
-## 03g_covar_macro_phzm_summary.R
+### 03g_covar_macro_phzm_summary.R
 
 Outputs the top-3 dominant and count of phzm zones, and qa plots as a
 sanity check. The top-3 dominant and count of phzm zones indicates a
@@ -590,7 +609,7 @@ highest class count (20).
 
 ------------------------------------------------------------------------
 
-## 03h_covar_make_NLCD_meta
+### 03h_covar_make_NLCD_meta
 
 See docs/metadata/look_up_tables/nlcd_metadata_lut.csv”) Changed
 classification to add Rangeland which combines Grassland, Hay/Pasture,
@@ -599,7 +618,7 @@ Prairie is Shrubland.
 
 ------------------------------------------------------------------------
 
-## 03h_covar_macro_NLC_summary.R
+### 03h_covar_macro_NLC_summary.R
 
 Land cover proportion summaries include the fraction of cropland,
 forest, rangeland, and urban land. Fraction of cropland indicates
@@ -757,5 +776,5 @@ notes and a script to open/edit them easily using RStudio.
 
 ## Notes
 
-- Last updated: 2025-10-02 10:46
+- Last updated: 2025-10-05 11:23
 - Maintained by: CJ Tinant
