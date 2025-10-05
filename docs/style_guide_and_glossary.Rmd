@@ -19,7 +19,7 @@ editor_options:
     wrap: 72
 ---
 
-# 📖 Style Guide & Glossary
+# 📖 Style Guide
 
 ## Purpose
 
@@ -76,7 +76,32 @@ writing “Shortgrass-Steppe Prairie”.
 
 ---
 
-# Appendix
+# Glossary
+
+## Coordinate Reference System (CRS) Codes
+
+CRS (Coordinate Reference System) refers to the general concept of a map
+coordinate system. A CRS includes: datums, projections, units, transformations,
+and other geodetic parameters.
+
+  - A datum is an earth model, ellipsoid or spheroid, and the origin point for
+    the system
+  - The map projection describes how the curved Earth is flattened onto 2D.
+
+EPSG codes are unique numeric identifiers for specific CRS, in other words,EPSG
+is a registry and naming system for CRS. EPSG codes are standardized, unique
+integer numbers (e.g., EPSG:4326) used to identify a specific CRS definition. The
+acronym comes from the EPSG Geodetic Parameter Dataset, which was originally
+compiled by the European Petroleum Survey Group (now defunct) and now maintained
+by the International Association of Oil & Gas Producers (IOGP). EPSG codes
+provide a consistent way to refer to and specify different CRS and transformations.
+Some EPSG codes used in the project include:
+
+- EPSG:4269 -- NAD83 / unprojected (GRS 1980 elipsoid) in lat lon.
+- EPSG:4326 -- WGS84 / unprojected (WGS 1984 elipsoid) in lat lon. EPSG:4326 is
+used by the National Elevation Dataset (NED).
+- EPSG:5070 -- NAD83 / Conus Albers (GRS 1980 elipsoid) in meters.
+**EPSG:5070 is the project standard EPSG code.**
 
 ## An Explaination of ID-term in Spatial Data Workflows
 - **ID (Identifier)** is the *generic term* for a field that uniquely (or
@@ -91,9 +116,9 @@ no duplicates and no recycling. A UID is often in a UUID/GUID format
 sequences. UID is *useful when performing merge/join across multiple datasets*,
 and when persistence across time and versions is needed
 
-- **OID (Object ID)** is a term from Esri geodatabases.and is an automatically
+- **OID (Object ID)** is a term from ESRI geodatabases.and is an automatically
 maintained field (OBJECTID or OID). OID is internal to the geodatabase and
 ensures every feature has a unique row identifier. *OID is* **not** *stable
 upon re-export or recompute*, as Esri may regenerate an OID. Therefore, it
-should not be used as an analysis join key in persistant workflows.
+should not be used as an analysis join key in persistent workflows.
 
