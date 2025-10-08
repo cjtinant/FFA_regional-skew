@@ -20,15 +20,16 @@ the [Keep a Changelog](https://keepachangelog.com/) format._
 <!--
 ## [Untracked] -- 2025-10-02
 
-## Untracked changes prior to v1.6.7
+## Untracked changes prior to v1.6.8
 
 
 ### In Progress
 Need to update rangeland NLCD group classification across the documentation.
 
+Need to update macrozones to just the single area -- getting rid of coastal and disjunct
 
 -->
-## [v1.6.7] — 2025-10-04
+## [v1.6.7] — 2025-10-08
 
 ### Added
 
@@ -37,8 +38,9 @@ Need to update rangeland NLCD group classification across the documentation.
 ### Changed
 - Updated Style Guide and Glossary (style_guide_and_glossary.Rmd)
 
-  - Added section explaining CRS and EPSG.
+   - Added section explaining CRS and EPSG.
 
+- Updated NED for explicit 90m cell size to match the z=10 output from NED server
 
 ## [v1.6.6] — 2025-10-02
 

@@ -1,9 +1,10 @@
 Changelog
 ================
 CJ Tinant
-2025-10-02
+2025-10-08
 
 - [Changelog](#changelog)
+  - [\[v1.6.7\] — 2025-10-08](#v167--2025-10-08)
   - [\[v1.6.6\] — 2025-10-02](#v166--2025-10-02)
   - [\[v1.6.5\] — 2025-09-18](#v165--2025-09-18)
   - [\[v1.6.4\] — 2025-09-15](#v164--2025-09-15)
@@ -33,21 +34,37 @@ Changelog](https://keepachangelog.com/) format.*
 
 ------------------------------------------------------------------------
 
-## \[v1.6.6\] — 2025-10-02
-
 <!--
-## [Untracked] -- 2025-09-18
-&#10;## Untracked changes prior to v1.6.6
+## [Untracked] -- 2025-10-02
+&#10;## Untracked changes prior to v1.6.8
 &#10;
 ### In Progress
-Need to update rangeland NLCD group classification across othe documentation.
-&#10;
--->
+Need to update rangeland NLCD group classification across the documentation.
+&#10;Need to update macrozones to just the single area -- getting rid of coastal and disjunct
+&#10;-->
+
+## \[v1.6.7\] — 2025-10-08
 
 ### Added
 
-Added CRS/grid guards, source-type checks, integer and legend-code QA,
-and INT1U tiled/LZW output for NLCD 2016 Land Cover.
+- Added study area outline
+  (data/processed/study_area/great_plains_outline.gpkg)
+
+### Changed
+
+- Updated Style Guide and Glossary (style_guide_and_glossary.Rmd)
+
+  - Added section explaining CRS and EPSG.
+
+- Updated NED for explicit 90m cell size to match the z=10 output from
+  NED server
+
+## \[v1.6.6\] — 2025-10-02
+
+### Added
+
+- Added CRS/grid guards, source-type checks, integer and legend-code QA,
+  and INT1U tiled/LZW output for NLCD 2016 Land Cover.
 
 - nlcd_fractions_tiled() for area-weighted class fractions (OOM-safe)
 
@@ -65,42 +82,42 @@ and INT1U tiled/LZW output for NLCD 2016 Land Cover.
 
 ### Added
 
-PHZM covariate summary workflow and outputs:
+- PHZM covariate summary workflow and outputs:
 
-R/03_covariates/03g_covar_macro_phzm_summary.R to compute summaries and
-generate QA plots. (03c302a)
+  - R/03_covariates/03g_covar_macro_phzm_summary.R to compute summaries
+    and generate QA plots. (03c302a)
 
-data/covars/macro_phzm.csv (PHZM summaries by macrozone). (559239c)
+  - data/covars/macro_phzm.csv (PHZM summaries by macrozone). (559239c)
 
-QA plots: output/qa_checks/macro_phzm_vs_area_qa.png,
-output/qa_checks/macro_phzm_vs_lat_qa.png. (559239c)
+- QA plots: output/qa_checks/macro_phzm_vs_area_qa.png,
+  output/qa_checks/macro_phzm_vs_lat_qa.png. (559239c)
 
 ### Changed
 
-Breaking: macrozone join key now uses updated PHZM codes; update any
-joins/merges accordingly. (R/03_covariates/03e_macrozone_fix_join_key.R,
-54e3a38)
+- Breaking: macrozone join key now uses updated PHZM codes; update any
+  joins/merges accordingly.
+  (R/03_covariates/03e_macrozone_fix_join_key.R, 54e3a38)
 
-PHZM summary now returns top 3 classes (updates in
-R/utils/spatial/rast_summ_by_class.R). (85fbfa5)
+- PHZM summary now returns top 3 classes (updates in
+  R/utils/spatial/rast_summ_by_class.R). (85fbfa5)
 
-QA checks expanded and covariate summary/plot generation updated.
-(03c302a)
+- QA checks expanded and covariate summary/plot generation updated.
+  (03c302a)
 
 ### Fixed / Build
 
-renv / R upgrade: migrate project to R 4.5.1, refresh renv.lock, and
-stabilize macOS installs. (renv.lock, renv/activate.R, 29e7641)
+- renv / R upgrade: migrate project to R 4.5.1, refresh renv.lock, and
+  stabilize macOS installs. (renv.lock, renv/activate.R, 29e7641)
 
 ### Removed
 
-Deprecated/unused PHZM quality eval script:
-R/utils/qa/phzm_eval_quality.R. (c365330)
+- Deprecated/unused PHZM quality eval script:
+  R/utils/qa/phzm_eval_quality.R. (c365330)
 
 ### Docs
 
-Script notes & developer log updated for PHZM workflow.
-(notes/script-notes_and_developer-log.Rmd, 022868d)
+- Script notes & developer log updated for PHZM workflow.
+  (notes/script-notes_and_developer-log.Rmd, 022868d)
 
 ## \[v1.6.4\] — 2025-09-15
 
