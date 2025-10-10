@@ -149,8 +149,17 @@ ggplot() +
   theme(panel.grid = element_blank(), axis.title = element_blank())
 
 # ------------------------------------------------------------------------------
-# 3. Write results
+# 3. Check and Write Results
 # ------------------------------------------------------------------------------
+# --- ids of parts we kept (given cum_frac <= target_cover) ---
+kept_ids <- gp_filt_5070 %>%
+  st_drop_geometry()
+
+# --- Find dropped parts ---
+dropped_ids <- gp_drop_5070 %>%
+  st_drop_geometry()
+
+
 # --- write outputs ---
 if (file.exists(out_gpkg)) fs::file_delete(out_gpkg)
 sf::st_write(gp_outline_5070,
