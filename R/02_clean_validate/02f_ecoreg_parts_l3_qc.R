@@ -30,6 +30,9 @@ source(file.path(here(), "R", "utils", "spatial", "as_sf_geom.R"))
 # --- paths ---
 gpkg_file <- file.path(
   here(), "data", "processed", "us_ecoregions", "us_eco_levels.gpkg")
+outl_file <- file.path(
+  here(), "data", "processed", "study_area", "great_plains_outline.gpkg")
+st_layers(outl_file)
 
 out_dir   <- file.path(here(), "data", "processed", "study_area")
 fs::dir_create(out_dir)
@@ -48,13 +51,16 @@ message("Raw GP features: ", nrow(gp_raw_l2_sf))
 message("Raw CRS: ", sf::st_crs(gp_raw_l2_sf)$input %||% sf::st_crs(gp_raw_l2_sf)$wkt)
 message("Raw EPSG: ",sf::st_crs(gp_raw_l2_sf)$epsg)
 
-# --- quick QA ---
-gp_raw_empty  <- sum(sf::st_is_empty(gp_raw_l2_sf))
-gp_raw_invalid <- sum(!sf::st_is_valid(gp_raw_l2_sf))
-message("Empty geoms: ", gp_raw_empty,
-        " | invalid after st_make_valid(): ", gp_raw_invalid)
-message("Raw CRS: ", sf::st_crs(gp_raw_l2_sf)$input %||% sf::st_crs(gp_raw_l2_sf)$wkt)
-message("Raw EPSG: ", sf::st_crs(gp_raw_l2_sf)$epsg)
+# # --- Load outline ---
+# gp_outline_sf <- sf::st_read(outl_file, layer = "gp_outline_5070", quiet = TRUE) 
+# 
+# message("Outline GP features: ", nrow(gp_outline_sf))
+# message("Outline CRS: ", sf::st_crs(gp_outline_sf)$input %||% sf::st_crs(gp_outline_sf)$wkt)
+# message("Outline EPSG: ",sf::st_crs(gp_outline_sf)$epsg)
+# 
+# library(rmapshaper)
+# gp_outline_simple <- rmapshaper::ms_simplify(gp_outline_sf, keep = 0.05)
+
 
 # ------------------------------------------------------------------------------
 # 2. Drop slivers and disjunct areas
@@ -126,7 +132,6 @@ ggplot() +
           fill = "grey90",
           color = "grey25",
           linewidth = 0.4) +
-  coord_sf(crs = sf::st_crs(5070)) +
   labs(
     title    = "Study Area with L2 Ecoregions",
   ) +
@@ -150,6 +155,20 @@ ggplot() +
   theme(panel.grid = element_blank(),
         axis.title = element_blank()
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # ------------------------------------------------------------------------------
 # 4. Check and write results

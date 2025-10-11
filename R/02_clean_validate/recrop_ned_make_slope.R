@@ -31,115 +31,120 @@ suppressPackageStartupMessages({
 # 1. Setup
 # ------------------------------------------------------------------------------
 # --- inputs ---
-dem_path   <- here("data","processed","ned","ned_gp_5070_90m.tif")
+ned_path   <- here("data","processed","ned","ned_gp_5070_90m.tif")
 outline_gpkg <- here("data","processed","study_area","great_plains_outline.gpkg")
 outline_lyr  <- "gp_outline_5070"   # your updated, coastal-plain-dropped outline
 
-r_dem <- terra::rast(dem_path)
+ecoreg_gpkg <- here("data","processed","study_area","gp_ecoreg_5070.gpkg")
+eco_lyr  <- "gp_l2_ecoreg"   # your updated, coastal-plain-dropped outline
 
-gp <- sf::st_read(outline_gpkg, layer = outline_lyr, quiet = TRUE)
-sf::st_geometry(gp) <- "geom"
-if (sf::st_crs(gp)$wkt != terra::crs(r_dem, proj = TRUE)) {
-  gp <- sf::st_transform(gp, terra::crs(r_dem, proj = TRUE))
-  sf::st_geometry(gp) <- "geom"
-}
+# --- outputs ---
+meta_path <- here("docs", "metadata", "QAQC", "2025-10-11_extent-5070.pdf")
+
+# --- get raster and vector files ---
+ned_5070 <- terra::rast(ned_path)
+
+gp_outline_5070 <- sf::st_read(outline_gpkg,
+                               layer = outline_lyr,
+                               quiet = TRUE
+)
+
+gp_l2_5070 <- sf::st_read(ecoreg_gpkg,
+                               layer = eco_lyr,
+                               quiet = TRUE
+)
+
+# make comparable sf::crs objects
+crs_r <- sf::st_crs(terra::crs(ned_5070, proj = TRUE))
+crs_v <- sf::st_crs(gp_outline_5070)
+
+# robust equality check
+crs_v == crs_r        # TRUE means same CRS definition
+crs_v$epsg            # should be 5070 (may be NA and still equal by WKT)
+
+
+
+# # downsample/crop helps speed and avoids Viewer issues
+# ned_clip  <- terra::mask(terra::crop(ned_5070, gp_outline_5070), gp_outline_5070)
+# ned_df    <- as.data.frame(ned_clip, xy = TRUE, na.rm = TRUE) %>%
+#   dplyr::rename(elev_m = tidyselect::last_col())
+# 
+# p_extent <- ggplot() +
+#   geom_raster(data = ned_df, aes(x = x, y = y, fill = elev_m)) +
+#   geom_sf(data = gp_outline_5070, fill = NA, color = "red", size = 0.4) +
+#   coord_sf(crs = crs_r) +   # stay in EPSG:5070
+#   theme_minimal() +
+#   labs(title = "Extent and Alignment Check",
+#        fill = "Elevation (m)"
+# )
+# 
+# ggsave(meta_path,
+#        p_extent,
+#        device = "pdf",
+#        width = 9,
+#        height = 7,
+#        units = "in",
+#        bg = "white",
+#        dpi = 300)
+
+# ------------------------------------------------------------------------------
+# 2. Mask and Crop Raster
+# ------------------------------------------------------------------------------
+# --- make bounding box ---
+gp_bbox_5070 <- gp_outline_5070 %>%
+  sf::st_buffer(50e3) %>%       # 50 km
+  sf::st_bbox() %>%
+  sf::st_as_sfc(crs = 5070) %>% # correct CRS here
+  sf::st_sf()
+
+# --- mask and crop raster ---
+ned_5070_gp <- ned_5070 %>%
+  terra::crop(gp_bbox_5070) %>%
+  terra::mask(terra::vect(gp_bbox_5070))
+
+# --- clamp any residual negatives to NA (belt-and-suspenders) ---
+ned_5070_gp <- terra::ifel(ned_5070_gp < 0, NA, ned_5070_gp)
+
+# ------------------------------------------------------------------------------
+# 3. Check Results
+# ------------------------------------------------------------------------------
+# --- Quick audit ---
+# print(ned_5070_gp)                  # summary header
+terra::minmax(ned_5070_gp)          # range per layer
+terra::res(ned_5070_gp)             # cell size
+terra::crs(ned_5070_gp)             # CRS (WKT)
+terra::ext(ned_5070_gp)             # extent
+terra::nlyr(ned_5070_gp)            # band count
+terra::global(is.na(ned_5070_gp), "mean")  # NA fraction
+
+# --- Quick histogram ---
+terra::hist(ned_5070_gp, main = "Elevation (trimmed study area)")
+
+
+# --- show min & a few quantiles to sanity-check the tail ---
+print(terra::global(ned_5070_gp,
+                    fun = quantile,
+                    probs = c(0, 0.001, 0.01, 0.1, 0.5),
+                    na.rm = TRUE))
 
 
 
 
 
 
-r_dem_gp <- r_dem %>%
-  terra::crop(gp) %>%
-  terra::mask(terra::vect(gp))
 
-# optional: clamp any residual negatives to NA (belt-and-suspenders)
-r_dem_gp <- terra::ifel(r_dem_gp < 0, NA, r_dem_gp)
+
+# ---------- 4) Where are negative cells? ----------
+#r_neg <- r < 0
+plot(ned_5070_gp, main = "Locations of negative elevation (< 0 m)")
+
+
 
 terra::writeRaster(
-  r_dem_gp,
+  ned_5070_gp,
   here("data","processed","ned","ned_gp_5070_90m_trimmed.tif"),
   overwrite = TRUE
 )
-
-terra::hist(r_dem_gp, main = "Elevation (trimmed study area)")
-terra::minmax(r_dem_gp)
-
-
-
-# ------------------------------------------------------------------------------
-# 8. Check Results
-# ------------------------------------------------------------------------------
-
-# --- Optional: read in a prior saved NED raster ---
-rast_path <- here("data", "processed", "ned", "ned_gp_5070_90m.tif")
-
-# --- read -> SpatRaster ---
-r <- terra::rast(rast_path)
-
-# --- Quick audit ---
-stopifnot(inherits(r, "SpatRaster"))
-print(r)                  # summary header
-terra::minmax(r)          # range per layer
-terra::res(r)             # cell size
-terra::crs(r)             # CRS (WKT)
-terra::ext(r)             # extent
-terra::nlyr(r)            # band count
-terra::names(r)           # layer names
-terra::global(is.na(r), "mean")  # NA fraction
-
-# --- Optional: visualize a small window to confirm values look sane ---
-#plot(r, main = "Raster preview (full extent)")  # light, but useful
-
-
-
-# ---------- 1) Fast histogram (terra) ----------
-# terra::hist(r, main = "Elevation histogram (all cells)", xlab = "Elevation (m)")
-
-# ---------- 2) Tidy histogram (sampled) ----------
-set.seed(42)
-# sample up to 200k non-NA cells for a smooth ggplot histogram
-vals <- terra::spatSample(r, size = 2e5, method = "random", na.rm = TRUE) %>%
-  as.data.frame()
-names(vals) <- "elev_m"
-
-vals %>%
-  ggplot(aes(elev_m)) +
-  geom_histogram(bins = 120) +
-  labs(
-    title = "Elevation histogram (sampled)",
-    x = "Elevation (m)", y = "Count"
-  )
-
-# zoom near zero to inspect negatives
-vals %>%
-  filter(elev_m > -300, elev_m < 300) %>%
-  ggplot(aes(elev_m)) +
-  geom_histogram(bins = 120) +
-  labs(
-    title = "Elevation near sea level (−300 to 300 m)",
-    x = "Elevation (m)", y = "Count"
-  )
-
-# ---------- 3) How many negatives? ----------
-neg_stats <- terra::global(r < 0, "sum", na.rm = TRUE)  # count of <0 cells
-tot_cells <- prod(terra::ncol(r), terra::nrow(r)) - terra::global(is.na(r), "sum", na.rm = TRUE)[[1]]
-
-neg_n   <- neg_stats[[1]]
-neg_pct <- 100 * neg_n / tot_cells
-
-cat(sprintf("Cells < 0 m: %s (%.4f%% of non-NA cells)\n", format(neg_n, big.mark=","), neg_pct))
-
-# also show min & a few quantiles to sanity-check the tail
-print(terra::global(r, fun = quantile, probs = c(0, 0.001, 0.01, 0.1, 0.5), na.rm = TRUE))
-
-# ---------- 4) Where are negative cells? ----------
-r_neg <- r < 0
-plot(r_neg, main = "Locations of negative elevation (< 0 m)")
-
-
-
-
 
 
 # ------------------------------------------------------------------------------
@@ -154,7 +159,7 @@ slope_5070 <- terra::terrain(
 )
 
 
-r_slope_deg <- terra::terrain(r_dem_gp, v = "slope", unit = "degrees", neighbors = 8)
+r_slope_deg <- terra::terrain(ned_5070_gp, v = "slope", unit = "degrees", neighbors = 8)
 
 
 

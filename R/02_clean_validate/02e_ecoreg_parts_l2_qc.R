@@ -1,20 +1,16 @@
 # ==============================================================================
-# Script Name:     02e_gp_parts_qc_and_outline.R
+# Script Name:     02f_gp_ecoreg_l2_qc.R
 # Purpose:         Rank GP polygon parts by area, keep a defensible subset,
 #                  build clean outline + bbox for elevatr.
 # Author:          CJ Tinant — with GPT-5 Thinking
-# Date Created:    2025-10-04
+# Date Created:    2025-10-10
 # Last Updated:    2025-10-10
-#
-# Changelog:
-# - 2025-10-04     Initial script
-# - 2025-10-10     Refactor script to remove Texas Coastal Region polygon -- 
-#                  behaves differently in terms of flood frequency.
 # Inputs:          data/processed/us_ecoregions/us_eco_levels.gpkg
-#                  (layer: us_eco_l1)
-# Outputs:         data/processed/study_area/great_plains_outline.gpkg
-#                  - gp_outline_5070       (cleaned/bridged outline, EPSG:5070)
+#                  (layer: us_eco_l2)
+# Outputs:         data/processed/study_area/gp_ecoreg_5070.gpkg
+#                    - layer = gp_l2_ecoreg  (cleaned, EPSG:5070)
 # Notes:
+# - Disjunct region dropped is the Texas Blackland Prairies region
 # ==============================================================================
 # --- Load libraries ---
 suppressPackageStartupMessages({
@@ -34,6 +30,9 @@ source(file.path(here(), "R", "utils", "spatial", "as_sf_geom.R"))
 # --- paths ---
 gpkg_file <- file.path(
   here(), "data", "processed", "us_ecoregions", "us_eco_levels.gpkg")
+outl_file <- file.path(
+  here(), "data", "processed", "study_area", "great_plains_outline.gpkg")
+st_layers(outl_file)
 
 out_dir   <- file.path(here(), "data", "processed", "study_area")
 fs::dir_create(out_dir)
@@ -52,13 +51,16 @@ message("Raw GP features: ", nrow(gp_raw_l2_sf))
 message("Raw CRS: ", sf::st_crs(gp_raw_l2_sf)$input %||% sf::st_crs(gp_raw_l2_sf)$wkt)
 message("Raw EPSG: ",sf::st_crs(gp_raw_l2_sf)$epsg)
 
-# --- quick QA ---
-gp_raw_empty  <- sum(sf::st_is_empty(gp_raw_l2_sf))
-gp_raw_invalid <- sum(!sf::st_is_valid(gp_raw_l2_sf))
-message("Empty geoms: ", gp_raw_empty,
-        " | invalid after st_make_valid(): ", gp_raw_invalid)
-message("Raw CRS: ", sf::st_crs(gp_raw_l2_sf)$input %||% sf::st_crs(gp_raw_l2_sf)$wkt)
-message("Raw EPSG: ", sf::st_crs(gp_raw_l2_sf)$epsg)
+# # --- Load outline ---
+# gp_outline_sf <- sf::st_read(outl_file, layer = "gp_outline_5070", quiet = TRUE) 
+# 
+# message("Outline GP features: ", nrow(gp_outline_sf))
+# message("Outline CRS: ", sf::st_crs(gp_outline_sf)$input %||% sf::st_crs(gp_outline_sf)$wkt)
+# message("Outline EPSG: ",sf::st_crs(gp_outline_sf)$epsg)
+# 
+# library(rmapshaper)
+# gp_outline_simple <- rmapshaper::ms_simplify(gp_outline_sf, keep = 0.05)
+
 
 # ------------------------------------------------------------------------------
 # 2. Drop slivers and disjunct areas
@@ -98,8 +100,9 @@ gp_drop_5070 <- gp_parts_5070 %>%
   filter(NA_L2NAME == "TEXAS-LOUISIANA COASTAL PLAIN" |
            area_gen_km2 == 0 |
            part_id == 6
-  ) %>%
+         ) %>%
   arrange(NA_L2CODE) %>%
+#gp_drop_5070 <- gp_drop_5070 %>%
   dplyr::mutate(
     total_km2 = sum(part_area_km2),
     cum_km2   = cumsum(part_area_km2),
@@ -107,14 +110,8 @@ gp_drop_5070 <- gp_parts_5070 %>%
     area_gen_km2 = round(part_area_km2, digits = 0)
   )
 
-# --- make outline ---
-gp_outline_5070 <- gp_filt_5070 %>%
-dplyr::summarise(.groups = "drop") %>%
-  sf::st_make_valid()
-sf::st_geometry(gp_outline_5070) <- "geom"
-
 # ------------------------------------------------------------------------------
-# 4. Visual QA checks
+# 3. Visual QA checks
 # ------------------------------------------------------------------------------
 # --- Make states outline ---
 states_5070 <- maps::map("state", plot = FALSE, fill = TRUE) %>%
@@ -130,26 +127,51 @@ ggplot() +
           color = "grey75",
           linewidth = 0.25
   ) +
-  geom_sf(data = gp_outline_5070,
+  geom_sf(data = gp_filt_5070,
           aes(geometry = geom),
           fill = "grey90",
           color = "grey25",
           linewidth = 0.4) +
-  geom_sf(data = gp_drop_5070,
-          aes(geometry = geom),
-          fill = "firebrick",
-          color = "grey35",
-          alpha = 0.5,
-          linewidth = 0.4) +
-  coord_sf(crs = sf::st_crs(5070)) +
   labs(
-    title    = "Great Plains Outline and Dropped Parts (Red)"
+    title    = "Study Area with L2 Ecoregions",
   ) +
   theme_minimal(base_size = 12) +
   theme(panel.grid = element_blank(), axis.title = element_blank())
 
+# --- Plot of dropped parts ---
+ggplot() +
+  geom_sf(data = states_5070, aes(geometry = geom),
+          fill = NA,
+          color = "grey80",
+          linewidth = 0.25) +
+  geom_sf(data = gp_drop_5070,
+          aes(geometry = geom),
+          fill = "firebrick",
+          color = "grey35",
+          linewidth = 0.4) +
+  coord_sf(crs = st_crs(5070)) +
+  labs(title = "Dropped GP parts (red)") +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid = element_blank(),
+        axis.title = element_blank()
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # ------------------------------------------------------------------------------
-# 3. Check and Write Results
+# 4. Check and write results
 # ------------------------------------------------------------------------------
 # --- ids of parts we kept (given cum_frac <= target_cover) ---
 kept_ids <- gp_filt_5070 %>%
@@ -159,13 +181,11 @@ kept_ids <- gp_filt_5070 %>%
 dropped_ids <- gp_drop_5070 %>%
   st_drop_geometry()
 
-
 # --- write outputs ---
 if (file.exists(out_gpkg)) fs::file_delete(out_gpkg)
-sf::st_write(gp_outline_5070,
+sf::st_write(gp_filt_5070,
              out_gpkg,
-             layer = "gp_outline_5070",
+             layer = "gp_l2_ecoreg",
              quiet = TRUE
 )
 message("Wrote: ", out_gpkg)
-
