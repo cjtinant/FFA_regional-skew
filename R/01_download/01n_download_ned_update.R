@@ -294,18 +294,6 @@ post_diag <- tibble::tibble(
 )
 print(post_diag)
 
-# ------------------------------------------------------------------------------
-# 8. Make slope raster
-# ------------------------------------------------------------------------------
-message("Computing rook-case slope in degrees…")
-slope_5070 <- terra::terrain(
-  elev_5070,
-  v = "slope",
-  neighbors = 4,
-  unit = "degrees"
-)
-
-
 
 # ------------------------------------------------------------------------------
 # 9. Write results
