@@ -3,13 +3,14 @@
 # Purpose:         Pre-flight checks for zonal aggregation with polygon zones.
 # Author:          CJ Tinant — with GPT-5 Thinking
 # Date Created:    2025-08-08
-# Last Updated:    2025-08-29
+# Last Updated:    2025-10-10
 # Change Log:
-# - 2025-08-29     Updated the original script to increase functionality.
-# - 2025-09-03     Add safeguards to function:
+#  2025-08-29     Updated the original script to increase functionality.
+#  2025-09-03     Add safeguards to function:
 #                    - drop Z/M if present (can trip exactextractr)
 #                    - ensure valid geometries (repair if needed)
 #                    - ensure non-empty geometries
+#  2025-10-10      Fixed issue with incorrect project CRS.
 #
 # Discussion:      The original function was a single use helper function to
 #                  "assert inputs are ok" prior to zonal aggregation with a
@@ -22,7 +23,7 @@
 # 2. Enforce CRS and polygonal geometry.
 # 3. Standardize the geometry column as `geom`.
 # 4. Guarantees unique, non-NA IDs.
-# 5. Optionally reproject to the project CRS: NAD83 / EPSG:4269.
+# 5. Optionally reproject to the project CRS: NAD83 / EPSG:5070.
 #
 # User Inputs:
 # - raster_paths  Character vector or named list of raster file paths
@@ -40,7 +41,7 @@ assert_inputs_ok <- function(raster_paths,
                              zones,
                              req_cols = character(),
                              id_col   = "macro_id",
-                             target_crs = 4269,   # NAD83 / EPSG:4269 (project default)
+                             target_crs = 5070,   # NAD83 / EPSG:5070 (project default)
                              enforce_unique = TRUE,
                              quiet    = FALSE) {
   
