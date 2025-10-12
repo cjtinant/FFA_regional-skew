@@ -1,0 +1,6 @@
+macro_id,region_name,macrozone,area_km2,n_gages,mean,median
+1,Shortgrass-Steppe,shortgrass,535831.2,260,1.43,0.8
+2,Southern Mixed-Grass Prairie,mixed,115503.6,76,1.97,1.25
+3,Central Mixed-Grass Prairie,mixed,213087.2,203,1.47,1.11
+4,Northern Mixed-Grass Prairie,mixed,606466.6,376,2.51,1.78
+5,Tallgrass Prairie,tallgrass,686220.3,747,1.29,0.87
