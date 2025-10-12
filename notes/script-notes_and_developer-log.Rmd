@@ -260,25 +260,6 @@ information (false precision from per-tile oversampling). Note, for finer scale
 (~60–70 m) output, use a z = 11 request, which will result in heavier (greater)
 download density (time) and a greater number of timeouts.
 
-
-
-
-
-
-That’s why mosaic() saw many res/origin combos.
-
-Actionable: verify nominal vs observed on your tiles
-
-
-
-
-
-Fix = resample → align → mosaic.
-After resampling, dplyr::distinct() on those columns should return one row—that’s when you’re safe to run terra::mosaic().
-
-
-
-
 Slope was calculated using (Fleming & Hoffer / Ritter algorithms), which use
 only the four cardinal directions (rook’s case) to produces smoother, more
 generalized slope surfaces, which better matches subtle terrain transitions,
@@ -558,7 +539,7 @@ distance in a multivariate space defined by:
 
 ---
 
-### 03e_ zonal summaries
+### Zonal Summaries
 
 Zonal summaries are used to calculate macrozone-scale patterns in climate, land
 cover, and topography. 
@@ -593,7 +574,6 @@ performs the following:
  - Enforce CRS and polygonal geometry.
  - Standardize the geometry column as `geom`.
  - Guarantees unique, non-NA IDs.
- - Optionally reproject to the project CRS: NAD83 / EPSG:4269.
 
 Second, prep and align raster and zone `utils/spatial/prep_and_align.R`. The
 function performs the following:
@@ -648,18 +628,17 @@ of the variance unexplained.
 |  05    |    0.618       | 0.37     |    5    |
 
 **Table of Results of Koppen-Geiger Climate Zonal Summary:**
-Tallgrass Prairie            -- Dfa- Cold, no dry season, hot summer
 
-Northern Mixed-Grass Prairie -- Dfa - Cold, no dry season, hot summer
-Northern Mixed-Grass Prairie -- BSk - Arid, steppe, cold
-
-Central Mixed-Grass Prairie  -- Dfa - Cold, no dry season, hot summer
-Central Mixed-Grass Prairie  -- Cfa - Temperate, no dry season, hot summer
-
-Southern Mixed-Grass Prairie -- Cfa - Temperate, no dry season, hot summer
-Southern Mixed-Grass Prairie -- BSh - Arid, steppe, hot
-
-Shortgrass-Steppe            -- BSk - Arid, steppe, cold
+| Macrozone | Koppen Climate Type | Description |
+|:---------:|:-------------------:|:-----------:|
+| Tallgrass Prairie            | Dfa | Cold, no dry season, hot summer |
+| Northern Mixed-Grass Prairie | Dfa | Cold, no dry season, hot summer |
+| Northern Mixed-Grass Prairie | BSk | Arid, steppe, cold |
+| Central Mixed-Grass Prairie  | Dfa | Cold, no dry season, hot summer |
+| Central Mixed-Grass Prairie  | Cfa | Temperate, no dry season, hot summer |
+| Southern Mixed-Grass Prairie | Cfa | Temperate, no dry season, hot summer |
+| Southern Mixed-Grass Prairie | BSh | Arid, steppe, hot |
+| Shortgrass-Steppe            | BSk | Arid, steppe, cold |
 
 ---
 
@@ -690,7 +669,22 @@ Shrubland.
 
 ---
 
-### 03h_covar_macro_NLC_summary.R
+### 03h_covar_macro_NLCD_meta.R
+
+Split from 03i_covar_macro_landcover_summary to try to fix an issue with
+summary creating non_legend NLCD class codes. Found issue was in the way the raw
+raster was reprojected in R/01_download/01m_download_nlcd_2016.R. The refactored
+code in this script only makes a LUT.
+
+Merged NLCD Shrub/Scrub (52) with Grassland/Herbaceous (71) and
+Pasture/Hay (81)) into a single Rangeland bucket. Hydrologically they behave
+more alike than with Forest or Crops, and it avoids a potential sparse class
+(Shrubland) which shows up in the southern shortgrass steppe.
+
+---
+
+### 03i_covar_macro_NLCD_summary.R
+
 Land cover proportion summaries include the fraction of cropland, forest,
 rangeland, and urban land. Fraction of cropland indicates anthropogenic land use
 in agricultural regions associated with increased runoff, reduced infiltration,
@@ -704,6 +698,7 @@ and positive flood skew.
 ### NLCD Classes
 
 **Developed**
+
 21 *Developed, Open Space* -- areas with a mixture of some constructed materials,
 but mostly vegetation in the form of lawn grasses. Impervious surfaces account
 for less than 20% of total cover. These areas most commonly include large-lot
@@ -761,6 +756,28 @@ such as orchards and vineyards. Crop vegetation accounts for greater than 20% of
 total vegetation. This class also includes all land being actively tilled.
 
 ---
+
+### 03j_covar_NED_summary.R
+
+Fixed many upstream issues prior to getting the script to output reasonable results.
+
+| Step | Check |
+|:----:|:-----:|
+| Download & Merge | All tiles successfully mosaicked |
+| Projection | Reprojected to EPSG:5070 (NAD83 / CONUS Albers) |
+| Extent | Clipped cleanly to updated Great Plains outline (no ocean overlap) |
+| Slope Calculation | Derived with terra::terrain() and verified quantiles (0–83.6 deg.) |
+| Histogram Audit | Distribution centered around ~1–5 deg., plausible for Great Plains |
+| Outlier Handling | −133 m min elevation eliminated (buffer error fixed) |
+Compression/Export | Use writeRaster(..., gdal = c("TILED=YES","COMPRESS=LZW","BIGTIFF=YES")) |
+
+---
+
+
+
+
+
+
 
 # CHECK INTO DAGS for looking into covars.
 

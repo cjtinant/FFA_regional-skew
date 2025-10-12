@@ -1,7 +1,7 @@
 Script Notes and Developer Log
 ================
 C.J. Tinant
-October 05, 2025
+October 12, 2025
 
 - [Overview](#overview)
 - [Project Notes (General)](#project-notes-general)
@@ -196,6 +196,79 @@ precision)
 ------------------------------------------------------------------------
 
 ### 01n_download_ned.R
+
+**2025-10-07** Fixed issue with mismatched tile grids (different
+resolutions/origins) that caused an issue with mosiacing.
+
+*docs/README version*
+
+Source: Elevation fetched via elevatr at zoom 10 (Web-Mercator).
+
+Nominal resolution (z=10) at macrozone latitudes (~35–50°N): ~100–120
+m/px.
+
+Warped tile resolution (EPSG:4326) chosen automatically during per-tile
+reprojection: ~60–72 m/px (Y) with varying grid origins (see
+data/meta/2025-10-07_ned_tiles_resolution_z10.csv).
+
+Analysis grid: Reprojected to EPSG:5070 and resampled to a fixed 90 m
+cell size prior to mosaicking and summaries.
+
+*Short Version* The underlying cause of the issue was each of the 36
+tiles came back at the same zoom (z = 10) but were each reprojected &
+clipped independently. During the per-tile warp from the service’s
+native grid to EPSG:4326, GDAL/terra auto-chooses a target cellsize and
+grid origin from each tile’s extent. Because each tile sits at a
+different latitude and has a slightly different bbox, the result is
+tiles with discrete degree-resolutions and origins: the range of the
+resulting degree-resolutions was between \[0.000536, 0.000648\] degrees
+(see results at data/meta/2025-10-07_ned_tiles_resolution_z10.csv).
+
+*Long Version* The reason for the issue is the source elevation tiles
+are served on a Web-Mercator tile pyramid at a fixed zoom z (used z =
+10). The tiles were downloaded using EPSG:4326 with clip=“locations”.
+Each tile is warped separately to lon/lat and then trimmed to your
+polygon. In that warp, the target resolution (in degrees) is computed
+automatically to roughly preserve input pixel density. Because meters/px
+in Web-Mercator varies with latitude, the degrees/px picked for each
+tile ends up slightly different.
+
+Each tile also gets its own grid origin, so even tiles with the same
+res_x/res_y won’t line up unless you snap them. Results explained:
+
+- `res_y` values were ~0.000536–0.000648 deg, which is translate to
+  ~60–72 m north–south per pixel (1-deg lat ≈ 111,132 m).
+
+- `res_x` values also vary by cos(latitude). At 40 deg N a 0.000613 deg
+  longitude pixel is ≈ 0.000613 × 111,320 × cos(40 deg) ≈ 52 m.
+
+For *Web-Mercator* ground resolution at Great Plains latitudes (~35–50
+deg N), z = 10 is ~100–120 m/px (not 60–72 m per-tile warp for
+EPSG:4326). GDAL/terra auto-picks a denser degree grid for each tile
+(oversampling), so the derived meters/px look finer than the z = 10
+nominal.
+
+\*Nominal (Web-Mercator) resolution at z=10:
+
+$$
+r(z, \phi)=156543.0339 \cdot \cos (\phi) / 2^z \mathrm{~m} / \mathrm{px}
+$$
+
+Examples: 40 deg N is ~116.7 m; 45 deg N is ~108.1 m; 49 deg N is ~100.3
+m.
+
+Tiles were fetched at z = 10, then reprojected & clipped to lon/lat
+independently. In that warp, each tile got its own degree cellsize and
+origin to “preserve detail,” often oversampling to ~60–72 m north–south.
+
+**Cellsize decision for macrozones**
+
+For macrozones: I used a z = 10 request and a 90 m cell size, because
+the 60–70 m in EPSG:4326 is oversampled, which looks sharper but adds no
+new information (false precision from per-tile oversampling). Note, for
+finer scale (~60–70 m) output, use a z = 11 request, which will result
+in heavier (greater) download density (time) and a greater number of
+timeouts.
 
 Slope was calculated using (Fleming & Hoffer / Ritter algorithms), which
 use only the four cardinal directions (rook’s case) to produces
@@ -482,7 +555,7 @@ The merging process followed a hierarchical decision rule:
 
 ------------------------------------------------------------------------
 
-### 03e\_ zonal summaries
+### Zonal Summaries
 
 Zonal summaries are used to calculate macrozone-scale patterns in
 climate, land cover, and topography.
@@ -513,8 +586,7 @@ The scripts call utility scripts prior to calculating zonal summaries.
 First, run a pre-flight check with `utils/spatial/assert_inputs_ok.R`
 that performs the following: - Verify that rasters can be opened. -
 Enforce CRS and polygonal geometry. - Standardize the geometry column as
-`geom`. - Guarantees unique, non-NA IDs. - Optionally reproject to the
-project CRS: NAD83 / EPSG:4269.
+`geom`. - Guarantees unique, non-NA IDs.
 
 Second, prep and align raster and zone `utils/spatial/prep_and_align.R`.
 The function performs the following: - Ensures zones are valid
@@ -571,19 +643,18 @@ macrozone categories with 29.9% of the variance unexplained.
 |   06   |     0.441      |   0.35   |    5    |
 |   05   |     0.618      |   0.37   |    5    |
 
-**Table of Results of Koppen-Geiger Climate Zonal Summary:** Tallgrass
-Prairie – Dfa- Cold, no dry season, hot summer
+**Table of Results of Koppen-Geiger Climate Zonal Summary:**
 
-Northern Mixed-Grass Prairie – Dfa - Cold, no dry season, hot summer
-Northern Mixed-Grass Prairie – BSk - Arid, steppe, cold
-
-Central Mixed-Grass Prairie – Dfa - Cold, no dry season, hot summer
-Central Mixed-Grass Prairie – Cfa - Temperate, no dry season, hot summer
-
-Southern Mixed-Grass Prairie – Cfa - Temperate, no dry season, hot
-summer Southern Mixed-Grass Prairie – BSh - Arid, steppe, hot
-
-Shortgrass-Steppe – BSk - Arid, steppe, cold
+| Macrozone | Koppen Climate Type | Description |
+|:--:|:--:|:--:|
+| Tallgrass Prairie | Dfa | Cold, no dry season, hot summer |
+| Northern Mixed-Grass Prairie | Dfa | Cold, no dry season, hot summer |
+| Northern Mixed-Grass Prairie | BSk | Arid, steppe, cold |
+| Central Mixed-Grass Prairie | Dfa | Cold, no dry season, hot summer |
+| Central Mixed-Grass Prairie | Cfa | Temperate, no dry season, hot summer |
+| Southern Mixed-Grass Prairie | Cfa | Temperate, no dry season, hot summer |
+| Southern Mixed-Grass Prairie | BSh | Arid, steppe, hot |
+| Shortgrass-Steppe | BSk - Arid, steppe, cold |  |
 
 ------------------------------------------------------------------------
 
@@ -618,7 +689,23 @@ Prairie is Shrubland.
 
 ------------------------------------------------------------------------
 
-### 03h_covar_macro_NLC_summary.R
+### 03h_covar_macro_NLCD_meta.R
+
+Split from 03i_covar_macro_landcover_summary to try to fix an issue with
+summary creating non_legend NLCD class codes. Found issue was in the way
+the raw raster was reprojected in
+R/01_download/01m_download_nlcd_2016.R. The refactored code in this
+script only makes a LUT.
+
+Merged NLCD Shrub/Scrub (52) with Grassland/Herbaceous (71) and
+Pasture/Hay (81)) into a single Rangeland bucket. Hydrologically they
+behave more alike than with Forest or Crops, and it avoids a potential
+sparse class (Shrubland) which shows up in the southern shortgrass
+steppe.
+
+------------------------------------------------------------------------
+
+### 03i_covar_macro_NLCD_summary.R
 
 Land cover proportion summaries include the fraction of cropland,
 forest, rangeland, and urban land. Fraction of cropland indicates
@@ -699,6 +786,23 @@ includes all land being actively tilled.
 
 ------------------------------------------------------------------------
 
+### 03j_covar_NED_summary.R
+
+Fixed many upstream issues prior to getting the script to output
+reasonable results.
+
+| Step | Check |
+|:--:|:--:|
+| Download & Merge | All tiles successfully mosaicked |
+| Projection | Reprojected to EPSG:5070 (NAD83 / CONUS Albers) |
+| Extent | Clipped cleanly to updated Great Plains outline (no ocean overlap) |
+| Slope Calculation | Derived with terra::terrain() and verified quantiles (0–83.6deg.) |
+| Histogram Audit | Distribution centered around ~1–5 deg., plausible for Great Plains |
+| Outlier Handling | −133 m min elevation eliminated (buffer error fixed) |
+| Compression/Export | Use writeRaster(…, gdal = c(“TILED=YES”,“COMPRESS=LZW”,“BIGTIFF=YES”)) |
+
+------------------------------------------------------------------------
+
 # CHECK INTO DAGS for looking into covars.
 
 Topography summaries include mean and median slope and mean altitude.
@@ -776,5 +880,5 @@ notes and a script to open/edit them easily using RStudio.
 
 ## Notes
 
-- Last updated: 2025-10-05 11:23
+- Last updated: 2025-10-12 14:54
 - Maintained by: CJ Tinant

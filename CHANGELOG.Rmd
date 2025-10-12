@@ -17,18 +17,46 @@ the [Keep a Changelog](https://keepachangelog.com/) format._
 
 ---
 
+
 <!--
-## [Untracked] -- 2025-10-02
+## [Untracked] -- 
 
 ## Untracked changes prior to v1.6.8
 
-
-### In Progress
-Need to update rangeland NLCD group classification across the documentation.
-
-Need to update macrozones to just the single area -- getting rid of coastal and disjunct
+## In Progress
 
 -->
+
+## [v1.6.8] — 2025-10-12
+
+### Milestone: 03j_covar_macro_NED_summary
+
+### Added
+
+- Automated QA chunk appended to 01n_download_ned.R
+
+- Exports slope quantiles and summary statistics to data/qa/ned/
+
+- Generates histogram PNG with 99th/99.9th percentile markers (figs/qa/ned/)
+
+- Includes CRS and cell count validation (EPSG:5070)
+
+### Fixed
+
+- Update project outline, and L2 Ecoregion to match macrozones -- getting rid of
+coastal and disjunct area in Texas and dropping small slivers.
+
+- Confirmed slope values within realistic range (0–83.6°)
+
+- Verified Great Plains outline correction removed negative elevation artifacts
+
+### Notes
+
+- QA outputs are lightweight and reproducible; may be re-run after updates to NED raster.
+
+- Random seed fixed at set.seed(42) for reproducibility.
+
+
 ## [v1.6.7] — 2025-10-08
 
 ### Added
