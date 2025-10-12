@@ -2,15 +2,16 @@
 # Script Name:      03j_covar_macro_slope_stats.R
 # Purpose:          Calculate mean and median slope from NED
 # Author:           Charles Jason Tinant with ChatGPT 5 thinking
-# Date Created:     2025-10_02
-# Last Updated:     2025-10_03
+# Date Created:     2025-10-02
+# Last Updated:     2025-10-10
 #
 # Changelog:
-# - 2025-10-02     Initial script
-# - 2025-10-03     Fix error in calculating slope stats:
+#  2025-10-02      Initial script
+#  2025-10-03      Fix error in calculating slope stats:
 #                    Error in fun(arg_df, ...) : 
 #                      argument "cov_frac" is missing, with no default; create
 #                  header metadata.
+#  2025-10-10      Fixed issue with incorrect project CRS.
 #
 # Generalized Workflow:
 # 1. Load and check rasters and zones.
@@ -36,7 +37,7 @@
 #                  data/processed/us_ecoregions/macrozones_gp_with_covars.gpkg 
 #                    (layer "macrozones_gp")
 #
-# Conventions: EPSG:4269, 'geom' active geometry, join key = macro_id
+# Conventions: EPSG:5070, 'geom' active geometry, join key = macro_id
 #
 # Dependencies: here, sf, terra, tidyverse, exactextractr
 #
@@ -73,7 +74,7 @@ source(file.path(here(), "R", "utils", "spatial", "rast_summ_continuous.R"))
 # 1. Load and check inputs
 # ------------------------------------------------------------------------------
 # --- rasters ---
-rast_path <- here("data", "processed", "ned", "slope_30m_gp.tif")
+rast_path <- here("data", "processed", "ned", "slope_gp_5070_90m.tif")
 
 # --- zones ---
 zone_path <- here("data", "processed", "us_ecoregions", "macrozones_gp.gpkg")
@@ -84,22 +85,31 @@ zones <- st_read(zone_path, layer = layer_name, quiet = TRUE)
 # ------------------------------------------------------------------------------
 # 2. Run a Preflight Check
 # ------------------------------------------------------------------------------
-raster_paths <- c(slope  = rast_path)
-
 zones <- assert_inputs_ok(
-  raster_paths   = raster_paths,
+  raster_paths   = rast_path,
   zones          = zones,
   req_cols       = "macro_id",
   id_col         = "macro_id",
-  target_crs     = 4269,
+  target_crs     = 5070,
   enforce_unique = TRUE,
   quiet          = FALSE
 )
 
 # --- ensure raster and zone are prepped and aligned ---
+
 slope_prep <- prep_raster(rast_path, zones, do_crop = TRUE, do_mask = FALSE)
 r_slope    <- slope_prep$r
 z_slope_sf <- sf::st_as_sf(slope_prep$zones); sf::st_geometry(z_slope_sf) <- "geom"
+
+
+
+
+terra::summary(r_slope)
+terra::minmax(r_slope)
+terra::crs(r_slope)
+terra::units(r_slope)
+
+
 
 # ------------------------------------------------------------------------------
 # 3. Sanity checks (run once before cont_summary)
@@ -131,44 +141,87 @@ stopifnot(nrow(z_slope_sf) > 0)
 
 # 5) Optional: duplicates and NA coverage checks
 stopifnot(!anyDuplicated(z_slope_sf$macro_id))
+
 na_frac <- terra::global(is.na(r_slope), "mean", na.rm = TRUE)[[1]]
 message(sprintf("Raster NA fraction: %.3f", na_frac))
 
-# 6) Optional: spot-check resolution looks sane (30 m ≈ 0.00027° if in EPSG:4269)
+# 6) Optional: spot-check resolution looks sane 
 res_xy <- terra::res(r_slope)
 message(sprintf("Raster resolution: %g x %g (in raster CRS units)", res_xy[1], res_xy[2]))
 
 
-# Following up with result -- Raster NA fraction: 0.523
-cov_ok <- exactextractr::exact_extract(
-  r_slope, z_slope_sf,
-  function(vals, cov) sum(!is.na(vals[[1]]) & cov > 0),
-  summarize_df = TRUE
-)
+
+
+
+cov_ok <-exactextractr::exact_extract(
+    r_slope,
+    z_slope_sf,
+    fun = function(df) c(n_cells_covered = sum(!is.na(df[[1]]) & df$coverage_fraction > 0)),
+    summarize_df = TRUE,
+    include_cols = "macro_id",
+    progress = TRUE
+  )
+
+
 z_zero_cov <- z_slope_sf[ cov_ok[[1]] == 0, ]
 if (nrow(z_zero_cov)) {
   cli::cli_warn("{nrow(z_zero_cov)} zones have zero valid slope coverage.")
 }
 
-
 # ------------------------------------------------------------------------------
 # 3. Calculate summary stats
 # ------------------------------------------------------------------------------
 
-# cont_summary <- function(r, zones, id_col = "macro_id",
-#                          stats = c("mean", "median"),
-#                          probs = NULL)
-slope_tbl <- cont_summary(r_slope,
-                          z_slope_sf,
-                          id_col = "macro_id",
-                          stats = c("mean", "median")
-)
 
 
 
 
 
 
+# area-weighted mean + median using pixel coverage_fraction
+slope_tbl <- exactextractr::exact_extract(
+    r_slope,
+    z_slope_sf,
+    fun = function(df) {
+      
+      x <- df[[1]]
+      w <- df$coverage_fraction
+      
+      keep <- !is.na(x) & !is.na(w) & (w > 0)
+      x <- x[keep]
+      w <- w[keep]
+      
+      # weighted median helper
+      w_median <- function(x, w) {
+        o  <- order(x)
+        x  <- x[o]
+        w  <- w[o]
+        w  <- w / sum(w)
+        cw <- cumsum(w)
+        x[which(cw >= 0.5)[1]]
+      }
+      
+      c(
+        mean   = stats::weighted.mean(x, w, na.rm = TRUE),
+        median = w_median(x, w)
+      )
+    },
+    summarize_df = TRUE,
+    include_cols = "macro_id",
+    progress     = TRUE
+  )
+
+
+macro_ids <- z_slope_sf$macro_id
+
+colnames(slope_tbl) <- macro_ids
+slope_tbl <- as_tibble(slope_tbl, rownames = "stat")
+
+
+slope_tbl_tidy <- slope_tbl %>%
+#  rownames_to_column("stat") %>%
+  pivot_longer(-stat, names_to = "macro_id", values_to = "value") %>%
+  pivot_wider(names_from = stat, values_from = value)
 
 
 # # --- Slope mean/median (continuous) ---
