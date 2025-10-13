@@ -32,49 +32,18 @@
 # Inputs (relative to project root):
 #   zones:         data/processed/us_ecoregions/macrozones_gp.gpkg
 #                    (layer = "macrozones_gp")
-#   rasters:      data/processed/ned/ned_gp_5070_90m_slope_deg.tif
+#   rasters:       data/processed/ned/ned_gp_5070_90m_slope_deg.tif
 #
-# Outputs:
-
-
-# Outputs:   data/qa/ned/slope_quantiles.csv
-#            data/qa/ned/slope_summary.csv
-#            figs/qa/ned/slope_histogram.png
-
-#                  data/processed/us_ecoregions/macrozones_covars.csv
-#                  data/processed/us_ecoregions/macrozones_gp_with_covars.gpkg 
-#                    (layer "macrozones_gp")
+# Outputs:         data/covars/macro_slope.csv"
+#                  data/qa/ned/slope_quantiles.csv
+#                  data/qa/ned/slope_summary.csv
+#                  figs/qa/ned/slope_histogram.png
 #
 # Conventions: EPSG:5070, 'geom' active geometry, join key = macro_id
 #
 # Dependencies: here, sf, terra, tidyverse, exactextractr
 #
-# Related Files:
-# - Metadata to join from /docs/metadata:
-#   - Koppen-Geiger class lut: /look_up_tables/koppen-geiger_class_lut.csv
-#   - 03d_make_macrozone_layer.R
-#
-# - Documentation files to check/update
-#   - notes/script-notes_and_developer-log.pdf
-#   - data/log_README.pdf
-#   - R/log_README.pdf
-#   - R/README.pdf
-#   - CHANGELOG.md
-#   - milestone_03_prepare_covariates.pdf
-#
 # Notes:
-# # --- Slope mean/median (continuous) ---
-
-
-
-
-
-# Notes:     Assumes `slope_5070` and `ned_fixed` exist earlier in the script.
-# ==============================================================================
-
-
-
-
 # ==============================================================================
 suppressPackageStartupMessages({
   library(exactextractr)
