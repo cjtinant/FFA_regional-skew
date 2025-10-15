@@ -4,20 +4,22 @@
 #                   macrozone scale
 # Author:           Charles Jason Tinant with ChatGPT 5 thinking
 # Date Created:     2025-09-01
-# Last Updated:     2025-09-24
+# Last Updated:     2025-10-15
 #
 # Changelog:
-# - 2025-09-01     Initialize script
-# - 2025-09-02     Add zonal summaries (KG, PHZM, NLCD, slope, gage elev);
+#  2025-09-01      Initialize script
+#  2025-09-02      Add zonal summaries (KG, PHZM, NLCD, slope, gage elev);
 #                  write CSV/GPKG.
-# - 2025-09-03     Wire in assert_inputs_ok(); lazy-load rasters; minor hardening;
+#  2025-09-03      Wire in assert_inputs_ok(); lazy-load rasters; minor hardening;
 #                  Add first attempt at uniform code to prep and align, summarise,
 #                  and add metadata to result.
-# - 2025-09-15     Split original script into parts; add qa check.
-# - 2025-09-15     Drop original QA check, add summary and visual QA as a
+#  2025-09-15      Split original script into parts; add qa check.
+#  2025-09-15      Drop original QA check, add summary and visual QA as a
 #                  sanity check.
-# - 2025-09-18     Continue QA check; output results; update header metadata.
-# - 2025-09-24     Add QA safety check for CRS.
+#  2025-09-18      Continue QA check; output results; update header metadata.
+#  2025-09-24      Add QA safety check for CRS.
+#  2025-10-15      Fix MAUP problem by normalizing PHZM count to PHZM count per
+#                  unit area.
 #
 # Generalized Workflow:
 # Steps 1-3 check `03f_covar_macro_koppen_summary.R`` for details.
@@ -33,8 +35,9 @@
 #                  data/covars/macro_phzm.csv
 #                  output/qa_checks/macro_phzm_vs_area_qa.png
 #                  output/qa_checks/macro_phzm_vs_lat_qa.png
+#                  output/qa_checks/macro_phzm_per_area_vs_lat_qa.png
 #
-# Conventions: EPSG:4269, 'geom' active geometry, join key = macro_id
+# Conventions: EPSG:5070, 'geom' active geometry, join key = macro_id
 #
 # Dependencies: here, sf, terra, tidyverse, exactextractr
 #
@@ -48,6 +51,19 @@
 #   - R/README.pdf
 #   - CHANGELOG.md
 #   - milestone_03_prepare_covariates.pdf
+#
+# Notes:
+#  The Modifiable Areal Unit Problem (MAUP), a significant issue in Geographic
+#  Information System (GIS) analysis where the results of a spatial analysis can
+#  change depending on the scale and zoning of the data. This problem arises
+#  because different boundaries or minimum mapping units can create "elegant
+#  misrepresentations" of reality, leading to different statistical outcomes
+#  even when analyzing the same data. The solution involves using techniques to
+#  account for this spatial incompatibility, such as area-weighted averaging or
+#  spatial aggregation, especially when combining data from different sources or
+#  scales.
+#  The koppen count depends on both area and latitude. So, fix to count per unit
+#  area.
 # ==============================================================================
 # --- Load libraries ---
 suppressPackageStartupMessages({
@@ -85,7 +101,7 @@ zones <- assert_inputs_ok(
   zones          = zones,
   req_cols       = "macro_id",
   id_col         = "macro_id",
-  target_crs     = 4269,
+  target_crs     = 5070,
   enforce_unique = TRUE,
   quiet          = FALSE
 )
@@ -175,9 +191,8 @@ ggsave(out_path_qa_lat,
 
 # ---- Plot: class count vs area ----
 # Interpretation: Area drives a baseline trend, but latitude explains the
-# deviations around that trend.
-# The regression line (dashed) shows a clear positive relationship:
-# bigger regions have more PHZM classes.
+# deviations around that trend. The regression line (dashed) shows a clear
+# positive relationship: bigger regions have more PHZM classes.
 # But the scatter tells the nuance:
 # Tallgrass Prairie lies above the line, meaning more classes than expected for
 #   its size (its latitudinal span is helping).
@@ -217,6 +232,63 @@ print(qa_area)
 # --- save plot ---
 out_path_qa_area <- here("output", "qa_checks", "macro_phzm_vs_area_qa.png")
 ggsave(out_path_qa_area,
+       bg = "white")
+
+# ------------------------------------------------------------------------------
+# 5. Solve MAUP problem
+# ------------------------------------------------------------------------------
+
+regions <- regions %>%
+  mutate(area_100k_km2 = area_km2 / 10^5) %>%
+  mutate(phzm_class_ct_per_100k = phzm_class_count/area_100k_km2) %>%
+  mutate(phzm_class_ct_per_100k = round(phzm_class_ct_per_100k, digits = 2))
+
+# Figure X. Relationship between macro-scale latitude and plant-hardiness
+# diversity (number of PHZM classes per 100,000 km²) across Great Plains 
+# macrozones. A clear latitudinal decline in climatic heterogeneity is evident,
+# with southern regions exhibiting greater diversity of temperature-based zones.
+# The Central Mixed Grass Prairie departs strongly from this trend due to its
+# transitional position between humid eastern and semi-arid western climates,
+# producing exceptional fine-scale temperature gradients over moderate elevation
+# relief.
+
+# fig.cap = "Relationship between latitude and PHZM class diversity
+# (classes per 100,000 km²) across Great Plains macrozones. Diversity generally
+# declines northward, but the Central Mixed Grass Prairie stands out as a
+# bioclimatic hinge between humid and semi-arid regimes, producing unusually
+# high fine-scale thermal variability."
+
+qa_lat2 <- regions %>%
+  ggplot(aes(x = lat_center,
+             y = phzm_class_ct_per_100k
+  )) +
+  geom_point(
+    aes(color = macrozone),
+    size = 3,
+    alpha = 0.7) +
+  geom_smooth(
+    method = "lm",
+    se = FALSE,
+    linetype = "dashed",
+    color = "black"
+  ) +
+  geom_text(
+    aes(label = region_name),
+    vjust = -0.7,
+    size = 3
+  ) +
+#  scale_size_continuous(name = "Area (km²)") +
+  labs(
+    x = "Region centroid latitude (°N)",
+    y = "PHZM class count per 100,000 km²",
+    title = "Variation in PHZM class count per unit area vs latitude"
+  ) +
+  theme_minimal()
+
+print(qa_lat2)
+
+out_path_qa_lat2 <- here("output", "qa_checks", "macro_phzm_per_area_vs_lat_qa.png")
+ggsave(out_path_qa_lat2,
        bg = "white")
 
 # ------------------------------------------------------------------------------
