@@ -94,6 +94,7 @@ meta_koppen_path <- here("docs", "metadata", "look_up_tables",
 
 meta_koppen <- read_csv(meta_koppen_path)
 
+
 # --- zones ---
 zone_path <- here("data", "processed", "us_ecoregions", "macrozones_gp.gpkg")
 layer_name <- "macrozones_gp"
@@ -110,7 +111,7 @@ zones <- assert_inputs_ok(
   zones          = zones,
   req_cols       = "macro_id",
   id_col         = "macro_id",
-  target_crs     = 4269,               # <-- double-check thru outputs 
+  target_crs     = 5070,
   enforce_unique = TRUE,
   quiet          = FALSE
 )
