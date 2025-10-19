@@ -1,0 +1,19 @@
+Field Name,Description,Unit,Data Type
+FID,Internal feature number,Sequential unique whole numbers that are automatically generated.,numeric
+L1_KEY,"NA Level I Code and Name for Legend, color layer/style file",unique code plus name,character
+L2_KEY,"NA Level II Code and Name for Legend, color layer/style file",unique code plus name,character
+L3_KEY,"US Level III Code and Name for Legend, color layer/style file",unique code plus name,character
+L4_KEY,"US Level IV Code and Name for Legend, color layer/style",unique code plus name,character
+NA_L1CODE,Code for Level I Ecoregion (North America/CEC),unique code,character
+NA_L1NAME,Name for Level I Ecoregion (North America/CEC),unique name,character
+NA_L2CODE,Code for Level II Ecoregion (North America/CEC),unique code,character
+NA_L2NAME,Name for Level II Ecoregion (North America/CEC),unique name,character
+NA_L3CODE,Code for Level III Ecoregion (North America/CEC),unique code,character
+NA_L3NAME,Name for Level III Ecoregion (North America/CEC),unique name,character
+US_L3CODE,Code for Level III Ecoregion (US),unique code,character
+US_L3NAME,Name for Level III Ecoregion (US),unique name,character
+US_L4CODE,Code for Level IV Ecoregion (US),unique code,character
+US_L4NAME,Name for Level IV Ecoregion (US),unique name,character
+area_km2,Area in square kilomenters,Positive real numbers that are automatically generated.,numeric
+geom,defines feature type,feature type,sfc_MULTIPOLYGON
+geom,defines feature type,feature type,sfc_POLYGON

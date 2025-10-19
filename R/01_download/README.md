@@ -1,0 +1,73 @@
+Documenting Changes in 01_download/README.Rmd
+================
+C.J. Tinant
+July 28, 2025
+
+- [Purpose](#purpose)
+- [Overview](#overview)
+- [Table 1: Script Index](#table-1-script-index)
+- [Summary of Key Changes](#summary-of-key-changes)
+
+## Purpose
+
+Provide a human-readable summary of all download scripts in
+R/01_download/, including their purpose, input/output expectations,
+status, and key changes over time. This supports reproducibility and
+onboarding of new contributors.
+
+## Overview
+
+This section documents the current structure and status of all scripts
+responsible for downloading raw spatial and tabular data inputs. Each
+script is version-controlled and tied to a specific covariate or source
+dataset.
+
+------------------------------------------------------------------------
+
+## Table 1: Script Index
+
+| File Name | Description | Output Folder | Notes / Status |
+|----|----|----|----|
+| `01a_download_ecoregions.R` | Download Level I–IV US ecoregion shapefiles | `data/raw/` | CRS standardized (EPSG:5070) |
+| `01b_download_USGS_gage_data.R` | Download peak flow gage locations | `data/raw/` | Reorganized metadata |
+| `01c_download_usgs_gage_metadata.R` | Query detailed site metadata | `data/raw/` | Outputs raw data-dictionary |
+| `01d_download_usgs_peakflow_data.R` | Download annual peak flow values | `data/raw/` | Handles chunking & retries |
+| `01e_filter_usgs_peakflow_data.R` | Filter data, calculate skew, tag PILFs | `data/processed/` | Replaces legacy script |
+| `01f_download_nhdplus_v21.R` | Download NHDPlusV2.1 flowlines and catchments | `data/processed` | CRS standardized (EPSG:5070) |
+| `01g_download_nhdplus_hr_catchments.R` | Download NHDPlus HR (1:24k) catchment boundaries | `data/raw` | Idempotent, Geometry-safe, Fuzzy retry logic: name correction and tile, Transparent logging |
+| `01h_download_nhdplus_hr_flowlines.R` | Download NHDPlus HR (1:24k) flowlines | `data/raw` | Logs success/failure, retry logic, diagnose geometry issues |
+| `01j_download_koppen-geiger_climate.R` | Download and process Köppen-Geiger climate raster | `data/processed` | CRS standardized (EPSG:5070) |
+| `01k_download_plant-hardiness-zone-map.R` | Download and processes USDA Plant Hardiness Zone Map (PHZM) | `data/processed` | CRS standardized (EPSG:5070) |
+| `011_download_prism_climate.R` | Download and process PRISM climate normals | `data/processed` | CRS standardized (EPSG:5070) |
+| `01m_download_nlcd_2016.R` | Download NLCD 2016 Land Cover raster clipped to Great Plains | `data/processed` | CRS standardized (EPSG:5070) |
+| `01n_download_ned.R` | Download NED (National Elevation Dataset) clipped to Great Plains and calculate slope | `data/processed` | CRS standardized (EPSG:5070) |
+| `01o_download_modis_2016.R` | Document the process for downloading MODIS MOD13Q1 (NDVI/EVI), then reproject and clip to Great Plains | `data/processed` | CRS standardized (EPSG:5070) |
+| `01p_download_statsgo2.R` | Download STATSGO2 (national soil database) mapunit data | `data/processed` | clipped to GP Ecoregion using Soil Data Access (SDA). CRS standardized (EPSG:5070) |
+
+------------------------------------------------------------------------
+
+## Summary of Key Changes
+
+### Standardized Folder Paths
+
+- All output paths now use `here::here("data", "raw", ...)` or
+  `data/processed/`
+- Ensures reproducibility across systems and OSes
+
+### Consistent CRS
+
+- All spatial outputs reprojected to EPSG:5070 (CONUS Albers Equal Area)
+
+### Modular Design
+
+- Each script targets a single source or covariate
+- Utility functions moved to `R/utils/`
+
+### Logging & QA
+
+- Retry attempts, download failures, and chunking behavior logged to
+  `.csv` where applicable
+- Scripts now include `{cli}` alerts for status tracking
+- Each script is cross-linked to relevant milestone reports
+
+------------------------------------------------------------------------

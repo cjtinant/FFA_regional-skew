@@ -1,0 +1,72 @@
+README - docs/
+================
+C.J. Tinant
+August 05, 2025
+
+- [📁 Project Documentation
+  (`docs/`)](#file_folder-project-documentation-docs)
+  - [📚 Folder Purpose](#books-folder-purpose)
+  - [🗂️ Subfolders](#card_index_dividers-subfolders)
+  - [📄 Key Contents](#page_facing_up-key-contents)
+
+# 📁 Project Documentation (`docs/`)
+
+This folder contains supporting documents, workflow references, and
+metadata guides. Materials here are designed to be human-readable,
+versioned, and referenceable in publications, milestone reports, or
+modeling scripts. This folder complements the `reports/` folder, which
+contains milestone-specific logs, exploratory notes, and in-progress
+`.Rmd` analysis files, and the `notes\` folder, which captures personal
+working notes, half-baked ideas, research summaries, TODOs, meeting
+logs, back-of-the-envelope calculations, etc.
+
+| Folder | Analogy | Example Use Case |
+|----|----|----|
+| `notes/` | **Field notebook** or scratchpad | Write a note on why GAM residuals were messy |
+| `docs/` | **Lab manual** or internal wiki | Store raster metadata and covariate inventories |
+| `reports/` | **Final paper/poster/report** | Generate a posterdown PDF for AGU |
+
+------------------------------------------------------------------------
+
+## 📚 Folder Purpose
+
+The `docs/` directory serves as a centralized archive for:
+
+- Project workflows and process documentation
+- Metadata crosswalks and data dictionaries
+- Proposal materials and final report drafts
+- README-style files that describe the contents or purpose of other
+  folders
+- Files referenced in `.Rmd`, Quarto, or PDF outputs
+
+------------------------------------------------------------------------
+
+## 🗂️ Subfolders
+
+The `docs/` folder is organized as follows:
+
+``` plaintext
+
+docs/
+├── archive/         # Proposal text, figures, letters
+├── metadata/          # Variable definitions, units, and crosswalks
+       ├── data-dictionaries/
+       ├── descriptions/
+       ├── look-up-tables/
+       ├── QAQC/
+       ├── raster-data-summaries/
+       ├── vector-data-summaries/
+```
+
+------------------------------------------------------------------------
+
+## 📄 Key Contents
+
+| File | Description |
+|:--:|:--:|
+| `best-practices_reference.md` | Documentation, versioning, tagging, and changelog conventions |
+| `covariate_source_status.md` | Dataset status and references |
+| `data_dictionary_covariates.pdf` | Covariate metadata, data dictionary |
+| `methods_covariate-selection.md` | Covariate domains, stratification, and macrozone delineation methods |
+| `covariates_metadata_vX.X.csv` | Climate and terrain covariate metadata |
+| `style_guide.pdf` | Naming, formatting, and style conventions |

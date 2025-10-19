@@ -1,0 +1,78 @@
+---
+title: "Documenting Changes in 01_download/README.Rmd"
+author: "C.J. Tinant"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    latex_engine: xelatex
+    fig_caption: true
+  github_document:
+    toc: true
+    toc_depth: 2
+params:
+  version: "v1.5.1"
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Purpose
+
+Provide a human-readable summary of all download scripts in R/01_download/, including their purpose, input/output expectations, status, and key changes over time. This supports reproducibility and onboarding of new contributors.
+
+## Overview
+This section documents the current structure and status of all scripts responsible for downloading raw spatial and tabular data inputs. Each script is version-controlled and tied to a specific covariate or source dataset (See Table 1).
+
+```{r table_of_scripts,message=FALSE,echo=FALSE,results='asis'}
+
+library(knitr)
+library(kableExtra)
+library(tidyverse)
+
+script_index <- tribble(
+  ~`File Name`, ~Description, ~`Output Folder`, ~`Notes / Status`,
+  "01a_download_ecoregions.R", "Download Level I–IV US ecoregion shapefiles", "data/raw/", "CRS standardized (EPSG:5070)",
+  "01b_download_USGS_gage_data.R", "Download peak flow gage locations", "data/raw/", "Reorganized metadata",
+  "01c_download_usgs_gage_metadata.R", "Query detailed site metadata", "data/raw/", "Outputs raw data-dictionary",
+  "01d_download_usgs_peakflow_data.R", "Download annual peak flow values", "data/raw/", "Handles chunking & retries",
+  "01e_filter_usgs_peakflow_data.R", "Filter data, calculate skew, tag PILFs", "data/processed/", "Replaces legacy script",
+  "01f_download_nhdplus_v21.R", "Download NHDPlusV2.1 flowlines and catchments", "data/processed/", "CRS standardized (EPSG:5070)"
+)
+
+kbl(script_index, format = "latex", booktabs = TRUE, caption = "Script Index") %>%
+  kable_styling(latex_options = c("hold_position", "scale_down")) %>%
+  column_spec(2, width = "5.5cm") %>%
+  column_spec(4, width = "5.5cm")
+
+```
+
+## Summary of Key Changes
+
+### Standardized Folder Paths
+
+- All output paths now use `here::here("data", "raw", ...)` or `data/processed/`
+- Ensures reproducibility across systems and OSes
+
+### Consistent CRS
+
+- All spatial outputs reprojected to EPSG:5070 (CONUS Albers Equal Area)
+
+### Modular Design
+
+- Each script targets a single source or covariate
+- Utility functions moved to `R/utils/`
+
+### Logging & QA
+
+- Retry attempts, download failures, and chunking behavior logged to `.csv` where applicable
+- Scripts now include `{cli}` alerts for status tracking
+- Each script is cross-linked to relevant milestone reports
+
+---

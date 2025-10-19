@@ -8,7 +8,7 @@
 #
 # Notes:
 # - This script finalizes a reduced set of covariates for modeling station skew.
-# - The covariate selection is informed by exploratory analysis (pair plots, 
+# - The covariate selection is informed by exploratory analysis (pair plots,
 #   correlation matrix, and VIF analysis).
 #
 # Final Covariates:
@@ -45,23 +45,23 @@ covariates_modeling <- read_csv(here("data/clean/data_covariates_modeling_clean.
 # Precipitation by Season
 covariates_modeling <- covariates_modeling %>%
   mutate(
-    ppt_winter_mm = rowSums(select(., ppt_m12_mm, ppt_m01_mm, ppt_m02_mm), 
+    ppt_winter_mm = rowSums(select(., ppt_m12_mm, ppt_m01_mm, ppt_m02_mm),
                             na.rm = TRUE),
-    ppt_spring_mm = rowSums(select(., ppt_m03_mm, ppt_m04_mm, ppt_m05_mm, 
+    ppt_spring_mm = rowSums(select(., ppt_m03_mm, ppt_m04_mm, ppt_m05_mm,
                                    ppt_m06_mm), na.rm = TRUE),
-    ppt_summer_mm = rowSums(select(., ppt_m07_mm, ppt_m08_mm, ppt_m09_mm), 
+    ppt_summer_mm = rowSums(select(., ppt_m07_mm, ppt_m08_mm, ppt_m09_mm),
                             na.rm = TRUE),
     ppt_fall_mm   = rowSums(select(., ppt_m10_mm, ppt_m11_mm), na.rm = TRUE)
-  ) 
+  )
 
 # ==============================================================================
 # Step 2: Initial Linear Model (MLR)
 # Explore direction, magnitude of relationships
 # ==============================================================================
 
-lm_fit <- lm(skew ~ ., data = covariates_modeling %>% 
-               select(skew, dec_lat_va, dec_long_va, ppt_spring_mm, 
-                      ppt_summer_mm, ppt_fall_mm, ppt_winter_mm, tmean_m01_c, 
+lm_fit <- lm(skew ~ ., data = covariates_modeling %>%
+               select(skew, dec_lat_va, dec_long_va, ppt_spring_mm,
+                      ppt_summer_mm, ppt_fall_mm, ppt_winter_mm, tmean_m01_c,
                       tmean_m06_c, elev_m, slope_deg))
 
 summary(lm_fit)
@@ -77,10 +77,10 @@ lm_fit %>%
 # ==============================================================================
 
 gam_fit <- mgcv::gam(skew ~ s(dec_lat_va) + s(dec_long_va) +
-                     s(ppt_spring_mm) + s(ppt_summer_mm) + s(ppt_fall_mm)
-                     + s(ppt_winter_mm) + s(tmean_m01_c) + s(tmean_m06_c) + 
+                       s(ppt_spring_mm) + s(ppt_summer_mm) + s(ppt_fall_mm)
+                     + s(ppt_winter_mm) + s(tmean_m01_c) + s(tmean_m06_c) +
                        s(elev_m) +  s(slope_deg),
-                         data = covariates_modeling)
+                     data = covariates_modeling)
 
 summary(gam_fit)
 
@@ -106,10 +106,10 @@ gam_fit %>%
 # ==============================================================================
 # Sequentially dropping variables to reduce multicolinearity
 
-covariates_subset <- covariates_modeling %>% 
-  select(skew, dec_lat_va, dec_long_va, ppt_spring_mm, 
-       ppt_summer_mm, ppt_fall_mm, ppt_winter_mm, tmean_m01_c, 
-       tmean_m06_c, elev_m, slope_deg)
+covariates_subset <- covariates_modeling %>%
+  select(skew, dec_lat_va, dec_long_va, ppt_spring_mm,
+         ppt_summer_mm, ppt_fall_mm, ppt_winter_mm, tmean_m01_c,
+         tmean_m06_c, elev_m, slope_deg)
 
 # Calculate VIF
 lm_vif <- lm(skew ~ ., data = covariates_subset)
@@ -119,9 +119,9 @@ vif_table <- car::vif(lm_vif) %>%
   enframe(name = "variable", value = "vif")
 
 # drop latitude which is HIGHLY correlated
-covariates_subset <- covariates_modeling %>% 
-  select(skew, dec_long_va, ppt_spring_mm, 
-         ppt_summer_mm, ppt_fall_mm, ppt_winter_mm, tmean_m01_c, 
+covariates_subset <- covariates_modeling %>%
+  select(skew, dec_long_va, ppt_spring_mm,
+         ppt_summer_mm, ppt_fall_mm, ppt_winter_mm, tmean_m01_c,
          tmean_m06_c, elev_m, slope_deg)
 
 # Calculate VIF
@@ -132,12 +132,12 @@ lm_vif <- lm(skew ~ ., data = covariates_subset)
 vif_table <- car::vif(lm_vif) %>%
   enframe(name = "variable", value = "vif")
 
-# drop ppt_fall_mm -- Extremely high VIF (38) 
+# drop ppt_fall_mm -- Extremely high VIF (38)
 #   - Not significant in the GAM.
 #   - Fall effects were not prominent in prior modeling.
-covariates_subset <- covariates_modeling %>% 
-  select(skew, dec_long_va, ppt_spring_mm, 
-         ppt_summer_mm, ppt_winter_mm, tmean_m01_c, 
+covariates_subset <- covariates_modeling %>%
+  select(skew, dec_long_va, ppt_spring_mm,
+         ppt_summer_mm, ppt_winter_mm, tmean_m01_c,
          tmean_m06_c, elev_m, slope_deg)
 
 # Calculate VIF
@@ -152,9 +152,9 @@ vif_table <- car::vif(lm_vif) %>%
 #   - Keep tmean_m01_c (January), as it's more consistently significant.
 #   - Not significant in the GAM.
 #   - Fall effects were not prominent in prior modeling.
-covariates_subset <- covariates_modeling %>% 
-  select(skew, dec_long_va, ppt_spring_mm, 
-         ppt_summer_mm, ppt_winter_mm, tmean_m01_c, 
+covariates_subset <- covariates_modeling %>%
+  select(skew, dec_long_va, ppt_spring_mm,
+         ppt_summer_mm, ppt_winter_mm, tmean_m01_c,
          elev_m, slope_deg)
 
 # Calculate VIF

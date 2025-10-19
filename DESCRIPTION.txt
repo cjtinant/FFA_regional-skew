@@ -1,0 +1,20 @@
+Package: FFA_regional-skew
+Title: Regional Skew Estimation for Rare Floods
+Version: 1.5.1
+Authors@R: 
+    person("Charles Jason", "Tinant", email = "jtinant@olc.edu", role = c("aut", "cre"))
+Description: Reproducible workflows and scripts to estimate regional flood frequency skewness across the Great Plains using climate, terrain, and hydrologic covariates.
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 4.2.0)
+Imports:
+    dataRetrieval,
+    here,
+    sf,
+    terra,
+    tidyverse,
+    units
+Suggests:
+    renv,
+    styler

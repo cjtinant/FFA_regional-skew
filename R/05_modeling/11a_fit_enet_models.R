@@ -45,8 +45,8 @@ write_csv(lm_summary, here("results/model_summaries/lm_fit_tidy.csv"))
 
 # ------------------------------------------------------------------------------
 # 2. Generalized Additive Model (GAM)
-gam_fit <- mgcv::gam(skew ~ s(dec_long_va) + s(elev_m) + s(slope_deg) + 
-                       tmean_m01_c + s(ppt_spring_mm) + s(ppt_summer_mm) + 
+gam_fit <- mgcv::gam(skew ~ s(dec_long_va) + s(elev_m) + s(slope_deg) +
+                       tmean_m01_c + s(ppt_spring_mm) + s(ppt_summer_mm) +
                        s(ppt_winter_mm),
                      data = data)
 
@@ -112,6 +112,5 @@ saveRDS(enet_final, here("results/models/enet_fit.rds"))
 
 # Export best tuning parameters
 write_csv(enet_best, here("results/model_summaries/enet_fit_best_params.csv"))
-write_csv(enet_check_best_flat, 
+write_csv(enet_check_best_flat,
           here("results/model_summaries/enet_check_best_params.csv"))
-

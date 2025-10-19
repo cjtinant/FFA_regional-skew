@@ -1,0 +1,50 @@
+---
+title: "README - results/"
+author: "C.J. Tinant"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  github_document:
+    toc: true
+    toc_depth: 2
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    latex_engine: xelatex
+    fig_caption: true
+params:
+  version: "v1.5.1"
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+# 📁 Project Documentation (`results/`)
+
+This folder contains files of modeling results.
+
+---
+
+## 📚 Folder Purpose
+
+The `results`/` directory serves as a centralized archive for manuscript-ready
+figures, models, and outputs
+
+---
+
+## 🗂️ Subfolders
+
+The `results/` folder is organized as follows:
+
+```plaintext
+
+results/
+    ├── 20250415_pilot/          # Figures related to pilot project
+```
+
+---
+
+## 📄 Key Contents
+
+| File                             | Description |
+|:--------------------------------:|:-----------:|

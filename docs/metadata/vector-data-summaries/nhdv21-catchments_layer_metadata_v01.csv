@@ -1,0 +1,2 @@
+file,layer,geometry_type,crs,extent,n_features,n_attributes,geometry_column,timestamp
+nhd_catchment_v21.gpkg,nhd_catchment_v21,MULTIPOLYGON,NAD83 / Conus Albers,"-1305418.33587038, 209669.093784452, 501886.14013437, 3083376.04595076",637021,6,geom,2025-07-20T17:32:15Z

@@ -1,0 +1,101 @@
+---
+title: "Metadata Inventory"
+author: "CJ Tinant"
+date: July 21, 2025
+output: 
+  github_document:
+    toc: true
+    toc_depth: 3
+---
+
+<!--
+# Metadata Inventory
+
+**Author:** CJ Tinant  
+-->
+
+**Last Updated:** `r format(Sys.Date(), "%B %d, %Y")`
+
+This document provides an up-to-date listing of metadata files stored in 
+`data/log/`.
+
+## Table of Contents
+
+- [Metadata Inventory](#metadata-inventory)
+  - [Metadata Files in docs/metadata](#metadata-files-in-docsmetadata)
+
+## Metadata Files in docs/metadata
+
+```{r metadata-inventory, echo=FALSE, message=FALSE, warning=FALSE}
+
+library(tidyverse)
+library(fs)
+library(here)
+library(janitor)
+library(knitr)
+
+folder <- "data"
+subfolder <- "log"
+
+# 1. List metadata files, including subdirectories (e.g. data-dictionaries/)
+# 1. List metadata files, including subdirectories (e.g., data-dictionaries/)
+metadata_files <- dir_info(here(folder, subfolder), recurse = TRUE) %>%
+  filter(type == "file") %>%
+  mutate(
+    file_name = path_file(path),
+    ext = path_ext(path),
+    # Subdirectory within docs/metadata
+    folder = path_rel(path_dir(path), start = here(folder, subfolder)),
+    # Replace "." (top-level) with "metadata"
+    folder = if_else(folder == ".", "metadata", folder)
+  ) %>%
+  mutate(
+    size_kb = round(size / 1024, 1),
+    size_display = if_else(size < 1024, "<1 KB", paste0(size_kb, " KB")) #,
+    # Optional: custom folder order
+    #   folder = factor(folder,
+    #                   levels = c("data-dictionaries",
+    #                              "descriptions",
+    #                              "look-up-tables",
+    #                              "metadata",
+    #                              "raster-data-summaries",
+    #                              "vector-data-summaries")
+    #                  )
+  ) %>%
+  arrange(folder, file_name) %>%
+  select(folder, file_name, ext, size_display) %>%
+  filter(!str_detect(file_name, "^README\\."))
+
+file_descriptions <- tribble(
+  ~file_name, ~description,
+  "catchment_download_log.csv", "NHDPlusHD catchment download log",
+  "duplicate_feature_summary.csv", "log of duplicate check for in data/processed feature data",
+  "duplicate_raster_data_summary.csv", "log of duplicate check for in data/processed raster data",
+  "ecoregion_download_log.csv", "EPA Ecoregion download log",
+  "feature_file_inventory.csv", "data/processed feature data inventory",
+  "koppen_climate_files_removed.csv", "log of Koppen-Geiger download files removed",
+  "nhdphr_download_log.csv", "NHDPlusHD flowline download log",
+  "prism_file_inventory.csv", "PRISM normals download log",
+  "prism_qc.csv", "PRISM normals download quality control",
+  "raster_data_inventory.csv", "data/processed raster data inventory",
+  "summary_processed_data_files.csv", "data/processed feature and raster data inventory",
+  "summary_raw_data_files.csv", "data/raw feature and raster data inventory",
+  "raster_error_recheck.csv", "data/processed raster data QC",
+  "raster_validation_summary.csv", "data/processed raster data QC",
+  "vector_bbox_summary.csv", "data/processed feature data QC",
+  "vector_bbox_suspects.csv", "data/processed feature data QC",
+  "vector_validation_summary.csv", "data/processed feature data QC"
+)
+
+metadata_files <- left_join(metadata_files, file_descriptions, by = "file_name")
+
+
+# 2. Render the table
+metadata_files %>%
+  select(Folder = folder,
+         `File Name` = file_name,
+         Extension = ext, Size = size_display,
+         Description = description) %>%
+  kable(align = "lcc")
+```
+

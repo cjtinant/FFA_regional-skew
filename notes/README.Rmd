@@ -1,0 +1,55 @@
+---
+title: "README - notes/"
+author: "C.J. Tinant"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  github_document:
+    toc: true
+    toc_depth: 2
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    latex_engine: xelatex
+    fig_caption: true
+params:
+  version: "v1.5.1"
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+# 📁 Project Documentation (`notes/`)
+
+---
+
+## 📚 Folder Purpose
+
+The `notes/` directory serves as a centralized archive for:
+
+-  Meeting notes
+-  Brainstorming ideas
+-  Modeling thoughts (“why didn’t ridge work here?”)
+-  Paper/article annotations
+-  Planning diagrams
+-  Unpublished exploratory code chunks
+-  Zettelkasten-style markdown
+
+---
+
+## 🗂️ Subfolders
+
+The `data/` folder is organized as follows:
+
+```plaintext
+
+notes/
+    ├── to_process           # notes in docx doc format to incorporate in future
+```
+
+
+## 📄 Key Contents
+
+| File                             | Description |
+|:--------------------------------:|:-----------:|
+| `script-notes_and_developer-log.pdf`  | Implementation notes, design decisions, and development comments |

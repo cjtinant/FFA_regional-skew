@@ -37,12 +37,12 @@ build_seasonal_prism_rasters <- function(folder, var = "ppt") {
   ppt_files <- all_bils[str_detect(all_bils, var)]
   month_numbers <- str_extract(ppt_files, "_(\\d{2})_bil") %>%
     str_remove_all("_bil|_")
-  
+
   ppt_df <- tibble(file = ppt_files, month = month_numbers)
-  
+
   spring_files <- ppt_df %>% filter(month %in% c("04", "05")) %>% pull(file)
   winter_files <- ppt_df %>% filter(month %in% c("12", "01", "02")) %>% pull(file)
-  
+
   list(
     ppt_spring = sum(rast(spring_files)),
     ppt_winter = sum(rast(winter_files))
@@ -80,7 +80,8 @@ test <- test %>%
   mutate(pred_gam = predict(gam_model, newdata = test))
 
 pred_enet_test <- predict(enet_model, new_data = test) %>%
-  bind_cols(test %>% select(site_no, skew)) %>%
+  bind_cols(test %>%
+              select(site_no, skew)) %>%
   rename(pred_enet = .pred)
 
 # Evaluate
@@ -135,7 +136,9 @@ ppt_spring_rast <- seasonal_rasters$ppt_spring
 ppt_winter_rast <- seasonal_rasters$ppt_winter
 
 # Other raster covariates
-tmean_rast <- rast(here("data/raw/prism/PRISM_tmean_30yr_normal_4kmM5_01_bil/PRISM_tmean_30yr_normal_4kmM5_01_bil.bil"))
+tmean_rast <- rast(here("data", "raw", "prism",
+                        paste0("PRISM_tmean_30yr_normal_4kmM5_01_bil",
+                               "/PRISM_tmean_30yr_normal_4kmM5_01_bil.bil")))
 elev_rast  <- rast(here("data/raw/elevation_ned.tif"))
 slope_rast <- terrain(elev_rast, v = "slope", unit = "degrees")
 
@@ -201,9 +204,9 @@ grid_covariates_clean <- grid_covariates %>%
 
 # Predict from final GAM model
 grid_covariates_clean <- grid_covariates_clean %>%
-  mutate(pred_skew = as.numeric(predict(gam_model, 
-                                        newdata = st_drop_geometry(
-                                          grid_covariates_clean))))
+  mutate(pred_skew = as.numeric(
+                                predict(gam_model,
+                                        newdata = st_drop_geometry(grid_covariates_clean))))
 
 # filter extreme values
 grid_covariates_filt <- grid_covariates_clean %>%
@@ -238,7 +241,8 @@ grid_scaled <- grid_covariates_filt %>%
 
 grid_scaled <- grid_scaled %>%
   mutate(pred_skew = as.numeric(predict(
-    gam_model, newdata = st_drop_geometry(.))))
+                                        gam_model,
+                                        newdata = st_drop_geometry(.))))
 
 
 # reconvert to sf
@@ -273,15 +277,15 @@ grid_df <- grid_covariates_clean %>%
   dplyr::select(x, y, pred_skew)
 
 # Convert predictions to raster
-pred_raster <- terra::rast(grid_covariates_clean, 
-                           type = "xyz", 
+pred_raster <- terra::rast(grid_covariates_clean,
+                           type = "xyz",
                            crs = sf::st_crs(grid_covariates_clean)$wkt)
 
 # Set predicted skew as the only layer
 names(pred_raster) <- "pred_skew"
 
 # Save raster
-terra::writeRaster(pred_raster, here("results/rasters/pred_skew_gam.tif"), 
+terra::writeRaster(pred_raster, here("results/rasters/pred_skew_gam.tif"),
                    overwrite = TRUE)
 
 

@@ -1,0 +1,66 @@
+---
+title: "README - reports/"
+author: "C.J. Tinant"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    latex_engine: xelatex
+    fig_caption: true
+  github_document:
+    toc: true
+    toc_depth: 2
+params:
+  version: "v1.5.1"
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+# 📁 Project Documentation (`reports/`)
+
+Formal results for external stakeholders. This folder contains final
+deliverables or near-final outputs to potentially share with reviewers, PIs,
+funders, or journals.
+
+---
+
+## 📚 Folder Purpose
+
+The `reports/` directory serves as a centralized archive for:
+
+-  PDF or HTML reports from rmarkdown::render()
+-  Poster files (posterdown, LaTeX, PDF)
+-  Quarto or RMarkdown manuscripts
+-  Slide decks
+-  Formal data appendices or export files
+
+---
+
+\newpage
+
+## 🗂️ Subfolders
+
+The `reports/` folder is organized as follows:
+
+```plaintext
+
+reports/
+├── 20250415_pilot/                    # Abstract and poster from pilot project
+├── milestones/                        # Consise summaries of project steps
+       ├── milestone_00_project_structure_refact
+       ├── milestone_01_download_prepare_covariates
+       ├── milestone_02_documentation
+```
+
+---
+
+## 📄 Key Contents
+
+| File | Description |
+|:----:|:-----------:|
+| `milestone_00_project_structure_refact.pdf`    | Project structure refactor |
+| `milestone_01_download_prepare_covariates.pdf` | Acquire and validate data  |
+| `milestone_02_documentation.pdf`               | Embed documentation within analysis folders and formalize metadata management |

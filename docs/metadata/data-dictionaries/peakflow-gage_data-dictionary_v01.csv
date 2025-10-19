@@ -1,0 +1,15 @@
+Field Name,Description,Unit,Data Type
+site_no,USGS site identifier,unique id,integer
+tier,Data reliability category by record length and regulation,unitless,integer
+n_years,Number of years in period of record,year,integer
+skew_lp3,Sample skewness of log10(peak flow); Bulletin 17C-compatible,unitless,numeric
+station_nm,USGS station name (often includes stream name),NA,character
+dec_lat_va,Latitude in decimal degrees,dec degree,numeric
+dec_long_va,Longitude in decimal degrees,dec degree,numeric
+coord_datum_cd,"Coordinate datum (e.g., NAD27, NAD83)",NA,character
+alt_va,Elevation of gage (feet above datum),feet,numeric
+huc_cd,Hydrologic Unit Code (8-digit HUC),unique id,integer
+basin_cd,Basin code (regional classification),unique id,integer
+topo_cd,Topographic setting code,NA,character
+drain_area_va,Total drainage area,square miles,numeric
+contrib_drain_area_va,Contributing drainage area ,square miles,numeric

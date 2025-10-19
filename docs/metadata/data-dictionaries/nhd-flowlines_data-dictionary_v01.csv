@@ -1,0 +1,10 @@
+Field Name,Description,Unit,Data Type
+Shape_Area,Area calculated by gpkg,NA,numeric
+Shape_Length,Length calculated by gpkg,NA,numeric
+areasqkm,Catchment area (sq km),sq km,numeric
+chunk_id,NA,unitless,integer
+geom,gkpg geometry,sfc_MULTIPOLYGON,NA
+gridcode,Grid code (often from rasterized source),unitless,integer
+nhdplusid,NHDPlus feature ID,unitless,numeric
+sourcefc,Source feature class,NA,character
+vpuid,Vector Processing Unit ID,NA,character

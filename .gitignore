@@ -1,52 +1,64 @@
 # =======================
-# Output Data (Generated or Large Files)
+# LARGE FILES TO IGNORE (flagged >50MB)
 # =======================
 
-# Ignore folders used for processing or outputs
-data/delete/
-data/spatial/*
-data/raw/prism/
-
 # =======================
-# ArcGIS Pro Artifacts (Expanded)
+# Ignore ArcGIS Pro Artifacts
 # =======================
-
-# Anything inside arcgis_project that isn't a manual config
 arcgis_project/*
 
-# =======================
-# R Markdown Generated Files (Expanded)
-# =======================
+# ==============================================================
+# Output Data (Generated or Large Files) Raster and Vector files
+# ==============================================================
+data/raw/
+data/processed/
 
-*.html
+# =======================
+# Ignore generic
+# =======================
+*.zip
+*.log
+*.aux
+*.toc
+*.out
+*.log
+
+# ==================================================================
+# Ignore binary Excel source metadata export logs or LaTeX leftovers
+# ==================================================================
+*.xlsx
+
+# ======================================
+# Ignore temporary or deprecated folders
+# ======================================
+
+# ==================================
+# Ignore files not yet in production
+# ==================================
+RELEASE_CHECKLIST.Rmd
 
 # =======================
-# General Windows or Mac Junk
+# Ignore General Windows or MacOs cruft
 # =======================
-
 schema.ini
 *.bak
 *.tmp
 ~$*
 *.db
+.DS_Store
 
 # =======================
-# RStudio Junk
+# Ignore RStudio Junk
 # =======================
 .Rproj.user/
 .Rhistory
 .RData
-.Rproj.user/
 
-# =======================
-# Temporary files to delete on final
-# =======================
+# =========================================
+# Ignore Temporary files to delete on final
+# =========================================
 delete/
 prior-maps/
 notebooks/
-
-# =======================
-# Large files
-# =======================
-data/raw/elevation_ned.tif
-*.zip
+sandbox/
+tmp/

@@ -65,9 +65,9 @@ lm_fit %>%
 # ==============================================================================
 
 # check annual, location, elevation, and slope
-gam_fit_ann <- mgcv::gam(skew ~ s(dec_lat_va) + s(dec_long_va) + s(elev_m) + 
+gam_fit_ann <- mgcv::gam(skew ~ s(dec_lat_va) + s(dec_long_va) + s(elev_m) +
                            s(slope_deg) + s(ppt_ann_mm) + s(tmean_ann_c),
-                     data = covariates_modeling)
+                         data = covariates_modeling)
 
 summary(gam_fit_ann)
 
@@ -76,10 +76,10 @@ gam_fit_ann %>%
   write_csv(here("results/model_summaries/gam_fit_ann_tidy.csv"))
 
 # check monthly temperatures
-gam_fit_tmean <- mgcv::gam(skew ~ s(tmean_m01_c)+ s(tmean_m02_c)+ 
-                             s(tmean_m03_c) + s(tmean_m04_c) + s(tmean_m05_c) 
-                           + s(tmean_m06_c) + s(tmean_m07_c) + s(tmean_m08_c) 
-                           + s(tmean_m09_c) + s(tmean_m10_c) + s(tmean_m11_c) 
+gam_fit_tmean <- mgcv::gam(skew ~ s(tmean_m01_c) + s(tmean_m02_c) +
+                             s(tmean_m03_c) + s(tmean_m04_c) + s(tmean_m05_c)
+                           + s(tmean_m06_c) + s(tmean_m07_c) + s(tmean_m08_c)
+                           + s(tmean_m09_c) + s(tmean_m10_c) + s(tmean_m11_c)
                            + s(tmean_m12_c), data = covariates_modeling)
 
 summary(gam_fit_tmean)
@@ -89,11 +89,11 @@ gam_fit_tmean %>%
   write_csv(here("results/model_summaries/gam_fit_tmean_tidy.csv"))
 
 # check monthly precipitation
-gam_fit_ppt <- mgcv::gam(skew ~ s(ppt_m01_mm)+ s(ppt_m02_mm)+ 
-                             s(ppt_m03_mm) + s(ppt_m04_mm) + s(ppt_m05_mm) 
-                           + s(ppt_m06_mm) + s(ppt_m07_mm) + s(ppt_m08_mm) 
-                           + s(ppt_m09_mm) + s(ppt_m10_mm) + s(ppt_m11_mm) 
-                           + s(ppt_m12_mm), data = covariates_modeling)
+gam_fit_ppt <- mgcv::gam(skew ~ s(ppt_m01_mm) + s(ppt_m02_mm) +
+                           s(ppt_m03_mm) + s(ppt_m04_mm) + s(ppt_m05_mm)
+                         + s(ppt_m06_mm) + s(ppt_m07_mm) + s(ppt_m08_mm)
+                         + s(ppt_m09_mm) + s(ppt_m10_mm) + s(ppt_m11_mm)
+                         + s(ppt_m12_mm), data = covariates_modeling)
 
 summary(gam_fit_ppt)
 
@@ -135,12 +135,12 @@ vif_table %>%
   arrange(desc(vif)) %>%
   write_csv(here::here("data/clean/vif_covariates_subset.csv"))
 
-# Refine key variables 
+# Refine key variables
 covariates_refined_subset <- covariates_modeling %>%
   select(
     skew,
     dec_long_va,              # dec_lat_va is correlated with temperature
-    slope_deg, 
+    slope_deg,
     elev_m,
     tmean_m01_c, tmean_m06_c, # tmean_ann_c is correlated with dec_lon_va
     ppt_m04_mm,               # ppt_m05_mm is correlated with May precip
@@ -159,37 +159,36 @@ vif_table %>%
   arrange(desc(vif)) %>%
   write_csv(here::here("data/clean/vif_covariates_refined_subset.csv"))
 
-
 # ==============================================================================
 # Step 3: Prepare for Elastic Net Regression
 # Penalized regression to address multicollinearity
 # ==============================================================================
-# 
+#
 # x <- covariates_modeling %>%
 #   select(-site_no, -skew) %>%
 #   as.matrix()
-# 
+#
 # y <- covariates_modeling$skew
-# 
+#
 # enet_fit <- glmnet::cv.glmnet(x, y, alpha = 0.5, standardize = TRUE)
-# 
+#
 # # Plot cross-validation error
 # plot(enet_fit)
-# 
+#
 # # Extract coefficients
 # coef(enet_fit, s = "lambda.min")
-# 
-# # ==============================================================================
+#
+# # ============================================================================
 # # Step 4: Explore Residuals (MLR & GAM)
 # # Look for spatial patterns
-# # ==============================================================================
-# 
+# # ============================================================================
+#
 # covariates_modeling <- covariates_modeling %>%
 #   mutate(
 #     resid_lm = residuals(lm_fit),
 #     resid_gam = residuals(gam_fit)
 #   )
-# 
+#
 # # Quick residual plot
 # covariates_modeling %>%
 #   ggplot(aes(x = dec_long_va, y = dec_lat_va, color = resid_lm)) +
@@ -197,20 +196,20 @@ vif_table %>%
 #   scale_color_gradient2(low = "blue", mid = "white", high = "red") +
 #   theme_minimal() +
 #   ggtitle("LM Residuals — Spatial Pattern")
-# 
+#
 # ggsave(
 #   filename = here("results/figures/residuals_lm_spatial.png"),
 #   width = 10, height = 8, dpi = 300, bg = "white"
 # )
-# 
+#
 # # Repeat for GAM if useful...
-# 
+#
 # # ==============================================================================
 # # Save Workspace
 # # ==============================================================================
-# 
+#
 # saveRDS(lm_fit, here("results/models/lm_fit.rds"))
 # saveRDS(gam_fit, here("results/models/gam_fit.rds"))
 # saveRDS(enet_fit, here("results/models/enet_fit.rds"))
-# 
+#
 # message("Exploratory modeling complete. Ready for further model development.")

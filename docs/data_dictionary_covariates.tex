@@ -1,0 +1,581 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+  10pt,
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+% _latex_preamble.tex
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{geometry}
+\usepackage{array}
+\renewcommand{\arraystretch}{1.15}
+\geometry{margin=1in}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\thepage}
+\lhead{Regional Skew Covariates}
+\usepackage{tocloft}
+\renewcommand{\cftsecfont}{\normalfont}
+\renewcommand{\cftsecpagefont}{\normalfont}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Data Dictionary: Covariates by Domain},
+  pdfauthor={C.J. Tinant with ChatGPT 4o (20250504)},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Data Dictionary: Covariates by Domain}
+\author{C.J. Tinant with ChatGPT 4o (20250504)}
+\date{}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\section*{Introduction}
+\addcontentsline{toc}{section}{Introduction}
+
+This document summarizes the covariate metadata used in the regional
+skew estimation study. Variables are grouped by \textbf{Domain} and
+described in terms of their name, definition, unit, spatial scale, and
+analytical notes.
+
+\section*{ Climate }
+\addcontentsline{toc}{section}{ Climate }
+
+\begingroup\fontsize{8}{10}\selectfont
+
+\begin{longtable}[t]{lp{8cm}l}
+\caption{\label{tab:create_tables}Table A: Climate — Definition and Units}\\
+\toprule
+Short Name & Description & Unit\\
+\midrule
+\endfirsthead
+\caption[]{Table A: Climate — Definition and Units \textit{(continued)}}\\
+\toprule
+Short Name & Description & Unit\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+Longitude & Point-based (gage-level) data used as a station-level predictors, not
+derived from zonal aggregation. & decimal degrees\\
+Latitude & Point-based (gage-level) data used as a station-level predictors, not
+derived from zonal aggregation. & decimal degrees\\
+Climate Zone & Dominant Koppen Geiger climate class, aggregated to macroregional
+zones. & categorical code\\
+PHZM Zone Count & Count of unique USDA Plant Hardiness Zones, aggregated to
+macroregional zones. & count\\
+PHZM Zone (Dominant) & Dominant USDA Plant Hardiness Zone, aggregated to macroregional zones. & categorical code\\
+\addlinespace
+Annual Precip (Median) & Zonal median of total annual precipitation from PRISM 1991 to 2020
+climatological normals, aggregated to Level II ecoregions. & mm\\
+Annual Temp (Median) & Zonal median of total annual precipitation from PRISM 1991 to 2020
+climatological normals, aggregated to Level II ecoregions. & degrees C\\
+Pct Annual Precip May to Aug (Mean) & Zonal mean of the percentage of annual precipitation falling May to
+August from PRISM 1991 to 2020 climatological normals, aggregated to
+Level II ecoregions. & proportion [0 to 1]\\
+Pct Annual Precip May to Aug (Median) & Zonal mean of the percentage of annual precipitation falling May to
+August from PRISM 1991 to 2020 climatological normals, aggregated to
+Level II ecoregions. & proportion [0 to 1]\\
+Seasonal Precip StDev & Standard deviation of seasonal precip totals from PRISM 1991 to 2020
+normals aggegated to Level III ecoregions. & mm\\
+\addlinespace
+Seasonal Precip IQR & IQR (25th to 75th percentile) of seasonal precip totals from PRISM
+1991 to 2020 normals aggegated to Level III ecoregions. & mm\\
+Fall Precip (Median) & Sum of zonal medians of fall monthly precip totals (Sep to Nov) from
+PRISM 1991 to 2020 normals aggegated to Level III ecoregions. & mm\\
+Winter Precip (Median) & Sum of zonal medians of winter monthly precip (Dec to Feb) from PRISM
+1991 to 2020 normals aggegated to Level III ecoregions. & mm\\
+Spring Precip (Median) & Sum of zonal medians of summer monthly precip (Jun to Aug) from PRISM
+1991 to 2020 normals aggegated to Level III ecoregions. & mm\\
+Summer Precip (Median) & Sum of zonal medians of spring monthly precip (Mar to May) from PRISM
+1990 to 2020 normals aggegated to Level III ecoregions. & mm\\
+\addlinespace
+Freeze-Thaw Days & Zonal count of freeze-thaw transition days from PRISM daily data (1991
+to 2020), aggegated to NHD+ catchments. & days\\
+Precip Intensity (95th-percentile) & Zonal median of 95th percentile of daily precip on wet days from PRISM
+daily normals (1991 to 2020), aggegated to NHD+ catchments. & mm\\
+Wet Day Frequency (Seasonal) & Zonal median number of wet days (less than 0.1 mm/day) per season from
+PRISM daily normals (1991 to 2020), aggregated to NHD+ catchments. & days\\*
+\end{longtable}
+\endgroup{}
+
+\vspace{0.5cm}
+
+\begingroup\fontsize{8}{10}\selectfont
+
+\begin{longtable}[t]{lp{8cm}l}
+\caption{\label{tab:create_tables}Table B: Climate — Notes and Temporal Scale}\\
+\toprule
+Short Name & Notes & Scale\\
+\midrule
+\endfirsthead
+\caption[]{Table B: Climate — Notes and Temporal Scale \textit{(continued)}}\\
+\toprule
+Short Name & Notes & Scale\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+Longitude & Represents site location in degrees east or west. Useful for detecting
+climatic or physiographic gradients (moisture availability, storm
+type). & Station\\
+Latitude & Represents site location in degrees north. Commonly used to capture
+latitudinal patterns in climate and hydrology (e.g., temperature,
+seasonality). & Station\\
+Climate Zone & Provides broad-scale climate context (e.g., humid continental vs.
+semi-arid). Useful for regional stratification. & Macroregional\\
+PHZM Zone Count & Reflects cold hardiness diversity; transitional zones may influence
+vegetation, snowmelt timing, and freeze-thaw cycles. & Macroregional\\
+PHZM Zone (Dominant) & Captures dominant cold tolerance regime based on minimum winter
+temperatures. Relevant for snowmelt timing and freeze-thaw
+sensitivity. & Macroregional\\
+\addlinespace
+Annual Precip (Median) & Represents typical annual moisture supply; important for soil moisture
+availability, runoff potential, and vegetation productivity. & Regional\\
+Annual Temp (Median) & Governs evapotranspiration, freeze thaw, and snowpack formation.
+Represents the baseline thermal regime. & Regional\\
+Pct Annual Precip May to Aug (Mean) & Characterizes warm-season water input. Useful for identifying
+storm-driven systems tied to convective seasonality. & Regional\\
+Pct Annual Precip May to Aug (Median) & Captures the typical proportion of precipitation falling in the warm
+season, which is important for Great Plains hydrology. & Regional\\
+Seasonal Precip StDev & Captures variability across seasons. Sensitive to outliers—useful for
+detecting flashiness or hydrologic irregularity. & Subregional\\
+\addlinespace
+Seasonal Precip IQR & Characterizes intra-annual precipitation variability; robust to
+outliers. & Subregional\\
+Fall Precip (Median) & Captures fall precipitation; relevant to baseflow reset and transition
+to frontal storm systems. & Subregional\\
+Winter Precip (Median) & Indicates snowpack formation potential and winter water storage. & Subregional\\
+Spring Precip (Median) & Key springtime recharge and flood generation season; relevant to
+melt-transition systems and early crop needs. & Subregional\\
+Summer Precip (Median) & Captures convective storm seasonality (flood-prone regions). & Subregional\\
+\addlinespace
+Freeze-Thaw Days & Captures thermally transitional zones; relevant for soil structure,
+infiltration disruption, and freeze thaw runoff events. & Local\\
+Precip Intensity (95th-percentile) & Captures storm severity at the upper tail. Correlated with flash flood
+potential and runoff generation efficiency. & Local\\
+Wet Day Frequency (Seasonal) & Describes storm frequency and seasonal spacing. Interacts with
+intensity to shape hydrograph form and flood likelihood. & Local\\*
+\end{longtable}
+\endgroup{}
+
+\clearpage
+
+\section*{ Topography }
+\addcontentsline{toc}{section}{ Topography }
+
+\begingroup\fontsize{8}{10}\selectfont
+
+\begin{longtable}[t]{lp{8cm}l}
+\caption{\label{tab:create_tables}Table A: Topography — Definition and Units}\\
+\toprule
+Short Name & Description & Unit\\
+\midrule
+\endfirsthead
+\caption[]{Table A: Topography — Definition and Units \textit{(continued)}}\\
+\toprule
+Short Name & Description & Unit\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+Station Altitude & Point-based (gage-level) data used as a station-level predictors, not
+derived from zonal aggregation. & meters\\
+Mean Slope & Mean slope (from NED), aggregated to macroregional zones. & degrees\\
+Median Slope & Median slope (from NED), aggregated to macroregional zones. & degrees\\
+Altitude Zone & Mean elevation of gage locations, aggregated to macroregional zones. & meters\\
+Mean Slope Distribution & Zonal mean of NED slope values, aggregated to Level II ecoregions. & degrees\\
+\addlinespace
+Slope Skewness & Zonal skewness of NED slope values, aggregated to Level II ecoregions. & unitless (skewness)\\
+Slope Variability (StDev) & Zonal standard deviation (SD) of slope values from NED data,
+aggregated to Level II ecoregions. & degrees\\
+Slope Variability (IQR) & Zonal interquartile range (IQR) of NED slope values, aggregated to
+Level II ecoregions. & degrees\\
+Surface Roughness & Zonal median of surface roughness, derived from 10 m NED elevation,
+aggegated to Level III ecoregions. & m/m (slope ratio)\\
+TWI Mean & Categorical version of the Topographic Wetness Index (TWI), created by
+binning continuous TWI values into ordinal classes (e.g., quartiles or
+hydrologically relevant thresholds). Simplifies terrain and moisture
+interactions for modeling and interpretability. & unitless index\\
+\addlinespace
+TWI Modal & Zonal mode of 10 m NED Topographic Wetness Index (TWI) values
+aggegated to Level III ecoregions. & unitless index\\
+TWI Class & Zonal assignment of ordinal NED Topographic Wetness Index (TWI)
+classes, derived from 10 m NED, aggegated to Level III ecoregions. & class label (ordinal ID)\\
+Elevation Range & Zonal median elevation range (max minus min elevation) from 10 m NED
+elevation data, aggregated to NHDPlusHD catchments. & meters\\
+Aspect (Cosine) & Zonal median of the cosine of aspect, derived from 10 m NED elevation
+data, aggregated to NHDPlusHD catchments. & unitless [minus 1 to 1]\\
+Aspect (Sine) & Zonal median of the sine of aspect, derived from 10 m NED elevation
+data, aggregated to NHDPlusHD catchments. & unitless [minus 1 to 1]\\
+\addlinespace
+Curvature IQR & IQR of combined curvature types, derived from 10 m NED data,
+aggregated to NHD+ catchments. & unitless\\
+Planform Curvature & Zonal median of planform (horizontal) curvature, derived from 10 m NED
+data, aggregated to NHDPlusHD catchments. & unitless\\
+Profile Curvature & Zonal median of profile (vertical) curvature, derived from 10 m NED
+elevation data, aggregated to NHDPlusHD catchments. & unitless\\
+Watershed Elongation & Watershed elongation ratio, calculated from catchment geometry,
+aggregated to NHDPlusHD catchments. & unitless ratio (m per m)\\
+Watershed Circularity & Watershed circularity ratio, calculated from catchment geometry,
+aggregated to NHD+ catchments. & unitless ratio (sq-m per sq-m)\\*
+\end{longtable}
+\endgroup{}
+
+\vspace{0.5cm}
+
+\begingroup\fontsize{8}{10}\selectfont
+
+\begin{longtable}[t]{lp{8cm}l}
+\caption{\label{tab:create_tables}Table B: Topography — Notes and Temporal Scale}\\
+\toprule
+Short Name & Notes & Scale\\
+\midrule
+\endfirsthead
+\caption[]{Table B: Topography — Notes and Temporal Scale \textit{(continued)}}\\
+\toprule
+Short Name & Notes & Scale\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+Station Altitude & Elevation of the gage site above sea level. Influences temperature,
+snowpack, and runoff timing & Station\\
+Mean Slope & Describes average terrain steepness. Helps distinguish rugged uplands
+from flatter plains. & Macroregional\\
+Median Slope & Reflects typical terrain slope. More robust to outliers than the mean;
+useful for evaluating runoff tendency. & Macroregional\\
+Altitude Zone & Represents elevational regime. Influences climate, snow duration, and
+runoff seasonality. & Macroregional\\
+Mean Slope Distribution & Aggregated mean slope at ecoregion scale. Affects stream power, flow
+velocity, and sediment dynamics. & Regional\\
+\addlinespace
+Slope Skewness & Measures asymmetry in slope distribution. Helps identify dominant
+terrain types and slope transitions. & Regional\\
+Slope Variability (StDev) & Quantifies slope variability including extremes. Suggests rugged or
+heterogeneous terrain. & Regional\\
+Slope Variability (IQR) & Measures slope variability using IQR. Robust to outliers; reflects
+terrain complexity and infiltration dynamics. & Regional\\
+Surface Roughness & Captures fine-scale surface texture. Influences ponding, microrelief,
+and infiltration pathways. & Subregional\\
+TWI Mean & Indicates average terrain wetness potential. Combines slope and
+upstream drainage area. Lower classes indicate drier conditions;
+higher classes represent wetter zones with greater runoff accumulation
+potential. & Subregional\\
+\addlinespace
+TWI Modal & Shows most frequent wetness class. Useful for identifying dominant
+moisture or runoff conditions. & Subregional\\
+TWI Class & Ordinal wetness class derived from TWI. Simplifies terrain–moisture
+interactions; lower values = drier, higher = wetter zones. & Subregional\\
+Elevation Range & Captures elevation spread within catchment. Linked to slope energy,
+erosion risk, and runoff response. & Local\\
+Aspect (Cosine) & Quantifies N to S slope orientation. North-facing slopes (values > 0)
+retain snow longer and reduce evapotranspiration. & Local\\
+Aspect (Sine) & Quantifies E to W slope orientation. East-facing slopes (values > 0)
+warm earlier, affecting snowmelt and phenology. & Local\\
+\addlinespace
+Curvature IQR & Measures variation in terrain curvature. High values imply complex
+flow paths and erosion susceptibility. & Local\\
+Planform Curvature & Identifies slope convergence/divergence. Negative = concave
+(channels), positive = convex (ridges). & Local\\
+Profile Curvature & Represents slope change along flow lines. Helps distinguish
+depositional vs. erosional terrain zones. & Local\\
+Watershed Elongation & Describes catchment shape. More elongated basins have faster runoff
+and flashier peaks. & Local\\
+Watershed Circularity & Captures catchment compactness. Higher values suggest faster, more
+concentrated runoff response. & Local\\*
+\end{longtable}
+\endgroup{}
+
+\clearpage
+
+\section*{ Watershed Metrics }
+\addcontentsline{toc}{section}{ Watershed Metrics }
+
+\begingroup\fontsize{8}{10}\selectfont
+
+\begin{longtable}[t]{lp{8cm}l}
+\caption{\label{tab:create_tables}Table A: Watershed Metrics — Definition and Units}\\
+\toprule
+Short Name & Description & Unit\\
+\midrule
+\endfirsthead
+\caption[]{Table A: Watershed Metrics — Definition and Units \textit{(continued)}}\\
+\toprule
+Short Name & Description & Unit\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+Watershed Area & Point-based (gage-level) data used as a station-level predictors, not
+derived from zonal aggregation. & watershed area (sq-km)\\
+Clay Fraction & Zonal modal fraction of surface soil from zero to 5 cm composed of
+clay particles from SSURGO2, aggregated to Level II ecoregions. & proportion [0 to 1]\\
+Silt Fraction & Zonal modal fraction of surface soil from zero to 5 cm composed of
+silt particles from SSURGO2, aggregated to Level II ecoregions. & proportion [0 to 1]\\
+Sand Fraction & Zonal modal fraction of surface soil from zero to 5 cm composed of
+sand particles from SSURGO2, aggregated to Level II ecoregions. & proportion [0 to 1]\\
+Median Stream Order & Zonal median of Strahler stream order derived from NHDPlus v2.1
+flowlines, aggregated to Level II ecoregions. & Strahler order\\
+\addlinespace
+Max Stream Order & Zonal maximum stream order in the network derived from NHDPlus v2.1
+flowlines, aggregated to Level II ecoregions. & Strahler order\\
+Soil Permeability & Zonal median of STATSGO2 permeability values aggegated to Level III
+ecoregions. & mm/h\\
+Soil Runoff Class & Zonal modal soil hydrologic group (A to D) from STATSGO2 aggegated to
+Level III ecoregions. & class A to D (ordinal)\\
+Flow Accumulation & Zonal median of 10 m NED flow accumulation (upslope contributing area)
+aggegated to Level III ecoregions. & contributing area (sq-km)\\
+Stream Density & Zonal mean of stream length per catchment area, derived from NHDPlusHD
+flowlines, aggregated to NHDPlusHD catchments. & meters per square meter\\
+\addlinespace
+Mean Flow Length & Zonal median of average flow path length, derived from NHDPlusHD
+flowlines, aggregated to NHDPlusHD catchments & meters\\
+Stream Slope & Zonal median of stream slope (elevation drop per unit flow length),
+derived from NED and NHDPlus data, aggregated to NHDPlusHD catchments. & slope ratio (m/m)\\
+Relief Ratio & Relief ratio (elevation range divided by stream length) from 10 m NED
+elevation data, aggregated to NHDPlusHD catchments. & m/m\\*
+\end{longtable}
+\endgroup{}
+
+\vspace{0.5cm}
+
+\begingroup\fontsize{8}{10}\selectfont
+
+\begin{longtable}[t]{lp{8cm}l}
+\caption{\label{tab:create_tables}Table B: Watershed Metrics — Notes and Temporal Scale}\\
+\toprule
+Short Name & Notes & Scale\\
+\midrule
+\endfirsthead
+\caption[]{Table B: Watershed Metrics — Notes and Temporal Scale \textit{(continued)}}\\
+\toprule
+Short Name & Notes & Scale\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+Watershed Area & Commonly used as a spatial predictor in hydrologic modeling. & Station\\
+Clay Fraction & Indicates surface soil texture. Higher clay content reduces
+infiltration and increases runoff potential. & Regional\\
+Silt Fraction & Indicates intermediate soil texture. Balances water retention and
+infiltration capacity. & Regional\\
+Sand Fraction & Represents infiltration rate of surface soils. Low values indicate
+higher runoff and steeper hydrographs. & Regional\\
+Median Stream Order & Represents typical drainage network complexity. Based on Strahler
+order, indicating average stream hierarchy within the watershed. & Regional\\
+\addlinespace
+Max Stream Order & Indicates the largest stream order within the catchment. Useful for
+identifying drainage basin scale and extent. & Regional\\
+Soil Permeability & Represents infiltration rate of surface soils. Low values indicate
+higher runoff and steeper hydrographs. & Subregional\\
+Soil Runoff Class & USDA hydrologic soil group (A to D). Classifies soils by infiltration
+capacity and storm response. & Subregional\\
+Flow Accumulation & Estimates upslope contributing area. Higher values suggest greater
+potential for water accumulation and flooding. & Subregional\\
+Stream Density & Ratio of total stream length to catchment area. Higher density
+reflects greater drainage dissection and shorter runoff travel times. & Local\\
+\addlinespace
+Mean Flow Length & Average flow path length to outlet. Longer paths typically indicate
+delayed runoff response. & Local\\
+Stream Slope & Elevation drop per unit stream length. Influences runoff velocity and
+hydrograph shape. & Local\\
+Relief Ratio & Ratio of watershed relief to main channel length. High values indicate
+steep basins and higher hydrologic energy. & Local\\*
+\end{longtable}
+\endgroup{}
+
+\clearpage
+
+\section*{ Land Cover }
+\addcontentsline{toc}{section}{ Land Cover }
+
+\begingroup\fontsize{8}{10}\selectfont
+
+\begin{longtable}[t]{lp{8cm}l}
+\caption{\label{tab:create_tables}Table A: Land Cover — Definition and Units}\\
+\toprule
+Short Name & Description & Unit\\
+\midrule
+\endfirsthead
+\caption[]{Table A: Land Cover — Definition and Units \textit{(continued)}}\\
+\toprule
+Short Name & Description & Unit\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+NLCD Cultivated Fraction & Proportion of NLCD cultivated land: cropland (81), aggregated to
+macroregional zones. & proportion [0 to 1]\\
+NLCD Forest Fraction & Proportion of NLCD forested land: deciduous (41), evergreen ( 42),
+mixed (43), aggregated to macroregional zones. & proportion [0 to 1]\\
+NLCD Rangeland Fraction & Proportion of NLCD shrubland (52), grassland (71) and pastureland
+(82),, aggregated to macroregional zones. & proportion [0 to 1]\\
+NLCD Developed Fraction & Proportion of NLCD developed land open space (21), low-intensity
+(22), medium-intensity (23), high-intensity (24), aggregated to
+macroregional zones. & proportion [0 to 1]\\
+NDVI Amplitude & Zonal median of annual NDVI amplitude for 2016 MODIS data, aggregated
+to Level II ecoregions. & unitless [minus 1 to 1]\\
+\addlinespace
+NDVI IQR & Zonal median of the interquartile range (IQR) of NDVI values for 2016
+MODIS data, aggregated to Level II ecoregions. & unitless [minus 1 to 1]\\
+Growing Season Length & Zonal median of the length of the 2016 growing season (NDVI-based),
+aggregated to Level II ecoregions. & days\\
+Peak NDVI & Zonal median of the seasonal peak NDVI for 2016 MODIS data, aggregated
+to Level II ecoregions. & unitless [minus 1 to 1]\\
+Land Cover \% (MODIS) & Zonal median of percent cover of dominant land class (cropland,
+forest, etc.) from MODIS 2016 land cover, aggegated to Level III
+ecoregions. & proportion [0 to 1]\\
+Land Use Diversity (MODIS) & Normalized Shannon-Weiner Diversity Index of MODIS land classes
+aggegated to Level III ecoregions. & unitless index (Shannon-Weiner)\\
+\addlinespace
+Land Cover \% (NLCD) & Zonal median percent cover by dominant NLCD class aggegated to
+NHDPlusHD catchments. & proportion [0 to 1]\\
+Land Use Diversity (NLCD) & Normalized Shannon Weiner Diversity Index of NLCD land cover classes,
+aggregated to NHDPlusHD catchments. & unitless index (Shannon-Weiner)\\*
+\end{longtable}
+\endgroup{}
+
+\vspace{0.5cm}
+
+\begingroup\fontsize{8}{10}\selectfont
+
+\begin{longtable}[t]{lp{8cm}l}
+\caption{\label{tab:create_tables}Table B: Land Cover — Notes and Temporal Scale}\\
+\toprule
+Short Name & Notes & Scale\\
+\midrule
+\endfirsthead
+\caption[]{Table B: Land Cover — Notes and Temporal Scale \textit{(continued)}}\\
+\toprule
+Short Name & Notes & Scale\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+NLCD Cultivated Fraction & Indicates anthropogenic land use in agricultural regions. Associated
+with increased runoff, reduced infiltration, and higher ET demand. & Macroregional\\
+NLCD Forest Fraction & Forest cover enhances interception and storage. Typically reduces peak
+flows and lowers skew. & Macroregional\\
+NLCD Rangeland Fraction & Moderates evapotranspiration and infiltration rates; especially
+important in mixed rangeland systems. & Macroregional\\
+NLCD Developed Fraction & Urban development increases imperviousness; strongly associated with
+peak flow generation and positive flood skew. & Macroregional\\
+NDVI Amplitude & Captures seasonal variation in greenness. High amplitude reflects
+strong vegetation response to climate fluctuations. & Regional\\
+\addlinespace
+NDVI IQR & Describes central spread of seasonal greenness. Robust to outliers and
+well-suited to fragmented or transitional landscapes. & Regional\\
+Growing Season Length & Indicates length of vegetative activity. Influences evapotranspiration
+rates and baseflow timing. & Regional\\
+Peak NDVI & Represents seasonal greenness maximum. Serves as a proxy for peak
+vegetation productivity. & Regional\\
+Land Cover \% (MODIS) & Summarizes dominant land cover class by proportion within a zone.
+Helps interpret complex or fragmented landscapes by reducing
+pixel-level detail to a single representative class. & Subregional\\
+Land Use Diversity (MODIS) & Reflects land use heterogeneity. Higher values indicate fragmented or
+mixed land cover, which may affect infiltration and runoff patterns. & Subregional\\
+\addlinespace
+Land Cover \% (NLCD) & Shows dominant land cover proportion at the catchment scale. Useful
+for linking terrain features with hydrologic behavior. & Local\\
+Land Use Diversity (NLCD) & Measures land cover diversity within a catchment. Supports modeling of
+transitions or mosaic land use patterns. & Local\\*
+\end{longtable}
+\endgroup{}
+
+\clearpage
+
+\end{document}

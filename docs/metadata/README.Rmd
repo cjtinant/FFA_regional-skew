@@ -1,0 +1,172 @@
+---
+title: "Metadata Inventory"
+author: "CJ Tinant"
+date: August 18, 2025
+output: 
+  github_document:
+    toc: true
+    toc_depth: 3
+---
+
+
+
+**Last Updated:** `r format(Sys.Date(), "%B %d, %Y")`
+
+This document provides an up-to-date listing of metadata files stored in
+`docs/metadata/`.
+
+## Table of Contents
+
+- [Metadata Inventory](#metadata-inventory)
+  - [Metadata Files in docs/metadata](#metadata-files-in-docsmetadata)
+
+## Metadata Files in docs/metadata
+
+```{r metadata-inventory, echo=FALSE, message=FALSE, warning=FALSE}
+
+library(tidyverse)
+library(fs)
+library(here)
+library(janitor)
+library(knitr)
+
+
+# 1. List metadata files, including subdirectories (e.g. data-dictionaries/)
+metadata_files <- dir_info(here("docs", "metadata"), recurse = TRUE) %>%
+  filter(type == "file") %>%
+  mutate(
+    file_name = path_file(path),
+    ext = path_ext(path),
+    # Subdirectory within docs/metadata
+    folder = path_rel(path_dir(path), start = here("docs", "metadata")),
+    # Replace "." (top-level) with "metadata"
+    folder = if_else(folder == ".", "metadata", folder)
+  ) %>%
+  # Optional: custom folder order
+  mutate(
+    folder = factor(
+                    folder,
+                    levels = c(
+                      "data-dictionaries",
+                      "descriptions",
+                      "legends",
+                      "look_up_tables",
+                      "metadata",
+                      "metadata_archive",
+                      "QAQC",
+                      "raster-data-summaries",
+                      "vector-data-summaries"
+                    )),
+    size_kb = round(size / 1024, 1),
+    size_display = if_else(size < 1024, "<1 KB", paste0(size_kb, " KB"))
+  ) %>%
+  arrange(file_name, folder) %>%
+  select(folder, file_name, ext, size_display) %>%
+  filter(!str_detect(file_name, "^README\\."))
+
+# --- make file descriptions ---
+file_descriptions <- tribble(
+  ~file_name, ~description,
+  "covariate_color_palette_v01.csv", "Covariate thematic color palate",
+  "covariate-inventory_data-dictionary_v02.csv", "Covariate inventory field descriptions",
+  "covariate_metadata_v086.csv",
+    "Covariate descriptions e.g. notes, resolution, scale, hierchial group membership",
+  "covariate_plot-label_lut.csv", "Covariate plot label lookup table",
+
+  "koppen-geiger_band_metadata_v01.csv", "Raw band number and data type metadata",
+  "koppen-geiger_class_lut.csv", "Köppen climate class lookup table",
+  "koppen-geiger_summary_metadata_v01.csv", "Raw crs and resolution metadata",
+
+  "modis-ndvi-timeseries_band_metadata_v01.csv", "Raw band number and data type metadata",
+  "modis-ndvi-timeseries_summary_metadata_v01.csv", "Raw crs and resolution metadata",
+  "modis-ndvi_2016_index.csv", "Index of NDVI files downloaded and compiled",
+
+  "ned-elev_band_metadata_v01.csv", "Raw band number and data type metadata",
+  "ned-elev_summary_metadata_v01.csv", "Raw crs and resolution metadata",
+  "ned_data-dictionary-full_2014.pdf", "National Elevation Dataset field definitions",
+  "ned_description.docx", "National Elevation Dataset data description",
+  "ned-slope_band_metadata_v01.csv", "Raw band number and data type metadata",
+  "ned-slope_summary_metadata_v01.csv", "Raw crs and resolution metadata",
+
+# NHD catchments and flowlines
+  "nhd-flowlines_data-dictionary_v01.csv", "NHD flowlines field descriptions",
+
+  "nhdv21-catchments_field_metadata_v01.csv", "NHDplus flowlines field metadata",
+  "nhdv21-catchments_layer_metadata_v01.csv", "NHDplus flowlines spatial metadata",
+  "nhdv21-flowlines_field_metadata_v01.csv", "NHDplus flowlines spatial metadata",
+  "nhdv21-flowlines_layer_metadata_v01.csv", "NHDplus flowlines spatial metadata",
+
+  "nhdphr-catchments_field_metadata_v01.csv", "NHD high resolution catchments field metadata",
+  "nhdphr-catchments_layer_metadata_v01.csv", "NHD high resolution catchments spatial metadata",
+  "nhdphr-flowlines_field_metadata_v01.csv", "NHD high resolution flowlines field metadata",
+  "nhdphr-flowlines_layer_metadata_v01.csv", "NHD high resolution flowlines spatial metadata",
+
+# NLCD class descriptions
+  "NLCDclasses.pdf", "National Land Cover Database (NLCD) class legend and description",
+  "NLCD_Colour_Classification_Update.jpg", "2013 update to NLCD colors",
+  "nlcd_description_2024.docx", "NLCD land cover class descriptions",
+  "nlcd-2016_band_metadata_v01.csv", "Raw band number and data type metadata",
+  "nlcd-2016_summary_metadata_v01.csv", "Raw crs and resolution metadata",
+
+# --- peak flow gages ---
+  "peakflow-gage_data-dictionary_v01.csv", "Peakflow gage site field descriptions",
+  "peakflow-gage_peak-cd_flags.csv",
+  "Indicates special conditions that affect how the peak flow values may be interpreted",
+  "peakflow-gage_site-criteria_data-dictionary.csv", "Peakflow gage site field descriptions",
+
+# --- PHZM ---
+  "phzm_band_metadata_v01.csv", "Raw band number and data type metadata",
+  "phzm_summary_metadata_v01.csv", "Raw crs and resolution metadata",
+
+  "pilf_thresholds_by_site.csv", "Potentially Influential Low Flow (PILF) threshold in cfs",
+"summary_tiers_by_gage.csv", "Count sites by tier",
+
+# --- PRISM ---
+  "prism_data_description_2025-02.pdf", "Descriptions of prism data including field descriptions",
+  "prism-ppt-ann_band_metadata_v01.csv", "Raw band number and data type metadata",
+  "prism-ppt-ann_summary_metadata_v01.csv", "Raw crs and resolution metadata",
+  "prism-ppt-mon_band_metadata_v01.csv", "Raw band number and data type metadata",
+  "prism-ppt-mon_summary_metadata_v01.csv", "Raw crs and resolution metadata",
+  "prism_spatial_description_v01.csv", "CRS and extent information on prism data",
+  "prism-temp-ann_band_metadata_v01.csv", "Raw band number and data type metadata",
+  "prism-temp-ann_summary_metadata_v01.csv", "Raw crs and resolution metadata",
+
+# --- statsgo ---
+  "statsgo2_data-dictionary_v01.csv", "STATSGO2 map unit polygon field descriptions",
+  "statsgo2_mupolygon_field_metadata_v01.csv", "statsgo2 map unit field metadata",
+  "statsgo2_mupolygon_layer_metadata_v01.csv", "statsgo2 map unit spatial metadata",
+
+# --- US Ecoregions ---
+  "us_ecoregions_data-dictionary_v03.csv", "US Ecoregion Level I-IV data dictionary",
+  "us_ecoregions_field_metadata_v01.csv", "US Ecoregions Level I-IV field metadata",
+  "us_ecoregions_layer_metadata_v01.csv", "US Ecoregions Level I-IV spatial metadata"
+)
+
+# 2. Check for missing files
+# --- files do not exist ---
+ck_file_missing <- anti_join(file_descriptions, metadata_files
+                     )
+
+# --- metadata does not exist ---
+ck_metadata_missing <- anti_join(metadata_files, file_descriptions
+                     ) %>%
+  filter(folder != "metadata_archive") %>%
+  filter(folder != "look_up_tables")
+
+# 
+metadata_files <- left_join(
+  metadata_files, file_descriptions, by = "file_name"
+  ) %>%
+  filter(folder != "metadata_archive") %>%
+  filter(folder != "look_up_tables")
+
+# 2. Render the table
+metadata_files %>%
+  arrange(folder, file_name) %>%
+  select(Folder = folder,
+         `File Name` = file_name,
+         Extension = ext, Size = size_display,
+         Description = description) %>%
+  kable(align = "lcc")
+
+```

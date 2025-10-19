@@ -1,6 +1,6 @@
 # ==============================================================================
 # Script: 10a_exploratory_modeling_initial_checks.R
-# Purpose: Perform initial checks for missing data and remove outliers 
+# Purpose: Perform initial checks for missing data and remove outliers
 #          from the modeling dataset (e.g., sites with missing terrain covariates).
 #
 # Author: Charles Jason Tinant — with ChatGPT 4o
@@ -19,12 +19,9 @@
 library(tidyverse)  # Includes readr, dplyr, tidyr, ggplot2, etc.
 library(here)       # File paths
 library(janitor)    # clean_names()
-
-
 # Load Data --------------------------------------------------------------------
 
-covariates_modeling <- read_csv(
-  here("data/clean/data_covariates_modeling_no-outlier.csv"))
+covariates_modeling <- read_csv(here("data/clean/data_covariates_modeling_no-outlier.csv"))
 
 # Clean column names
 covariates_modeling <- covariates_modeling %>%

@@ -1,0 +1,5 @@
+file,type,crs,resolution,xmin,xmax,ymin,ymax,contains_bbox_gp,scope
+data/processed/nhdphr/nhdphr_catchments_combined.gpkg,vector,NAD83 / Conus Albers,NA,-1267045.000074419,444054.9999381866,370534.9999644502,2973524.9999588644,FALSE,partial GP
+data/processed/nhdphr/nhdphr_flowlines_combined.gpkg,vector,NAD83 / Conus Albers,NA,-1287368.399670844,484367.79241142026,209669.09378445212,2994017.627836945,FALSE,partial GP
+data/processed/nhdplus_v21/nhdv21_flowlines.gpkg,vector,NAD83 / Conus Albers,NA,-1302191.5329248337,494083.4075460399,310953.69357065397,3005734.65801347,FALSE,partial GP
+data/processed/statsgo2/statsgo2_mupolygon.gpkg,vector,NAD83 / Conus Albers,NA,-1721775.026135419,613697.0209013398,313057.2201029437,3006355.8897899915,FALSE,partial GP

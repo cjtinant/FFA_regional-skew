@@ -1,0 +1,4 @@
+Field Name,Description,Unit,Data Type
+area_ac,Area in acres,acre,numeric
+geom,feature type,unitless,sfc_MULTIPOLYGON
+mukey,Unique identifier assigned to a map unit,unitless,integer

@@ -1,0 +1,6 @@
+macro_id,region_name,macrozone,prop_Cultivated,prop_Developed,prop_Forest,prop_Rangeland
+1,Shortgrass-Steppe,shortgrass,0.231,0.038000000000000006,0.027000000000000003,0.687
+2,Southern Mixed-Grass Prairie,mixed,0.058,0.101,0.10700000000000001,0.7070000000000001
+3,Central Mixed-Grass Prairie,mixed,0.325,0.054,0.064,0.525
+4,Northern Mixed-Grass Prairie,mixed,0.349,0.03,0.018000000000000002,0.552
+5,Tallgrass Prairie,tallgrass,0.588,0.072,0.081,0.21

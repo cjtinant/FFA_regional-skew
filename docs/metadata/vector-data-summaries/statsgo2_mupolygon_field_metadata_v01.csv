@@ -1,0 +1,4 @@
+field_name,data_type
+area_ac,numeric
+geom,sfc_MULTIPOLYGON
+mukey,integer
