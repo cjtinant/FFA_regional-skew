@@ -2,14 +2,15 @@
 # Script Name:     03b_station_covars.R
 # Author:          Charles Jason Tinant — with GPT-5 Thinking
 # Date Created:    2025-08-13
-# Last Updated:    2025-08-13
+# Last Updated:    2025-10-14
 #
 # Changelog:
-# - 2025-08-13     Initial script from GPT-5 output
-# - 2025-08-13     Update script using 03d_make_macrozone_layer as a template.
+#  2025-08-13     Initial script from GPT-5 output
+#  2025-08-13     Update script using 03d_make_macrozone_layer as a template.
+#  2025-10-14     Update header metadata
 #
 # Purpose:         Create a geospatial layer of station-level (Level 0)
-#                  covariates and station skew coefficients in CSV format.
+#                  covariates and station skew coefficients.
 #
 # Workflow:
 # 0. Define paths & project CRS.
@@ -23,7 +24,7 @@
 # 4. Use stylr and lintr for standard code.
 #
 # Inputs:
-# - data/processed/gage_summary_skew
+# - data/processed/peakflow_gages/archive/gage_summary_skew.csv
 # Outputs:
 # - data/processed/stations/stations_covars.gpkg  (layer="stations_covars"; CRS=EPSG:5070)
 # - data/processed/stations/stations_covars.csv   (tabular, no geometry)
