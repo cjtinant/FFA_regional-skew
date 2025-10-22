@@ -1,9 +1,10 @@
 Changelog
 ================
 CJ Tinant
-2025-10-12
+2025-10-22
 
 - [Changelog](#changelog)
+  - [\[v1.6.9\] — 2025-10-22](#v169--2025-10-22)
   - [\[v1.6.8\] — 2025-10-12](#v168--2025-10-12)
   - [\[v1.6.7\] — 2025-10-08](#v167--2025-10-08)
   - [\[v1.6.6\] — 2025-10-02](#v166--2025-10-02)
@@ -37,9 +38,44 @@ Changelog](https://keepachangelog.com/) format.*
 
 <!--
 ## [Untracked] -- 
-&#10;## Untracked changes prior to v1.6.8
-&#10;## In Progress
+&#10;- `R/02_clean_validate/02e_gp_ecoreg_l2_qc_make_outline.R` (minor updates)
+- `R/02_clean_validate/02f_recrop_ned_make_slope.R` (minor updates)
+- `R/03_covariates/03b_station_covars.R` (minor updates)
+- `R/03_covariates/03g_covar_macro_phzm_summary.R`
+- `R/03_covariates/03j_covar_macro_NED_summary.R`
 &#10;-->
+
+## \[v1.6.9\] — 2025-10-22
+
+### Milestone: 03p_covar_lev3_prism_seas_sd_iqr.R
+
+### In Progress
+
+- output/qa_checks/prism_seasonal_sd_5070.tif
+
+- output/qa_checks/prism_seasonal_iqr_5070.tif
+
+### Added
+
+- R/03_covars/03p_covar_lev3_prism_seas_sd_iqr.R – calculates PRISM
+  precipitation SD and IQR (1991–2020 normals) for seasons (DJF, MAM,
+  JJA, SON) in mm
+
+  - aggregated to Level III ecoregions using an 800 m resolution
+    EPSG:5070 (equal-area CRS) grid
+
+- data/covars/l3_prism_seasonal_iqr.csv – mm units; extraction in
+  EPSG:5070
+
+- data/covars/l3_prism_seasonal_sd.csv – mm units; extraction in
+  EPSG:5070
+
+### Notes
+
+- SD here is **across seasons** (climatological seasonality), not
+  interannual variability.
+
+### Fixed
 
 ## \[v1.6.8\] — 2025-10-12
 
