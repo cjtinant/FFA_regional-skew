@@ -1,7 +1,7 @@
 Script Notes and Developer Log
 ================
 C.J. Tinant
-October 12, 2025
+October 22, 2025
 
 - [Overview](#overview)
 - [Project Notes (General)](#project-notes-general)
@@ -654,7 +654,7 @@ macrozone categories with 29.9% of the variance unexplained.
 | Central Mixed-Grass Prairie | Cfa | Temperate, no dry season, hot summer |
 | Southern Mixed-Grass Prairie | Cfa | Temperate, no dry season, hot summer |
 | Southern Mixed-Grass Prairie | BSh | Arid, steppe, hot |
-| Shortgrass-Steppe | BSk - Arid, steppe, cold |  |
+| Shortgrass-Steppe | BSk | Arid, steppe, cold |
 
 ------------------------------------------------------------------------
 
@@ -720,12 +720,14 @@ generation and positive flood skew.
 
 ### NLCD Classes
 
-**Developed** 21 *Developed, Open Space* – areas with a mixture of some
-constructed materials, but mostly vegetation in the form of lawn
-grasses. Impervious surfaces account for less than 20% of total cover.
-These areas most commonly include large-lot single-family housing units,
-parks, golf courses, and vegetation planted in developed settings for
-recreation, erosion control, or aesthetic purposes.
+**Developed**
+
+21 *Developed, Open Space* – areas with a mixture of some constructed
+materials, but mostly vegetation in the form of lawn grasses. Impervious
+surfaces account for less than 20% of total cover. These areas most
+commonly include large-lot single-family housing units, parks, golf
+courses, and vegetation planted in developed settings for recreation,
+erosion control, or aesthetic purposes.
 
 22 *Developed, Low Intensity* – areas with a mixture of constructed
 materials and vegetation. Impervious surfaces account for 20% to 49%
@@ -796,10 +798,20 @@ reasonable results.
 | Download & Merge | All tiles successfully mosaicked |
 | Projection | Reprojected to EPSG:5070 (NAD83 / CONUS Albers) |
 | Extent | Clipped cleanly to updated Great Plains outline (no ocean overlap) |
-| Slope Calculation | Derived with terra::terrain() and verified quantiles (0–83.6deg.) |
+| Slope Calculation | Derived with terra::terrain() and verified quantiles (0–83.6 deg.) |
 | Histogram Audit | Distribution centered around ~1–5 deg., plausible for Great Plains |
 | Outlier Handling | −133 m min elevation eliminated (buffer error fixed) |
 | Compression/Export | Use writeRaster(…, gdal = c(“TILED=YES”,“COMPRESS=LZW”,“BIGTIFF=YES”)) |
+
+------------------------------------------------------------------------
+
+### 03p_covar_lev3_prism_seas_sd_iqr.R
+
+There are several methods to calculate IQR. The script uses type 7,
+which is the default method in R.
+
+m = 1-p. p\[k\] = (k - 1) / (n - 1). In this case, p\[k\] =
+mode\[F(x\[k\])\].
 
 ------------------------------------------------------------------------
 
@@ -880,5 +892,5 @@ notes and a script to open/edit them easily using RStudio.
 
 ## Notes
 
-- Last updated: 2025-10-12 14:54
+- Last updated: 2025-10-22 07:59
 - Maintained by: CJ Tinant
