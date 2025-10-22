@@ -4,7 +4,6 @@ CJ Tinant
 2025-10-22
 
 - [Changelog](#changelog)
-  - [\[v1.6.9\] — 2025-10-22](#v169--2025-10-22)
   - [\[v1.6.8\] — 2025-10-12](#v168--2025-10-12)
   - [\[v1.6.7\] — 2025-10-08](#v167--2025-10-08)
   - [\[v1.6.6\] — 2025-10-02](#v166--2025-10-02)
@@ -38,22 +37,28 @@ Changelog](https://keepachangelog.com/) format.*
 
 <!--
 ## [Untracked] -- 
-&#10;- `R/02_clean_validate/02e_gp_ecoreg_l2_qc_make_outline.R` (minor updates)
-- `R/02_clean_validate/02f_recrop_ned_make_slope.R` (minor updates)
-- `R/03_covariates/03b_station_covars.R` (minor updates)
-- `R/03_covariates/03g_covar_macro_phzm_summary.R`
-- `R/03_covariates/03j_covar_macro_NED_summary.R`
+&#10;## [v1.6.9] — 2025-10-22
+&#10;### Milestone: 03p_covar_lev3_prism_seas_sd_iqr.R
+&#10;
 &#10;-->
-
-## \[v1.6.9\] — 2025-10-22
-
-### Milestone: 03p_covar_lev3_prism_seas_sd_iqr.R
 
 ### In Progress
 
-- output/qa_checks/prism_seasonal_sd_5070.tif
-
-- output/qa_checks/prism_seasonal_iqr_5070.tif
+- fix issue with qa_check
+  - output/qa_checks/prism_seasonal_sd_5070.tif
+  - output/qa_checks/prism_seasonal_iqr_5070.tif
+- fix issue with l2, l3, l4 extraction.
+  - R/02_clean_validate/O2g_IN_PROG_gp_ecoreg_I3.R
+  - R/02_clean_validate/02g_gp_ecoreg_l3_qc_orig.R
+  - R/02_clean_validate/O2h_gp_ecoreg_l4_qc.R
+  - R/02_clean_validate/2e_gp_ecoreg_l2_qc_make_outline_orig.R
+- fix issue with other files borked in a GIT fail on my part
+  - `R/02_clean_validate/02e_gp_ecoreg_l2_qc_make_outline.R` (minor
+    updates)
+  - `R/02_clean_validate/02f_recrop_ned_make_slope.R` (minor updates)
+  - `R/03_covariates/03b_station_covars.R` (minor updates)
+  - `R/03_covariates/03g_covar_macro_phzm_summary.R`
+  - `R/03_covariates/03j_covar_macro_NED_summary.R`
 
 ### Added
 
