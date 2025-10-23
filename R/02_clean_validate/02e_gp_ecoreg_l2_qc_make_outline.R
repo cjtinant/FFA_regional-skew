@@ -3,20 +3,23 @@
 # Author:          CJ Tinant — with GPT-5 Thinking
 # Date Created:    2025-10-04
 # Last Updated:    2025-10-17
+
 # Change Log:
 #  2025-10-04      Initial script
-#  2025-10-10      Refactor prior script to rank L1 Ecoregion polygon parts by
+#  2025-10-10      Refactor prior script to rank L2 Ecoregion polygon parts by
 #                  area (e.g. examine and remove slivers) to keep a defensible
 #                  subset. The refactored script removes:
 #                   - the Texas Coastal Region polygons, which behaves
 #                     differently in terms of flood frequency;
 #                   - a disjunct L3 Ecoregion: the Texas Blackland Prairies;
+#                   - a small L4 Ecoregion lobe: 
+#                         Lower St. Croix and Vermillion Valleys;
 #                   - small polygon parts (slivers)
 #  2025-10-11      Fix issue with making a study outline, other QA issues.
 #  2025-10-12      Merge duplicate scripts, update metadata in the header
 #  2025-10-15      Begin visual QA for Texas Plains.
 #  2025-10-17      Refactor to use to use L4 for creating polygons
-#
+#  2025-10-23      Refactor to make code clearer; add metadata
 # Purpose:         Make usable L2 Ecoregions to calculate zonal statistics, and
 #                  study area outline
 #
@@ -30,16 +33,13 @@
 #  5. Export results.
 #
 # Inputs:          data/processed/us_ecoregions/us_eco_levels.gpkg
-#                  (layer: us_eco_l2)
-# Outputs:         data/processed/study_area/great_plains_outline.gpkg
-#                  - gp_ecoreg_5070
-#                  - gp_outline_5070     (cleaned/simplified outline, EPSG:5070;
-#                    layers = gp_outline, gp_outline_simple)
+#                    - layer: us_eco_l4
+# Outputs:         data/processed/study_area/gp_ecoreg_5070.gpkg
+#                    - layer: gp_L2_ecoreg 
+#                  data/processed/study_area/gp_ecoreg_5070.gpkg
+#                    - layers = gp_outline,
+#                               gp_outline_simple
 # Notes:
-# Visual QA at top of script exploring an issue with Texas disjunct region
-#  - Unclear why EAST CENTRAL TEXAS PLAINS and
-#  - SOUTH CENTRAL PLAINS are not in GP ecoregion.
-#  A: Because they are part of the Eastern Temperate Forests L1 ecoregion.
 # ==============================================================================
 # --- Load libraries ---
 suppressPackageStartupMessages({
@@ -71,23 +71,45 @@ states_5070 <- maps::map("state", plot = FALSE, fill = TRUE) %>%
   sf::st_transform(5070)
 
 # # --- Load raw data, filter Great Plains, validate ----
-gp_raw_l4_sf <- sf::st_read(gpkg_file, layer = "us_eco_l4", quiet = TRUE) %>%
+gp_raw_l4_sf <- sf::st_read(gpkg_file,
+                            layer = "us_eco_l4",
+                            quiet = TRUE) %>%
   dplyr::filter(NA_L1NAME == "GREAT PLAINS") %>%
   sf::st_make_valid() %>%
   select(-area_km2)
 sf::st_geometry(gp_raw_l4_sf) <- "geom"
 
+# --- quick QA checks ---
 message("Raw GP features: ", nrow(gp_raw_l4_sf))
 message("Raw CRS: ", sf::st_crs(gp_raw_l4_sf)$input %||% sf::st_crs(gp_raw_l4_sf)$wkt)
 message("Raw EPSG: ",sf::st_crs(gp_raw_l4_sf)$epsg)
 
-# --- quick QA ---
 gp_raw_empty  <- sum(sf::st_is_empty(gp_raw_l4_sf))
 gp_raw_invalid <- sum(!sf::st_is_valid(gp_raw_l4_sf))
 message("Empty geoms: ", gp_raw_empty,
         " | invalid after st_make_valid(): ", gp_raw_invalid)
 message("Raw CRS: ", sf::st_crs(gp_raw_l4_sf)$input %||% sf::st_crs(gp_raw_l4_sf)$wkt)
 message("Raw EPSG: ", sf::st_crs(gp_raw_l4_sf)$epsg)
+
+# --- QA: visual check of inputs (L3 ) ---
+ggplot() +
+  geom_sf(data = states_5070,
+          aes(geometry = geom),
+          fill = NA,
+          color = "grey75",
+          linewidth = 0.25
+  ) +
+  geom_sf(data = gp_raw_l4_sf,
+          aes(geometry = geom,
+              fill = NA_L3NAME),
+          color = "gray90",
+          linewidth = 0.1) +
+  coord_sf(crs = sf::st_crs(5070)) +
+  labs(
+    title    = "Great Plains L3 Ecoregions"
+  ) +
+  theme_minimal(base_size = 8) +
+  theme(legend.position = "none")
 
 # ------------------------------------------------------------------------------
 # 2. Drop coastal plains, disjunct area, and slivers
@@ -101,26 +123,27 @@ gp_parts_5070 <- gp_raw_l4_sf %>%
   dplyr::mutate(area_gen_km2 = round(part_area_km2, digits = 0)) %>%
   filter(area_gen_km2 > 0)         # drops remaining areas l.t. 1 km
 
-# --- drop coastal plain, slivers, and disjunct region ---
+# --- drop coastal plain, disjunct regions and lobes and slivers ---
 gp_filt_5070 <- gp_parts_5070 %>%
   st_make_valid() %>%
   filter(NA_L2NAME != "TEXAS-LOUISIANA COASTAL PLAIN") %>%
   filter(US_L4NAME != "Southern Blackland/Fayette Prairie") %>%  # disjunct
   filter(US_L4NAME != "Lower St. Croix and Vermillion Valleys") %>%  # odd lobe
   arrange(desc(NA_L3NAME)) %>%
-  dplyr::mutate(
-    total_km2 = sum(part_area_km2),
-    cum_km2   = cumsum(part_area_km2),
-    cum_frac  = cum_km2/total_km2,
-    area_gen_km2 = round(part_area_km2, digits = 0)
-  ) %>%
   filter(!(area_gen_km2 == 62 & US_L4NAME == "Floodplains and Low Terraces")
          ) %>%
-  filter(!(area_gen_km2 == 138 & US_L4NAME == "Floodplains and Low Terraces"))
-
-names(gp_raw_l4_sf)
+  filter(!(area_gen_km2 == 138 & US_L4NAME == "Floodplains and Low Terraces")
+         )  %>%
+dplyr::mutate(
+  total_km2 = sum(part_area_km2),
+  cum_km2   = cumsum(part_area_km2),
+  cum_frac  = cum_km2/total_km2,
+  area_gen_km2 = round(part_area_km2, digits = 0)
+)
 
 # --- merge to L2 level ---
+names(gp_filt_5070)                    # get variable names at L4 level
+
 gp_clean_5070 <- gp_filt_5070 %>%
   st_make_valid() %>%
   group_by(NA_L2CODE, NA_L2NAME, NA_L1CODE, NA_L1NAME, L2_KEY, L1_KEY) %>%
@@ -135,7 +158,10 @@ gp_clean_5070 <- gp_filt_5070 %>%
     area_gen_km2 = round(part_area_km2, digits = 0)
   )
 
-# --- QA: check results ---
+# --- QA: get names ---
+names(gp_clean_5070)                   # get updated variable names
+
+# --- QA: visual check of results ---
 ggplot() +
   geom_sf(data = states_5070,
           aes(geometry = geom),
@@ -150,7 +176,7 @@ ggplot() +
           linewidth = 0.1) +
   coord_sf(crs = sf::st_crs(5070)) +
   labs(
-    title    = "QA Check"
+    title    = "QA Check: Study Area L2 Ecoregions"
   ) +
   theme_minimal(base_size = 8) +
   theme(panel.grid = element_blank(),
@@ -164,7 +190,6 @@ ggsave(out_path_qa_lat,
        height = 8.5,
        unit   = "in"
 )
-
 
 # ------------------------------------------------------------------------------
 # 3. Make outline
