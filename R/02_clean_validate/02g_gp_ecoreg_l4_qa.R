@@ -1,26 +1,13 @@
 # ==============================================================================
-# Script Name:     02e_gp_ecoreg_l2_qa_make_outline.R
+# Script Name:     02e_gp_ecoreg_l3_qa.R
 # Author:          CJ Tinant — with GPT-5 Thinking
-# Date Created:    2025-10-04
-# Last Updated:    2025-10-17
+# Date Created:    2025-10-23
+# Last Updated:    2025-10-23
 
 # Change Log:
-#  2025-10-04      Initial script
-#  2025-10-10      Refactor prior script to rank L2 Ecoregion polygon parts by
-#                  area (e.g. examine and remove slivers) to keep a defensible
-#                  subset. The refactored script removes:
-#                   - the Texas Coastal Region polygons, which behaves
-#                     differently in terms of flood frequency;
-#                   - a disjunct L3 Ecoregion: the Texas Blackland Prairies;
-#                   - a small L4 Ecoregion lobe: 
-#                         Lower St. Croix and Vermillion Valleys;
-#                   - small polygon parts (slivers)
-#  2025-10-11      Fix issue with making a study outline, other QA issues.
-#  2025-10-12      Merge duplicate scripts, update metadata in the header
-#  2025-10-15      Begin visual QA for Texas Plains.
-#  2025-10-17      Refactor to use to use L4 for creating polygons
-#  2025-10-23      Refactor to make code clearer; add metadata
-# Purpose:         Make usable L2 Ecoregions to calculate zonal statistics, and
+#  2025-10-23      Split from 02e_gp_ecoreg_make_outline
+#
+# Purpose:         Make usable L4 Ecoregions to calculate zonal statistics, and
 #                  study area outline
 #
 # Workflow Summary:
@@ -35,10 +22,7 @@
 # Inputs:          data/processed/us_ecoregions/us_eco_levels.gpkg
 #                    - layer: us_eco_l4
 # Outputs:         data/processed/study_area/gp_ecoreg_5070.gpkg
-#                    - layer: gp_L2_ecoreg 
-#                  data/processed/study_area/gp_ecoreg_5070.gpkg
-#                    - layers = gp_outline,
-#                               gp_outline_simple
+#                    - layer: gp_L3_ecoreg 
 # Notes:
 # ==============================================================================
 # --- Load libraries ---
@@ -141,149 +125,50 @@ dplyr::mutate(
   area_gen_km2 = round(part_area_km2, digits = 0)
 )
 
-# --- merge to L2 level ---
-names(gp_filt_5070)                    # get variable names at L4 level
-
-gp_clean_5070 <- gp_filt_5070 %>%
-  st_make_valid() %>%
-  group_by(NA_L2CODE, NA_L2NAME, NA_L1CODE, NA_L1NAME, L2_KEY, L1_KEY) %>%
-  summarise(part_area_km2 = sum(as.numeric(st_area(geom))) / 1e6,
-            .groups  = "drop",
-            do_union = TRUE
-  )  %>%
-  dplyr::mutate(
-    total_km2 = sum(part_area_km2),
-    cum_km2   = cumsum(part_area_km2),
-    cum_frac  = cum_km2/total_km2,
-    area_gen_km2 = round(part_area_km2, digits = 0)
-  )
-
 # --- QA: get names ---
-names(gp_clean_5070)                   # get updated variable names
+names(gp_filt_5070)                   # get updated variable names
 
 # --- QA: visual check of results ---
-ggplot() +
+p <- ggplot() +
   geom_sf(data = states_5070,
           aes(geometry = geom),
           fill = NA,
           color = "grey75",
           linewidth = 0.25
   ) +
-  geom_sf(data = gp_clean_5070,
+  geom_sf(data = gp_filt_5070,
           aes(geometry = geom,
-              fill = NA_L2NAME),
+              fill = US_L4NAME),
           color = "gray90",
           linewidth = 0.1) +
   coord_sf(crs = sf::st_crs(5070)) +
   labs(
-    title    = "QA Check: Study Area L2 Ecoregions"
+    title    = "QA Check: Study Area L4 Ecoregions"
   ) +
-  theme_minimal(base_size = 8) +
-  theme(panel.grid = element_blank(),
-        axis.title = element_blank())
+  theme_minimal(base_size = 8)  +
+  theme(legend.position = "none")
 
 # --- save plot ---
-out_path_qa_lat <- here("output", "qa_checks", "l2_ecoreg_qa.png")
-ggsave(out_path_qa_lat,
-       bg     = "white",
-       width  = 11,
-       height = 8.5,
-       unit   = "in"
+ggsave(
+  filename = here("output", "qa_checks", "l4_ecoreg_qa.png"),
+  plot     = p,
+  bg       = "white",
+  width    = 11,
+  height   = 8.5,
+  units    = "in",
+  dpi      = 300
 )
 
 # ------------------------------------------------------------------------------
-# 3. Make outline
-# ------------------------------------------------------------------------------
-# --- parameters for simplifying outline ---
-hole_km2 <- 14000      # fill holes smaller than this
-part_km2 <- 200      # drop exterior parts smaller than this
-
-# --- Merged filtered L2 Ecoregions ---
-gp_merged <- gp_clean_5070 %>%
-  st_make_valid() %>%
-  st_union() %>%
-  st_as_sf() %>%
-  rename(geom = x) %>%
-  st_set_geometry("geom")
-
-# --- Fill interior holes (< hole_km2) ---
-gp_noholes <- gp_merged %>%
-  smoothr::fill_holes(threshold = set_units(hole_km2, km^2))
-
-# --- Drop tiny exterior parts (< part_km2); keep only largest piece ---
-gp_clean <- gp_noholes %>%
-  st_make_valid() %>%
-  st_cast("MULTIPOLYGON") %>%
-  st_cast("POLYGON") %>%
-  mutate(a_km2 = set_units(st_area(geom), km^2)) %>%
-  filter(as.numeric(a_km2) >= part_km2) %>%
-  select(-a_km2) %>%
-  st_union() %>%
-  st_as_sf()
-
-# --- Keep only largest connected piece ---
-gp_clean <- gp_clean %>% 
-  st_set_geometry("geom") %>%
-  st_cast("MULTIPOLYGON") %>% 
-  st_cast("POLYGON") %>%
-  mutate(a = as.numeric(st_area(geom))) %>%
-  dplyr::slice_max(a, n = 1, with_ties = FALSE) %>%
-  select(-a) %>%
-  st_union() %>%
-  st_as_sf() %>%
-  st_set_geometry("geom")
-
-# --- Check outline ---
-summary(st_area(gp_clean))
-
-# --- Visual QA check ---
-ggplot() +
-  geom_sf(data = states_5070,
-          aes(geometry = geom),
-          fill = NA,
-          color = "grey75",
-          linewidth = 0.25
-  ) +
-  geom_sf(data = gp_merged,
-          aes(geometry = geom),
-          fill = "gray70",
-          color = "grey35",
-          linewidth = 0.2) +
-  geom_sf(data = gp_noholes,
-          aes(geometry = geom),
-          alpha = 0.8,
-          fill = "gray80",
-          color = "grey35",
-          linewidth = 0.2) +
-  coord_sf(crs = sf::st_crs(5070)) +
-  labs(
-    title    = "GP Merged Outline and Simplified Outline"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(panel.grid = element_blank(), axis.title = element_blank())
-
-# ------------------------------------------------------------------------------
-# 4. Export results
+# 3. Export results
 # ------------------------------------------------------------------------------
 # --- Export filtered ecoregion ---
 out_dir <- file.path(here(), "data", "processed", "study_area",
                        "gp_ecoreg_5070.gpkg")
 sf::st_write(gp_filt_5070,
              out_dir,
-             layer = "gp_L2_ecoreg",
-             quiet = TRUE
+             layer = "gp_L4_ecoreg",
+             quiet = TRUE,
+             append = FALSE
 )
 message("Wrote: ", out_dir)
-
-# --- Export outlines ---
-out_path <- here("data", "processed", "study_area", "gp_outline_5070.gpkg")
-
-st_write(gp_clean,
-         dsn   = out_path,
-         layer = "gp_outline_simple",
-         delete_layer = TRUE)
-
-st_write(gp_noholes,
-         dsn   = out_path,
-         layer = "gp_outline",
-         delete_layer = TRUE)
