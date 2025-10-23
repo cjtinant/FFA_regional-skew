@@ -1,5 +1,5 @@
 # ==============================================================================
-# Script Name:     02e_gp_ecoreg_l2_qc_make_outline.R
+# Script Name:     02e_gp_ecoreg_l2_qa_make_outline.R
 # Author:          CJ Tinant — with GPT-5 Thinking
 # Date Created:    2025-10-04
 # Last Updated:    2025-10-17
