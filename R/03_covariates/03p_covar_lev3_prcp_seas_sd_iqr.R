@@ -1,9 +1,6 @@
 # ==============================================================================
 # Script Name:     03p_lev3_prism_seas_sd_iqr.R
 # Author:          CJ Tinant — with GPT-5 Thinking
-
-
-# Author:          Charles Jason Tinant — with ChatGPT 4o
 # Date Created:    2025-10-19
 # Last Updated:    2025-10-21
 # Changelog:
