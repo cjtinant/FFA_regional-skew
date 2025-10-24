@@ -2,7 +2,7 @@
 # Script Name:     02e_gp_ecoreg_l2_qa_make_outline.R
 # Author:          CJ Tinant — with GPT-5 Thinking
 # Date Created:    2025-10-04
-# Last Updated:    2025-10-17
+# Last Updated:    2025-10-24
 
 # Change Log:
 #  2025-10-04      Initial script
@@ -20,11 +20,12 @@
 #  2025-10-15      Begin visual QA for Texas Plains.
 #  2025-10-17      Refactor to use to use L4 for creating polygons
 #  2025-10-23      Refactor to make code clearer; add metadata
+#  2025-10-24      Fix metadata
 # Purpose:         Make usable L2 Ecoregions to calculate zonal statistics, and
 #                  study area outline
 #
 # Workflow Summary:
-#  1. Load L2 Ecoregions. Perform quick QA check.
+#  1. Load L4 Ecoregions. Perform quick QA check.
 #  2. Drop Texas-Louisiana Coastal Plain, disjunct region, and slivers:
 #      - Explode areas rank (largest first) calculate cumulative coverage.
 #      - Drop coastal plain, disjunct region, and slivers.
@@ -35,7 +36,7 @@
 # Inputs:          data/processed/us_ecoregions/us_eco_levels.gpkg
 #                    - layer: us_eco_l4
 # Outputs:         data/processed/study_area/gp_ecoreg_5070.gpkg
-#                    - layer: gp_L2_ecoreg 
+#                    - layer: gp_l2_ecoreg 
 #                  data/processed/study_area/gp_ecoreg_5070.gpkg
 #                    - layers = gp_outline,
 #                               gp_outline_simple

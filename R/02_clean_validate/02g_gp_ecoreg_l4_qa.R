@@ -1,17 +1,18 @@
 # ==============================================================================
-# Script Name:     02e_gp_ecoreg_l3_qa.R
+# Script Name:     02e_gp_ecoreg_l4_qa.R
 # Author:          CJ Tinant — with GPT-5 Thinking
 # Date Created:    2025-10-23
-# Last Updated:    2025-10-23
+# Last Updated:    2025-10-24
 
 # Change Log:
 #  2025-10-23      Split from 02e_gp_ecoreg_make_outline
+#  2025-10-24      Fix metadata.
 #
 # Purpose:         Make usable L4 Ecoregions to calculate zonal statistics, and
 #                  study area outline
 #
 # Workflow Summary:
-#  1. Load L2 Ecoregions. Perform quick QA check.
+#  1. Load L4 Ecoregions. Perform quick QA check.
 #  2. Drop Texas-Louisiana Coastal Plain, disjunct region, and slivers:
 #      - Explode areas rank (largest first) calculate cumulative coverage.
 #      - Drop coastal plain, disjunct region, and slivers.
@@ -22,7 +23,7 @@
 # Inputs:          data/processed/us_ecoregions/us_eco_levels.gpkg
 #                    - layer: us_eco_l4
 # Outputs:         data/processed/study_area/gp_ecoreg_5070.gpkg
-#                    - layer: gp_L3_ecoreg 
+#                    - layer: gp_l4_ecoreg 
 # Notes:
 # ==============================================================================
 # --- Load libraries ---
