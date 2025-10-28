@@ -1,12 +1,13 @@
 # ==============================================================================
-# Script Name:     02e_gp_ecoreg_l3_qa.R
+# Script Name:     02f_gp_ecoreg_l3_qa.R
 # Author:          CJ Tinant — with GPT-5 Thinking
 # Date Created:    2025-10-23
-# Last Updated:    2025-10-24
+# Last Updated:    2025-10-28
 
 # Change Log:
 #  2025-10-23      Split from 02e_gp_ecoreg_make_outline
 #  2025-10-24      Fix metadata.
+#  2025-10-28      Bug fix: save correct layer file.
 #
 # Purpose:         Make usable L3 Ecoregions to calculate zonal statistics, and
 #                  study area outline
@@ -17,11 +18,10 @@
 #      - Explode areas rank (largest first) calculate cumulative coverage.
 #      - Drop coastal plain, disjunct region, and slivers.
 #  3. QA checks.
-#  4. Make outline
-#  5. Export results.
+#  4. Export results.
 #
 # Inputs:          data/processed/us_ecoregions/us_eco_levels.gpkg
-#                    - layer: us_eco_l3
+#                    - layer: us_eco_l4
 # Outputs:         data/processed/study_area/gp_ecoreg_5070.gpkg
 #                    - layer: gp_l3_ecoreg 
 # Notes:
@@ -88,7 +88,7 @@ ggplot() +
           aes(geometry = geom,
               fill = NA_L3NAME),
           color = "gray90",
-          linewidth = 0.1) +
+          linewidth = 0.05) +
   coord_sf(crs = sf::st_crs(5070)) +
   labs(
     title    = "Great Plains L3 Ecoregions"
@@ -127,8 +127,10 @@ dplyr::mutate(
 )
 
 # --- merge to L3 level ---
-names(gp_filt_5070)                    # get variable names at L4 level
+# get variable names at L4 level
+names(gp_filt_5070)
 
+# group at the L3 level
 gp_clean_5070 <- gp_filt_5070 %>%
   st_make_valid() %>%
   group_by(US_L3CODE, US_L3NAME, NA_L3CODE, NA_L3NAME,
@@ -143,10 +145,19 @@ gp_clean_5070 <- gp_filt_5070 %>%
     cum_km2   = cumsum(part_area_km2),
     cum_frac  = cum_km2/total_km2,
     area_gen_km2 = round(part_area_km2, digits = 0)
-  )
+)
 
 # --- QA: get names ---
 names(gp_clean_5070)                   # get updated variable names
+
+# --- drop unneeded tibbles ---
+rm(gp_filt_5070,
+   gp_parts_5070,
+   gp_raw_l4_sf,
+   gp_raw_empty,
+   gp_raw_invalid,
+   gpkg_file
+)
 
 # --- QA: visual check of results ---
 ggplot() +
@@ -160,7 +171,7 @@ ggplot() +
           aes(geometry = geom,
               fill = NA_L3NAME),
           color = "gray90",
-          linewidth = 0.1) +
+          linewidth = 0.05) +
   coord_sf(crs = sf::st_crs(5070)) +
   labs(
     title    = "QA Check: Study Area L3 Ecoregions"
@@ -184,9 +195,10 @@ ggsave(out_path_qa_lat,
 # --- Export filtered ecoregion ---
 out_dir <- file.path(here(), "data", "processed", "study_area",
                        "gp_ecoreg_5070.gpkg")
-sf::st_write(gp_filt_5070,
+sf::st_write(gp_clean_5070,
              out_dir,
-             layer = "gp_L3_ecoreg",
-             quiet = TRUE
+             layer  = "gp_L3_ecoreg",
+             quiet  = TRUE,
+             append = FALSE
 )
 message("Wrote: ", out_dir)
