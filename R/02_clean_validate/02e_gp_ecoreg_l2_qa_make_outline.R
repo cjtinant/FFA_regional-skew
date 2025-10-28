@@ -2,7 +2,7 @@
 # Script Name:     02e_gp_ecoreg_l2_qa_make_outline.R
 # Author:          CJ Tinant — with GPT-5 Thinking
 # Date Created:    2025-10-04
-# Last Updated:    2025-10-24
+# Last Updated:    2025-10-28
 
 # Change Log:
 #  2025-10-04      Initial script
@@ -21,6 +21,8 @@
 #  2025-10-17      Refactor to use to use L4 for creating polygons
 #  2025-10-23      Refactor to make code clearer; add metadata
 #  2025-10-24      Fix metadata
+#  2025-10-28      Bug fix: save correct layer file.
+#
 # Purpose:         Make usable L2 Ecoregions to calculate zonal statistics, and
 #                  study area outline
 #
@@ -92,7 +94,7 @@ message("Empty geoms: ", gp_raw_empty,
 message("Raw CRS: ", sf::st_crs(gp_raw_l4_sf)$input %||% sf::st_crs(gp_raw_l4_sf)$wkt)
 message("Raw EPSG: ", sf::st_crs(gp_raw_l4_sf)$epsg)
 
-# --- QA: visual check of inputs (L3 ) ---
+# --- QA: visual check of inputs (L3) ---
 ggplot() +
   geom_sf(data = states_5070,
           aes(geometry = geom),
@@ -103,11 +105,19 @@ ggplot() +
   geom_sf(data = gp_raw_l4_sf,
           aes(geometry = geom,
               fill = NA_L3NAME),
+          alpha = 0.5,
           color = "gray90",
-          linewidth = 0.1) +
+          linewidth = 0.05) +
+  geom_sf(data = gp_raw_l4_sf,
+          aes(geometry = geom,
+              fill = NA_L2NAME),
+          alpha = 0.5,
+          color = "gray90",
+          linewidth = 0.05) +
   coord_sf(crs = sf::st_crs(5070)) +
   labs(
-    title    = "Great Plains L3 Ecoregions"
+    title    = "Great Plains L2 and L3 Ecoregions",
+    subtitle = ""
   ) +
   theme_minimal(base_size = 8) +
   theme(legend.position = "none")
@@ -143,8 +153,10 @@ dplyr::mutate(
 )
 
 # --- merge to L2 level ---
-names(gp_filt_5070)                    # get variable names at L4 level
+# check variable names at L4 level
+names(gp_filt_5070)
 
+# group at the L2 level
 gp_clean_5070 <- gp_filt_5070 %>%
   st_make_valid() %>%
   group_by(NA_L2CODE, NA_L2NAME, NA_L1CODE, NA_L1NAME, L2_KEY, L1_KEY) %>%
@@ -157,10 +169,19 @@ gp_clean_5070 <- gp_filt_5070 %>%
     cum_km2   = cumsum(part_area_km2),
     cum_frac  = cum_km2/total_km2,
     area_gen_km2 = round(part_area_km2, digits = 0)
-  )
+)
 
 # --- QA: get names ---
 names(gp_clean_5070)                   # get updated variable names
+
+# --- drop unneeded tibbles ---
+rm(gp_filt_5070,
+   gp_parts_5070,
+   gp_raw_l4_sf,
+   gp_raw_empty,
+   gp_raw_invalid,
+   gpkg_file
+)
 
 # --- QA: visual check of results ---
 ggplot() +
@@ -269,11 +290,14 @@ ggplot() +
 # --- Export filtered ecoregion ---
 out_dir <- file.path(here(), "data", "processed", "study_area",
                        "gp_ecoreg_5070.gpkg")
-sf::st_write(gp_filt_5070,
+
+sf::st_write(gp_clean_5070,
              out_dir,
              layer = "gp_L2_ecoreg",
-             quiet = TRUE
+             quiet = TRUE,
+             append = FALSE
 )
+
 message("Wrote: ", out_dir)
 
 # --- Export outlines ---
