@@ -1,15 +1,14 @@
 # ==============================================================================
-# Script Name:     02e_gp_ecoreg_l4_qa.R
+# Script Name:     02g_gp_ecoreg_l4_qa.R
 # Author:          CJ Tinant — with GPT-5 Thinking
 # Date Created:    2025-10-23
-# Last Updated:    2025-10-24
+# Last Updated:    2025-10-28
 
 # Change Log:
 #  2025-10-23      Split from 02e_gp_ecoreg_make_outline
 #  2025-10-24      Fix metadata.
 #
-# Purpose:         Make usable L4 Ecoregions to calculate zonal statistics, and
-#                  study area outline
+# Purpose:         Make usable L4 Ecoregions to calculate zonal statistics.
 #
 # Workflow Summary:
 #  1. Load L4 Ecoregions. Perform quick QA check.
@@ -76,7 +75,8 @@ message("Empty geoms: ", gp_raw_empty,
 message("Raw CRS: ", sf::st_crs(gp_raw_l4_sf)$input %||% sf::st_crs(gp_raw_l4_sf)$wkt)
 message("Raw EPSG: ", sf::st_crs(gp_raw_l4_sf)$epsg)
 
-# --- QA: visual check of inputs (L3 ) ---
+# --- QA: visual check of inputs (L3) ---
+# there too many names for plotting L4 legend 
 ggplot() +
   geom_sf(data = states_5070,
           aes(geometry = geom),
@@ -86,12 +86,12 @@ ggplot() +
   ) +
   geom_sf(data = gp_raw_l4_sf,
           aes(geometry = geom,
-              fill = NA_L3NAME),
+              fill = US_L4NAME),
           color = "gray90",
           linewidth = 0.1) +
   coord_sf(crs = sf::st_crs(5070)) +
   labs(
-    title    = "Great Plains L3 Ecoregions"
+    title    = "Great Plains L4 Ecoregions"
   ) +
   theme_minimal(base_size = 8) +
   theme(legend.position = "none")
@@ -129,6 +129,14 @@ dplyr::mutate(
 # --- QA: get names ---
 names(gp_filt_5070)                   # get updated variable names
 
+# --- drop unneeded df ---
+rm(gp_parts_5070,
+   gp_raw_l4_sf,
+   gp_raw_empty,
+   gp_raw_invalid,
+   gpkg_file
+)
+
 # --- QA: visual check of results ---
 p <- ggplot() +
   geom_sf(data = states_5070,
@@ -146,7 +154,7 @@ p <- ggplot() +
   labs(
     title    = "QA Check: Study Area L4 Ecoregions"
   ) +
-  theme_minimal(base_size = 8)  +
+  theme_minimal(base_size = 8) +
   theme(legend.position = "none")
 
 # --- save plot ---
